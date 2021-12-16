@@ -7,6 +7,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HomeTitle();
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            IconButton(onPressed: ()=>{
+              Navigator.pushNamed(context, '/networking_postlisting'),
+            }, icon: Icon(Icons.article))
+          ],
+        ),
+      )
+    );
   }
 }
