@@ -7,6 +7,21 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HomeTitle();
+    return Scaffold(
+        body: SafeArea(
+            child: Column(
+              children: [
+                RaisedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/events');
+                },
+                  child: Text("Events"),),
+                RaisedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/signUp');
+                },
+                  child: Text("SignUp"),)
+              ],
+            )
+        )
+    );
   }
 }

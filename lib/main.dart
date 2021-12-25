@@ -1,6 +1,9 @@
+import 'package:client/screens/Events/addpost.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/home/main.dart';
+import 'screens/Events/home.dart';
+import 'screens/Login/signUp.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +26,8 @@ class MyApp extends StatelessWidget {
       home: const HomePage(),
       routes: {
         HomePage.routeName: (_) => const HomePage(),
+        '/events': (context) => Home(),
+        '/signUp': (context) => SignUp(),
       },
     );
   }
