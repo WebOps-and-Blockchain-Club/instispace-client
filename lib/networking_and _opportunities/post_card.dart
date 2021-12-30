@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'post.dart';
 import 'tag.dart';
+import 'package:client/networking_and _opportunities/comments.dart';
 
 
 class PostCard extends StatelessWidget {
@@ -80,7 +81,11 @@ class PostCard extends StatelessWidget {
                         }, icon: Icon(Icons.arrow_circle_up_outlined)),
                         IconButton(onPressed: () =>
                         {
-                          print('commented')
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Comments(post: post,)),
+                          ),
+                          print('commented'),
                         }, icon: Icon(Icons.comment)),
                       ],
                     ),
