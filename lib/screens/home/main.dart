@@ -11,14 +11,30 @@ class HomePage extends StatelessWidget {
         body: SafeArea(
             child: Column(
               children: [
-                RaisedButton(onPressed: () {
+                ElevatedButton(onPressed: () {
                   Navigator.pushNamed(context, '/events');
                 },
                   child: Text("Events"),),
-                RaisedButton(onPressed: () {
+                ElevatedButton(onPressed: () {
                   Navigator.pushNamed(context, '/signUp');
                 },
-                  child: Text("SignUp"),)
+                  child: Text("SignUp"),),
+                ElevatedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/createSuperUser');
+                },
+                  child: Text("Create Super User"),),
+                ElevatedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/userpage');
+                },
+                  child: Text("User Profile"),),
+                ElevatedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/updatepassword');
+                },
+                  child: Text("Update Password"),),
+                ElevatedButton(onPressed: () {
+                  Navigator.pushNamed(context, '/createhostel');
+                },
+                  child: Text("Create Hostel"),),
               ],
             )
         )

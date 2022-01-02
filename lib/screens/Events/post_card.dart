@@ -96,42 +96,33 @@ class PostCard extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
                     child: Text("Tag 1",
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)
                     ),
-                    color: Colors.grey,),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
                     child: Text("Tag 2",
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)
                     ),
-                    color: Colors.grey,),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
                     child: Text("Tag 3",
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)
                     ),
-                    color: Colors.grey,),
                 )
               ],
             ),

@@ -3,20 +3,24 @@ import 'package:flutter/material.dart';
 import 'post.dart';
 import 'post_card.dart';
 
-class Home extends StatefulWidget {
+class EventsHome extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<EventsHome> {
 
   List<Post> posts =[Post(title: "Title1", location: "OAT", description: "Anshul is a good boy. He is from Chemical Engineering Department. ngjngnfvjntnbjscnjnrjgvnjcn f vjnjbnsgvnb fnmb gbgjbn fg bkfgdjnbjgbngsjkrn bjnrjbn njbnjktnbjn bknbkjnjkbn jkn btrn jkrtnb jkrt", imgUrl: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg", formLink: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg"),
     Post(title: "Title1", location: "OAT", description: "Anshul is a good boy. He is from Chemical Engineering Department. ngjngnfvjntnbjscnjnrjgvnjcn f vjnjbnsgvnb fnmb gbgjbn fg bkfgdjnbjgbngsjkrn bjnrjbn njbnjktnbjn bknbkjnjkbn jkn btrn jkrtnb jkrt", imgUrl: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg", formLink: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg"),
     Post(title: "Title1", location: "OAT", description: "Anshul is a good boy. He is from Chemical Engineering Department. ngjngnfvjntnbjscnjnrjgvnjcn f vjnjbnsgvnb fnmb gbgjbn fg bkfgdjnbjgbngsjkrn bjnrjbn njbnjktnbjn bknbkjnjkbn jkn btrn jkrtnb jkrt", imgUrl: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg", formLink: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg"),
     Post(title: "Title1", location: "OAT", description: "Anshul is a good boy. He is from Chemical Engineering Department. ngjngnfvjntnbjscnjnrjgvnjcn f vjnjbnsgvnb fnmb gbgjbn fg bkfgdjnbjgbngsjkrn bjnrjbn njbnjktnbjn bknbkjnjkbn jkn btrn jkrtnb jkrt", imgUrl: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg", formLink: "https://hss.iitm.ac.in/wp-content/uploads/2018/12/DJ-Logo.jpg")];
+
+  var ScaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: ScaffoldKey,
       appBar: AppBar(
         title: Text("All Events",
           style: TextStyle(
@@ -24,7 +28,10 @@ class _HomeState extends State<Home> {
               fontWeight: FontWeight.bold
           ),),
         actions: [
-          IconButton(onPressed: () => {}, icon: Icon(Icons.filter_alt_outlined)),
+          IconButton(onPressed: () =>
+                ScaffoldKey.currentState?.openEndDrawer(),
+                icon: Icon(Icons.filter_alt_outlined)
+         ),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/addpost');
