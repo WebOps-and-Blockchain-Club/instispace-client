@@ -1,8 +1,8 @@
-import 'package:client/networking_and%20_opportunities/commentclass.dart';
+import 'package:client/models/commentclass.dart';
 import 'package:flutter/material.dart';
-import 'post.dart';
+import '../../../models/post.dart';
 import 'post_card.dart';
-import 'tag.dart';
+import '../../../models/tag.dart';
 
 class Post_Listing extends StatefulWidget {
   const Post_Listing({Key? key}) : super(key: key);

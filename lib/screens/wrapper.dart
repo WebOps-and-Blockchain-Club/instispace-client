@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:client/screens/login/login.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
+import 'package:client/screens/userInit/interest.dart';
+import 'package:client/screens/userInit/SuperUser_PasswordChange.dart';
 class Wrapper extends StatefulWidget {
-  const Wrapper({Key? key}) : super(key: key);
-
   @override
   _WrapperState createState() => _WrapperState();
 }
@@ -13,13 +13,14 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-
-    return ChangeNotifierProvider<AuthService>(
+    return ChangeNotifierProvider(
       create:(_)=>AuthService(),
-      lazy: false,
       child:Consumer<AuthService>(
         builder:(context,auth,child){
-          return auth.token == null ? LogIn():HomePage();
+          return auth.token == null ? LogIn():
+          (auth.isNewUser==false?HomePage():
+          (auth.role=="USER"?InterestPage():SU_PasswordChange())
+          );
         }
       )
     );

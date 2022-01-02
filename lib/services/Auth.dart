@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,17 +6,19 @@ class AuthService extends ChangeNotifier{
   SharedPreferences? _prefs;
    String? _role;
   String? _token;
-   String? get token => _token ;
-  String? get role => _role ;
+  bool? _isNewUser;
+   String? get token => _token;
+  String? get role => _role;
+  bool? get isNewUser => _isNewUser;
 
   AuthService(){
     notifyListeners();
     _token=null;
     _role=null;
+    _isNewUser=false;
     _loadToken();
     _loadRole();
-    print('auth.token:$token');
-    // notifyListeners();
+    _loadisNewUser();
   }
   _initAuth() async{
     if(_prefs== null)_prefs=await SharedPreferences.getInstance();
@@ -49,10 +51,21 @@ class AuthService extends ChangeNotifier{
     _role = (_prefs!.getString('role')??null);
     notifyListeners();
   }
-  _setRole(String role) async{
+  setRole(String role) async{
     await _initAuth();
     _prefs!.setString('role', role);
     _role=role;
+    notifyListeners();
+  }
+  setisNewUser(bool isNewUser) async{
+    await _initAuth();
+    _prefs!.setBool('isNewUser', isNewUser);
+    _isNewUser=isNewUser;
+    notifyListeners();
+  }
+  _loadisNewUser() async{
+    await _initAuth();
+    _isNewUser = (_prefs!.getBool('isNewUser')??false);
     notifyListeners();
   }
 

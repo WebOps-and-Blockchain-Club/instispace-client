@@ -1,6 +1,7 @@
-import 'package:client/widgets/main.dart';
+
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,7 +12,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final auth=AuthService();
+  late AuthService _auth;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _auth = Provider.of<AuthService>(context, listen: false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/networking_postlisting'),
             }, icon: Icon(Icons.article)),
             ElevatedButton(onPressed: (){
-              auth.clearAuth();
+              _auth.clearAuth();
             }, child: Text('clear Auth'))
           ],
         ),

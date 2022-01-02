@@ -1,9 +1,10 @@
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
+import 'package:client/graphQL/auth.dart';
 import 'package:client/services/Auth.dart';
 import 'package:client/services/Client.dart';
+import 'package:provider/provider.dart';
 
 
 class LogIn extends StatefulWidget {
@@ -11,24 +12,35 @@ class LogIn extends StatefulWidget {
 
   _LogInState createState() => _LogInState();
 }
-
-  String login = """mutation(\$loginInputs: LoginInput!){
-  login( LoginInputs: \$loginInputs)
-   {
-    role
-    token
-    isNewUser
-  }
-}""";
-
   class _LogInState extends State<LogIn> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  late AuthService _auth;
   static var token;
-  final auth=AuthService();
-  
+  static var isNewUser;
+  static var role;
+  String login=authQuery().login;
+
+//   String login = """mutation(\$loginInputs: LoginInput!){
+//   login( LoginInputs: \$loginInputs)
+//    {
+//     role
+//     token
+//     isNewUser
+//   }
+// }""";
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _auth = Provider.of<AuthService>(context, listen: false);
+    });
+  }
+
+  @override
+
   Widget build(BuildContext context) {
     return GraphQLProvider(
       client: client,
@@ -91,7 +103,11 @@ class LogIn extends StatefulWidget {
                               document: gql(login),
                               onCompleted:(dynamic resultData){
                                 token = resultData["login"]["token"];
-                                auth.setToken(token);
+                                isNewUser=resultData["login"]["isNewUser"];
+                                role=resultData["login"]["role"];
+                                _auth.setToken(token);
+                                _auth.setisNewUser(isNewUser);
+                                _auth.setRole(role);
                                 print(resultData["login"]);
                               }
                           ),

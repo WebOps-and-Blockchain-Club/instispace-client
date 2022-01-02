@@ -1,11 +1,8 @@
-import 'package:client/services/Client.dart';
-import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'screens/home/main.dart';
+import 'package:flutter/material.dart';
 import 'package:client/screens/login/login.dart';
-import 'networking_and _opportunities/post_listing.dart';
-import 'package:client/networking_and _opportunities/addpost.dart';
+import 'package:client/screens/home/networking_and _opportunities/post_listing.dart';
+import 'package:client/screens/home/networking_and _opportunities/addpost.dart';
 import 'package:client/screens/wrapper.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

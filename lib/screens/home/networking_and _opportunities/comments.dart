@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'post.dart';
-import 'commentclass.dart';
+import '../../../models/post.dart';
+import 'package:client/models/commentclass.dart';
 
 class Comments extends StatelessWidget {
   final Post post;

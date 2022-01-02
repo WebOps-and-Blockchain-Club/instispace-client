@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'post.dart';
-import 'tag.dart';
-import 'package:client/networking_and _opportunities/comments.dart';
+import '../../../models/post.dart';
+import '../../../models/tag.dart';
+import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 
 class Single_Post extends StatelessWidget {
   final Post post;

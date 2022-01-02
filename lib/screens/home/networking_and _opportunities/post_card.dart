@@ -1,9 +1,9 @@
-import 'package:client/networking_and%20_opportunities/singlepost.dart';
+import 'package:client/screens/home/networking_and%20_opportunities/singlepost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'post.dart';
-import 'tag.dart';
-import 'package:client/networking_and _opportunities/comments.dart';
+import '../../../models/post.dart';
+import '../../../models/tag.dart';
+import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 
 
 class PostCard extends StatelessWidget {
