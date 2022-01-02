@@ -1,10 +1,10 @@
 import 'package:client/screens/home/main.dart';
+import 'package:client/screens/userInit/main.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/login/login.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
-import 'package:client/screens/userInit/interest.dart';
-import 'package:client/screens/userInit/SuperUser_PasswordChange.dart';
+
 class Wrapper extends StatefulWidget {
   @override
   _WrapperState createState() => _WrapperState();
@@ -17,10 +17,7 @@ class _WrapperState extends State<Wrapper> {
       create:(_)=>AuthService(),
       child:Consumer<AuthService>(
         builder:(context,auth,child){
-          return auth.token == null ? LogIn():
-          (auth.isNewUser==false?HomePage():
-          (auth.role=="USER"?InterestPage():SU_PasswordChange())
-          );
+          return auth.token == null ? LogIn():(auth.isNewUser==false?HomePage():userInit(auth: auth));
         }
       )
     );
