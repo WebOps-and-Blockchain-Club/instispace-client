@@ -1,9 +1,8 @@
+
 import 'package:flutter/material.dart';
-
 import 'package:client/services/Auth.dart';
-
-import 'package:client/screens/userInit/interest.dart';
-import 'package:client/screens/userInit/setPassword.dart';
+import 'package:client/screens/userInit/signUp.dart';
+import 'package:client/screens/userInit/updatepass.dart';
 
 class userInit extends StatefulWidget {
   final AuthService auth;
@@ -14,9 +13,8 @@ class userInit extends StatefulWidget {
 }
 
 class _userInitState extends State<userInit> {
-
   @override
   Widget build(BuildContext context) {
-    return widget.auth.role=="USER"?InterestPage():setPassword();
+    return widget.auth.role == "USER" ? SignUp(auth: widget.auth,) : setPassword();
   }
 }

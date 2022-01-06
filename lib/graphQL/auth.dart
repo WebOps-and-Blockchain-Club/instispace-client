@@ -7,4 +7,16 @@ class authQuery{
     isNewUser
   }
 }""";
+String getHostels ="""query{
+  getHostels {
+    name
+  }
+}""";
+String getTags ="""
+query{
+  getTags {
+    id
+    title
+  }
+}""";
 }

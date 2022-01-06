@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
-import 'package:client/screens/login/login.dart';
-import 'package:client/screens/home/networking_and _opportunities/post_listing.dart';
-import 'package:client/screens/home/networking_and _opportunities/addpost.dart';
 import 'package:client/screens/wrapper.dart';
-void main() async{
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:client/services/Client.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -15,7 +14,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return GraphQLProvider(
+      client: client,
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'My Hostel App',
         theme: ThemeData(
@@ -24,11 +25,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
         ),
         home: Wrapper(),
-        routes: {
-          '/addpost_networking': (context)=>AddPost(),
-          '/networking_postlisting':(context)=>Post_Listing(),
-          '/login':(context)=>LogIn(),
-        },
-      );
+      ),
+    );
   }
 }

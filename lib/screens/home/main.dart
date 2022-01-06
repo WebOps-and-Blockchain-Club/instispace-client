@@ -1,7 +1,13 @@
-
+import 'package:client/screens/Events/home.dart';
+import 'package:client/screens/home/userpage.dart';
+import 'package:client/screens/login/createSuperUsers.dart';
+import 'package:client/screens/login/createhostel.dart';
+import 'package:client/screens/userInit/updatepass.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
+
+import 'networking_and _opportunities/post_listing.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,18 +31,63 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+        body: SafeArea(
         child: Column(
-          children: [
-            IconButton(onPressed: ()=>{
-              Navigator.pushNamed(context, '/networking_postlisting'),
-            }, icon: Icon(Icons.article)),
-            ElevatedButton(onPressed: (){
-              _auth.clearAuth();
-            }, child: Text('clear Auth'))
-          ],
-        ),
-      )
-    );
+        children: [
+          IconButton(
+              onPressed: () => {
+                Navigator.of(context).push(
+                MaterialPageRoute(
+                builder: (BuildContext context)=> Post_Listing())),
+                },
+              icon: Icon(Icons.article)),
+          ElevatedButton(
+              onPressed: () {
+                _auth.clearAuth();
+              },
+              child: Text('clear Auth')),
+          ElevatedButton(
+            onPressed: () {
+          Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (BuildContext context)=> EventsHome()));
+            },
+            child: Text("Events"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+          Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (BuildContext context)=> CreateSuperUsers()));
+          },
+            child: Text("Create Super User"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+              MaterialPageRoute(
+              builder: (BuildContext context)=> UserPage()));
+          },
+            child: Text("User Profile"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+              builder: (BuildContext context)=> setPassword()));
+          },
+            child: Text("Update Password"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (BuildContext context)=> CreateHostel()));
+              },
+            child: Text("Create Hostel"),
+          ),
+        ],
+      ),
+    ));
   }
 }
