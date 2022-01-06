@@ -6,6 +6,5 @@ class Post {
   String formLink;
 
 
-  Post({required this.title, required this.location, required this.description, required this.imgUrl, required this.formLink//required this.id});
-  });
+  Post({required this.title, required this.location, required this.description, required this.imgUrl, required this.formLink});
 }

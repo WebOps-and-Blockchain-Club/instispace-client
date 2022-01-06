@@ -1,4 +1,6 @@
 import 'package:client/screens/Events/addpost.dart';
+import 'package:client/screens/Events/post.dart';
+import 'package:client/screens/Events/singlepost.dart';
 import 'package:client/screens/Login/createSuperUsers.dart';
 import 'package:client/screens/Login/createhostel.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'screens/Login/signUp.dart';
 import 'screens/Login/createSuperUsers.dart';
 import 'screens/home/userpage.dart';
 import 'screens/Login/updatepass.dart';
+import 'screens/Events/post.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +20,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

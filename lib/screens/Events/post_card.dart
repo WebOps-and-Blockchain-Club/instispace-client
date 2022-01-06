@@ -1,7 +1,7 @@
+import 'package:client/screens/Events/singlepost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'post.dart';
-import 'singlepost.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -9,142 +9,279 @@ class PostCard extends StatelessWidget {
   PostCard({required this.post,required this.index});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(5.0,0.0,5.0,5.0),
-      child: Card(
-        color: Color(0xFFF9F6F2),
+    return Card(
+      color: Colors.indigo,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0)
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SinglePost(post: Post(title: post.title, location: post.location, description: post.description, imgUrl: post.imgUrl, formLink: post.formLink),)));
+          print("tapped");
+        },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.network(post.imgUrl,height: 200.0),
-            SizedBox(
-              height: 6.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                  child: Text(
-                    post.title,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30.0,
-                    ),
-                  ),
+            ClipRect(
+              child: Container(
+                height: 250.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(15.0),topLeft: Radius.circular(15.0)),
+                  image: DecorationImage(
+                    image: NetworkImage(post.imgUrl),
+                    fit: BoxFit.fill,
+                  )
                 ),
-                Row(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_circle_up_outlined)),
-                    IconButton(onPressed: () => {}, icon: Icon(Icons.access_alarm)),
-                    IconButton(onPressed: () => {}, icon: Icon(Icons.share))
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Container(
+                        child: IconButton(icon: Icon(Icons.star_border), onPressed: () {print("Liked");},),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          color: Colors.white
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4.0,0.0,0.0,0.0),
+                          child: Text(post.title,style: TextStyle(color: Colors.white,fontSize: 20.0,fontWeight: FontWeight.w300),),
+                        ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Tag1",style: TextStyle(color: Colors.indigo),),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Tag2",style: TextStyle(color: Colors.indigo),),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Tag3",style: TextStyle(color: Colors.indigo),),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.cyanAccent
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Column(
+                            children: [
+                              Text(post.location,style: TextStyle(color: Colors.indigo,fontWeight: FontWeight.w600),),
+                              Text("24 Dec | 15:00",
+                                style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 )
               ],
             ),
-            SizedBox(
-              height: 6.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-              child: Flexible(
-                child: Text(
-                  post.description,
-                  overflow: TextOverflow.ellipsis,
-                  // trimLines: 2,
-                  // trimMode: TrimMode.Line,
-                  // trimCollapsedText: "Read More",
-                  // trimExpandedText: "Read Less",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
-                  child: Text(
-                    post.location,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 6.0,
-                ),
-                Text("24 Dec | 15:00",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                  ),),
-              ],
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Tag 1",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),),
-                    ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Tag 2",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),),
-                    ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Tag 3",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),),
-                    ),
-                )
-              ],
-            ),
-            ButtonBar(
-              alignment: MainAxisAlignment.start,
-              children: [
-                TextButton(
-                    onPressed: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SinglePost(post:post)),
-                      ),
-                    },
-                    child: Text(
-                      'More Details',
-                    )
-                ),
-              ],
-            ),
+            Text("More details")
           ],
         ),
       ),
     );
   }
 }
+
+
+// Card(
+// shape: RoundedRectangleBorder(
+// borderRadius: BorderRadius.circular(10.0)
+// ),
+// color: Colors.indigo,
+// elevation: 5.0,
+// child: InkWell(
+// highlightColor: Colors.white30,
+// onTap: () =>
+// {
+// Navigator.pushNamed(context, '/singlepost'),
+// print("Tapped")
+// },
+// child: Container(
+// child: Column(
+// children: [
+// Container(
+// height: 275.0,
+// decoration: BoxDecoration(
+// image: DecorationImage(
+// image: NetworkImage(post.imgUrl),
+// fit: BoxFit.cover
+// )
+// ),
+// child: Row(
+// mainAxisAlignment: MainAxisAlignment.end,
+// crossAxisAlignment: CrossAxisAlignment.start,
+// children: [
+// Padding(
+// padding: const EdgeInsets.all(4.0),
+// child: Container(
+// child: IconButton(onPressed: () => {print("Liked")}, icon: Icon(Icons.star_border)),
+// decoration: BoxDecoration(
+// borderRadius: BorderRadius.circular(30.0),
+// color: Colors.white
+// ),
+// ),
+// )
+// ],
+// ),
+// ),
+// Row(
+// children: [
+// Column(
+// children: [
+// Text(
+// post.title,
+// style: TextStyle(
+// color: Colors.white,
+// fontSize: 30.0
+// ),
+// ),
+// Row(
+// mainAxisAlignment: MainAxisAlignment.start,
+// children: [
+// Padding(
+// padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
+// child: ElevatedButton(
+// onPressed: () {},
+// child: Text("Tag 1",
+// style: TextStyle(
+// color: Colors.indigo
+// ),),
+// style: ElevatedButton.styleFrom(
+// primary: Colors.white,
+// ),
+// ),
+// ),
+// Padding(
+// padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
+// child: ElevatedButton(
+// onPressed: () {},
+// child: Text("Tag 2",
+// style: TextStyle(
+// color: Colors.indigo
+// ),),
+// style: ElevatedButton.styleFrom(
+// primary: Colors.white,
+// ),
+// ),
+// ),
+// Padding(
+// padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
+// child: ElevatedButton(
+// onPressed: () {},
+// child: Text("Tag 3",
+// style: TextStyle(
+// color: Colors.indigo
+// ),),
+// style: ElevatedButton.styleFrom(
+// primary: Colors.white,
+// ),
+// ),
+// )
+// ],
+// ),
+// ],
+// ),
+// Column(
+// children: [
+// Padding(
+// padding: const EdgeInsets.all(8.0),
+// child: Container(
+// decoration: BoxDecoration(
+// color: Colors.cyan,
+// borderRadius: BorderRadius.circular(10.0)
+// ),
+// child: Padding(
+// padding: EdgeInsets.all(5.0),
+// child: Column(
+// children: [
+// Padding(
+// padding: const EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
+// child: Text(
+// post.location,
+// style: TextStyle(
+// color: Colors.indigo,
+// fontSize: 15.0,
+// fontWeight: FontWeight.bold
+// ),
+// ),
+// ),
+// Text("24 Dec | 15:00",
+// style: TextStyle(
+// color: Colors.indigo,
+// fontSize: 15.0,
+// fontWeight: FontWeight.bold
+// ),),
+// ],
+// ),
+// ),
+// ),
+// ),
+// ],
+// )
+// ],
+// ),
+// Container(
+// width: 500.0,
+// child: RaisedButton.icon(
+// onPressed: () {  },
+// icon: Icon(Icons.arrow_drop_down),
+// label: Text("More details"),
+// color: Colors.indigo,
+// ),
+// ),
+// ]
+// ),
+// ),
+// ),
+// );
