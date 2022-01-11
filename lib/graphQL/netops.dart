@@ -1,0 +1,3 @@
+class netopsQuery{
+  String getNetops ="""""";
+}

@@ -2,7 +2,7 @@ import 'package:client/screens/Events/home.dart';
 import 'package:client/screens/home/userpage.dart';
 import 'package:client/screens/login/createSuperUsers.dart';
 import 'package:client/screens/login/createhostel.dart';
-import 'package:client/screens/userInit/updatepass.dart';
+
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
@@ -70,14 +70,7 @@ class _HomePageState extends State<HomePage> {
           },
             child: Text("User Profile"),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-              builder: (BuildContext context)=> setPassword()));
-          },
-            child: Text("Update Password"),
-          ),
+
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(

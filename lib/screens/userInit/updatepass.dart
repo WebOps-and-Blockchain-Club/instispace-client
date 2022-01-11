@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:client/services/Auth.dart';
+import 'package:client/graphQL/auth.dart';
 
 class setPassword extends StatefulWidget {
-  const setPassword({Key? key}) : super(key: key);
+  final AuthService auth;
+  setPassword({required this.auth});
 
   @override
   _setPasswordState createState() => _setPasswordState();
 }
 
 class _setPasswordState extends State<setPassword> {
-  late AuthService _auth;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _auth = Provider.of<AuthService>(context, listen: false);
-    });
-  }
 
+  String updatePassword =authQuery().updatePassword;
   final NewPasscontroller = TextEditingController();
   final ConfirmPasscontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -72,17 +67,39 @@ class _setPasswordState extends State<setPassword> {
                   return null;
                 }),
             // SizedBox(height: 30.0,child: errorMsg("errmsg")),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _auth.setisNewUser(false);
-                }
-              },
-              child: Text(
-                "Submit",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            Mutation(
+                options: MutationOptions(
+                  document: gql(updatePassword),
+                ),
+                builder: (
+                    RunMutation runMutation,
+                    QueryResult? result,
+                ){
+                  if (result!.hasException){
+                    print(result.exception.toString());
+                  }
+                  if(result.isLoading){
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        runMutation({
+                          "newPass": {
+                            "newPassword": NewPasscontroller.text,
+                          }
+                        });
+                        widget.auth.setisNewUser(false);
+                      }
+                    },
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                })
           ],
         ),
       ),

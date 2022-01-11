@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/services/Auth.dart';
-import 'package:client/services/Client.dart';
+
 import 'package:client/graphQL/auth.dart';
 import 'package:client/screens/userInit/dropDown.dart';
 
@@ -21,12 +21,12 @@ class _SignUpState extends State<SignUp> {
   String getHostels = authQuery().getHostels;
 
   List<String> Hostels = [
-    'Select Hostel',
   ];
-
+  late String _DropDownValue ;
   final _formkey = GlobalKey<FormState>();
-
-
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController PhoneNumberController = TextEditingController();
+  set DropDownValue(String value) => setState(() => _DropDownValue = value);
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -43,9 +43,11 @@ class _SignUpState extends State<SignUp> {
                 child: CircularProgressIndicator(),
               );
             }
+            print(result.data);
             for (var i = 0; i < result.data!.length; i++) {
               Hostels.add(result.data!["getHostels"][i]["name"].toString());
             }
+            _DropDownValue=Hostels[0];
           // print(Hostels);
           return Scaffold(
             appBar: AppBar(
@@ -66,6 +68,7 @@ class _SignUpState extends State<SignUp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
+                      controller: nameController,
                         decoration: InputDecoration(
                             hintText: 'Enter Your Name',
                             focusedBorder: OutlineInputBorder(
@@ -80,21 +83,20 @@ class _SignUpState extends State<SignUp> {
                         }
                     ),
                     SizedBox(height: 5.0),
-
-                    dropDown( Hostels: Hostels),
+                    dropDown( Hostels: Hostels,dropDownValue: _DropDownValue,callback: (val) => _DropDownValue=val),
                     SizedBox(height: 10.0),
                     TextFormField(
+                      controller: PhoneNumberController,
                       decoration: InputDecoration(
                           hintText: 'Enter Phone Number'
                       ),
                     ),
-
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (BuildContext context)=> InterestPage(auth: widget.auth)));
+                                builder: (BuildContext context)=> InterestPage(auth: widget.auth,name: nameController.text,phoneNumber: PhoneNumberController.text,hostelName: _DropDownValue,)));
                           },
                         child: Text('fill interests'),
                       ),

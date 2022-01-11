@@ -15,6 +15,6 @@ class userInit extends StatefulWidget {
 class _userInitState extends State<userInit> {
   @override
   Widget build(BuildContext context) {
-    return widget.auth.role == "USER" ? SignUp(auth: widget.auth,) : setPassword();
+    return widget.auth.role == "USER" ? SignUp(auth: widget.auth,) : setPassword(auth: widget.auth);
   }
 }
