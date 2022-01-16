@@ -5,14 +5,14 @@ import 'package:client/services/Auth.dart';
 import 'package:client/screens/userInit/interestWrap.dart';
 import 'package:client/graphQL/auth.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:client/models/tag.dart';
 
-import 'package:client/services/Client.dart';
 
 class InterestPage extends StatefulWidget {
   final AuthService auth;
-  String name;
-  String phoneNumber;
-  String hostelName;
+  final String name;
+  final String phoneNumber;
+  final String hostelName;
   InterestPage({required this.auth,required this.name,required this.phoneNumber,required this.hostelName});
 
   @override
@@ -24,10 +24,10 @@ class _InterestPageState extends State<InterestPage> {
   String getTags =authQuery().getTags;
   String updateUser =authQuery().updateUser;
 
-  Map<String,List<String>> interest = {};
+  Map<String,List<Tag>> interest = {};
 
-  Map<String,List<String>>? selectedInterest = {};
-
+  Map<String,List<Tag>>? selectedInterest ={};
+  List selected =[];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,6 +40,8 @@ class _InterestPageState extends State<InterestPage> {
             document: gql(getTags),),
             builder: (QueryResult result, {fetchMore, refetch}) {
               interest.clear();
+              selectedInterest!.clear();
+              selected.clear();
                 if (result.hasException) {
                   return Text(result.exception.toString());
                 }
@@ -50,11 +52,11 @@ class _InterestPageState extends State<InterestPage> {
                 }
                 for (var i = 0; i < result.data!["getTags"].length; i++) {
                   interest.putIfAbsent(result.data!["getTags"][i]["category"].toString(),()=>[]);
-                  interest[result.data!["getTags"][i]["category"]]!.add(result.data!["getTags"][i]["title"].toString());
+                  interest[result.data!["getTags"][i]["category"]]!.add(Tag(Tag_name: result.data!["getTags"][i]["title"].toString(),category: result.data!["getTags"][i]["category"].toString(),id: result.data!["getTags"][i]["id"].toString()));
                 }
-                print(result.data!["getTags"].length);
-                print(result.data);
-                print(interest);
+                // print(result.data!["getTags"].length);
+                // print(result.data);
+                // print(interest);
               return Column(
                 children: [
                   Text("Please choose your interests"),
@@ -86,7 +88,12 @@ class _InterestPageState extends State<InterestPage> {
                     child: CircularProgressIndicator(),
                   );
                   }
-                  return ElevatedButton(onPressed: () {
+
+                  // print(selectedInterest!.values.length);
+                  // print(result.data);
+                  return ElevatedButton(onPressed: (){
+                    print("selectedInterests2 : $selectedInterest");
+                    print("selected : $selected");
                     runMutation({
                       'userInput' :{
                         'name': widget.name,

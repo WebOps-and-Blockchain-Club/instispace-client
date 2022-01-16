@@ -44,7 +44,9 @@ class _SignUpState extends State<SignUp> {
               );
             }
             print(result.data);
-            for (var i = 0; i < result.data!.length; i++) {
+            for (var i = 0; i < result.data!["getHostels"].length; i++) {
+              // print(result.data!["getHostels"].length);
+              // print(i);
               Hostels.add(result.data!["getHostels"][i]["name"].toString());
             }
             _DropDownValue=Hostels[0];

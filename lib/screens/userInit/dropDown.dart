@@ -22,6 +22,7 @@ class _dropDownState extends State<dropDown> {
         });
         widget.callback(newValue!);
         print(widget.dropDownValue);
+        print(widget.Hostels);
       },
       items: widget.Hostels.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(

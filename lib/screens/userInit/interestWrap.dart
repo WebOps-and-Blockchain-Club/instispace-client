@@ -1,7 +1,8 @@
+import 'package:client/models/tag.dart';
 import 'package:flutter/material.dart';
 class interestWrap extends StatefulWidget {
-  Map<String,List<String>> interest;
-  Map<String,List<String>>? selectedInterest;
+  Map<String,List<Tag>> interest;
+  Map<String,List<Tag>>? selectedInterest;
   interestWrap({required this.interest,required this.selectedInterest});
 
   @override
@@ -35,7 +36,7 @@ class _interestWrapState extends State<interestWrap> {
                                         widget.selectedInterest![key]!.remove(s);
                                       });
                                     },
-                                    child: Text(s),
+                                    child: Text(s.Tag_name),
                                     color: Colors.green,
                                   ),
                                 ),
@@ -76,7 +77,7 @@ class _interestWrapState extends State<interestWrap> {
                                   }
                                 });
                               },
-                              child: Text(s),
+                              child: Text(s.Tag_name),
                               color: Colors.green,
                             ),
                           ),
