@@ -1,4 +1,6 @@
+import 'package:client/graphQL/netops.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -8,6 +10,7 @@ class AddPost extends StatefulWidget {
 }
 
 class _AddPostState extends State<AddPost> {
+  String createNetop = netopsQuery().createNetop;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +154,27 @@ class _AddPostState extends State<AddPost> {
                   children: [
                     TextButton(onPressed: ()=>{}, child:Text('Delete')),
                     TextButton(onPressed: ()=>{}, child:Text('Save')),
-                    TextButton(onPressed: ()=>{}, child:Text('Submit')),
+                    Mutation(
+                      options: MutationOptions(
+                        document: gql(createNetop),
+                      ),
+                      builder: (
+                          RunMutation runMutation,
+                          QueryResult? result,
+                          ) {
+                        if (result!.hasException){
+                          print(result.exception.toString());
+                        }
+                        if(result.isLoading){}
+                        return TextButton(
+                            onPressed: ()=>{
+                              runMutation({
+
+                              })
+                            },
+                            child:Text('Submit'));
+                      }
+                    ),
                   ],
                 ),
               ],

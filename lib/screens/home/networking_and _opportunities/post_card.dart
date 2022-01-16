@@ -5,6 +5,7 @@ import '../../../models/post.dart';
 import '../../../models/tag.dart';
 import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 import 'package:expandable/expandable.dart';
+import 'package:intl/intl.dart';
 
 
 class PostCard extends StatelessWidget {
@@ -14,7 +15,15 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     List<Tag>tags =post.tags;
+    DateTime dateTime = DateTime.parse(post.endTime);
+    final format = DateFormat.jm();
+    final format1 =DateFormat.yMMMMd('en_US');
+    final date= format1.format(dateTime);
+    final time =format.format(dateTime);
+    // print("date : $date");
+    // print("time: $time");
     return ExpandableNotifier(
       child: ScrollOnExpand(
         child: ExpandablePanel(
@@ -66,59 +75,87 @@ class PostCard extends StatelessWidget {
                           width: 400.0,
                           child: Image.network(post.imgUrl, height: 150.0)
                           ),
+                          Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(onPressed: () =>
-                              {
-                                print('shared')
-                              }, icon: Icon(Icons.share)),
-                              IconButton(onPressed: () =>
-                              {
-                                print('remainder added')
-                              }, icon: Icon(Icons.access_alarm)),
-                              IconButton(onPressed: () =>
-                              {
-                                print('liked')
-                              }, icon: Icon(Icons.arrow_circle_up_outlined)),
-                              IconButton(onPressed: () =>
-                              {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => Comments(post: post,)),
-                                ),
-                                print('commented'),
-                              }, icon: Icon(Icons.comment)),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 360.0,
-                                height: 30.0,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                        children: tags.map((tag) => SizedBox(
-                                          height:25.0,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(2.0,0.0,2.0,0.0),
-                                            child: ElevatedButton(onPressed:()=>{},
-                                                style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all(Colors.grey),
-                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(30.0),
-                                                    ))
-                                                ),
-                                                child: Text(
-                                                  tag.Tag_name,
-                                                )),
-                                          ),
-                                        )).toList(),
-                                ),
+                                    children: [
+                                      IconButton(onPressed: () =>
+                                      {
+                                        print(dateTime),
+                                        print('shared')
+                                      }, icon: Icon(Icons.share)),
+                                      IconButton(onPressed: () =>
+                                      {
+                                        print('remainder added')
+                                      }, icon: Icon(Icons.access_alarm)),
+                                      IconButton(onPressed: () =>
+                                      {
+                                        print('liked')
+                                      }, icon: Icon(Icons.arrow_circle_up_outlined)),
+                                      IconButton(onPressed: () =>
+                                      {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => Comments(post: post,)),
+                                        ),
+                                        print('commented'),
+                                      }, icon: Icon(Icons.comment)),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 240.0,
+                                        height: 30.0,
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: tags.map((tag) => SizedBox(
+                                            height:25.0,
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(2.0,0.0,2.0,0.0),
+                                              child: ElevatedButton(onPressed:()=>{},
+                                                  style: ButtonStyle(
+                                                      backgroundColor: MaterialStateProperty.all(Colors.grey),
+                                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(30.0),
+                                                      ))
+                                                  ),
+                                                  child: Text(
+                                                    tag.Tag_name,
+                                                  )),
+                                            ),
+                                          )).toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
+                              SizedBox(
+                                  width: 120,
+                                  height: 50,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(2.0, 8.0, 8.0, 0.0),
+                                      child: Column(
+                                        children: [
+                                          Text(time),
+                                          Text(date),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              )
                             ],
                           ),
+
                         ],
                       ),
                     ]

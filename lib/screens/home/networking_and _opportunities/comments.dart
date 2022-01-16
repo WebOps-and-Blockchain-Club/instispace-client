@@ -1,18 +1,33 @@
+import 'package:client/graphQL/netops.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
 import 'package:client/models/commentclass.dart';
 
-class Comments extends StatelessWidget {
+class Comments extends StatefulWidget {
   final Post post;
   Comments({required this.post});
+
+  @override
+  _CommentsState createState() => _CommentsState();
+}
+
+class _CommentsState extends State<Comments> {
+  TextEditingController commentController = TextEditingController();
+  @override
+  void dispose(){
+    commentController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    List<Comment> comments = post.comments;
+    List<Comment> comments = widget.post.comments;
+    String createComments =netopsQuery().createComment;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Comments'),
-          backgroundColor:Color(0xFFE6CCA9),
+        backgroundColor:Color(0xFFE6CCA9),
       ),
       body: Column(
         children: [
@@ -34,23 +49,23 @@ class Comments extends StatelessWidget {
                               color: Colors.blue,
                               borderRadius: BorderRadius.all(Radius.circular(50.0)),
                             ),
-                            child: CircleAvatar(
-                              radius: 50.0,
-                              backgroundImage: NetworkImage(comment.profile_pic_url),
-                            ),
+                            // child: CircleAvatar(
+                            //   radius: 50.0,
+                            //   backgroundImage: NetworkImage(comment.profile_pic_url),
+                            // ),
                           ),
                           SizedBox(
                             width: 20.0,
                           ),
                           Column(
                             children: [
-                              Text(
-                                comment.Name,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              // Text(
+                              //   comment.id,
+                              //   style: TextStyle(
+                              //     fontSize: 20.0,
+                              //     fontWeight: FontWeight.bold,
+                              //   ),
+                              // ),
                               Text(
                                 comment.message,
                                 style: TextStyle(
@@ -90,14 +105,40 @@ class Comments extends StatelessWidget {
                 child: SizedBox(
                   width: 270.0,
                   child: TextFormField(
+                    controller: commentController,
                     decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'write a comment'
+                        border: UnderlineInputBorder(),
+                        labelText: 'write a comment'
                     ),
                   ),
                 ),
               ),
-              IconButton(onPressed: ()=>{}, icon: Icon(Icons.send))
+              Mutation(
+                options: MutationOptions(
+                  document: gql(createComments)
+                ),
+                builder: (
+                    RunMutation runMutation,
+                    QueryResult? result,
+                    ){
+                  if (result!.hasException){
+                    print(result.exception.toString());
+                  }
+                  if(result.isLoading){}
+                  return IconButton(onPressed: (){
+                    print(widget.post.id);
+                    runMutation(
+                      {
+                        "content":commentController.text,
+                        "netopId":widget.post.id,
+                      }
+                    );
+                    setState(() {
+
+                    });
+                  }, icon: Icon(Icons.send));
+                },
+              ),
             ],
           ),
         ],
