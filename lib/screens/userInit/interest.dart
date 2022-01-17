@@ -25,7 +25,6 @@ class _InterestPageState extends State<InterestPage> {
   String updateUser =authQuery().updateUser;
 
   Map<String,List<Tag>> interest = {};
-
   Map<String,List<Tag>>? selectedInterest ={};
   List selected =[];
   @override
@@ -88,20 +87,37 @@ class _InterestPageState extends State<InterestPage> {
                     child: CircularProgressIndicator(),
                   );
                   }
-
+                  print(selectedInterest!.values.length);
                   // print(selectedInterest!.values.length);
                   // print(result.data);
                   return ElevatedButton(onPressed: (){
                     print("selectedInterests2 : $selectedInterest");
+                    // List<String> keys = selectedInterest!.keys;
+                    // for(var i=0;i<selectedInterest!.length;i++){
+                    //
+                    //   for(var j=0;j<selectedInterest![i]!.length;j++){
+                    //     selectedInterest!.forEach((key, value)=>selected.add(value[j].id));
+                    //   }
+                    // }
+                    // selectedInterest!.map((key, value) =>{
+                    //   for(var i=0;i<value.length;i++){
+                    //     selected.add(value[i].id);
+                    //   }
+                    // })
+                    selectedInterest!.forEach((key, value) {
+                        for(var i=0;i<value.length;i++){
+                          selected.add(value[i].id);
+                        }
+                    });
                     print("selected : $selected");
                     runMutation({
                       'userInput' :{
                         'name': widget.name,
-                        'interest':selectedInterest,
+                        'interest':selected,
                         'hostel':widget.hostelName,
                       }
                     });
-                    print('name:${widget.name},interest:${selectedInterest},hostel:${widget.hostelName}');
+                    print('name:${widget.name},interest:${selected},hostel:${widget.hostelName}');
                     widget.auth.setisNewUser(false);
                     Navigator.pop(context);
                   }, child: Text(
