@@ -46,7 +46,7 @@ class SinglePost extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
@@ -56,7 +56,7 @@ class SinglePost extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.0,0.0,0.0,0.0),
@@ -66,7 +66,7 @@ class SinglePost extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white
                       ),),
-                    ),
+                  ),
                 )
               ],
             ),

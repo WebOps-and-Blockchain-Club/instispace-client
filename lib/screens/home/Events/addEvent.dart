@@ -43,9 +43,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
         title: Text(
           "Add Event",
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0
           ),
         ),
         backgroundColor: Colors.deepPurpleAccent,
@@ -53,24 +53,24 @@ class _AddPostEventsState extends State<AddPostEvents> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [
-              0.1,
-              0.3,
-              0.4,
-              0.6,
-              0.9
-            ],
-            colors: [
-              Colors.deepPurpleAccent,
-              Colors.blue,
-              Colors.lightBlueAccent,
-              Colors.lightBlueAccent,
-              Colors.blueAccent
-            ]
-          )
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [
+                  0.1,
+                  0.3,
+                  0.4,
+                  0.6,
+                  0.9
+                ],
+                colors: [
+                  Colors.deepPurpleAccent,
+                  Colors.blue,
+                  Colors.lightBlueAccent,
+                  Colors.lightBlueAccent,
+                  Colors.blueAccent
+                ]
+            )
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -97,14 +97,14 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             width: 450.0,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.blue[200],
-                                borderRadius: BorderRadius.circular(30.0)
+                                  color: Colors.blue[200],
+                                  borderRadius: BorderRadius.circular(30.0)
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
                                 child: TextFormField(
                                   decoration: InputDecoration(
-                                    border: InputBorder.none,
+                                      border: InputBorder.none,
                                       hintText: 'Enter title',
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
@@ -165,7 +165,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                 padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
                                 child: TextFormField(
                                   decoration: InputDecoration(
-                                    border: InputBorder.none,
+                                      border: InputBorder.none,
                                       hintText: 'Enter Location',
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
@@ -260,7 +260,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.blue[200],
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                                elevation: 0.0
+                                  elevation: 0.0
                               ),
                               onPressed: () {},
                               child: Padding(
@@ -268,9 +268,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                 child: Text(
                                   "Select Tags",
                                   style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 17.0,
-                                    fontWeight: FontWeight.w300
+                                      color: Colors.black87,
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w300
                                   ),
                                 ),
                               ),
@@ -309,7 +309,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                 child: Padding(
                                   padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
                                   child: Text(
-                                      selectedImage.toString(),
+                                    selectedImage.toString(),
                                     style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: 17.0,
