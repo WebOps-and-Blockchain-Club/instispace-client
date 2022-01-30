@@ -1,40 +1,48 @@
+import 'dart:html';
+import 'dart:typed_data';
 import 'package:client/graphQL/auth.dart';
+import 'package:client/graphQL/home.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:http_parser/http_parser.dart';
+
 
 
 class AddAnnouncements extends StatefulWidget {
+final Future<QueryResult?> Function()? refetchAnnouncement;
+AddAnnouncements({required this.refetchAnnouncement});
 
-  @override
+@override
   _AddAnnouncementsState createState() => _AddAnnouncementsState();
 }
 
 class _AddAnnouncementsState extends State<AddAnnouncements> {
 
-  final myControllerTitle = TextEditingController();
-  final myControllerDescription = TextEditingController();
-
+  String createAnnouncements = homeQuery().createAnnouncements;
+  String editAnnouncements = homeQuery().editAnnouncements;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   String description = '';
+  List selectedImage = ["Please select an image"];
+  var values;
+  List multipartFile = [];
+  List byteData = [];
+  var endTime;
+
 
   @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myControllerTitle.dispose();
-    myControllerDescription.dispose();
-    super.dispose();
-  }
 
   String getHostels = authQuery().getHostels;
 
-  List<String> Hostels = [
-    'Select Hostel',
-  ];
+  Map <String,String> Hostels = {};
+  List<String> hostelIds = [];
 
   final _formkey = GlobalKey<FormState>();
 
@@ -44,18 +52,18 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
         options: QueryOptions(
         document: gql(getHostels),),
     builder: (QueryResult result, {fetchMore, refetch}) {
-      // print('Hostel:$Hostels');
       Hostels.clear();
       if (result.hasException) {
         return Text(result.exception.toString());
       }
       if (result.isLoading) {
         return Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(color: Colors.blue[700],),
         );
       }
       for (var i = 0; i < result.data!["getHostels"].length; i++) {
-        Hostels.add(result.data!["getHostels"][i]["name"].toString());
+        Hostels.putIfAbsent(result.data!["getHostels"][i]["id"].toString(),() => "");
+        Hostels[result.data!["getHostels"][i]["id"]] = result.data!["getHostels"][i]["name"];
       }
       return Scaffold(
         appBar: AppBar(
@@ -126,7 +134,8 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                                         border: InputBorder.none,
                                         hintText: 'Enter title',
                                     ),
-                                    controller: myControllerTitle,
+                                    cursorColor: Colors.blue[700],
+                                    controller: titleController,
                                     validator: (val) {
                                       if (val == null || val.isEmpty) {
                                         return "This field can't be empty";
@@ -147,26 +156,34 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                             DateTimePicker(
                               type: DateTimePickerType.dateTimeSeparate,
                               dateMask: 'd MMM, yyyy',
-                              initialValue: DateTime.now().toString(),
+                              initialValue: DateTime.now().toIso8601String(),
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                               icon: Icon(Icons.event),
                               dateLabelText: 'Date',
                               timeLabelText: "Hour",
+                              initialTime: TimeOfDay.now(),
+                              use24HourFormat: true,
                               selectableDayPredicate: (date) {
-                                // Disable weekend days to select from the calendar
-                                if (date.weekday == 6 || date.weekday == 7) {
-                                  return false;
-                                }
-
                                 return true;
                               },
-                              onChanged: (val) => print(val),
-                              validator: (val) {
-                                print(val);
-                                return null;
+                              onChanged: (val) {
+                                setState(() {
+                                  endTime = val;
+                                });
                               },
-                              onSaved: (val) => print(val),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return "This field can't be empty";
+                                }
+                              },
+                              onSaved: (val) {
+                                setState(() {
+                                  endTime = val;
+                                  print(endTime);
+                                });
+                              }
+                              ,
                             ),
                             SizedBox(height: 10.0),
                             Text(
@@ -183,16 +200,12 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                               label: 'Enter Description',
                               maxLines: 10,
                               actions: MarkdownType.values,
-                              controller: myControllerDescription,
+                              controller: descriptionController,
                               validators: (val) {
                                 if (val == '') {
                                   return "This field can't be empty";
                                 }
                               },
-                            ),
-                            MarkdownBody(
-                              data: description,
-                              shrinkWrap: true,
                             ),
                             SizedBox(height: 10.0),
                             Text(
@@ -203,9 +216,9 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                               ),
                             ),
                             GFMultiSelect(
-                              items: Hostels,
+                              items: Hostels.values.toList(),
                               onSelect: (value) {
-                                print('selected $value ');
+                                values = value;
                               },
                               hideDropdownUnderline: true,
                               dropdownTitleTileText: 'Select Hostel',
@@ -230,49 +243,170 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                               inactiveBorderColor: Colors.grey,
                             ),
                             SizedBox(height: 10.0),
+                            Text(
+                              'Image*',
+                              style: TextStyle(
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            SizedBox(height: 5.0),
+                            SizedBox(
+                              width: 450.0,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.blue[200],
+                                      elevation: 0.0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                  ),
+                                  onPressed: () async {
+                                    final FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                      type: FileType.image,
+                                      allowMultiple: true,
+                                    );
+                                    if (result != null) {
+                                      setState(() {
+                                        selectedImage.clear();
+                                        for(var i = 0; i < result.files.length; i++) {
+                                          selectedImage.add(result.files[i].name);
+                                          byteData.add(result.files[i].bytes);
+                                          multipartFile.add(MultipartFile.fromBytes(
+                                            'photo',
+                                            byteData[i],
+                                            filename: selectedImage[i],
+                                            contentType: MediaType("image", "png"),
+                                          ));
+                                        }
+                                      });
+                                      print(multipartFile);
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                    child: Text(
+                                      selectedImage.toString(),
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                            SizedBox(height: 10.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue[700],
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                  ),
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Save",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue[700],
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                  ),
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Discard Changes",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
+                                Mutation(
+                                    options: MutationOptions(
+                                      document: gql(editAnnouncements),
+                                    ),
+                                    builder: (
+                                        RunMutation runMutation,
+                                        QueryResult? result,
+                                        ) {
+                                      if (result!.hasException) {
+                                        print(result.exception.toString());
+                                      }
+                                      if (result.isLoading) {
+                                        return Center(
+                                          child: CircularProgressIndicator(color: Colors.blue[700],),
+                                        );
+                                      }
+                                      return ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            primary: Colors.blue[700],
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(30.0))
+                                        ),
+                                        onPressed: () {
+                                          runMutation({
+                                            'announcementInput': {
+                                              "title": titleController.text,
+                                              "description": descriptionController.text,
+                                              "hostelIds": hostelIds,
+                                              "endTime": "$endTime:00+05:30",
+                                            },
+                                            "images": multipartFile
+                                          });
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) => Announcements()
+                                            )
+                                          );
+                                        },
+                                        child: Text(
+                                          "Save Changes",
+                                          style: TextStyle(color: Colors.white,fontSize: 7.0),
+                                        ),
+                                      );
+                                    }
+                                    ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.blue[700],
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                                   ),
                                   onPressed: () {
-                                    if (_formkey.currentState!.validate()) {
-                                      print(description);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context)=> Announcements()));
-                                      // Navigator.pushNamed(context, '/events');
-                                    }
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context)=> Announcements()
+                                        )
+                                    );
                                   },
                                   child: Text(
-                                    "Add Announcement",
-                                    style: TextStyle(color: Colors.white),
+                                    "Discard Changes",
+                                    style: TextStyle(color: Colors.white,fontSize: 7.0),
                                   ),
+                                ),
+                                Mutation(
+                                  options: MutationOptions(
+                                    document: gql(createAnnouncements),
+                                  ),
+                                  builder: (
+                                      RunMutation runMutation,
+                                      QueryResult? result,
+                                  ) {
+                                    if (result!.hasException){
+                                      print(result.exception.toString());
+                                      print(result.data);
+                                    }
+                                    if(result.isLoading){
+                                      return Center(
+                                        child: CircularProgressIndicator(color: Colors.blue[700],),
+                                      );
+                                    }
+                                    return ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.blue[700],
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                      ),
+                                      onPressed: () {
+                                        List Hostl = [];
+                                        Hostels.forEach((k, v) => Hostl.add(k));
+                                        for (var i = 0; i < values.length; i++) {
+                                          hostelIds.add(Hostl[values[i]]);
+                                        }
+                                        if (_formkey.currentState!.validate()) {
+                                          runMutation({
+                                            'announcementInput': {
+                                              "title": titleController.text,
+                                              "description": descriptionController.text,
+                                              "hostelIds": hostelIds,
+                                              "endTime": "$endTime:00+05:30",
+                                            },
+                                            "images": multipartFile,
+                                          });
+                                          Navigator.pop(context);
+                                          widget.refetchAnnouncement!();
+                                        }
+                                      },
+                                      child: Text(
+                                        "Add Announcement",
+                                        style: TextStyle(color: Colors.white,fontSize: 7.0),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             )
@@ -297,3 +431,5 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
     );
   }
 }
+
+
