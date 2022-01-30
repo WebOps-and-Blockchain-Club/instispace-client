@@ -28,7 +28,7 @@ class _CreateSuperUsersState extends State<CreateSuperUsers> {
           }
           if (result.isLoading) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: Colors.blue[700],),
             );
           }
           role = result.data!["getMe"]["role"];
