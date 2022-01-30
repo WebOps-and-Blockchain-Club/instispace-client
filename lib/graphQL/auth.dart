@@ -10,6 +10,7 @@ class authQuery{
 String getHostels ="""query{
   getHostels {
     name
+    id
   }
 }""";
 String getTags ="""
