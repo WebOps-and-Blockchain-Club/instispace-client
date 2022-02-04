@@ -44,7 +44,8 @@ dependencies:
   validators: ^3.0.0
   file_picker: ^4.3.0
   expandable: ^5.0.1
-
+  like_button: ^2.0.4
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
-import 'package:client/screens/home/main.dart';
-import 'package:client/screens/home/networking_and%20_opportunities/post_listing.dart';
+
 import 'package:flutter/material.dart';
 import 'package:client/screens/wrapper.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

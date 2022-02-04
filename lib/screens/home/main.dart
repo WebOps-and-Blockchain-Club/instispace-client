@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
 
+import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 
 class HomePage extends StatefulWidget {
@@ -78,6 +79,16 @@ class _HomePageState extends State<HomePage> {
                       builder: (BuildContext context)=> CreateHostel()));
               },
             child: Text("Create Hostel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (BuildContext context)=> LNFListing()
+                  )
+              );
+            },
+            child: Text("Lost n Found"),
           ),
         ],
       ),

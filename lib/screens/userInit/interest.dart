@@ -92,18 +92,6 @@ class _InterestPageState extends State<InterestPage> {
                   // print(result.data);
                   return ElevatedButton(onPressed: (){
                     print("selectedInterests2 : $selectedInterest");
-                    // List<String> keys = selectedInterest!.keys;
-                    // for(var i=0;i<selectedInterest!.length;i++){
-                    //
-                    //   for(var j=0;j<selectedInterest![i]!.length;j++){
-                    //     selectedInterest!.forEach((key, value)=>selected.add(value[j].id));
-                    //   }
-                    // }
-                    // selectedInterest!.map((key, value) =>{
-                    //   for(var i=0;i<value.length;i++){
-                    //     selected.add(value[i].id);
-                    //   }
-                    // })
                     selectedInterest!.forEach((key, value) {
                         for(var i=0;i<value.length;i++){
                           selected.add(value[i].id);
