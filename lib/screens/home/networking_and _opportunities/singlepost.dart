@@ -1,11 +1,16 @@
+import 'package:client/graphQL/netops.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
 import '../../../models/tag.dart';
 import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 
 class Single_Post extends StatelessWidget {
+  String toggleStar=netopsQuery().toggleStar;
+  bool isStarred;
+  Future<QueryResult?> Function()? refetch;
   final Post post;
-  Single_Post({required this.post});
+  Single_Post({required this.post,required this.isStarred,required this.refetch});
   @override
   Widget build(BuildContext context) {
     List<Tag>tags =post.tags;
@@ -30,17 +35,36 @@ class Single_Post extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Stack(children:[
-                      if(post.imgUrl.isNotEmpty)
+                      if(post.imgUrl !=null)
                         SizedBox(
                             width: 400.0,
-                            child: Image.network(post.imgUrl, height: 240.0,width: 400.0,)
+                            child: Image.network(post.imgUrl!, height: 240.0,width: 400.0,)
                         ),
                       Align(
                         alignment: Alignment.topRight,
-                        child: IconButton(onPressed: () =>
-                        {
-                          print('starred')
-                        }, icon: Icon(Icons.star_border)),
+                        child: Mutation(
+                            options:MutationOptions(
+                                document: gql(toggleStar)
+                            ),
+                            builder: (
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ){
+                              if (result!.hasException){
+                                print(result.exception.toString());
+                              }
+                              return IconButton(
+                                onPressed: (){
+                                  runMutation({
+                                    "toggleStarNetopId":post.id
+                                  });
+                                  refetch!();
+                                },
+                                icon: isStarred?Icon(Icons.star):Icon(Icons.star_border),
+                                color: isStarred? Colors.amber:Colors.grey,
+                              );
+                            }
+                        ),
                       ),
                     ]),
                     Padding(
@@ -107,18 +131,18 @@ class Single_Post extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 10.0),
-                          if(post.imgUrl.isNotEmpty)
+                          if(post.imgUrl != null)
                           SizedBox(
                             height: 200.0,
                             child: ListView(children:[
                               Text(post.description)
                             ]),
                           ),
-                          if(post.imgUrl.isEmpty)
+                          if(post.imgUrl == null)
                             SizedBox(
                               height: 400.0,
                               child: ListView(children:[
-                                Text(post.description)
+                                Text(post.description),
                               ]),
                             ),
                         ],
