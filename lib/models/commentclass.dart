@@ -1,7 +1,8 @@
+
 class Comment{
 
   String id;
   String message;
-
-  Comment({required this.message,required this.id});
+  String name;
+  Comment({required this.message,required this.id,required this.name});
 }
