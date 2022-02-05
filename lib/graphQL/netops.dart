@@ -8,12 +8,14 @@ class netopsQuery{
         content
         id
         createdBy {
-        name
-       }
-      },
+         name
+        }
+      }
       createdBy {
         id
       }
+      linkName
+      linkToAction
       title
       isHidden
       endTime
@@ -38,14 +40,8 @@ class netopsQuery{
 }
 """;
   String toggleLike ="""
-  mutation(\$toggleLikeNetopNetopId2: String!){
-  toggleLikeNetop(NetopId: \$toggleLikeNetopNetopId)
-}
-}
-  """;
-  String isLiked="""
-  query(\$isLikedNetopId2: String!){
-  isLiked(NetopId: \$isLikedNetopId2)
+  mutation(\$netopId: String!){
+  toggleLikeNetop(NetopId: \$netopId)
 }
   """;
   String getNetop="""
