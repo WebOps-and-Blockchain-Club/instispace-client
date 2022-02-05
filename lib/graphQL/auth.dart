@@ -18,6 +18,13 @@ query{
   getTags {
     id
     title
+    category
   }
+}""";
+String updateUser ="""mutation(\$userInput: UserInput!){
+  updateUser(UserInput: \$userInput)
+}""";
+String updatePassword ="""mutation(\$newPass: NewPass!){
+  updatePassword(NewPass: \$newPass)
 }""";
 }

@@ -17,12 +17,12 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   String getHostels = authQuery().getHostels;
 
-  List<String> Hostels = [
-    'Select Hostel',
-  ];
-  late String _DropDownValue = 'Sindhu';
+  List<String> Hostels = [];
+  late String _DropDownValue;
   final _formkey = GlobalKey<FormState>();
-
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController PhoneNumberController = TextEditingController();
+  set DropDownValue(String value) => setState(() => _DropDownValue = value);
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -40,9 +40,13 @@ class _SignUpState extends State<SignUp> {
               child: CircularProgressIndicator(),
             );
           }
+          print(result.data);
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
+            // print(result.data!["getHostels"].length);
+            // print(i);
             Hostels.add(result.data!["getHostels"][i]["name"].toString());
           }
+          _DropDownValue = Hostels[0];
           // print(Hostels);
           return Scaffold(
             appBar: AppBar(
@@ -136,8 +140,12 @@ class _SignUpState extends State<SignUp> {
                                   borderRadius: BorderRadius.circular(30.0))),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    InterestPage(auth: widget.auth)));
+                                builder: (BuildContext context) => InterestPage(
+                                      auth: widget.auth,
+                                      name: nameController.text,
+                                      phoneNumber: PhoneNumberController.text,
+                                      hostelName: _DropDownValue,
+                                    )));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

@@ -1,12 +1,14 @@
+import 'package:client/graphQL/auth.dart';
 import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/networking_and%20_opportunities/addpost.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
 import 'post_card.dart';
 import '../../../models/tag.dart';
+import 'package:client/graphQL/netops.dart';
 
 class Post_Listing extends StatefulWidget {
-  const Post_Listing({Key? key}) : super(key: key);
 
   @override
   _Post_ListingState createState() => _Post_ListingState();
@@ -14,246 +16,253 @@ class Post_Listing extends StatefulWidget {
 
 class _Post_ListingState extends State<Post_Listing> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<Post> posts = [
-    Post(
-        title: 'title1',
-        description:
-            'A week ago a friend invited a couple of other couples over for dinner. Eventually, the food (but not the wine) was cleared off the table for what turned out to be some fierce Scrabbling. Heeding the strategy of going for the shorter, more valuable word over the longer cheaper word, our final play was “Bon,” which–as luck would have it!–happens to be a Japanese Buddhist festival, and not, as I had originally asserted while laying the tiles on the board, one half of a chocolate-covered cherry treat. Anyway, the strategy worked. My team only lost by 53 points instead of 58.Just the day before, our host had written of the challenges of writing short. In journalism–my friend’s chosen trade, and mostly my own, too–Mark Twain’s observation undoubtedly applies: “I didn’t have time to write a short letter, so I wrote a long one instead.” The principle holds across genres, in letters, reporting, and other writing. It’s harder to be concise than to blather. (Full disclosure, this blog post will clock in at a blather-esque 803 words.) Good writing is boiled down, not baked full of air like a souffl??. No matter how yummy souffl??s may be. Which they are. Yummy like a Grisham novel.',
-        imgUrl:
-            'https://web.whatsapp.com/c77fc087-cdb2-4625-9b71-ed2b1db61c66',
-        like_counter: 10,
-        tags: [
-          Tag(Tag_name: 'Tag1'),
-          Tag(Tag_name: 'Tag2'),
-          Tag(Tag_name: 'Tag3')
-        ],
-        comments: [
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80')
-        ],
-        linktoaction: 'link1'),
-    Post(
-        title: 'title2',
-        description:
-            'A week ago a friend invited a couple of other couples over for dinner. Eventually, the food (but not the wine) was cleared off the table for what turned out to be some fierce Scrabbling. Heeding the strategy of going for the shorter, more valuable word over the longer cheaper word, our final play was “Bon,” which–as luck would have it!–happens to be a Japanese Buddhist festival, and not, as I had originally asserted while laying the tiles on the board, one half of a chocolate-covered cherry treat. Anyway, the strategy worked. My team only lost by 53 points instead of 58.Just the day before, our host had written of the challenges of writing short. In journalism–my friend’s chosen trade, and mostly my own, too–Mark Twain’s observation undoubtedly applies: “I didn’t have time to write a short letter, so I wrote a long one instead.” The principle holds across genres, in letters, reporting, and other writing. It’s harder to be concise than to blather. (Full disclosure, this blog post will clock in at a blather-esque 803 words.) Good writing is boiled down, not baked full of air like a souffl??. No matter how yummy souffl??s may be. Which they are. Yummy like a Grisham novel.11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333344444444444444444444444444444444444',
-        imgUrl: '',
-        like_counter: 10,
-        tags: [
-          Tag(Tag_name: 'Tag1'),
-          Tag(Tag_name: 'Tag2'),
-          Tag(Tag_name: 'Tag3')
-        ],
-        comments: [
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80')
-        ],
-        linktoaction: 'link1'),
-    Post(
-        title: 'title1',
-        description: 'description1',
-        imgUrl:
-            'https://images.unsplash.com/photo-1553603227-2358aabe821e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1032&q=80',
-        like_counter: 10,
-        tags: [
-          Tag(Tag_name: 'Tag1'),
-          Tag(Tag_name: 'Tag2'),
-          Tag(Tag_name: 'Tag3')
-        ],
-        comments: [
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80')
-        ],
-        linktoaction: 'link1'),
-    Post(
-        title: 'title1',
-        description: 'description1',
-        imgUrl:
-            'https://images.unsplash.com/photo-1553603227-2358aabe821e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1032&q=80',
-        like_counter: 10,
-        tags: [
-          Tag(Tag_name: 'Tag1'),
-          Tag(Tag_name: 'Tag2'),
-          Tag(Tag_name: 'Tag3')
-        ],
-        comments: [
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-          Comment(
-              message: 'good post',
-              Name: 'Name',
-              profile_pic_url:
-                  'https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80')
-        ],
-        linktoaction: 'link1'),
-  ];
-  var A2Zvalue = false;
-  var Z2Avalue =false;
-  var Earliestvalue = false;
-  var latervalue =false;
-  var mostlikesvalue =false;
-  Map<String, bool> values = {
-    'workshop': false,
-    'por': false,
-    'startup':false,
-    'internship' :false,
-  };
+  String getNetops = netopsQuery().getNetops;
+  String getTags = authQuery().getTags;
+  List<Post> posts = [];
+
+  bool mostlikesvalue =false;
+  bool isStarred =false;
+
+  Map<Tag,bool> filterSettings={};
+  List<String>selectedFilterIds=[];
+  int skip=0;
+  int take=10;
+  ScrollController scrollController =ScrollController();
+  late int total;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      endDrawer: new Drawer(
-        child: SafeArea(
-          child: ListView(
-            primary: false,
-            children: [
-              Column(
-              children: [
-                Text('Filter'),
-                SizedBox(
-                  height: 400.0,
-                  child: ListView(
-                    children: values.keys.map((String key) {
-                      return new CheckboxListTile(
-                        title: new Text(key),
-                        activeColor: Colors.blue,
-                        value: values[key],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            values[key] = value!;
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-                Text('Sort'),
-                CheckboxListTile(
-                    title: Text('Earliest to later'),
-                    value: Earliestvalue,
-                    onChanged:(bool? value){
-                      setState(() {
-                        Earliestvalue=value!;
-                      });
-                    }
-                ),
-                CheckboxListTile(
-                    title: Text('Later to Earliest'),
-                    value: latervalue,
-                    onChanged:(bool? value){
-                      setState(() {
-                        latervalue=value!;
-                      });
-                    }
-                ),
-                CheckboxListTile(
-                    title: Text('most liked'),
-                    value: mostlikesvalue,
-                    onChanged:(bool? value){
-                      setState(() {
-                        mostlikesvalue=value!;
-                      });
-                    }
-                ),
-                CheckboxListTile(
-                  title: Text('A to Z'),
-                    value: A2Zvalue,
-                    onChanged:(bool? value){
-                  setState(() {
-                    A2Zvalue=value!;
-                  });
-                    }
-                ),
-                CheckboxListTile(
-                    title: Text('Z to A'),
-                    value: Z2Avalue,
-                    onChanged:(bool? value){
-                      setState(() {
-                        Z2Avalue=value!;
-                      });
-                    }
-                ),
-              ],
+    return Query(
+      options: QueryOptions(
+        document: gql(getTags)
+      ),
+      builder:(QueryResult result, {fetchMore, refetch}){
+        filterSettings.clear();
+        if (result.hasException) {
+          return Text(result.exception.toString());
+        }
+        if(result.isLoading){
+          return Scaffold(
+              appBar: AppBar(
+                title: const Text('All Posts'),
+                backgroundColor: Color(0xFFE6CCA9),
+              ),
+              body: Center(
+                child: CircularProgressIndicator(),
+              )
+          );
+        }
+        var tagData = result.data!["getTags"];
+        for(var i=0;i<tagData.length;i++ ){
+          filterSettings.putIfAbsent(
+              Tag(
+                 category: tagData[i]["category"],
+                 id: tagData[i]["id"],
+                 Tag_name: tagData[i]["title"],
+          ), () => false);
+        };
+        // print("filterIds:$selectedFilterIds");
+        // print("$filterSettings");
+        // print("isStarred:$isStarred");
+        return Query(
+            options: QueryOptions(
+              document: gql(getNetops),
+              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":selectedFilterIds,"isStared":isStarred}},
             ),
-        ]
-          ),
-        ),
-      ),
-      appBar: AppBar(
-        title: const Text('All Posts'),
-        backgroundColor: Color(0xFFE6CCA9),
-        actions: [
-          IconButton(
-              onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-              icon: Icon(Icons.filter_alt_outlined)),
-          IconButton(
-              onPressed: () => {
-            Navigator.of(context).push(
-            MaterialPageRoute(
-           builder: (BuildContext context)=> AddPost())),
-            },
-              iconSize: 35.0,
-              icon: Icon(Icons.add_box)),
-        ],
-      ),
-      body: ListView(
-        children: [
-          Column(
-            children: posts
-                .map((post) => PostCard(
-                      post: post,
-                    ))
-                .toList(),
-          )
-        ],
-      ),
+            builder: (QueryResult result, {fetchMore, refetch}){
+              if (result.hasException) {
+                print(result.exception.toString());
+                return Text(result.exception.toString());
+              }
+              if(posts.isEmpty) {
+                if (result.isLoading) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('All Posts'),
+                      backgroundColor: Color(0xFFE6CCA9),
+                    ),
+                    body: Center(
+                        child: CircularProgressIndicator(),
+                  )
+                  );
+                }
+              }
+              var data=result.data!["getNetops"];
+              var netopList= data["netopList"];
+              // print("${result.data}");
+              posts.clear();
+              for(var i=0;i<result.data!["getNetops"]["netopList"].length;i++){
+                List<Comment> comments=[];
+                List<Tag> tags=[];
+                for(var j=0;j<netopList[i]["comments"].length;j++){
+                  // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
+                  comments.add(
+                      Comment(
+                        message: netopList[i]["comments"][j]["content"],
+                        id: netopList[i]["comments"][j]["id"],
+                        name: netopList[i]["comments"][j]["createdBy"]["name"],
+                      )
+                  );
+                }
+                // print(comments);
+                // print("${netopList[i]["tags"].length}");
+                for(var k=0;k<netopList[i]["tags"].length;k++){
+                  // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                  tags.add(
+                    Tag(
+                      Tag_name: netopList[i]["tags"][k]["title"],
+                      category: netopList[i]["tags"][k]["category"],
+                      id: netopList[i]["tags"][k]["id"],
+                    ),
+                  );
+                }
+                posts.add(Post(
+                  title: netopList[i]["title"],
+                  comments:comments,
+                  description: netopList[i]["content"],
+                  like_counter: netopList[i]["likeCount"],
+                  tags: tags,
+                  endTime: netopList[i]["endTime"],
+                  linktoaction:"",
+                  imgUrl: netopList[i]["photo"],
+                  // attachment:netopList[i]["attachments"],
+                  id:netopList[i]["id"],
+                )
+                );
+              };
+              total=data["total"];
+              FetchMoreOptions opts =FetchMoreOptions(
+                  variables: {"skip":skip+10,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  updateQuery: (previousResultData,fetchMoreResultData){
+                    // print("previousResultData:$previousResultData");
+                    // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
+                    // print("posts:$posts");
+                    final List<dynamic> repos = [
+                      ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
+                      ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
+                    ];
+                    fetchMoreResultData['getNetops']['netopList'] = repos;
+                    return fetchMoreResultData;
+                  }
+              );
+              scrollController.addListener(()async {
+                var triggerFetchMoreSize =
+                    0.99 * scrollController.position.maxScrollExtent;
+                if (scrollController.position.pixels >
+                    triggerFetchMoreSize && total>posts.length){
+                  await fetchMore!(opts);
+                  scrollController.jumpTo(triggerFetchMoreSize);
+                }
+              });
+
+              return Scaffold(
+                key: _scaffoldKey,
+                backgroundColor: Colors.white,
+                endDrawer: new Drawer(
+                  child: StatefulBuilder(
+                    builder: (BuildContext context,StateSetter setState){
+                      return SafeArea(
+                        child: ListView(
+                            primary: false,
+                            children: [
+                              Column(
+                                children: [
+                                  Text('Filter'),
+                                  SizedBox(
+                                    height: 400.0,
+                                    child: ListView(
+                                      children: filterSettings.keys.map((key)=>
+                                          CheckboxListTile(
+                                            value: filterSettings[key],
+                                            onChanged:(bool? value){
+                                              setState(() {
+                                                filterSettings[key]=value!;
+                                              });
+                                            },
+                                            title: Text(key.Tag_name),
+                                          )
+                                      ).toList(),
+                                    ),
+                                  ),
+                                  Text('Sort'),
+                                  CheckboxListTile(
+                                      title: Text('most liked'),
+                                      value: mostlikesvalue,
+                                      onChanged:(bool? value){
+                                        setState(() {
+                                          mostlikesvalue=value!;
+                                        });
+                                      }
+                                  ),
+                                  CheckboxListTile(
+                                      title: Text("Starred"),
+                                      value: isStarred,
+                                      onChanged:(bool? value){
+                                        setState(() {
+                                          isStarred=value!;
+                                        });
+                                      }
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: (){
+                                        selectedFilterIds.clear();
+                                        filterSettings.forEach((key, value) {
+                                          if(value){
+                                            selectedFilterIds.add(key.id);
+                                          }
+                                        });
+                                        // print("selectedFilterIds:$selectedFilterIds");
+                                        refetch!();
+                                      },
+                                      child: Text('Apply'))
+                                ],
+                              ),
+                            ]
+                        ),
+                      );
+                    },
+                  )
+                ),
+                appBar: AppBar(
+                  title: const Text('All Posts'),
+                  backgroundColor: Color(0xFFE6CCA9),
+                  actions: [
+                    IconButton(
+                        onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+                        icon: Icon(Icons.filter_alt_outlined)),
+                    IconButton(
+                        onPressed: () {
+                           Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)
+                              )
+                          );
+                        },
+                        iconSize: 35.0,
+                        icon: Icon(Icons.add_box)),
+                  ],
+                ),
+                body: ListView(
+                  controller: scrollController,
+                  children: [
+                    Column(
+                      children: posts
+                          .map((post) => PostCard(
+                        refetchPosts: refetch,
+                        post: post,
+                      ))
+                          .toList(),
+                    ),
+                    if(result.isLoading)
+                      Center(
+                          child: CircularProgressIndicator(color: Colors.yellow,)
+                      ),
+                  ],
+                ),
+              );
+            }
+        );
+      }
     );
   }
+
 }

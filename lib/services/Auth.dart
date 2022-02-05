@@ -27,14 +27,14 @@ class AuthService extends ChangeNotifier{
   loadToken() async{
     await _initAuth();
     _token = prefs!.getString('token')??null;
-    print('load token called, token:$_token');
+    // print('load token called, token:$_token');
     notifyListeners();
   }
   setToken(String token) async{
     await _initAuth();
     prefs?.setString('token', token);
     _token=token;
-    print('set token called');
+    // print('set token called');
     notifyListeners();
   }
   clearAuth() async {
@@ -43,7 +43,7 @@ class AuthService extends ChangeNotifier{
     prefs!.remove('role');
     _token = null;
     _role=null;
-    print('clear auth called');
+    // print('clear auth called');
     notifyListeners();
   }
   _loadRole() async{

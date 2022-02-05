@@ -17,6 +17,7 @@ class _WrapperState extends State<Wrapper> {
       create:(_)=>AuthService(),
       child:Consumer<AuthService>(
         builder:(context,auth,child){
+
           return auth.token == null ? LogIn():(auth.isNewUser==false?HomePage():userInit(auth: auth));
         }
       )

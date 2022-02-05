@@ -8,7 +8,5 @@ Future<Uint8List?> Compress(Uint8List? list) async {
     minWidth: 1080,
     quality: 80,
   );
-  print(list.length);
-  print(result.length);
   return result;
 }

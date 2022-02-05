@@ -2,13 +2,15 @@ import 'package:client/screens/Login/createTag.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/screens/home/Events/eventsHome.dart';
 import 'package:client/screens/home/userpage.dart';
-import 'package:client/screens/login/createSuperUsers.dart';
-import 'package:client/screens/login/createhostel.dart';
+import 'package:client/screens/Login/createSuperUsers.dart';
+import 'package:client/screens/Login/createhostel.dart';
 import 'package:client/screens/userInit/updatepass.dart';
+
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
 
+import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 
 class HomePage extends StatefulWidget {
@@ -71,7 +73,9 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => setPassword()));
+                  builder: (BuildContext context) => setPassword(
+                        auth: _auth,
+                      )));
             },
             child: Text("Update Password"),
           ),
@@ -81,6 +85,13 @@ class _HomePageState extends State<HomePage> {
                   builder: (BuildContext context) => CreateHostel()));
             },
             child: Text("Create Hostel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => LNFListing()));
+            },
+            child: Text("Lost n Found"),
           ),
           ElevatedButton(
             onPressed: () {
