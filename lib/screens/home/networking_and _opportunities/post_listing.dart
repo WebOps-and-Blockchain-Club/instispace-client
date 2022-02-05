@@ -230,13 +230,12 @@ class _Post_ListingState extends State<Post_Listing> {
                         onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
                         icon: Icon(Icons.filter_alt_outlined)),
                     IconButton(
-                        onPressed: () async {
-                          await Navigator.of(context).push(
+                        onPressed: () {
+                           Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)
                               )
                           );
-                          refetch!();
                         },
                         iconSize: 35.0,
                         icon: Icon(Icons.add_box)),

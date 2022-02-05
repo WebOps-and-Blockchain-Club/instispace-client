@@ -24,7 +24,6 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   String reportNetop=netopsQuery().reportNetop;
   String toggleLike = netopsQuery().toggleLike;
-  String isLikedQuery = netopsQuery().isLiked;
   String toggleStar=netopsQuery().toggleStar;
   String deleteNetop=netopsQuery().deleteNetop;
   late bool isLiked;
@@ -37,17 +36,12 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     List<Tag>tags = widget.post.tags;
     DateTime dateTime = DateTime.parse(widget.post.endTime);
-    final format = DateFormat.jm();
-    final format1 = DateFormat.yMMMMd('en_US');
-    final date = format1.format(dateTime);
-    final time = format.format(dateTime);
     var likeCount;
-    // print("date : $date");
-    // print("time: $time");
+
           return Query(
               options: QueryOptions(
                 document: gql(getNetop),
-                variables: {"toggleLikeNetopNetopId":widget.post.id},
+                variables: {"getNetopNetopId":widget.post.id},
               ),
               builder:(QueryResult result, {fetchMore, refetch}){
                 if (result.hasException) {
@@ -55,8 +49,14 @@ class _PostCardState extends State<PostCard> {
                   return Text(result.exception.toString());
                 }
                 if(result.isLoading){
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      color: Color(0xFFF9F6F2),
+                    child: SizedBox(
+                      height: 60,
+                      width: 20,
+                    )
                   );
                 }
                 likeCount=result.data!["getNetop"]["likeCount"];
@@ -116,7 +116,7 @@ class _PostCardState extends State<PostCard> {
                                                 onPressed: (){
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
-                                                          builder: (BuildContext context)=> EditPost(post: widget.post)));
+                                                          builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
                                                   widget.refetchPosts!();
                                                 },
                                               ),
@@ -224,7 +224,7 @@ class _PostCardState extends State<PostCard> {
                                                           return IconButton(
                                                             onPressed: (){
                                                               runMutation({
-                                                                "toggleLikeNetopId2":widget.post.id
+                                                                "netopId":widget.post.id
                                                               });
                                                                refetch!();
                                                               print("isLiked:$isLiked");

@@ -5,10 +5,14 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:intl/intl.dart';
 
 class EditPost extends StatefulWidget {
   final Post post;
-  EditPost({required this.post});
+  final Future<QueryResult?> Function()? refetchPosts;
+  EditPost({required this.post,required this.refetchPosts});
 
   @override
   _EditPostState createState() => _EditPostState();
@@ -25,13 +29,15 @@ class _EditPostState extends State<EditPost> {
   Map<String,String>tagList={};
   List<String>selectedTags=[];
   List<String>selectedIds=[];
-  var dateTime;
-  var key;
-  late String endTime;
 
+  var key;
+  List byteDataAttachment=[];
+  List multipartfileAttachment=[];
+  List AttachmentNames=[];
   @override
   Widget build(BuildContext context) {
     var post=widget.post;
+    var dateTime=post.endTime;
     titleController.text=post.title;
     descriptionController.text=post.description;
     return Query(
@@ -237,8 +243,7 @@ class _EditPostState extends State<EditPost> {
                                 dateLabelText: 'Date',
                                 timeLabelText: "Hour",
                                 onChanged: (val) => {
-                                  dateTime=val,
-                                  print("$dateTime:00+5:30"),
+                                  dateTime= dateTimeString(val),
                                 },
                                 validator: (val) {
                                   print(val);
@@ -260,6 +265,56 @@ class _EditPostState extends State<EditPost> {
                                   hintText: 'Eg form link',
                                 ),
                               ),
+                              Text(
+                                'attachments',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 450.0,
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.blue[200],
+                                        elevation: 0.0,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                    ),
+                                    onPressed: () async {
+                                      final FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowedExtensions: ["pdf"],
+                                        allowMultiple: true,
+                                        withData: true,
+                                      );
+                                      if (result != null) {
+                                        setState(() {
+                                          AttachmentNames.clear();
+                                          for (var i=0;i<result.files.length;i++){
+                                            AttachmentNames.add(result.files[i].name);
+                                            byteDataAttachment.add(result.files[i].bytes);
+                                            multipartfileAttachment.add(MultipartFile.fromBytes(
+                                              'file',
+                                              byteDataAttachment[i],
+                                              filename: AttachmentNames[i],
+                                              contentType: MediaType("file","pdf"),
+                                            ));
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                      child: Text(
+                                        AttachmentNames.toString(),
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.w300
+                                        ),
+                                      ),
+                                    )),
+                              ),
                             ],
                           ),
                         ),
@@ -275,6 +330,26 @@ class _EditPostState extends State<EditPost> {
                         Mutation(
                             options: MutationOptions(
                               document: gql(editNetop),
+                                onCompleted: (dynamic resultData){
+                                  print(resultData);
+                                  if(resultData["editNetop"]==true){
+                                    Navigator.pop(context);
+                                    widget.refetchPosts!();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Post Edited')),
+                                    );
+                                  }
+                                  else{
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Post Creation Failed')),
+                                    );
+                                  }
+                                },
+                                onError: (dynamic error){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Post Creation Failed,server error')),
+                                  );
+                                }
                             ),
                             builder: (
                                 RunMutation runMutation,
@@ -286,22 +361,20 @@ class _EditPostState extends State<EditPost> {
                               if(result.isLoading){}
                               return TextButton(
                                   onPressed: ()=>{
-                                    endTime="$dateTime"+":00+05:30",
                                     for(var i=0;i<selectedTags.length;i++){
                                       key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i],orElse: ()=>""),
                                       selectedIds.add(key),
                                     },
-                                    print("selectedTadIds:$selectedIds"),
-                                    //ToDo write mutation variables
                                     runMutation({
                                       "editNetopNetopId":post.id,
                                       "editNetopsData":{
                                         "title":titleController.text,
                                         "content":descriptionController.text,
-                                        "endtime":"2022-01-31 17:17:00+05:30",
+                                        "endTime":dateTime,
                                       },
                                       "tags":selectedIds,
                                       "editNetopImage":imageResult,
+                                      "editNetopAttachments":multipartfileAttachment,
                                     })
                                   },
                                   child:Text('Submit'));
@@ -317,6 +390,17 @@ class _EditPostState extends State<EditPost> {
         );
       },
     );
+  }
+  String dateTimeString(String utcDateTime) {
+    if (utcDateTime == "") {
+      return "";
+    }
+    var parseDateTime = DateTime.parse(utcDateTime);
+    final localDateTime = parseDateTime.toLocal();
+
+    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
+
+    return dateTimeFormat.format(localDateTime);
   }
 }
 
