@@ -8,6 +8,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'LFclass.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:client/models/compressFunction.dart';
+
 class EditLost extends StatefulWidget {
 
   final LnF post ;
@@ -28,6 +30,8 @@ class _EditLostState extends State<EditLost> {
   List multipartfile=[];
   List fileNames=[];
   FilePickerResult? result=null;
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
@@ -40,188 +44,225 @@ class _EditLostState extends State<EditLost> {
       appBar: AppBar(
         title:Text('Lost Item'),
       ),
-      body: Column(
-        children: [
-          Text("What did you lose?"),
-          SizedBox(
-            height: 35.0,
-            child: TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                hintText: 'Short Word',
-              ),
-            ),
-          ),
-          Text("When?"),
-          DateTimePicker(
-            type: DateTimePickerType.dateTimeSeparate,
-            dateMask: 'd MMM, yyyy',
-            initialValue: post.time,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-            icon: Icon(Icons.event),
-            dateLabelText: 'Date',
-            timeLabelText: "Hour",
-            onChanged: (val) => {
-              dateTime= dateTimeString(val),
-            },
-            validator: (val) {
-              print(val);
-              return null;
-            },
-            onSaved: (val) => print(val),
-          ),
-          Text('Location'),
-          SizedBox(
-            height: 35.0,
-            child: TextFormField(
-              controller: locationController,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                hintText: 'Enter Location',
-              ),
-            ),
-          ),
-          Text("Contact Details"),
-          SizedBox(
-            height: 35.0,
-            child: TextFormField(
-              controller: contactController,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                hintText: 'Enter Location',
-              ),
-            ),
-          ),
-          Text("Images"),
-          SizedBox(
-            width: 450.0,
-            child: StatefulBuilder(
-              builder: (BuildContext context,StateSetter setState){
-                return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue[200],
-                        elevation: 0.0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Text("What did you lose?"),
+            SizedBox(
+              height: 35.0,
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState){
+                  return TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      hintText: 'Short Word',
                     ),
-                    onPressed: () async {
-                      result =
-                      await FilePicker.platform.pickFiles(
-                        type: FileType.image,
-                        allowMultiple: true,
-                      );
-                      if (result != null) {
-                        setState(() {
-                          fileNames.clear();
-                          for (var i=0;i<result!.files.length;i++){
-                            fileNames.add(result!.files[i].name);
-                            byteData.add(result!.files[i].bytes);
-                            multipartfile.add(MultipartFile.fromBytes(
-                              'photo',
-                              byteData[i],
-                              filename: fileNames[i],
-                              contentType: MediaType("image","png"),
-                            ));
-                          }
-                        });
+                    validator: (val) {
+                      if(val == null || val.isEmpty) {
+                        return "Item name can't be empty";
                       }
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                      child: Text(
-                        selectedImage,
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 17.0,
-                            fontWeight: FontWeight.w300
-                        ),
-                      ),
-                    )
-                );
-              },
-            )
-          ),
-          if(result!=null)
-            Wrap(
-              children: result!.files.map((e) => InkWell(
-                onLongPress: (){
-                  setState(() {
-                    multipartfile.remove(
-                        MultipartFile.fromBytes(
-                          'photo',
-                          e.bytes as List<int>,
-                          filename: e.name,
-                          contentType: MediaType("image","png"),
-                        )
-                    );
-                    byteData.remove(e.bytes);
-                    fileNames.remove(e.name);
-                    result!.files.remove(e);
-                  });
+                  );
                 },
-                child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Image.memory(
-                    e.bytes!,
-                  ),
-                ),
-              )).toList(),
+              )
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child: Text("Discard")
-              ),
-              Mutation(
-                  options:MutationOptions(
-                      document: gql(editItem)
+            Text("When?"),
+            DateTimePicker(
+              type: DateTimePickerType.dateTimeSeparate,
+              dateMask: 'd MMM, yyyy',
+              initialValue: post.time,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              icon: Icon(Icons.event),
+              dateLabelText: 'Date',
+              timeLabelText: "Hour",
+              onChanged: (val) => {
+                dateTime= dateTimeString(val),
+              },
+              validator: (val) {
+                print(val);
+                return null;
+              },
+              onSaved: (val) => print(val),
+            ),
+            Text('Location'),
+            SizedBox(
+              height: 35.0,
+              child: TextFormField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(100.0),
                   ),
-                  builder:(
-                      RunMutation runMutation,
-                      QueryResult? result,
-                      ){
-                    if (result!.hasException){
-                      print(result.exception.toString());
-                    }
-                    if(result.isLoading){}
-                    return ElevatedButton(
-                        onPressed: (){
-                          runMutation({
-                            "itemInput": {
-                              "name": nameController.text,
-                              "location":locationController.text,
-                              "time":dateTime,
-                              "category": "LOST",
-                              "images": null,
-                              "contact":contactController.text,
-                            },
-                            "images": multipartfile,
-                          });
-                          Navigator.pop(context);
-                          widget.refetchPost!();
-                        },
-                        child: Text("Post")
-                    );
+                  hintText: 'Enter Location',
+                ),
+                validator: (val) {
+                  if(val==null || val.isEmpty) {
+                    return "Location can't be empty";
                   }
+                },
               ),
-            ],
-          )
-        ],
+            ),
+            Text("Contact Details"),
+            SizedBox(
+              height: 35.0,
+              child: TextFormField(
+                controller: contactController,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
+                  hintText: 'Enter Contact Details',
+                ),
+              ),
+            ),
+            Text("Images"),
+            SizedBox(
+              width: 450.0,
+              child: StatefulBuilder(
+                builder: (BuildContext context,StateSetter setState){
+                  return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.blue[200],
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                      ),
+                      onPressed: () async {
+                        result =
+                        await FilePicker.platform.pickFiles(
+                          type: FileType.image,
+                          allowMultiple: true,
+                        );
+                        if (result != null) {
+                          setState(() {
+                            fileNames.clear();
+                            for (var i=0;i<result!.files.length;i++){
+                              fileNames.add(result!.files[i].name);
+                              byteData.add(result!.files[i].bytes);
+                              multipartfile.add(MultipartFile.fromBytes(
+                                'photo',
+                                byteData[i],
+                                filename: fileNames[i],
+                                contentType: MediaType("image","png"),
+                              ));
+                            }
+                          });
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                        child: Text(
+                          selectedImage,
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w300
+                          ),
+                        ),
+                      )
+                  );
+                },
+              )
+            ),
+            if(result!=null)
+              Wrap(
+                children: result!.files.map((e) => InkWell(
+                  onLongPress: (){
+                    setState(() {
+                      multipartfile.remove(
+                          MultipartFile.fromBytes(
+                            'photo',
+                            e.bytes as List<int>,
+                            filename: e.name,
+                            contentType: MediaType("image","png"),
+                          )
+                      );
+                      byteData.remove(e.bytes);
+                      fileNames.remove(e.name);
+                      result!.files.remove(e);
+                    });
+                  },
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Image.memory(
+                      e.bytes!,
+                    ),
+                  ),
+                )).toList(),
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: Text("Discard")
+                ),
+                Mutation(
+                    options:MutationOptions(
+                        document: gql(editItem),
+                        onCompleted: (dynamic resultData){
+                          print("result:$resultData");
+                          if(resultData["editItems"]==true){
+                            Navigator.pop(context);
+                            widget.refetchPost!();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Post Edited')),
+                            );
+                          }
+                          else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Post Creation Failed')),
+                            );
+                          }
+                        },
+                        onError: (dynamic error){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Post Creation Failed,Server Error')),
+                          );
+                        }
+                    ),
+                    builder:(
+                        RunMutation runMutation,
+                        QueryResult? result,
+                        ){
+                      if (result!.hasException){
+                        print(result.exception.toString());
+                      }
+                      if(result.isLoading){}
+                      return ElevatedButton(
+                          onPressed: ()async{
+                            if (_formKey.currentState!.validate()){
+                              print(nameController.text);
+                              await runMutation({
+                                "editItemsItemId":post.id,
+                                "itemInput": {
+                                  "name": nameController.text,
+                                  "location":locationController.text,
+                                  "time":dateTime,
+                                  "contact":contactController.text,
+                                },
+                                "images": multipartfile.isEmpty ? null : multipartfile,
+                              });
+                            }
+                          },
+                          child: Text("Post")
+                      );
+                    }
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

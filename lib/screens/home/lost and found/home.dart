@@ -42,16 +42,24 @@ class _LNFListingState extends State<LNFListing> {
           variables: {"itemsFilter": itemFilter,"skip":skip,"take":take},
         ),
         builder: (QueryResult result, {fetchMore, refetch}){
-          Posts.clear();
+
           if (result.hasException) {
             print(result.exception.toString());
             return Text(result.exception.toString());
           }
-          if(result.isLoading){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+          if(Posts.isEmpty){
+            if(result.isLoading){
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('Lost & Found'),
+                ),
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           }
+          Posts.clear();
           var data = result.data!["getItems"]["itemsList"];
           for (var i = 0; i < data.length; i++) {
             var contact;
@@ -144,49 +152,51 @@ class _LNFListingState extends State<LNFListing> {
                   },
                 ),
               ),
-              body: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
-                          },
-                          child: Text('Lost Something?')),
-                      ElevatedButton(
-                          onPressed: ()  {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => AddFound(refetchPost: refetch,)));
-                          },
-                          child: Text('Found Something?')),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.78,
-                    width: 400,
-                    child: ListView(
-                      controller: scrollController,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
-                          children: Posts.map((post) => LFCard(
-                                refetchPosts: refetch,
-                                userId: userId,
-                                post: post,
-                              )).toList(),
-                        ),
-                        if (result.isLoading)
-                        Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
+                            },
+                            child: Text('Lost Something?')),
+                        ElevatedButton(
+                            onPressed: ()  {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
+                            },
+                            child: Text('Found Something?')),
                       ],
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.78,
+                      width: 400,
+                      child: ListView(
+                        controller: scrollController,
+                        children: [
+                          Column(
+                            children: Posts.map((post) => LFCard(
+                                  refetchPosts: refetch,
+                                  userId: userId,
+                                  post: post,
+                                )).toList(),
+                          ),
+                          if (result.isLoading)
+                          Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ));
         }
         );

@@ -8,6 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'LFclass.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:client/models/compressFunction.dart';
 
 class EditFound extends StatefulWidget {
 
@@ -29,6 +30,7 @@ class _EditFoundState extends State<EditFound> {
   List multipartfile=[];
   List fileNames=[];
   FilePickerResult? result=null;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
@@ -39,9 +41,11 @@ class _EditFoundState extends State<EditFound> {
     initializeDateFormatting('az');
     return Scaffold(
       appBar: AppBar(
-        title:Text('Lost Item'),
+        title:Text('Found Item'),
       ),
-      body: Column(
+      body: Form(
+        key: _formKey,
+        child: Column(
         children: [
           Text("What did you lose?"),
           SizedBox(
@@ -55,6 +59,12 @@ class _EditFoundState extends State<EditFound> {
                 ),
                 hintText: 'Short Word',
               ),
+              validator: (value){
+                if (value == null || value.isEmpty) {
+                  return 'Item name cannot be empty';
+                }
+                return null;
+              },
             ),
           ),
           Text("When?"),
@@ -88,6 +98,12 @@ class _EditFoundState extends State<EditFound> {
                 ),
                 hintText: 'Enter Location',
               ),
+              validator: (value){
+                if (value == null || value.isEmpty) {
+                  return 'Location cannot be empty';
+                }
+                return null;
+              },
             ),
           ),
           Text("Contact Details"),
@@ -100,7 +116,7 @@ class _EditFoundState extends State<EditFound> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(100.0),
                 ),
-                hintText: 'Enter Location',
+                hintText: 'Enter Contact Details',
               ),
             ),
           ),
@@ -116,7 +132,7 @@ class _EditFoundState extends State<EditFound> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                       ),
                       onPressed: () async {
-                         result =
+                        result =
                         await FilePicker.platform.pickFiles(
                           type: FileType.image,
                           allowMultiple: true,
@@ -190,7 +206,27 @@ class _EditFoundState extends State<EditFound> {
               ),
               Mutation(
                   options:MutationOptions(
-                      document: gql(editItem)
+                      document: gql(editItem),
+                      onCompleted: (dynamic resultData){
+                        print("result:$resultData");
+                        if(resultData["editItems"]==true){
+                          Navigator.pop(context);
+                          widget.refetchPost!();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Post Edited')),
+                          );
+                        }
+                        else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Post Creation Failed')),
+                          );
+                        }
+                      },
+                      onError: (dynamic error){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Post Creation Failed,Server Error')),
+                        );
+                      }
                   ),
                   builder:(
                       RunMutation runMutation,
@@ -199,22 +235,25 @@ class _EditFoundState extends State<EditFound> {
                     if (result!.hasException){
                       print(result.exception.toString());
                     }
-                    if(result.isLoading){}
+                    if(result.isLoading){
+                      return Text("loading");
+                    }
                     return ElevatedButton(
-                        onPressed: (){
-                          runMutation({
-                            "itemInput": {
-                              "name": nameController.text,
-                              "location":locationController.text,
-                              "time":dateTime,
-                              "category": "FOUND",
-                              "images": null,
-                              "contact":contactController.text,
-                            },
-                            "images": multipartfile,
-                          });
-                          Navigator.pop(context);
-                          widget.refetchPost!();
+                        onPressed: ()async{
+                          if (_formKey.currentState!.validate()){
+                            // print("run mutation");
+                            print("${contactController.text}");
+                            await runMutation({
+                              "editItemsItemId": post.id,
+                              "editItemsEditItemInput": {
+                                "name": nameController.text,
+                                "location":locationController.text,
+                                "time":dateTime,
+                                "contact":contactController.text,
+                              },
+                              "editItemsImages": multipartfile,
+                            });
+                          }
                         },
                         child: Text("Post")
                     );
@@ -223,7 +262,7 @@ class _EditFoundState extends State<EditFound> {
             ],
           )
         ],
-      ),
+      ),)
     );
   }
   String dateTimeString(String utcDateTime) {
