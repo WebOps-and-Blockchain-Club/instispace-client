@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
 
-import 'Announcements/add_announcements.dart';
 import 'networking_and _opportunities/post_listing.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,14 +34,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-        child: Column(
+      child: Column(
         children: [
           IconButton(
               onPressed: () => {
-                Navigator.of(context).push(
-                MaterialPageRoute(
-                builder: (BuildContext context)=> Post_Listing())),
-                },
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Post_Listing())),
+                  },
               icon: Icon(Icons.article)),
           ElevatedButton(
               onPressed: () {
@@ -51,57 +49,50 @@ class _HomePageState extends State<HomePage> {
               child: Text('clear Auth')),
           ElevatedButton(
             onPressed: () {
-          Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (BuildContext context)=> EventsHome()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => EventsHome()));
             },
             child: Text("Events"),
           ),
           ElevatedButton(
             onPressed: () {
-          Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (BuildContext context)=> CreateSuperUsers()));
-          },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => CreateSuperUsers()));
+            },
             child: Text("Create Super User"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-              MaterialPageRoute(
-              builder: (BuildContext context)=> UserPage()));
-          },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => UserPage()));
+            },
             child: Text("User Profile"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-              builder: (BuildContext context)=> setPassword()));
-          },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => setPassword()));
+            },
             child: Text("Update Password"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (BuildContext context)=> CreateHostel()));
-              },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => CreateHostel()));
+            },
             child: Text("Create Hostel"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (BuildContext context)=> CreateTag()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => CreateTag()));
             },
             child: Text("Create Tag"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (BuildContext context)=> Announcements()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Announcements()));
             },
             child: Text("Announcements"),
           ),

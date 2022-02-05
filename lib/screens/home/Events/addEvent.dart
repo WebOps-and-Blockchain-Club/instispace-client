@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:validators/validators.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -43,10 +42,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
         title: Text(
           "Add Event",
           style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0
-          ),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
         ),
         backgroundColor: Colors.deepPurpleAccent,
         elevation: 0.0,
@@ -57,21 +53,19 @@ class _AddPostEventsState extends State<AddPostEvents> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 stops: [
-                  0.1,
-                  0.3,
-                  0.4,
-                  0.6,
-                  0.9
-                ],
+              0.1,
+              0.3,
+              0.4,
+              0.6,
+              0.9
+            ],
                 colors: [
-                  Colors.deepPurpleAccent,
-                  Colors.blue,
-                  Colors.lightBlueAccent,
-                  Colors.lightBlueAccent,
-                  Colors.blueAccent
-                ]
-            )
-        ),
+              Colors.deepPurpleAccent,
+              Colors.blue,
+              Colors.lightBlueAccent,
+              Colors.lightBlueAccent,
+              Colors.blueAccent
+            ])),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: ListView(children: [
@@ -89,8 +83,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Title*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           SizedBox(
@@ -98,10 +91,10 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.blue[200],
-                                  borderRadius: BorderRadius.circular(30.0)
-                              ),
+                                  borderRadius: BorderRadius.circular(30.0)),
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 0.0, 0.0, 0.0),
                                 child: TextFormField(
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
@@ -109,7 +102,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
                                               color: Colors.black, width: 1.0),
-                                          borderRadius: BorderRadius.circular(20.0))),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0))),
                                   controller: myControllerTitle,
                                   validator: (val) {
                                     if (val == null || val.isEmpty) {
@@ -150,8 +144,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Location*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           SizedBox(
@@ -159,10 +152,10 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.blue[200],
-                                  borderRadius: BorderRadius.circular(30.0)
-                              ),
+                                  borderRadius: BorderRadius.circular(30.0)),
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 0.0, 0.0, 0.0),
                                 child: TextFormField(
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
@@ -170,7 +163,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
                                               color: Colors.black, width: 1.0),
-                                          borderRadius: BorderRadius.circular(20.0))),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0))),
                                   controller: myControllerLocation,
                                   validator: (val) {
                                     if (val == null || val.isEmpty) {
@@ -186,12 +180,12 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Description*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           MarkdownTextInput(
-                                (String value) => setState(() => description = value),
+                            (String value) =>
+                                setState(() => description = value),
                             description,
                             label: 'Enter Description',
                             maxLines: 10,
@@ -212,8 +206,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Call-to-Action Link*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           SizedBox(
@@ -221,10 +214,10 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.blue[200],
-                                  borderRadius: BorderRadius.circular(30.0)
-                              ),
+                                  borderRadius: BorderRadius.circular(30.0)),
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 0.0, 0.0, 0.0),
                                 child: TextFormField(
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
@@ -232,7 +225,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
                                               color: Colors.black, width: 1.0),
-                                          borderRadius: BorderRadius.circular(20.0))),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0))),
                                   controller: myControllerFormLink,
                                   validator: (val) {
                                     if (val == null || val.isEmpty) {
@@ -250,8 +244,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Tags*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           SizedBox(
@@ -259,19 +252,20 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.blue[200],
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                                  elevation: 0.0
-                              ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  elevation: 0.0),
                               onPressed: () {},
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    0.0, 7.0, 0.0, 7.0),
                                 child: Text(
                                   "Select Tags",
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: 17.0,
-                                      fontWeight: FontWeight.w300
-                                  ),
+                                      fontWeight: FontWeight.w300),
                                 ),
                               ),
                             ),
@@ -281,8 +275,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                             'Image*',
                             style: TextStyle(
                                 color: Colors.blue[900],
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5.0),
                           SizedBox(
@@ -291,11 +284,12 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.blue[200],
                                     elevation: 0.0,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0))),
                                 onPressed: () async {
                                   final FilePickerResult? result =
-                                  await FilePicker.platform.pickFiles(
+                                      await FilePicker.platform.pickFiles(
                                     type: FileType.image,
                                     allowMultiple: false,
                                   );
@@ -307,14 +301,14 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                   }
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0.0, 7.0, 0.0, 7.0),
                                   child: Text(
                                     selectedImage.toString(),
                                     style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: 17.0,
-                                        fontWeight: FontWeight.w300
-                                    ),
+                                        fontWeight: FontWeight.w300),
                                   ),
                                 )),
                           ),
@@ -325,8 +319,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.blue[700],
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0))),
                                 onPressed: () {},
                                 child: Text(
                                   "Save",
@@ -336,8 +331,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.blue[700],
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0))),
                                 onPressed: () {},
                                 child: Text(
                                   "Discard Changes",
@@ -347,8 +343,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     primary: Colors.blue[700],
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0))),
                                 onPressed: () {
                                   if (_formkey.currentState!.validate()) {
                                     print(description);

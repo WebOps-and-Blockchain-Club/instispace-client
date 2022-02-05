@@ -1,20 +1,20 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
+typedef void StringCallback(String val);
 class dropDown extends StatefulWidget {
-
-  final FunctionStringCallback callback;
-  final List <String>Hostels;
+  final StringCallback callback;
+  final List<String> Hostels;
   String dropDownValue;
 
-  dropDown({required this.Hostels, required this.dropDownValue, required this.callback});
+  dropDown(
+      {required this.Hostels,
+      required this.dropDownValue,
+      required this.callback});
   @override
   _dropDownState createState() => _dropDownState();
 }
 
 class _dropDownState extends State<dropDown> {
-
   @override
   Widget build(BuildContext context) {
     String DropDownValue = widget.Hostels[0];
@@ -26,7 +26,7 @@ class _dropDownState extends State<dropDown> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
           child: DropdownButton<String>(
             underline: Container(
               height: 0.0,

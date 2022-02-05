@@ -1,9 +1,7 @@
-import 'package:client/screens/userInit/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/wrapper.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/services/Client.dart';
-import 'package:client/screens/userInit/signUp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

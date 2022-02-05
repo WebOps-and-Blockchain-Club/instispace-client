@@ -40,11 +40,13 @@ dependencies:
   shared_preferences:
   provider: ^6.0.1
   date_time_picker:
-  validators: ^3.0.0
+  validators:
   file_picker: ^4.3.0
   markdown_editable_textinput: ^2.0.2
   flutter_markdown: ^0.6.9
   getwidget: ^2.0.4
+  carousel_slider: ^4.0.0
+  flutter_image_compress: ^1.1.0
 
 dev_dependencies:
   flutter_test:
