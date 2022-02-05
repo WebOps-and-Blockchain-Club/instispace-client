@@ -11,18 +11,20 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:client/models/formErrormsgs.dart';
+import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/models/hostelclass.dart';
 
-class AddAnnouncements extends StatefulWidget {
+class EditAnnouncements extends StatefulWidget {
+  final Announcement announcement;
   final Future<QueryResult?> Function()? refetchAnnouncement;
-  AddAnnouncements({required this.refetchAnnouncement});
+  EditAnnouncements(
+      {required this.announcement, required this.refetchAnnouncement});
 
   @override
-  _AddAnnouncementsState createState() => _AddAnnouncementsState();
+  _EditAnnouncementsState createState() => _EditAnnouncementsState();
 }
 
-class _AddAnnouncementsState extends State<AddAnnouncements> {
-  String createAnnouncements = AnnouncementMutations().createAnnouncements;
+class _EditAnnouncementsState extends State<EditAnnouncements> {
   String editAnnouncements = AnnouncementMutations().editAnnouncements;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -31,8 +33,10 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
   var values;
   List multipartFile = [];
   List byteData = [];
-  var endTime;
   List? images = [];
+  var endTime;
+  var endDate;
+  late String endtime;
   String errorTitle = "";
   String errorDes = "";
   String errorEndTime = "";
@@ -54,14 +58,16 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    titleController.dispose();
-    descriptionController.dispose();
-    super.dispose();
-  }
-
   Widget build(BuildContext context) {
+    titleController.text = widget.announcement.title;
+    description = widget.announcement.description;
+    endDate = widget.announcement.endTime.toString().substring(0,10);
+    endtime = widget.announcement.endTime.toString().substring(11,16);
+    selectedHostels = widget.announcement.hostelIds;
+    endTime = "${endDate} ${endtime}";
+
+    print(endTime);
+
     String imageName = selectedImage.isEmpty
         ? "Please select image"
         : selectedImage.toString();
@@ -89,11 +95,20 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                         result.data!["getHostels"][i]["name"]),
                 () => false);
           }
+          List HostelIds = widget.announcement.hostelIds;
+          print(HostelIds);
+          for(var i =0;i<HostelIds.length;i++){
+            print("Hostels:$Hostels");
+            var key = Hostels.keys.firstWhere((element)=>
+              HostelIds[i] == (element.Hostel_name));
+            Hostels[key] = true;
+            print("Hostels after done: $Hostels");
+          };
           return Scaffold(
             key: _scaffoldkey,
             appBar: AppBar(
               title: Text(
-                "Add Announcement",
+                "Edit Announcement",
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -175,7 +190,7 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                         DateTimePicker(
                           type: DateTimePickerType.dateTimeSeparate,
                           dateMask: 'd MMM, yyyy',
-                          initialValue: DateTime.now().toIso8601String(),
+                          initialValue: widget.announcement.endTime,
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2100),
                           icon: Icon(Icons.event),
@@ -192,21 +207,12 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                               endTime = val;
                             });
                           },
-                          validator: (val) {
-                            if (endTimeEntered == "No") {
-                              // setState(() {
-                              //   errorEndTime = "Please select an End Time for the announcement";
-                              // });
-                              return "Please select an End Time for the announcement";
-                            }
-                          },
                           onSaved: (val) {
                             setState(() {
                               endTime = val;
                             });
                           },
                         ),
-                        errorMessages(errorEndTime),
                         SizedBox(height: 10.0),
                         Text(
                           'Image*',
@@ -368,9 +374,10 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                             ),
                             Mutation(
                               options: MutationOptions(
-                                  document: gql(createAnnouncements),
+                                  document: gql(editAnnouncements),
                                   onCompleted: (dynamic resultData) {
-                                    if (resultData["createAnnouncement"] ==
+                                    print(resultData["editAnnouncement"]);
+                                    if (resultData["editAnnouncement"] ==
                                         true) {
                                       Navigator.pop(context);
                                       widget.refetchAnnouncement!();
@@ -378,14 +385,14 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Created Successfully')),
+                                                'Announcement Edited Successfully')),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Creation Failed')),
+                                                'Announcement Edition Failed')),
                                       );
                                     }
                                   },
@@ -394,7 +401,7 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                                         .showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              'Announcement Creation Failed, Server Error')),
+                                              'Announcement Edition failed, Server Error')),
                                     );
                                   }),
                               builder: (
@@ -425,31 +432,31 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                                           selectedHostels.add(key.Hostel_id);
                                         }
                                       });
-                                      if (selectedHostels.isEmpty) {
-                                        setState(() {
-                                          errorHostel =
-                                              "Please select at least one hostel";
-                                        });
-                                      } else {
-                                        print(
-                                            "selectedHostels:$selectedHostels");
-                                        print(
-                                            "textController: ${titleController.text}");
-                                        runMutation({
-                                          'announcementInput': {
-                                            "title": titleController.text,
-                                            "description":
-                                                descriptionController.text,
-                                            "hostelIds": selectedHostels,
-                                            "endTime": "$endTime:00+05:30",
-                                          },
-                                          "images": multipartFile,
-                                        });
-                                      }
+                                      // if (selectedHostels.isEmpty) {
+                                      //   setState(() {
+                                      //     errorHostel =
+                                      //     "Please select at least one hostel";
+                                      //   });
+                                      // }
+                                      // else {
+                                      print("selectedHostels:$selectedHostels");
+                                      print(endTime);
+                                      runMutation({
+                                        'announcementId':
+                                            widget.announcement.id,
+                                        'updateAnnouncementInput': {
+                                          "title": titleController.text,
+                                          "description":
+                                              descriptionController.text,
+                                          "endTime": "$endTime:00+05:30",
+                                        },
+                                        "images": multipartFile,
+                                      });
+                                      // };
                                     }
                                   },
                                   child: Text(
-                                    "Add Announcement",
+                                    "Edit Announcement",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 15.0),
                                   ),
