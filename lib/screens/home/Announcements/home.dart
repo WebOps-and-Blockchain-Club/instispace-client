@@ -180,16 +180,18 @@ class _AnnouncementsState extends State<Announcements> {
                     body: Container(
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
-                      child: ListView(controller: scrollController, children: [
-                        Column(
-                          children: announcements
+                      child: ListView(
+                          controller: scrollController,
+                          children: [
+                            Column(
+                              children: announcements
                               .map((post) => AnnouncementCard(
                                     announcement: post,
                                     refetchAnnouncement: refetch,
                                   ))
                               .toList(),
-                        ),
-                        if (result.isLoading)
+                            ),
+                            if (result.isLoading)
                           Center(
                             child: CircularProgressIndicator(
                               color: Colors.blue[700],

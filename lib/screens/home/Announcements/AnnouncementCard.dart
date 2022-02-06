@@ -55,146 +55,156 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
           }
           return Padding(
             padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Card(
-              color: Colors.blue[800],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0)),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SingleAnnouncement(
-                                announcement: Announcement(
-                                  title: widget.announcement.title,
-                                  description: widget.announcement.description,
-                                  endTime: widget.announcement.endTime,
-                                  id: widget.announcement.id,
-                                  images: widget.announcement.images,
-                                  createdByUserId:
-                                      widget.announcement.createdByUserId,
-                                  hostelIds: widget.announcement.hostelIds,
-                                ),
-                              )));
-                },
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-                      child: Text(
-                        widget.announcement.title,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w500),
+            child: SizedBox(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 1,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 1,
+              child: Card(
+                color: Colors.blue[800],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SingleAnnouncement(
+                                  announcement: Announcement(
+                                    title: widget.announcement.title,
+                                    description: widget.announcement.description,
+                                    endTime: widget.announcement.endTime,
+                                    id: widget.announcement.id,
+                                    images: widget.announcement.images,
+                                    createdByUserId:
+                                        widget.announcement.createdByUserId,
+                                    hostelIds: widget.announcement.hostelIds,
+                                  ),
+                                )));
+                  },
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+                        child: Text(
+                          widget.announcement.title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.w500),
+                        ),
                       ),
-                    ),
-                    if (images[0] != "")
-                      ClipRect(
-                        child: SizedBox(
-                          width: 400.0,
-                          child: CarouselSlider(
-                            items: images
-                                .map((item) => Container(
-                                      child: Center(
-                                        child: Image.network(
-                                          item,
-                                          fit: BoxFit.cover,
-                                          width: 400,
+                      if (images[0] != "")
+                        ClipRect(
+                          child: SizedBox(
+                            width: 400.0,
+                            child: CarouselSlider(
+                              items: images
+                                  .map((item) => Container(
+                                        child: Center(
+                                          child: Image.network(
+                                            item,
+                                            fit: BoxFit.cover,
+                                            width: 400,
+                                          ),
                                         ),
-                                      ),
-                                    ))
-                                .toList(),
-                            options: CarouselOptions(
-                              enableInfiniteScroll: false,
+                                      ))
+                                  .toList(),
+                              options: CarouselOptions(
+                                enableInfiniteScroll: false,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    if (images[0] == "")
-                      DescriptionTextWidget(
-                          text: widget.announcement.description),
-                    if (role == "ADMIN" ||
-                        role == "HAS" ||
-                        Id == widget.announcement.createdByUserId)
-                      Row(
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.blue[700],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0))),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      EditAnnouncements(
-                                        announcement: Announcement(
-                                          title: widget.announcement.title,
-                                          description:
-                                              widget.announcement.description,
-                                          endTime: widget.announcement.endTime,
-                                          id: widget.announcement.id,
-                                          images: widget.announcement.images,
-                                          createdByUserId: widget
-                                              .announcement.createdByUserId,
-                                          hostelIds:
-                                              widget.announcement.hostelIds,
-                                        ),
-                                        refetchAnnouncement: widget.refetchAnnouncement,
-                                      )));
-                            },
-                            child: Text(
-                              "Edit Announcement",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 7.0),
-                            ),
-                          ),
-                          Mutation(
-                              options: MutationOptions(
-                                document: gql(deleteAnnouncement),
+                      if (images[0] == "")
+                        DescriptionTextWidget(
+                            text: widget.announcement.description),
+                      if (role == "ADMIN" ||
+                          role == "HAS" ||
+                          Id == widget.announcement.createdByUserId)
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue[700],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0))),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        EditAnnouncements(
+                                          announcement: Announcement(
+                                            title: widget.announcement.title,
+                                            description:
+                                                widget.announcement.description,
+                                            endTime: widget.announcement.endTime,
+                                            id: widget.announcement.id,
+                                            images: widget.announcement.images,
+                                            createdByUserId: widget
+                                                .announcement.createdByUserId,
+                                            hostelIds:
+                                                widget.announcement.hostelIds,
+                                          ),
+                                          refetchAnnouncement: widget.refetchAnnouncement,
+                                        )));
+                              },
+                              child: Text(
+                                "Edit Announcement",
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 7.0),
                               ),
-                              builder: (
-                                RunMutation runMutation,
-                                QueryResult? result,
-                              ) {
-                                if (result!.hasException) {
-                                  print(result.exception.toString());
-                                }
-                                if (result.isLoading) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.blue[700],
+                            ),
+                            Mutation(
+                                options: MutationOptions(
+                                  document: gql(deleteAnnouncement),
+                                ),
+                                builder: (
+                                  RunMutation runMutation,
+                                  QueryResult? result,
+                                ) {
+                                  if (result!.hasException) {
+                                    print(result.exception.toString());
+                                  }
+                                  if (result.isLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.blue[700],
+                                      ),
+                                    );
+                                  }
+                                  return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.blue[700],
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0))),
+                                    onPressed: () {
+                                      runMutation({
+                                        'deleteAnnouncementAnnouncementId2':
+                                            widget.announcement.id
+                                      });
+                                      Navigator.pop(context);
+                                      widget.refetchAnnouncement!();
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Announcements()));
+                                    },
+                                    child: Text(
+                                      "Delete Announcement",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 7.0),
                                     ),
                                   );
-                                }
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue[700],
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0))),
-                                  onPressed: () {
-                                    runMutation({
-                                      'deleteAnnouncementAnnouncementId2':
-                                          widget.announcement.id
-                                    });
-                                    Navigator.pop(context);
-                                    widget.refetchAnnouncement!();
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                Announcements()));
-                                  },
-                                  child: Text(
-                                    "Delete Announcement",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 7.0),
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
-                  ],
+                                }),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
