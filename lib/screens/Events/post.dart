@@ -1,11 +1,28 @@
+import 'package:client/models/tag.dart';
+
 class Post {
   String title;
   String location;
   String description;
-  String imgUrl;
-  String formLink;
+  List<String> imgUrl;
+  String? linkToAction;
+  String linkName;
+  String id;
+  String createdById;
+  String time;
+  int likeCount;
+  List<Tag> tags;
 
-
-  Post({required this.title, required this.location, required this.description, required this.imgUrl, required this.formLink//required this.id});
-  });
+  Post(
+      {required this.title,
+      required this.location,
+      required this.description,
+      required this.imgUrl,
+      required this.linkToAction,
+      required this.id,
+      required this.time,
+      required this.tags,
+      required this.likeCount,
+      required this.createdById,
+      required this.linkName});
 }

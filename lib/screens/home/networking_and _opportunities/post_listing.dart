@@ -66,9 +66,11 @@ class _Post_ListingState extends State<Post_Listing> {
         return Query(
             options: QueryOptions(
               document: gql(getNetops),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":selectedFilterIds,"isStared":isStarred}},
+              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds,"isStared":isStarred}},
             ),
             builder: (QueryResult result, {fetchMore, refetch}){
+              print("Query running");
+              print("tags filter:${(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds}");
               if (result.hasException) {
                 print(result.exception.toString());
                 return Text(result.exception.toString());
@@ -86,6 +88,7 @@ class _Post_ListingState extends State<Post_Listing> {
                   );
                 }
               }
+              print("filterCondition:$selectedFilterIds");
               var data=result.data!["getNetops"];
               var netopList= data["netopList"];
               // print("${result.data}");
@@ -99,7 +102,9 @@ class _Post_ListingState extends State<Post_Listing> {
                       Comment(
                         message: netopList[i]["comments"][j]["content"],
                         id: netopList[i]["comments"][j]["id"],
-                        name: netopList[i]["comments"][j]["createdBy"]["name"],
+                        name: "Name",
+                          //ToDO comment name
+                          // netopList[i]["comments"][j]["createdBy"]["name"]
                       )
                   );
                 }
@@ -122,16 +127,17 @@ class _Post_ListingState extends State<Post_Listing> {
                   like_counter: netopList[i]["likeCount"],
                   tags: tags,
                   endTime: netopList[i]["endTime"],
-                  linktoaction:"",
+                  linkToAction:netopList[i]["linkToAction"],
+                  linkName: netopList[i]["linkName"],
                   imgUrl: netopList[i]["photo"],
-                  // attachment:netopList[i]["attachments"],
+                  attachment:netopList[i]["attachments"],
                   id:netopList[i]["id"],
                 )
                 );
               };
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"skip":skip+10,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  variables: {"skip":skip+10,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":(selectedFilterIds.isEmpty || selectedFilterIds==[])? null:selectedFilterIds,"isStared":isStarred}},
                   updateQuery: (previousResultData,fetchMoreResultData){
                     // print("previousResultData:$previousResultData");
                     // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
@@ -210,10 +216,14 @@ class _Post_ListingState extends State<Post_Listing> {
                                             selectedFilterIds.add(key.id);
                                           }
                                         });
-                                        // print("selectedFilterIds:$selectedFilterIds");
+                                        print("selectedFilterIds:${(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds}");
+                                        Navigator.pop(context);
+                                        posts.clear();
+                                        print(posts);
                                         refetch!();
                                       },
-                                      child: Text('Apply'))
+                                      child: Text('Apply')
+                                  )
                                 ],
                               ),
                             ]

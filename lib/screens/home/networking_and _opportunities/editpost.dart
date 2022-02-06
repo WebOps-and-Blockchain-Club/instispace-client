@@ -8,7 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
-
+import 'package:client/models/searchDelegate.dart';
 class EditPost extends StatefulWidget {
   final Post post;
   final Future<QueryResult?> Function()? refetchPosts;
@@ -19,11 +19,13 @@ class EditPost extends StatefulWidget {
 }
 
 class _EditPostState extends State<EditPost> {
+
   String editNetop = netopsQuery().editNetop;
   String? selectedImage = "Please select an image";
   TextEditingController descriptionController =TextEditingController();
   TextEditingController titleController =TextEditingController();
-
+  TextEditingController urlController= TextEditingController();
+  TextEditingController urlNameController= TextEditingController();
   String getTags =authQuery().getTags;
   var imageResult;
   Map<String,String>tagList={};
@@ -40,6 +42,12 @@ class _EditPostState extends State<EditPost> {
     var dateTime=post.endTime;
     titleController.text=post.title;
     descriptionController.text=post.description;
+    if(post.linkToAction!=null && post.linkToAction!=""){
+      urlController.text=post.linkToAction!;
+    }
+    if(post.linkName!=null && post.linkName!=""){
+      urlNameController.text=post.linkName!;
+    }
     return Query(
       options: QueryOptions(
         document: gql(getTags),
@@ -224,6 +232,7 @@ class _EditPostState extends State<EditPost> {
                               SizedBox(
                                 height: 35.0,
                                 child: TextFormField(
+                                  controller: urlController,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                     border: OutlineInputBorder(
@@ -257,6 +266,7 @@ class _EditPostState extends State<EditPost> {
                                 ),
                               ),
                               TextFormField(
+                                controller: urlNameController,
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                   border: OutlineInputBorder(
@@ -371,8 +381,10 @@ class _EditPostState extends State<EditPost> {
                                         "title":titleController.text,
                                         "content":descriptionController.text,
                                         "endTime":dateTime,
+                                        "tagIds":selectedIds,
+                                        "linkName":urlNameController.text,
+                                        "linkToAction":urlController.text,
                                       },
-                                      "tags":selectedIds,
                                       "editNetopImage":imageResult,
                                       "editNetopAttachments":multipartfileAttachment,
                                     })
@@ -404,77 +416,3 @@ class _EditPostState extends State<EditPost> {
   }
 }
 
-class CustomSearchDelegate extends SearchDelegate {
-  final Map<String,String> searchTerms;
-
-  CustomSearchDelegate({required this.searchTerms});
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.clear)
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(onPressed: () {
-      close(context, query);
-    }, icon: Icon(Icons.arrow_back)
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final List<String> matchQuery = searchTerms.values.where(
-            (searchTerm) =>
-            searchTerm.toLowerCase().contains(query.toLowerCase(),)
-    ).toList();
-    print('matchQuery:$matchQuery');
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap:(){
-            query=result;
-            close(context, query);
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final List<String> matchQuery=searchTerms.values.where(
-            (searchTerm) =>
-            searchTerm.toLowerCase().contains(query.toLowerCase(),)
-    ).toList();
-    print(matchQuery);
-    // final List<String> matchQuery = searchTerms.where(
-    //         (searchTerm) =>
-    //         searchTerm.toLowerCase().contains(query.toLowerCase(),)
-    // ).toList();
-
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-            title: Text(result),
-            onTap: (){
-              query=result;
-              close(context, query);
-            }
-        );
-      },
-    );
-  }
-}

@@ -126,9 +126,7 @@ class _EditLostState extends State<EditLost> {
             Text("Images"),
             SizedBox(
               width: 450.0,
-              child: StatefulBuilder(
-                builder: (BuildContext context,StateSetter setState){
-                  return ElevatedButton(
+              child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Colors.blue[200],
                           elevation: 0.0,
@@ -139,6 +137,7 @@ class _EditLostState extends State<EditLost> {
                         await FilePicker.platform.pickFiles(
                           type: FileType.image,
                           allowMultiple: true,
+                          withData: true,
                         );
                         if (result != null) {
                           setState(() {
@@ -146,11 +145,12 @@ class _EditLostState extends State<EditLost> {
                             for (var i=0;i<result!.files.length;i++){
                               fileNames.add(result!.files[i].name);
                               byteData.add(result!.files[i].bytes);
+                              List extention= result!.files[i].name.split(".");
                               multipartfile.add(MultipartFile.fromBytes(
                                 'photo',
                                 byteData[i],
                                 filename: fileNames[i],
-                                contentType: MediaType("image","png"),
+                                contentType: MediaType("image",extention.last),
                               ));
                             }
                           });
@@ -167,9 +167,7 @@ class _EditLostState extends State<EditLost> {
                           ),
                         ),
                       )
-                  );
-                },
-              )
+                  ),
             ),
             if(result!=null)
               Wrap(
@@ -244,14 +242,14 @@ class _EditLostState extends State<EditLost> {
                             if (_formKey.currentState!.validate()){
                               print(nameController.text);
                               await runMutation({
-                                "editItemsItemId":post.id,
-                                "itemInput": {
+                                "itemId":post.id,
+                                "editItemInput": {
                                   "name": nameController.text,
                                   "location":locationController.text,
                                   "time":dateTime,
                                   "contact":contactController.text,
                                 },
-                                "images": multipartfile.isEmpty ? null : multipartfile,
+                                "editItemsImages": multipartfile.isEmpty ? null : multipartfile,
                               });
                             }
                           },

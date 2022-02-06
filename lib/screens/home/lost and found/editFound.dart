@@ -136,6 +136,7 @@ class _EditFoundState extends State<EditFound> {
                         await FilePicker.platform.pickFiles(
                           type: FileType.image,
                           allowMultiple: true,
+                          withData: true,
                         );
                         if (result != null) {
                           setState(() {

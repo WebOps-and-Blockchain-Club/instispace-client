@@ -1,24 +1,27 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/events.dart';
+import 'package:client/screens/Events/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
+import 'package:validators/validators.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:client/models/searchDelegate.dart';
 import 'package:intl/intl.dart';
 import 'package:http_parser/http_parser.dart';
 
-class AddPostEvents extends StatefulWidget {
+class EditPostEvents extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
-  AddPostEvents({required this.refetchPosts});
+  final Post post;
+  EditPostEvents({required this.refetchPosts,required this.post});
   @override
-  _AddPostEventsState createState() => _AddPostEventsState();
+  _EditPostEventsState createState() => _EditPostEventsState();
 }
 
-class _AddPostEventsState extends State<AddPostEvents> {
-  String createEvent = eventsQuery().createEvent;
+class _EditPostEventsState extends State<EditPostEvents> {
+  String editEvent = eventsQuery().editEvent;
   List<String>selectedTags=[];
   List<String>selectedIds=[];
   List byteData=[];
@@ -31,28 +34,23 @@ class _AddPostEventsState extends State<AddPostEvents> {
   final myControllerTitle = TextEditingController();
   final myControllerLocation = TextEditingController();
   final myControllerDescription = TextEditingController();
-  final myControllerImgUrl = TextEditingController();
   final myControllerFormLink = TextEditingController();
   final formNameController = TextEditingController();
   Map<String,String>tagList={};
   FilePickerResult? Result=null;
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myControllerTitle.dispose();
-    myControllerLocation.dispose();
-    myControllerDescription.dispose();
-    myControllerImgUrl.dispose();
-    myControllerFormLink.dispose();
-    formNameController.dispose();
-    super.dispose();
-  }
-
   final _formKey = GlobalKey<FormState>();
+  String? selectedImage = "Please select an image";
 
   @override
   Widget build(BuildContext context) {
-    String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
+    var post=widget.post;
+    myControllerTitle.text=post.title;
+    myControllerLocation.text=post.location;
+    if(post.linkToAction!=null && post.linkToAction!=""){
+      myControllerFormLink.text=post.linkToAction!;
+    }
+    myControllerDescription.text=post.description;
+    formNameController.text=post.linkName;
     return Query(
         options: QueryOptions(document: gql(getTags)),
         builder:(QueryResult result, {fetchMore, refetch}){
@@ -102,7 +100,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               });
                               print("finalResult:$finalResult");
                               print("SelectedTags:$selectedTags");
-                              },
+                            },
                             child: Text(
                               "Select Tags",
                               style: TextStyle(
@@ -197,7 +195,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                           SizedBox(height: 5.0),
                           SizedBox(
                               width: 450.0,
-                              child: ElevatedButton(
+                              child: StatefulBuilder(
+                                builder: (BuildContext context,StateSetter setState){
+                                  return ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           primary: Colors.blue[200],
                                           elevation: 0.0,
@@ -208,7 +208,6 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                         await FilePicker.platform.pickFiles(
                                           type: FileType.image,
                                           allowMultiple: true,
-                                          withData: true,
                                         );
                                         if (Result != null) {
                                           setState(() {
@@ -229,7 +228,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                       child: Padding(
                                         padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
                                         child: Text(
-                                          selectedImage,
+                                          selectedImage!,
                                           style: TextStyle(
                                               color: Colors.black87,
                                               fontSize: 17.0,
@@ -237,8 +236,10 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                           ),
                                         ),
                                       )
-                                  ),
-                              ),
+                                  );
+                                },
+                              )
+                          ),
                           if(Result!=null)
                             Wrap(
                               children: Result!.files.map((e) => InkWell(
@@ -306,10 +307,10 @@ class _AddPostEventsState extends State<AddPostEvents> {
                               ),
                               Mutation(
                                   options: MutationOptions(
-                                      document: gql(createEvent),
+                                      document: gql(editEvent),
                                       onCompleted: (dynamic resultData){
                                         print(resultData);
-                                        if(resultData["createEvent"]==true){
+                                        if(resultData["editEvent"]==true){
                                           Navigator.pop(context);
                                           widget.refetchPosts!();
                                           print("post created");
@@ -346,7 +347,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                             };
                                             print("selectedTagIds:$selectedIds");
                                             await runMutation({
-                                              "newEventData":{
+                                              "eventId":post.id,
+                                              "editEventData":{
                                                 "content":myControllerDescription.text,
                                                 "title":myControllerTitle.text,
                                                 "tagIds":selectedIds,
@@ -355,7 +357,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                 "linkToAction":myControllerFormLink.text,
                                                 "location":myControllerLocation.text,
                                               },
-                                              "image":multipartfile.isEmpty ? null : multipartfile,
+                                              "editEventImage":multipartfile.isEmpty ? null : multipartfile,
                                             });
                                           }
                                         },

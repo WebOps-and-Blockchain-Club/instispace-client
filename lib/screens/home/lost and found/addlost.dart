@@ -1,5 +1,5 @@
 
-import 'dart:typed_data';
+
 
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -31,7 +31,6 @@ class _AddLostState extends State<AddLost> {
   List multipartfile=[];
   List fileNames=[];
   FilePickerResult? result=null;
-  var resultData1;
   @override
   Widget build(BuildContext context) {
     String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
@@ -248,8 +247,6 @@ class _AddLostState extends State<AddLost> {
                                   },
                                   "images": multipartfile.isEmpty ? null : multipartfile,
                                 });
-                                print("resultData1:$resultData1");
-
                               }
                             },
                             child: Text("Post")
