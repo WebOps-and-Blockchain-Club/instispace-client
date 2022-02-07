@@ -47,7 +47,8 @@ class _CommentsState extends State<Comments> {
                 Comment(
                   message: result.data!["getNetop"]["comments"][j]["content"],
                   id: result.data!["getNetop"]["comments"][j]["id"],
-                  name: result.data!["getNetop"]["comments"][j]["createdBy"]["name"],
+                  name: "Name",
+                    // result.data!["getNetop"]["comments"][j]["createdBy"]["name"]
                 )
             );
           }
@@ -137,7 +138,12 @@ class _CommentsState extends State<Comments> {
                   ),
                   Mutation(
                     options: MutationOptions(
-                        document: gql(createComments)
+                        document: gql(createComments),
+                      onCompleted: (dynamic resultData){
+                          print("comment result data: $resultData");
+                          refetch!();
+                          commentController.clear();
+                      }
                     ),
                     builder: (
                         RunMutation runMutation,
@@ -146,7 +152,17 @@ class _CommentsState extends State<Comments> {
                       if (result!.hasException){
                         print(result.exception.toString());
                       }
-                      if(result.isLoading){}
+                      if(result.isLoading){
+                        return Scaffold(
+                          appBar:AppBar(
+                            title: Text('Comments'),
+                            backgroundColor:Color(0xFFE6CCA9),
+                          ),
+                          body: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
                       return IconButton(onPressed: (){
                         print(widget.post.id);
                         runMutation(
@@ -155,7 +171,6 @@ class _CommentsState extends State<Comments> {
                               "netopId":widget.post.id,
                             }
                         );
-                        refetch!();
                       }, icon: Icon(Icons.send));
                     },
                   ),

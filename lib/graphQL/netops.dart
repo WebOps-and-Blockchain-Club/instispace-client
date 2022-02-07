@@ -1,6 +1,6 @@
 class netopsQuery{
-  String getNetops ="""query(\$skip: Float!, \$take: Float!,\$orderByLikes: Boolean, ){
-  getNetops(skip: \$skip, take: \$take,OrderByLikes: \$orderByLikes) {
+  String getNetops ="""query(\$skip: Float!, \$take: Float!,\$orderByLikes: Boolean,\$filteringCondition: fileringConditions,){
+  getNetops(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
     netopList {
       id,
       content,
@@ -31,9 +31,11 @@ class netopsQuery{
     total
   },
 }""";
-  String createComment = """mutation(\$content: String!, \$netopId: String!){
-  createComment(content: \$content, NetopId: \$netopId)
-}""";
+  String createComment = """
+  mutation(\$content: String!, \$netopId: String!){
+  createCommentNetop(content: \$content, NetopId: \$netopId)
+}
+""";
   String createNetop ="""
   mutation(\$newEventData: createNetopsInput!, \$image: Upload, \$attachments: [Upload!]){
   createNetop(NewEventData: \$newEventData, Image: \$image, Attachments: \$attachments)
@@ -84,8 +86,8 @@ class netopsQuery{
 }
   """;
   String editNetop="""
-  mutation(\$editNetopNetopId: String!, \$editNetopsData: editNetopsInput!, \$editNetopAttachments: [Upload!], \$editNetopImage: Upload, \$tags: [String!]){
-  editNetop(NetopId: \$editNetopNetopId, EditNetopsData: \$editNetopsData, Attachments: \$editNetopAttachments, Image: \$editNetopImage, Tags: \$tags)
+  mutation(\$editNetopNetopId: String!, \$editNetopsData: editNetopsInput!, \$editNetopAttachments: [Upload!], \$editNetopImage: Upload){
+  editNetop(NetopId: \$editNetopNetopId, EditNetopsData: \$editNetopsData, Attachments: \$editNetopAttachments, Image: \$editNetopImage)
 }
   """;
   String reportNetop="""

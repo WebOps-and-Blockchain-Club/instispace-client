@@ -1,7 +1,7 @@
 import 'package:client/models/homeClasses.dart';
 import 'package:client/models/tag.dart';
+import 'package:client/screens/Events/home.dart';
 import 'package:client/screens/home/Announcements/home.dart';
-import 'package:client/screens/home/Events/eventsHome.dart';
 import 'package:client/screens/home/homeCards.dart';
 import 'package:client/screens/home/userpage.dart';
 import 'package:client/screens/userInit/updatepass.dart';
