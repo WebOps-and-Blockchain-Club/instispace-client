@@ -1,7 +1,7 @@
 import 'package:client/models/tag.dart';
 import 'package:client/models/commentclass.dart';
 
-class Post {
+class NetOpPost {
   String title;
   String description;
   String? imgUrl;
@@ -13,7 +13,7 @@ class Post {
   String id;
   // String attachment;
 
-  Post({required this.title,
+  NetOpPost({required this.title,
   required this.description,
   required this.imgUrl,
   required this.like_counter,

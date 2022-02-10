@@ -10,7 +10,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 
 class EditPost extends StatefulWidget {
-  final Post post;
+  final NetOpPost post;
   final Future<QueryResult?> Function()? refetchPosts;
   EditPost({required this.post,required this.refetchPosts});
 

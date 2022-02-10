@@ -18,7 +18,7 @@ class _Post_ListingState extends State<Post_Listing> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String getNetops = netopsQuery().getNetops;
   String getTags = authQuery().getTags;
-  List<Post> posts = [];
+  List<NetOpPost> posts = [];
 
   bool mostlikesvalue =false;
   bool isStarred =false;
@@ -115,7 +115,7 @@ class _Post_ListingState extends State<Post_Listing> {
                     ),
                   );
                 }
-                posts.add(Post(
+                posts.add(NetOpPost(
                   title: netopList[i]["title"],
                   comments:comments,
                   description: netopList[i]["content"],

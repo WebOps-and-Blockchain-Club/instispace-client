@@ -1,4 +1,4 @@
-import 'package:client/models/homeClasses.dart';
+import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/screens/home/Events/eventsHome.dart';
@@ -8,6 +8,7 @@ import 'package:client/screens/userInit/updatepass.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
+import 'Events/post.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
@@ -29,8 +30,10 @@ class _HomePageState extends State<HomePage> {
   var result;
   late String userName;
   late String userRole;
-  List<eventsClass> events = [];
-  List<eventsClass> netops = [];
+  List<Post> events = [];
+  Map<Post, String> event = {};
+  List<NetOpPost> netops = [];
+  List all = [];
 
   @override
   void initState() {
@@ -177,11 +180,12 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         }
-        events.add(eventsClass(
+        events.add(Post(
             title: result.data!["getMe"]["getHome"]["events"][i]["title"],
             tags: tags,
             id: result.data!["getMe"]["getHome"]["events"][i]["id"],
             isStared: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
+            type: 'Event',
             // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
         ));
       }
@@ -203,9 +207,17 @@ class _HomePageState extends State<HomePage> {
           tags: tags,
           id: result.data!["getMe"]["getHome"]["netops"][i]["id"],
           isStared: result.data!["getMe"]["getHome"]["netops"][i]["isStared"],
+          type: 'Networking & Opportunity',
         ));
       }
+      all = events + netops;
       userName = result.data!["getMe"]["name"];
+      print("userName:$userName");
+      event.forEach((key, value) {
+        if (value == "Events") {
+          print(value);
+        }
+      });
       return Scaffold(
           appBar: AppBar(
             title:
@@ -246,24 +258,34 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 250,
                   child: ListView(
-                      children : events
+                      children : event.keys
                             .map((events) => EventsHomeCard(
                           events: events,
                         ))
                             .toList(),
                       ),
                 ),
-                Text("Networking & Opportunities"),
-                SizedBox(
-                  height: 250,
-                  child: ListView(
-                    children : netops
-                        .map((netops) => NetOpHomeCard(
-                      netops: netops,
-                    ))
-                        .toList(),
-                  ),
-                ),
+                // Text("Networking & Opportunities"),
+                // SizedBox(
+                //   height: 250,
+                //   child: ListView(
+                //     children : netops
+                //         .map((netops) => NetOpHomeCard(
+                //       netops: netops,
+                //     ))
+                //         .toList(),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 250,
+                //   child: ListView(
+                //     children : all
+                //         .map((netops) => NetOpHomeCard(
+                //       netops: netops,
+                //     ))
+                //         .toList(),
+                //   ),
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

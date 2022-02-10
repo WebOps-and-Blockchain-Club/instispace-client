@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 
 
 class PostCard extends StatefulWidget {
-  final Post post;
+  final NetOpPost post;
   final Future<QueryResult?> Function()? refetchPosts;
   PostCard({required this.post,required this.refetchPosts});
 

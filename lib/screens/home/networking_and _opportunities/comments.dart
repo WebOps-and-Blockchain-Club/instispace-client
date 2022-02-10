@@ -5,7 +5,7 @@ import '../../../models/post.dart';
 import 'package:client/models/commentclass.dart';
 
 class Comments extends StatefulWidget {
-  final Post post;
+  final NetOpPost post;
   Comments({required this.post});
 
   @override
