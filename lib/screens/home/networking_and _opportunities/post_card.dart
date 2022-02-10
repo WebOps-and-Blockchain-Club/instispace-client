@@ -8,7 +8,6 @@ import '../../../models/post.dart';
 import '../../../models/tag.dart';
 import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 import 'package:expandable/expandable.dart';
-import 'package:intl/intl.dart';
 
 
 
@@ -37,7 +36,6 @@ class _PostCardState extends State<PostCard> {
     List<Tag>tags = widget.post.tags;
     DateTime dateTime = DateTime.parse(widget.post.endTime);
     var likeCount;
-
           return Query(
               options: QueryOptions(
                 document: gql(getNetop),
@@ -117,7 +115,6 @@ class _PostCardState extends State<PostCard> {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
-                                                  widget.refetchPosts!();
                                                 },
                                               ),
                                             ),

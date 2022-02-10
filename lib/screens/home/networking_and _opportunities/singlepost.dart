@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
 import '../../../models/tag.dart';
 import 'package:client/screens/home/networking_and _opportunities/comments.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Single_Post extends StatelessWidget {
   String toggleStar=netopsQuery().toggleStar;
@@ -145,6 +146,7 @@ class Single_Post extends StatelessWidget {
                                 Text(post.description),
                               ]),
                             ),
+
                         ],
                       ),
                     ),
@@ -153,12 +155,23 @@ class Single_Post extends StatelessWidget {
         ],
       ),
       ),
+          if(post.attachment!=null && post.attachment != "")
+          IconButton(
+              onPressed: (){
+                print("${post.attachment}");
+                launch(post.attachment!);
+              },
+              icon: Icon(Icons.attachment)
+          ),
+          if(post.linkToAction!=null && post.linkToAction != "")
           Center(
-            child: ElevatedButton(onPressed: ()=>{},
+            child: ElevatedButton(onPressed: () => {
+              launch(post.linkToAction!)
+            },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Color(0x70533535)),
               ),
-              child: Text('Know More'),),
+              child: Text(post.linkName!),),
           ),
           
       ]

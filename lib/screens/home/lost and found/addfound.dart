@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+
 
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
-import 'package:client/models/compressFunction.dart';
+
 
 class AddFound extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
@@ -20,7 +20,6 @@ class AddFound extends StatefulWidget {
 
 class _AddFoundState extends State<AddFound> {
   String createItem = LnFQuery().createItem;
-  String? selectedImage = "Please select an image";
   var imageResult ;
   TextEditingController nameController =TextEditingController();
   TextEditingController descriptionController =TextEditingController();
@@ -139,11 +138,12 @@ class _AddFoundState extends State<AddFound> {
                         for (var i=0;i<result!.files.length;i++){
                           fileNames.add(result!.files[i].name);
                           byteData.add(result!.files[i].bytes);
+                          List extention= result!.files[i].name.split(".");
                           multipartfile.add(MultipartFile.fromBytes(
                             'photo',
                             byteData[i],
                             filename: fileNames[i],
-                            contentType: MediaType("image","png"),
+                            contentType: MediaType("image",extention.last),
                           ));
                         }
                       });
@@ -229,19 +229,18 @@ class _AddFoundState extends State<AddFound> {
                       if (result!.hasException){
                         print(result.exception.toString());
                       }
-                      if(result.isLoading){}
                       return ElevatedButton(
-                          onPressed: (){
+                          onPressed: ()async{
                             if (_formKey.currentState!.validate()){
-                              runMutation({
+                              await runMutation({
                                 "itemInput": {
                                   "name": nameController.text,
                                   "location":locationController.text,
-                                  "time":dateTime+":00:+5:30",
+                                  "time":dateTime,
                                   "category": "FOUND",
                                   "contact":contactController.text,
                                 },
-                                "images": multipartfile,
+                                "images": multipartfile.isEmpty ? null : multipartfile,
                               });
                             }
                           },

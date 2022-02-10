@@ -5,23 +5,25 @@ class NetOpPost {
   String title;
   String description;
   String? imgUrl;
-  String linktoaction;
+  String? linkToAction;
   int like_counter;
   List<Tag> tags;
   List<Comment> comments;
   String endTime;
   String id;
-  // String attachment;
+  String? attachment;
+  String? linkName;
 
   NetOpPost({required this.title,
   required this.description,
   required this.imgUrl,
   required this.like_counter,
-  required this.linktoaction,
+  required this.linkToAction,
   required this.tags,
     required this.comments,
     required this.endTime,
     required this.id,
-    // required this.attachment,
+    required this.attachment,
+    required this.linkName,
   });
 }
