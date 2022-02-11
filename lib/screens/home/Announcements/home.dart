@@ -35,7 +35,7 @@ class _AnnouncementsState extends State<Announcements> {
           document: gql(getMe),
         ),
         builder: (QueryResult result, {fetchMore, refetch}) {
-          if (announcements.isEmpty) if (result.isLoading) {
+          if (result.isLoading) {
             return Scaffold(
               appBar: AppBar(
                 title: Text(
@@ -65,7 +65,7 @@ class _AnnouncementsState extends State<Announcements> {
                     document: gql(getAllAnnouncements),
                     variables: {"skip": skip, "take": take}),
                 builder: (QueryResult result, {fetchMore, refetch}) {
-                  if (result.isLoading) {
+                  if (announcements.isEmpty && result.isLoading) {
                     return Scaffold(
                       appBar: AppBar(
                         title: Text(
@@ -215,6 +215,26 @@ class _AnnouncementsState extends State<Announcements> {
                 builder: (QueryResult result, {fetchMore, refetch}) {
                   if (result.hasException) {
                     print(result.exception.toString());
+                  }
+                  if (announcements.isEmpty && result.isLoading) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: Text(
+                          "Announcements",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        elevation: 0.0,
+                        backgroundColor: Colors.deepPurpleAccent,
+                      ),
+                      body: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                    );
                   }
                   announcements.clear();
                   for (var i = 0;

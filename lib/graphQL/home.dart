@@ -84,4 +84,30 @@ query{
   toggleStarEvent(EventId: \$eventId)
   }
   """;
+  String searchUser="""
+  query(\$skip: Float!, \$take: Float!, \$search: String!){
+  searchUser(skip: \$skip, take: \$take, search: \$search) {
+    usersList {
+      id
+      name
+      roll
+      role
+      hostel {
+        name
+      }
+    }
+  }
+}
+  """;
+  String getUser="""
+  query(\$getUserInput: GetUserInput!){
+  getUser(GetUserInput: \$getUserInput) {
+    interest {
+      title
+      id
+      category
+    }
+  }
+}
+  """;
 }

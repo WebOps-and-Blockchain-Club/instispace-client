@@ -2,7 +2,9 @@ import 'package:client/models/homeClasses.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/home.dart';
 import 'package:client/screens/home/Announcements/home.dart';
+import 'package:client/screens/home/Queries/home.dart';
 import 'package:client/screens/home/homeCards.dart';
+import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
 import 'package:client/screens/userInit/updatepass.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   late AuthService _auth;
   String getMe = homeQuery().getMe;
   String getMeHome = homeQuery().getMeHome;
+
   var result;
   late String userName;
   late String userRole;
@@ -40,6 +43,7 @@ class _HomePageState extends State<HomePage> {
       _auth = Provider.of<AuthService>(context, listen: false);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,6 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }
-
           userRole = result.data!["getMe"]["role"];
           print(userRole);
 
@@ -68,7 +71,11 @@ class _HomePageState extends State<HomePage> {
                 title: Text("Hey ${userRole}"),
                 backgroundColor: Colors.deepPurpleAccent,
                 actions: [
-                  IconButton(onPressed: () {_auth.clearAuth();}, icon: Icon(Icons.logout))
+                  IconButton(onPressed: () {_auth.clearAuth();}, icon: Icon(Icons.logout)),
+                  IconButton(onPressed: (){
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => searchUser()));
+                  }, icon: Icon(Icons.search_outlined)),
                 ],
               ),
               body: Column(
@@ -152,20 +159,20 @@ class _HomePageState extends State<HomePage> {
             return Query(
             options: QueryOptions(
             document: gql(getMeHome),
-    ),
-    builder: (QueryResult result, {fetchMore, refetch}) {
-      if (result.hasException) {
-        print(result.exception.toString());
-      }
-      if (result.isLoading) {
-        return Center(
-          child: CircularProgressIndicator(
-            color: Colors.blue[700],
-          ),
-        );
-      }
-      events.clear();
-      for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
+            ),
+                builder: (QueryResult result, {fetchMore, refetch}) {
+              if (result.hasException) {
+                print(result.exception.toString());
+              }
+              if (result.isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blue[700],
+                  ),
+                );
+              }
+              events.clear();
+              for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
         List<Tag> tags = [];
         for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
           // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
@@ -226,6 +233,10 @@ class _HomePageState extends State<HomePage> {
             ),
             backgroundColor: Colors.deepPurpleAccent,
             actions: [
+              IconButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => searchUser()));
+              }, icon: Icon(Icons.search_outlined)),
               Column(
                 children: [
                   IconButton(
@@ -263,6 +274,14 @@ class _HomePageState extends State<HomePage> {
                     ))
                         .toList(),
                   ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => QueryHome()));
+                  },
+                  iconSize: 30.0,
+                  icon: Icon(Icons.query_stats_rounded),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
