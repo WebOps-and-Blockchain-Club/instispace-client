@@ -6,6 +6,7 @@ query{
       netops {
         title
         id
+        content
         isStared
         tags {
           title
@@ -24,6 +25,12 @@ query{
         }
         location
         time
+      }
+      announcements {
+        title
+        images
+        description
+        id
       }
     }
     interest {
@@ -60,6 +67,16 @@ query{
     hostel {
       name
       id
+      amenities {
+        name
+        description
+        id
+      }
+      contacts {
+        type
+        name
+        contact
+      }
     }
   }
 }
@@ -69,6 +86,20 @@ query{
     createHostel(CreateHostelInput: \$createHostelInput)
   }
   """;
+
+  String createAmenity = """
+  mutation(\$hostelId: String!, \$createAmenityInput: CreateAmenityInput!){
+  createAmenity(HostelId: \$hostelId, CreateAmenityInput: \$createAmenityInput)
+}
+  """;
+
+  String createHostelContact = """
+  mutation(\$hostelId: String!, \$createContactInput: CreateContactInput!){
+  createHostelContact(HostelId: \$hostelId, CreateContactInput: \$createContactInput)
+}
+  """;
+
+
   String createTag = """
   mutation(\$tagInput: TagInput!){
     createTag(TagInput: \$tagInput)
