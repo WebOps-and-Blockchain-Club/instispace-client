@@ -13,7 +13,7 @@ class _CreateSuperUsersState extends State<CreateSuperUsers> {
   String createSuperUser = homeQuery().createSuperUser;
   String getMe = homeQuery().getMe;
   static var role;
-  List<String> Roles = ["LEADS","HAS","HOSTEL_SEC","MODERATOR"];
+  List<String> Roles = ["LEADS","HAS","SECRETARY"];
   late String DropDownValue ;
   TextEditingController rollController = TextEditingController();
 
@@ -33,14 +33,9 @@ class _CreateSuperUsersState extends State<CreateSuperUsers> {
           }
           role = result.data!["getMe"]["role"];
           print(role);
-          if(role == "LEADS") {
+          if(role == "HAS" || role == "SECRETARY") {
             Roles.clear();
-            Roles.add("Moderator");
-            print(Roles);
-          }
-          else if(role == "HAS") {
-            Roles.clear();
-            Roles.add("Hostel Secretory");
+            Roles.add("LEADS");
           }
           DropDownValue =Roles[0];
           return Scaffold(

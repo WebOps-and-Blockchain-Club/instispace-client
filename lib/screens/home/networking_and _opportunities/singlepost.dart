@@ -10,7 +10,7 @@ class Single_Post extends StatelessWidget {
   String toggleStar=netopsQuery().toggleStar;
   bool isStarred;
   Future<QueryResult?> Function()? refetch;
-  final Post post;
+  final NetOpPost post;
   Single_Post({required this.post,required this.isStarred,required this.refetch});
   @override
   Widget build(BuildContext context) {
