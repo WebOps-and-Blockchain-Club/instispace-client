@@ -1,14 +1,21 @@
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/home.dart';
+import 'package:client/screens/Events/post.dart';
+import 'package:client/screens/Login/createAmenity.dart';
+import 'package:client/screens/Login/createHostelContacts.dart';
+import 'package:client/screens/Login/createhostel.dart';
+import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/screens/home/homeCards.dart';
 import 'package:client/screens/home/userpage.dart';
 import 'package:client/screens/userInit/updatepass.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'Events/post.dart';
+import 'hostel_profile.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
@@ -30,10 +37,7 @@ class _HomePageState extends State<HomePage> {
   var result;
   late String userName;
   late String userRole;
-  List<Post> events = [];
-  Map<Post, String> event = {};
-  List<NetOpPost> netops = [];
-  List all = [];
+Map all = {};
 
   @override
   void initState() {
@@ -77,17 +81,37 @@ class _HomePageState extends State<HomePage> {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  Container(
                     height: 500,
-                    child: Center(
-                      child: Text(
-                        "HOMEPAGE !!!",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 50.0,
+                    child: Column(
+                      children: [
+                        Text(
+                          "HOMEPAGE !!!",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => CreateHostel()
+                              ));
+                            }, child: Text("Create New Hostel")),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => CreateHostelAmenity()
+                              ));
+                            }, child: Text("Create Hostel Amenity")),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => CreateHostelContact()
+                              ));
+                            }, child: Text("Create Hostel Contact"))
+                      ],
                     ),
                   ),
                   Row(
@@ -101,9 +125,9 @@ class _HomePageState extends State<HomePage> {
                                     builder: (BuildContext context) => EventsHome()));
                               },
                             iconSize: 30.0,
-                              icon: Icon(Icons.event),
+                              icon: const Icon(Icons.event),
                           ),
-                          Text("Events",style: TextStyle(fontSize: 10.0),),
+                          const Text("Events",style: TextStyle(fontSize: 10.0),),
                         ],
                       ),
                       Column(
@@ -167,7 +191,18 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }
-      events.clear();
+      all.clear();
+      for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
+        all.putIfAbsent(Announcement(
+            title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
+            hostelIds: [],
+            description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
+            endTime: '',
+            id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
+            images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
+            createdByUserId: ''
+        ), () => "announcement");
+      }
       for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
         List<Tag> tags = [];
         for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
@@ -180,16 +215,23 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         }
-        events.add(Post(
+        all.putIfAbsent(Post(
             title: result.data!["getMe"]["getHome"]["events"][i]["title"],
             tags: tags,
             id: result.data!["getMe"]["getHome"]["events"][i]["id"],
-            isStared: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
-            type: 'Event',
+          createdById: '',
+          likeCount: 0,
+          imgUrl: [],
+          linkName: '',
+          description: '',
+          time: result.data!["getMe"]["getHome"]["events"][i]["time"],
+          location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+          linkToAction: '',
             // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-        ));
+        ),
+            () => "event",
+        );
       }
-      netops.clear();
       for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
         List<Tag> tags = [];
         for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
@@ -202,22 +244,17 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         }
-        netops.add(eventsClass(
+        all.putIfAbsent(NetOpPost(
           title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
           tags: tags,
-          id: result.data!["getMe"]["getHome"]["netops"][i]["id"],
-          isStared: result.data!["getMe"]["getHome"]["netops"][i]["isStared"],
-          type: 'Networking & Opportunity',
-        ));
+          id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: '', imgUrl: '', linkToAction: '', linkName: '',
+          description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
+
+        ),()=>"netop");
       }
-      all = events + netops;
       userName = result.data!["getMe"]["name"];
+
       print("userName:$userName");
-      event.forEach((key, value) {
-        if (value == "Events") {
-          print(value);
-        }
-      });
       return Scaffold(
           appBar: AppBar(
             title:
@@ -248,21 +285,32 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text("Logout", style: TextStyle(fontSize: 10.0),)
                 ],
+              ),
+              Column(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HostelProfile()));
+                      },
+                      icon: Icon(Icons.account_balance)
+                  ),
+                  Text("My Hostel", style: TextStyle(fontSize: 10.0),)
+                ],
               )
             ],
           ),
           body: SafeArea(
             child: Column(
               children: [
-                Text("Events"),
                 SizedBox(
-                  height: 250,
+                  height: 500,
                   child: ListView(
-                      children : event.keys
-                            .map((events) => EventsHomeCard(
-                          events: events,
-                        ))
-                            .toList(),
+                      children :[
+                        Column(
+                          children: all.keys.map((e) => cardFunction(all[e],e)
+                          ).toList(),
+                        )
+                      ]
                       ),
                 ),
                 // Text("Networking & Opportunities"),
@@ -351,5 +399,17 @@ class _HomePageState extends State<HomePage> {
           }
     }
     );
+  }
+  Widget cardFunction (String category, post){
+    if(category == "event"){
+      return EventsHomeCard(events: post);
+    }
+    else if(category == "netop"){
+      return NetOpHomeCard(netops: post);
+    }
+    else if(category == "announcement"){
+      return AnnouncementHomeCard(announcements: post);
+    }
+    return Container();
   }
 }
