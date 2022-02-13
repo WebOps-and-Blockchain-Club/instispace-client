@@ -42,7 +42,7 @@ dependencies:
   validators:
   file_picker: ^4.3.0
   markdown_editable_textinput: ^2.0.2
-  flutter_markdown: ^0.6.9
+  flutter_markdown:
   getwidget: ^2.0.4
   expandable: ^5.0.1
   like_button: ^2.0.4

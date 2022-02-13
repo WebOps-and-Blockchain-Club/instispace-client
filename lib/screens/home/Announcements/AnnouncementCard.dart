@@ -9,6 +9,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/screens/home/Announcements/expand_description.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/screens/home/Announcements/edit_announcements.dart';
+import 'package:intl/intl.dart';
+
 
 class AnnouncementCard extends StatefulWidget {
   final Announcement announcement;
@@ -44,7 +46,7 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
           if (result.isLoading) {
             return Center(
               child: CircularProgressIndicator(
-                color: Colors.blue[700],
+                color: Color(0xFFDEDDFF),
               ),
             );
           }
@@ -53,86 +55,82 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
           if (widget.announcement.images != null) {
             images = widget.announcement.images!.split(" AND ");
           }
+
           return Padding(
             padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 1,
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 1,
-              child: Card(
-                color: Colors.blue[800],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0)),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SingleAnnouncement(
-                                  announcement: Announcement(
-                                    title: widget.announcement.title,
-                                    description: widget.announcement.description,
-                                    endTime: widget.announcement.endTime,
-                                    id: widget.announcement.id,
-                                    images: widget.announcement.images,
-                                    createdByUserId:
-                                        widget.announcement.createdByUserId,
-                                    hostelIds: widget.announcement.hostelIds,
-                                  ),
-                                )));
-                  },
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
-                        child: Text(
-                          widget.announcement.title,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.w500),
-                        ),
+            child: Card(
+              color: Color(0xFFDEDDFF),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SingleAnnouncement(
+                                announcement: Announcement(
+                                  title: widget.announcement.title,
+                                  description: widget.announcement.description,
+                                  endTime: widget.announcement.endTime,
+                                  id: widget.announcement.id,
+                                  images: widget.announcement.images,
+                                  createdByUserId:
+                                      widget.announcement.createdByUserId,
+                                  hostelIds: widget.announcement.hostelIds,
+                                ),
+                              )));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
+                      child: Text(
+                        widget.announcement.title,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500),
                       ),
-                      if (images[0] != "")
-                        ClipRect(
-                          child: SizedBox(
-                            width: 400.0,
-                            child: CarouselSlider(
-                              items: images
-                                  .map((item) => Container(
-                                        child: Center(
-                                          child: Image.network(
-                                            item,
-                                            fit: BoxFit.cover,
-                                            width: 400,
-                                          ),
+                    ),
+                    if (images[0] != "")
+                      ClipRect(
+                        child: SizedBox(
+                          width: 400.0,
+                          child: CarouselSlider(
+                            items: images
+                                .map((item) => Container(
+                                      child: Center(
+                                        child: Image.network(
+                                          item,
+                                          fit: BoxFit.cover,
+                                          width: 400,
                                         ),
-                                      ))
-                                  .toList(),
-                              options: CarouselOptions(
-                                enableInfiniteScroll: false,
-                              ),
+                                      ),
+                                    ))
+                                .toList(),
+                            options: CarouselOptions(
+                              enableInfiniteScroll: false,
                             ),
                           ),
                         ),
-                      if (images[0] == "")
-                        DescriptionTextWidget(
-                            text: widget.announcement.description),
-                      if (role == "ADMIN" ||
-                          role == "HAS" ||
-                          Id == widget.announcement.createdByUserId)
-                        Row(
+                      ),
+                    if (images[0] == "")
+                      DescriptionTextWidget(
+                          text: widget.announcement.description),
+                    if (role == "ADMIN" ||
+                        role == "HAS" ||
+                        Id == widget.announcement.createdByUserId)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 1),
+                        child: Row(
                           children: [
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue[700],
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0))),
+                                  primary: Color(0xFF6464DA),
+                                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                  minimumSize: Size(40,24),
+                                  ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
@@ -153,9 +151,9 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                                         )));
                               },
                               child: Text(
-                                "Edit Announcement",
+                                "Edit",
                                 style:
-                                    TextStyle(color: Colors.white, fontSize: 7.0),
+                                    TextStyle(color: Colors.white, fontSize: 12.0),
                               ),
                             ),
                             Mutation(
@@ -172,16 +170,16 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                                   if (result.isLoading) {
                                     return Center(
                                       child: CircularProgressIndicator(
-                                        color: Colors.blue[700],
+                                        color: Color(0xFF6464DA),
                                       ),
                                     );
                                   }
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.blue[700],
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0))),
+                                        primary: Color(0xFF6464DA),
+                                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                        minimumSize: Size(40,24),
+                                        ),
                                     onPressed: () {
                                       runMutation({
                                         'deleteAnnouncementAnnouncementId2':
@@ -195,16 +193,16 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                                                   Announcements()));
                                     },
                                     child: Text(
-                                      "Delete Announcement",
+                                      "Delete",
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 7.0),
+                                          color: Colors.white, fontSize: 12.0),
                                     ),
                                   );
                                 }),
                           ],
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               ),
             ),

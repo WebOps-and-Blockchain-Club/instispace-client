@@ -71,67 +71,35 @@ class _EditPostEventsState extends State<EditPostEvents> {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                "Add Event",
+                "Edit Event",
                 style: TextStyle(
-                  color: Colors.black,
+                    color: Color(0xFFFFFFFF),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
                 ),
               ),
-              backgroundColor: Color(0xFF),
+              backgroundColor: Color(0xFF5451FD),
             ),
             body: Form(
               key: _formKey,
-              child: Column(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: ()async{
-                              final finalResult=await showSearch(
-                                context: context,
-                                delegate: CustomSearchDelegate(searchTerms:tagList),
-                              );
-                              setState(() {
-                                if(finalResult!=''){
-                                  selectedTags.add(finalResult);
-                                }
-                              });
-                              print("finalResult:$finalResult");
-                              print("SelectedTags:$selectedTags");
-                            },
-                            child: Text(
-                              "Select Tags",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          selectedTags==[]?Container():
-                          Wrap(
-                            children:selectedTags.map((e) =>
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: MaterialButton(//shape,color etc...
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedTags.remove(e);
-                                      });
-                                    },
-                                    child: Text(e),
-                                    color: Colors.green,
-                                  ),
-                                ),
-                            ).toList(),
-                          ),
-                          TextFormField(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        //Title Field
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextFormField(
                             decoration: InputDecoration(
                                 hintText: 'Enter title',
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                         color: Colors.black, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20.0))),
+                                    borderRadius: BorderRadius.circular(50.0))),
                             controller: myControllerTitle,
                             validator: (val) {
                               if (val == null || val.isEmpty) {
@@ -139,8 +107,12 @@ class _EditPostEventsState extends State<EditPostEvents> {
                               }
                             },
                           ),
-                          SizedBox(height: 5.0),
-                          DateTimePicker(
+                        ),
+
+                        //Date-Time Field
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: DateTimePicker(
                             type: DateTimePickerType.dateTimeSeparate,
                             dateMask: 'd MMM, yyyy',
                             initialValue: DateTime.now().toString(),
@@ -158,14 +130,18 @@ class _EditPostEventsState extends State<EditPostEvents> {
                             },
                             onSaved: (val) => print(val),
                           ),
-                          SizedBox(height: 5.0),
-                          TextFormField(
+                        ),
+
+                        //Location Field
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextFormField(
                             decoration: InputDecoration(
-                                hintText: 'Enter Location',
+                                hintText: 'Enter location',
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                         color: Colors.black, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20.0))),
+                                    borderRadius: BorderRadius.circular(50.0))),
                             controller: myControllerLocation,
                             validator: (val) {
                               if (val == null || val.isEmpty) {
@@ -173,16 +149,18 @@ class _EditPostEventsState extends State<EditPostEvents> {
                               }
                             },
                           ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          TextFormField(
+                        ),
+
+                        //Description Field
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextFormField(
                             decoration: InputDecoration(
                                 hintText: 'Enter description',
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                         color: Colors.black, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20.0))),
+                                    borderRadius: BorderRadius.circular(50.0))),
                             controller: myControllerDescription,
                             validator: (val) {
                               if (val == null || val.isEmpty) {
@@ -192,185 +170,299 @@ class _EditPostEventsState extends State<EditPostEvents> {
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                           ),
-                          SizedBox(height: 5.0),
-                          SizedBox(
-                              width: 450.0,
-                              child: StatefulBuilder(
-                                builder: (BuildContext context,StateSetter setState){
-                                  return ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Colors.blue[200],
-                                          elevation: 0.0,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                      ),
-                                      onPressed: () async {
-                                        Result =
-                                        await FilePicker.platform.pickFiles(
-                                          type: FileType.image,
-                                          allowMultiple: true,
-                                        );
-                                        if (Result != null) {
-                                          setState(() {
-                                            fileNames.clear();
-                                            for (var i=0;i<Result!.files.length;i++){
-                                              fileNames.add(Result!.files[i].name);
-                                              byteData.add(Result!.files[i].bytes);
-                                              multipartfile.add(MultipartFile.fromBytes(
-                                                'photo',
-                                                byteData[i],
-                                                filename: fileNames[i],
-                                                contentType: MediaType("image","png"),
-                                              ));
-                                            }
-                                          });
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                        child: Text(
-                                          selectedImage!,
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.w300
-                                          ),
-                                        ),
+                        ),
+
+                        //Select Image Button
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+                          child: SizedBox(
+                            width: 250.0,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0x554A47F0),
+                                  elevation: 0.0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0)
+                                  ),
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    color: Color(0x664A47F0),
+                                  ),
+                                ),
+
+                                onPressed: () async
+                                {
+                                  Result =
+                                  await FilePicker.platform.pickFiles(
+                                    type: FileType.image,
+                                    allowMultiple: true,
+                                    withData: true,
+                                  );
+                                  if (Result != null) {
+                                    setState(() {
+                                      fileNames.clear();
+                                      for (var i=0;i<Result!.files.length;i++){
+                                        fileNames.add(Result!.files[i].name);
+                                        byteData.add(Result!.files[i].bytes);
+                                        multipartfile.add(MultipartFile.fromBytes(
+                                          'photo',
+                                          byteData[i],
+                                          filename: fileNames[i],
+                                          contentType: MediaType("image","png"),
+                                        ));
+                                      }
+                                    });
+                                  }
+                                },
+
+                                //Name of selected image
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                  child: Text(
+                                    selectedImage!,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                )
+                            ),
+                          ),
+                        ),
+                        if(Result!=null)
+                          Wrap(
+                            children: Result!.files.map((e) => InkWell(
+                              onLongPress: (){
+                                setState(() {
+                                  multipartfile.remove(
+                                      MultipartFile.fromBytes(
+                                        'photo',
+                                        e.bytes as List<int>,
+                                        filename: e.name,
+                                        contentType: MediaType("image","png"),
                                       )
                                   );
-                                },
-                              )
-                          ),
-                          if(Result!=null)
-                            Wrap(
-                              children: Result!.files.map((e) => InkWell(
-                                onLongPress: (){
-                                  setState(() {
-                                    multipartfile.remove(
-                                        MultipartFile.fromBytes(
-                                          'photo',
-                                          e.bytes as List<int>,
-                                          filename: e.name,
-                                          contentType: MediaType("image","png"),
-                                        )
-                                    );
-                                    byteData.remove(e.bytes);
-                                    fileNames.remove(e.name);
-                                    Result!.files.remove(e);
-                                  });
-                                },
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: Image.memory(
-                                    e.bytes!,
-                                  ),
+                                  byteData.remove(e.bytes);
+                                  fileNames.remove(e.name);
+                                  Result!.files.remove(e);
+                                });
+                              },
+                              child: SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Image.memory(
+                                  e.bytes!,
                                 ),
-                              )).toList(),
-                            ),
-                          SizedBox(
-                            height: 5.0,
+                              ),
+                            )).toList(),
                           ),
-                          TextFormField(
+
+                        //Select Tags
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          child: ElevatedButton(
+                            onPressed: ()async{
+                              final finalResult=await showSearch(
+                                context: context,
+                                delegate: CustomSearchDelegate(searchTerms:tagList),
+                              );
+                              setState(() {
+                                if(finalResult!=''){
+                                  selectedTags.add(finalResult);
+                                }
+                              });
+                              print("finalResult:$finalResult");
+                              print("SelectedTags:$selectedTags");
+                            },
+                            child: Text(
+                              "Select tags",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0x554A47F0),
+                              elevation: 0.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)
+                              ),
+                              side: BorderSide(
+                                width: 1.0,
+                                color: Color(0x664A47F0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        selectedTags==[]?Container():
+                        Wrap(
+                          children:selectedTags.map((e) =>
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: MaterialButton(//shape,color etc...
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedTags.remove(e);
+                                    });
+                                  },
+                                  child: Text(e),
+                                  color: Colors.green,
+                                ),
+                              ),
+                          ).toList(),
+                        ),
+
+                        //CTA Button Name
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextFormField(
                             decoration: InputDecoration(
-                                hintText: 'Enter Form name',
+                                hintText: 'Enter name for CTA Button',
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                         color: Colors.black, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20.0))),
+                                    borderRadius: BorderRadius.circular(50.0))),
                             controller: formNameController,
                           ),
-                          TextFormField(
+                        ),
+
+                        //CTA Link Field
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextFormField(
                             decoration: InputDecoration(
-                                hintText: 'Enter Form Link',
+                                hintText: 'Enter Call-to-Action Link',
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: Colors.black, width: 1.0),
-                                    borderRadius: BorderRadius.circular(20.0))),
+                                        color: Colors.grey,
+                                        width: 1.0),
+                                    borderRadius: BorderRadius.circular(50.0))),
                             controller: myControllerFormLink,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Save",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Discard Changes",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                              Mutation(
-                                  options: MutationOptions(
-                                      document: gql(editEvent),
-                                      onCompleted: (dynamic resultData){
-                                        print(resultData);
-                                        if(resultData["editEvent"]==true){
-                                          Navigator.pop(context);
-                                          widget.refetchPosts!();
-                                          print("post created");
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Post Created')),
-                                          );
-                                        }
-                                        else{
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Post Creation Failed')),
-                                          );
-                                        }
-                                      },
-                                      onError: (dynamic error){
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Post Creation Failed,server error')),
-                                        );
-                                      }
-                                  ),
-                                  builder: (
-                                      RunMutation runMutation,
-                                      QueryResult? result,
-                                      ) {
-                                    if (result!.hasException){
-                                      print(result.exception.toString());
-                                    };
+                        ),
+                      ],
+                    ),
 
-                                    return TextButton(
-                                        onPressed: ()async{
-                                          if (_formKey.currentState!.validate()) {
-                                            for(var i=0;i<selectedTags.length;i++){
-                                              key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i]);
-                                              selectedIds.add(key);
-                                            };
-                                            print("selectedTagIds:$selectedIds");
-                                            await runMutation({
-                                              "eventId":post.id,
-                                              "editEventData":{
-                                                "content":myControllerDescription.text,
-                                                "title":myControllerTitle.text,
-                                                "tagIds":selectedIds,
-                                                "time":dateTime,
-                                                "linkName":formNameController.text,
-                                                "linkToAction":myControllerFormLink.text,
-                                                "location":myControllerLocation.text,
-                                              },
-                                              "editEventImage":multipartfile.isEmpty ? null : multipartfile,
-                                            });
-                                          }
-                                        },
-                                        child:Text('Submit'));
+                    //Action Buttons
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 15, 10, 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          //Save Button
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Save",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(50, 35),
+                            ),
+                          ),
+
+                          //Discard Button
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Discard",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(50, 35),
+                            ),
+                          ),
+
+                          //Submit Button
+                          Mutation(
+                              options: MutationOptions(
+                                  document: gql(editEvent),
+                                  onCompleted: (dynamic resultData){
+                                    print(resultData);
+                                    if(resultData["createEvent"]==true){
+                                      Navigator.pop(context);
+                                      widget.refetchPosts!();
+                                      print("post created");
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Post Created')),
+                                      );
+                                    }
+                                    else{
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Post Creation Failed')),
+                                      );
+                                    }
+                                  },
+                                  onError: (dynamic error){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Post Creation Failed,server error')),
+                                    );
                                   }
                               ),
-                            ],
-                          )
+                              builder: (
+                                  RunMutation runMutation,
+                                  QueryResult? result,
+                                  ) {
+                                if (result!.hasException){
+                                  print(result.exception.toString());
+                                };
+
+                                return ElevatedButton(
+                                  onPressed: ()async{
+                                    if (_formKey.currentState!.validate()) {
+                                      for(var i=0;i<selectedTags.length;i++){
+                                        key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i]);
+                                        selectedIds.add(key);
+                                      };
+                                      print("selectedTagIds:$selectedIds");
+                                      await runMutation({
+                                        "newEventData":{
+                                          "content":myControllerDescription.text,
+                                          "title":myControllerTitle.text,
+                                          "tagIds":selectedIds,
+                                          "time":dateTime,
+                                          "linkName":formNameController.text,
+                                          "linkToAction":myControllerFormLink.text,
+                                          "location":myControllerLocation.text,
+                                        },
+                                        "image":multipartfile.isEmpty ? null : multipartfile,
+                                      });
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Color(0xFF6B7AFF),
+                                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                    minimumSize: Size(50, 35),
+                                  ),
+                                  child:Text('Submit',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              }
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           );

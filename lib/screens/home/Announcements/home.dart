@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:client/screens/home/Announcements/add_announcements.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:intl/intl.dart';
 
 class Announcements extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _AnnouncementsState extends State<Announcements> {
   int take = 10;
   ScrollController scrollController = ScrollController();
   late int total;
+  late var createdAt;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,16 @@ class _AnnouncementsState extends State<Announcements> {
                   "Announcements",
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,
+                      fontSize: 22.0,
                       fontWeight: FontWeight.bold),
                 ),
                 elevation: 0.0,
-                backgroundColor: Colors.deepPurpleAccent,
+                automaticallyImplyLeading: false,
+                backgroundColor: Color(0xFF5451FD),
               ),
               body: Center(
                 child: CircularProgressIndicator(
-                  color: Colors.blue[700],
+                  color: Color(0xFFD0DDFA),
                 ),
               ),
             );
@@ -72,15 +75,16 @@ class _AnnouncementsState extends State<Announcements> {
                           "Announcements",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20.0,
+                              fontSize: 22.0,
                               fontWeight: FontWeight.bold),
                         ),
                         elevation: 0.0,
-                        backgroundColor: Colors.deepPurpleAccent,
+                        automaticallyImplyLeading: false,
+                        backgroundColor: Color(0xFF5451FD),
                       ),
                       body: Center(
                         child: CircularProgressIndicator(
-                          color: Colors.blue[700],
+                          color: Color(0xFFD0DDFA),
                         ),
                       ),
                     );
@@ -107,6 +111,9 @@ class _AnnouncementsState extends State<Announcements> {
                       hostelIDs.add(result.data!["getAllAnnouncements"]
                           ["announcementsList"][i]["hostels"][j]["name"]);
                     }
+                    createdAt = result.data!["getAllAnnouncements"]
+                    ["announcementsList"][i]["createdAt"];
+                    print(createdAt);
 
                     announcements.add(Announcement(
                       title: result.data!["getAllAnnouncements"]
@@ -161,11 +168,12 @@ class _AnnouncementsState extends State<Announcements> {
                         "Announcements",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20.0,
+                            fontSize: 22.0,
                             fontWeight: FontWeight.bold),
                       ),
                       elevation: 0.0,
-                      backgroundColor: Colors.deepPurpleAccent,
+                      automaticallyImplyLeading: false,
+                      backgroundColor: Color(0xFF5451FD),
                       actions: [
                         IconButton(
                             onPressed: () {
@@ -174,12 +182,14 @@ class _AnnouncementsState extends State<Announcements> {
                                       AddAnnouncements(
                                           refetchAnnouncement: refetch)));
                             },
-                            icon: Icon(Icons.add_box))
+                            iconSize: 30,
+                            icon: Icon(Icons.add))
                       ],
                     ),
+                    backgroundColor: Color(0xFFF7F7F7),
                     body: Container(
                         child: Padding(
-                      padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                       child: ListView(
                           controller: scrollController,
                           children: [
@@ -194,7 +204,7 @@ class _AnnouncementsState extends State<Announcements> {
                             if (result.isLoading)
                           Center(
                             child: CircularProgressIndicator(
-                              color: Colors.blue[700],
+                              color: Color(0xFFDEDDFF),
                             ),
                           ),
                       ]),
@@ -286,15 +296,15 @@ class _AnnouncementsState extends State<Announcements> {
                         "Announcements",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20.0,
+                            fontSize: 22.0,
                             fontWeight: FontWeight.bold),
                       ),
                       elevation: 0.0,
-                      backgroundColor: Colors.deepPurpleAccent,
+                      backgroundColor: Color(0xFF5451FD),
                     ),
                     body: Container(
                         child: Padding(
-                      padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                       child: ListView(controller: scrollController, children: [
                         Column(
                           children: announcements
@@ -307,7 +317,7 @@ class _AnnouncementsState extends State<Announcements> {
                         if (result.isLoading)
                           Center(
                             child: CircularProgressIndicator(
-                              color: Colors.blue[700],
+                              color: Color(0xFFDEDDFF),
                             ),
                           ),
                       ]),

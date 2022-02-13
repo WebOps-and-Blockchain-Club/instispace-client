@@ -96,31 +96,12 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
                 "Add Announcement",
                 style: TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0),
+                ),
               ),
-              backgroundColor: Colors.deepPurpleAccent,
+              backgroundColor: Color(0xFF5451FD),
               elevation: 0.0,
             ),
             body: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [
-                    0.1,
-                    0.3,
-                    0.4,
-                    0.6,
-                    0.9
-                  ],
-                      colors: [
-                    Colors.deepPurpleAccent,
-                    Colors.blue,
-                    Colors.lightBlueAccent,
-                    Colors.lightBlueAccent,
-                    Colors.blueAccent
-                  ])),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ListView(children: [

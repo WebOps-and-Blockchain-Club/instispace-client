@@ -35,6 +35,7 @@ class AnnouncementQueries {
           role
         }
         images
+        createdAt
         hostels {
           name
           id

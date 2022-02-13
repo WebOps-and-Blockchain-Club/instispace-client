@@ -21,9 +21,12 @@ class SinglePost extends StatelessWidget {
     List<Tag> tag = post.tags;
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(5.0,0.0,5.0,2.0),
+        padding: const EdgeInsets.fromLTRB(15.0,0.0,15.0,5.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            //Images
             if(post.imgUrl.isNotEmpty)
               CarouselSlider(
                 items: post.imgUrl.map((item) => Container(
@@ -37,15 +40,32 @@ class SinglePost extends StatelessWidget {
                 ),
               ),
             SizedBox(height: 10.0),
+            //Icons
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_circle_up_outlined)),
-                IconButton(onPressed: () => {}, icon: Icon(Icons.access_alarm)),
-                IconButton(onPressed: () => {}, icon: Icon(Icons.share))
+                IconButton(
+                  onPressed: () => {},
+                  icon: Icon(Icons.arrow_circle_up_outlined),
+                  iconSize: 24,
+                  color: Color(0xFF021096),
+                ),
+                IconButton(
+                  onPressed: () => {},
+                  icon: Icon(Icons.access_alarm),
+                  iconSize: 24,
+                  color: Color(0xFF021096),
+                ),
+                IconButton(
+                  onPressed: () => {},
+                  icon: Icon(Icons.share),
+                  iconSize: 24,
+                  color: Color(0xFF021096),
+                )
               ],
             ),
             SizedBox(height: 10.0),
+            //Tags
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -53,51 +73,49 @@ class SinglePost extends StatelessWidget {
                   width: 240.0,
                   height: 30.0,
                   child: ListView(
-                    scrollDirection: Axis
-                        .horizontal,
+                    scrollDirection: Axis.horizontal,
                     children: tag.map((tag) =>
                         SizedBox(
-                          height: 25.0,
                           child: Padding(
-                            padding: const EdgeInsets
-                                .fromLTRB(
-                                2.0, 0.0, 2.0,
-                                0.0),
+                            padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
                             child: ElevatedButton(
-                                onPressed: () =>
-                                {
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty
-                                        .all(
-                                        Colors
-                                            .grey),
-                                    shape: MaterialStateProperty
-                                        .all<
-                                        RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius
-                                              .circular(
-                                              30.0),
-                                        ))
+                              onPressed: () => {},
+                              child: Text(
+                                tag.Tag_name,
+                                style: TextStyle(
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                child: Text(
-                                  tag.Tag_name,
-                                )),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF808CFF),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 6),
+                              ),
+                            ),
                           ),
                         )).toList(),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 25.0),
             Text("Description",
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF021096),
               ),
             ),
+            SizedBox(height: 10.0),
+            //Description Text
             SizedBox(
-              height: 150.0,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.6,
               child: ListView(
                   children: [
                     Text(
@@ -115,7 +133,18 @@ class SinglePost extends StatelessWidget {
               onPressed: () => {
                 launch(post.linkToAction!)
               },
-              child: Text(post.linkName),
+              child: Text(post.linkName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 14
+              ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF6B7AFF),
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                minimumSize: Size(50, 35),
+              ),
             )
           ],
         ),
