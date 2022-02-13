@@ -100,6 +100,7 @@ Map all = {};
                             fontSize: 20,
                           ),
                         ),
+                      
                         ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -121,6 +122,15 @@ Map all = {};
                       ],
                     ),
                   ),
+                  IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => QueryHome()));
+                  },
+                  iconSize: 30.0,
+                  icon: Icon(Icons.query_stats_rounded),
+                ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -324,6 +334,15 @@ Map all = {};
                       ]
                       ),
                 ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => QueryHome()));
+                  },
+                  iconSize: 30.0,
+                  icon: Icon(Icons.query_stats_rounded),
+                ),
+
                 // Text("Networking & Opportunities"),
                 // SizedBox(
                 //   height: 250,

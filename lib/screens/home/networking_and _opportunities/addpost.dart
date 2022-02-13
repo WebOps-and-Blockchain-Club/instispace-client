@@ -307,7 +307,7 @@ class _AddPostState extends State<AddPost> {
                                 DateTimePicker(
                                   type: DateTimePickerType.dateTimeSeparate,
                                   dateMask: 'd MMM, yyyy',
-                                  initialValue: DateTime.now().add(const Duration(days: 7).toString(),
+                                  initialValue: DateTime.now().add(const Duration(days: 7)).toString(),
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2100),
                                   icon: Icon(Icons.event),
