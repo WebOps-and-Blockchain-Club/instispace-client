@@ -21,6 +21,7 @@ class _HostelProfileState extends State<HostelProfile> {
   List<Amenities> amenities = [];
   List<Contacts> contacts = [];
   List<emergencycontacts> emergencyContacts = [];
+  ScrollController scrollController = ScrollController(initialScrollOffset: 0.0);
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +129,7 @@ class _HostelProfileState extends State<HostelProfile> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
                 child: ListView(
+                  controller: scrollController,
                   shrinkWrap: true,
                     children: [Column(
                       children: amenities
@@ -149,6 +151,7 @@ class _HostelProfileState extends State<HostelProfile> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
                 child: ListView(
+                  controller: scrollController,
                   shrinkWrap: true,
                   children:[ Column(
                       children: contacts
@@ -170,6 +173,7 @@ class _HostelProfileState extends State<HostelProfile> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
                 child: ListView(
+                  controller: scrollController,
                   shrinkWrap: true,
                     children: [Column(
                       children: emergencyContacts

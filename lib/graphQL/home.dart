@@ -141,4 +141,26 @@ query{
   }
 }
   """;
+
+  String getTag = """
+query GetTag(\$tag: String!) {
+  getTag(Tag: \$tag) {
+    title
+    category
+    netops {
+      title
+      content
+      isStared
+      id
+    }
+    events {
+      id
+      title
+      content
+      isStared
+      time
+    }
+  }
+}
+""";
 }
