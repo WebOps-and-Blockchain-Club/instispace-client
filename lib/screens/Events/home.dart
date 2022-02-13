@@ -50,7 +50,7 @@ class _HomeState extends State<EventsHome> {
                       fontWeight: FontWeight.bold
                   ),
                 ),
-                backgroundColor: Color(0xFFE6CCA9),
+                backgroundColor: Color(0xFF5451FD),
               ),
               body: Center(
                 child: CircularProgressIndicator(),
@@ -81,7 +81,7 @@ class _HomeState extends State<EventsHome> {
                   return Scaffold(
                       appBar: AppBar(
                         title: const Text('All Events'),
-                        backgroundColor: Color(0xFFE6CCA9),
+                        backgroundColor: Color(0xFF5451FD),
                       ),
                       body: Center(
                         child: CircularProgressIndicator(),
@@ -169,21 +169,24 @@ class _HomeState extends State<EventsHome> {
                                   builder: (BuildContext context)=> AddPostEvents(refetchPosts: refetch,)));
                         }, icon: Icon(Icons.add_box))
                   ],
-                  backgroundColor: Color(0xFFE6CCA9),
+                  backgroundColor: Color(0xFF5451FD),
                 ),
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Color(0xFFF7F7F7),
                 body: SafeArea(
                   child: ListView(
                     controller: scrollController,
                     children: [
-                      Column(children: posts
-                        .map((post) => PostCard(
-                        refetchPosts: refetch,
-                      post: post,
-                      index: posts.indexOf(post),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                        child: Column(children: posts
+                          .map((post) => PostCard(
+                          refetchPosts: refetch,
+                        post: post,
+                        index: posts.indexOf(post),
                     ))
-                        .toList(),
+                          .toList(),
                     ),
+                      ),
                       if(result.isLoading)
                         Center(
                             child: CircularProgressIndicator(color: Colors.yellow,)

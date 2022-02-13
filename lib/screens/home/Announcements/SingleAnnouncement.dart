@@ -1,6 +1,7 @@
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:intl/intl.dart';
 
 class SingleAnnouncement extends StatelessWidget {
   final Announcement announcement;
@@ -8,20 +9,24 @@ class SingleAnnouncement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var endtime = dateTimeString(announcement.endTime);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           announcement.title,
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 22
           ),
         ),
-        backgroundColor: Color(0xFFE6CCA9),
+        backgroundColor: Color(0xFF5451FD),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 2.0),
+        padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 5.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Image.network(announcement.image,height: 255.0),
             // SizedBox(height: 10.0),
@@ -33,29 +38,76 @@ class SingleAnnouncement extends StatelessWidget {
             //     IconButton(onPressed: () => {}, icon: Icon(Icons.share))
             //   ],
             // ),
-            SizedBox(height: 10.0),
-            Text(
-              "Description",
-              style: TextStyle(
-                fontSize: 20.0,
-              ),
-            ),
-            SizedBox(
-              height: 150.0,
-              child: ListView(children: [
-                MarkdownBody(
-                  data: announcement.description,
-                  shrinkWrap: true,
+            Column(
+              children: [
+                SizedBox(height: 20.0),
+                Text(
+                  "Details",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ]),
+                SizedBox(height: 20.0),
+                SizedBox(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.70,
+                  child : ListView(
+                      children: [
+                        MarkdownBody(
+                        data: announcement.description,
+                        shrinkWrap: true,
+                      ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(endtime,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12
+                            ),),
+                          ],
+                        ),
+                      ]),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () => {},
-              child: Text("Know More"),
+            Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: ElevatedButton(
+                onPressed: () => {},
+                child: Text("Know More",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFF6B7AFF),
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  minimumSize: Size(50, 35),
+                ),
+              ),
             )
-          ],
+            ]
         ),
-      ),
+    )
     );
+  }
+  String dateTimeString(String utcDateTime) {
+    if (utcDateTime == "") {
+      return "";
+    }
+    var parseDateTime = DateTime.parse(utcDateTime);
+    final localDateTime = parseDateTime.toLocal();
+
+    var dateTimeFormat = DateFormat("dd-MMM-yyyy hh:mm aaa");
+
+    return dateTimeFormat.format(localDateTime);
   }
 }

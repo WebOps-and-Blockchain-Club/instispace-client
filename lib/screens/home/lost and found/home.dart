@@ -52,6 +52,7 @@ class _LNFListingState extends State<LNFListing> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text('Lost & Found'),
+                  backgroundColor: Color(0xFF5451FD),
                 ),
                 body: Center(
                   child: CircularProgressIndicator(),
@@ -109,10 +110,18 @@ class _LNFListingState extends State<LNFListing> {
             }
           }
           );
+
           return Scaffold(
               appBar: AppBar(
-                title: Text('Lost & Found'),
+                title: Text('Lost & Found',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                backgroundColor: Color(0xFF5451FD),
               ),
+              backgroundColor: Color(0xFFF7F7F7),
               endDrawer: Drawer(
                 child: StatefulBuilder(
                   builder: (BuildContext context, StateSetter stateState) {
@@ -155,38 +164,74 @@ class _LNFListingState extends State<LNFListing> {
               body: SafeArea(
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
-                            },
-                            child: Text('Lost Something?')),
-                        ElevatedButton(
-                            onPressed: ()  {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
-                            },
-                            child: Text('Found Something?')),
-                      ],
+                    //Button Row
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          //Lost Button
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
+                              },
+                              child: Text('Lost Something?',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(50, 35),
+                            ),
+                          ),
+
+                          //Found Button
+                          ElevatedButton(
+                              onPressed: ()  {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
+                              },
+                              child: Text('Found Something?',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(50, 35),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+
+                    //List of Posts
                     SizedBox(
                       height: MediaQuery
                           .of(context)
                           .size
-                          .height * 0.78,
+                          .height * 0.79,
                       width: 400,
                       child: ListView(
                         controller: scrollController,
                         children: [
-                          Column(
-                            children: Posts.map((post) => LFCard(
-                                  refetchPosts: refetch,
-                                  userId: userId,
-                                  post: post,
-                                )).toList(),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                            child: Column(
+                              children: Posts.map((post) => LFCard(
+                                    refetchPosts: refetch,
+                                    userId: userId,
+                                    post: post,
+                                  )).toList(),
+                            ),
                           ),
                           if (result.isLoading)
                           Center(

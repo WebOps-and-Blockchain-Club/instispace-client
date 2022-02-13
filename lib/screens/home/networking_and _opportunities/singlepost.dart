@@ -29,7 +29,10 @@ class Single_Post extends StatelessWidget {
           ),
           SizedBox(
             width: 400.0,
-            height: 580.0,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.75,
             child: ListView(
               children: [
                 Column(
@@ -141,7 +144,7 @@ class Single_Post extends StatelessWidget {
                           ),
                           if(post.imgUrl == null)
                             SizedBox(
-                              height: 400.0,
+                              height: 100.0,
                               child: ListView(children:[
                                 Text(post.description),
                               ]),
@@ -155,13 +158,16 @@ class Single_Post extends StatelessWidget {
         ],
       ),
       ),
-          if(post.attachment!=null && post.attachment != "")
-          IconButton(
-              onPressed: (){
-                print("${post.attachment}");
-                launch(post.attachment!);
-              },
-              icon: Icon(Icons.attachment)
+          // if(post.attachment!=null && post.attachment != "")
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: IconButton(
+                onPressed: (){
+                  print("${post.attachment}");
+                  launch(post.attachment!);
+                },
+                icon: Icon(Icons.attachment)
+            ),
           ),
           if(post.linkToAction!=null && post.linkToAction != "")
           Center(

@@ -118,24 +118,6 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
               elevation: 0.0,
             ),
             body: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [
-                    0.1,
-                    0.3,
-                    0.4,
-                    0.6,
-                    0.9
-                  ],
-                      colors: [
-                    Colors.deepPurpleAccent,
-                    Colors.blue,
-                    Colors.lightBlueAccent,
-                    Colors.lightBlueAccent,
-                    Colors.blueAccent
-                  ])),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ListView(children: [
@@ -190,7 +172,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                         DateTimePicker(
                           type: DateTimePickerType.dateTimeSeparate,
                           dateMask: 'd MMM, yyyy',
-                          initialValue: widget.announcement.endTime,
+                          initialValue: DateTime.now().toIso8601String(),
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2100),
                           icon: Icon(Icons.event),
@@ -207,12 +189,21 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               endTime = val;
                             });
                           },
+                          validator: (val) {
+                            if (endTimeEntered == "No") {
+                              // setState(() {
+                              //   errorEndTime = "Please select an End Time for the announcement";
+                              // });
+                              return "Please select an End Time for the announcement";
+                            }
+                          },
                           onSaved: (val) {
                             setState(() {
                               endTime = val;
                             });
                           },
                         ),
+                        errorMessages(errorEndTime),
                         SizedBox(height: 10.0),
                         Text(
                           'Image*',
@@ -229,10 +220,10 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                   elevation: 0.0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(30.0))),
+                                      BorderRadius.circular(30.0))),
                               onPressed: () async {
                                 imageResult =
-                                    await FilePicker.platform.pickFiles(
+                                await FilePicker.platform.pickFiles(
                                   type: FileType.image,
                                   allowMultiple: true,
                                   withData: true,
@@ -241,8 +232,8 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                   setState(() {
                                     selectedImage.clear();
                                     for (var i = 0;
-                                        i < imageResult!.files.length;
-                                        i++) {
+                                    i < imageResult!.files.length;
+                                    i++) {
                                       selectedImage
                                           .add(imageResult!.files[i].name);
                                       byteData.add(imageResult!.files[i].bytes);
@@ -273,29 +264,29 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                           Wrap(
                             children: imageResult!.files
                                 .map((e) => InkWell(
-                                      onLongPress: () {
-                                        setState(() {
-                                          multipartFile
-                                              .remove(MultipartFile.fromBytes(
-                                            'photo',
-                                            e.bytes as List<int>,
-                                            filename: e.name,
-                                            contentType:
-                                                MediaType("image", "png"),
-                                          ));
-                                          byteData.remove(e.bytes);
-                                          selectedImage.remove(e.name);
-                                          imageResult!.files.remove(e);
-                                        });
-                                      },
-                                      child: SizedBox(
-                                        width: 100,
-                                        height: 100,
-                                        child: Image.memory(
-                                          e.bytes!,
-                                        ),
-                                      ),
-                                    ))
+                              onLongPress: () {
+                                setState(() {
+                                  multipartFile
+                                      .remove(MultipartFile.fromBytes(
+                                    'photo',
+                                    e.bytes as List<int>,
+                                    filename: e.name,
+                                    contentType:
+                                    MediaType("image", "png"),
+                                  ));
+                                  byteData.remove(e.bytes);
+                                  selectedImage.remove(e.name);
+                                  imageResult!.files.remove(e);
+                                });
+                              },
+                              child: SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: Image.memory(
+                                  e.bytes!,
+                                ),
+                              ),
+                            ))
                                 .toList(),
                           ),
                         SizedBox(height: 10.0),
@@ -307,7 +298,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                         ),
                         SizedBox(height: 5.0),
                         MarkdownTextInput(
-                          (String value) => setState(() => description = value),
+                              (String value) => setState(() => description = value),
                           description,
                           label: 'Enter Description',
                           maxLines: 10,
@@ -338,14 +329,14 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               title: Text("Hostels"),
                               children: Hostels.keys
                                   .map((key) => CheckboxListTile(
-                                        value: Hostels[key],
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            Hostels[key] = value!;
-                                          });
-                                        },
-                                        title: Text(key.Hostel_name),
-                                      ))
+                                value: Hostels[key],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    Hostels[key] = value!;
+                                  });
+                                },
+                                title: Text(key.Hostel_name),
+                              ))
                                   .toList(),
                             );
                           },
@@ -360,7 +351,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                   primary: Colors.blue[700],
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(30.0))),
+                                      BorderRadius.circular(30.0))),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
@@ -376,8 +367,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               options: MutationOptions(
                                   document: gql(editAnnouncements),
                                   onCompleted: (dynamic resultData) {
-                                    print(resultData["editAnnouncement"]);
-                                    if (resultData["editAnnouncement"] ==
+                                    if (resultData["createAnnouncement"] ==
                                         true) {
                                       Navigator.pop(context);
                                       widget.refetchAnnouncement!();
@@ -385,14 +375,14 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Edited Successfully')),
+                                                'Announcement Created Successfully')),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Edition Failed')),
+                                                'Announcement Creation Failed')),
                                       );
                                     }
                                   },
@@ -401,13 +391,13 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                         .showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              'Announcement Edition failed, Server Error')),
+                                              'Announcement Creation Failed, Server Error')),
                                     );
                                   }),
                               builder: (
-                                RunMutation runMutation,
-                                QueryResult? result,
-                              ) {
+                                  RunMutation runMutation,
+                                  QueryResult? result,
+                                  ) {
                                 if (result!.hasException) {
                                   print(result.exception.toString());
                                 }
@@ -423,7 +413,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                       primary: Colors.blue[700],
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(30.0))),
+                                          BorderRadius.circular(30.0))),
                                   onPressed: () {
                                     if (_formkey.currentState!.validate()) {
                                       selectedHostels.clear();
@@ -432,31 +422,31 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                           selectedHostels.add(key.Hostel_id);
                                         }
                                       });
-                                      // if (selectedHostels.isEmpty) {
-                                      //   setState(() {
-                                      //     errorHostel =
-                                      //     "Please select at least one hostel";
-                                      //   });
-                                      // }
-                                      // else {
-                                      print("selectedHostels:$selectedHostels");
-                                      print(endTime);
-                                      runMutation({
-                                        'announcementId':
-                                            widget.announcement.id,
-                                        'updateAnnouncementInput': {
-                                          "title": titleController.text,
-                                          "description":
-                                              descriptionController.text,
-                                          "endTime": "$endTime:00+05:30",
-                                        },
-                                        "images": multipartFile,
-                                      });
-                                      // };
+                                      if (selectedHostels.isEmpty) {
+                                        setState(() {
+                                          errorHostel =
+                                          "Please select at least one hostel";
+                                        });
+                                      } else {
+                                        print(
+                                            "selectedHostels:$selectedHostels");
+                                        print(
+                                            "textController: ${titleController.text}");
+                                        runMutation({
+                                          'announcementInput': {
+                                            "title": titleController.text,
+                                            "description":
+                                            descriptionController.text,
+                                            "hostelIds": selectedHostels,
+                                            "endTime": "$endTime:00+05:30",
+                                          },
+                                          "images": multipartFile,
+                                        });
+                                      }
                                     }
                                   },
                                   child: Text(
-                                    "Edit Announcement",
+                                    "Add Announcement",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 15.0),
                                   ),
@@ -464,7 +454,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               },
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
