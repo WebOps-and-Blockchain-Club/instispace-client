@@ -28,7 +28,7 @@ class _AddPostState extends State<AddPost> {
   Map<String,String>tagList={};
   List<String>selectedTags=[];
   List<String>selectedIds=[];
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now().add(const Duration(days: 7));
   var key;
   var byteDataImage;
   var multipartfileImage;
@@ -307,14 +307,16 @@ class _AddPostState extends State<AddPost> {
                                 DateTimePicker(
                                   type: DateTimePickerType.dateTimeSeparate,
                                   dateMask: 'd MMM, yyyy',
-                                  initialValue: DateTime.now().toString(),
+                                  initialValue: DateTime.now().add(const Duration(days: 7).toString(),
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2100),
                                   icon: Icon(Icons.event),
                                   dateLabelText: 'Date',
                                   timeLabelText: "Hour",
                                   onChanged: (val) => {
-                                    dateTime= dateTimeString(val),
+                                    print("value:$val"),
+                                  dateTime = DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
+                                    print("datetimr:$dateTime+05:30"),
                                   },
                                   validator: (val) {
                                     print(val);
@@ -420,7 +422,7 @@ class _AddPostState extends State<AddPost> {
                                             "content":descriptionController.text,
                                             "title":titleController.text,
                                             "tags":selectedIds,
-                                            "endTime":dateTime,
+                                            "endTime":"$dateTime",
                                             "linkName":urlNameController.text,
                                             "linkToAction":urlController.text,
                                           },
@@ -442,17 +444,6 @@ class _AddPostState extends State<AddPost> {
           );
       },
     );
-  }
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-
-    return dateTimeFormat.format(localDateTime);
   }
 }
 
