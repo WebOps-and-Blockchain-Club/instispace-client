@@ -26,7 +26,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
   List fileNames=[];
   PlatformFile? file=null;
   var key;
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now().add(const Duration(days: 7)).toString();
   String getTags = authQuery().getTags;
   final myControllerTitle = TextEditingController();
   final myControllerLocation = TextEditingController();
@@ -145,14 +145,16 @@ class _AddPostEventsState extends State<AddPostEvents> {
                           DateTimePicker(
                             type: DateTimePickerType.dateTimeSeparate,
                             dateMask: 'd MMM, yyyy',
-                            initialValue: DateTime.now().toString(),
+                            initialValue: DateTime.now().add(const Duration(days: 7)).toString(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                             icon: Icon(Icons.event),
                             dateLabelText: 'Date',
                             timeLabelText: "Hour",
                             onChanged: (val) => {
-                              dateTime= dateTimeString(val),
+                              print("value:$val"),
+                                  dateTime = DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
+                                    print("datetimr:$dateTime+05:30"),
                             },
                             validator: (val) {
                               print(val);
@@ -350,7 +352,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                 "content":myControllerDescription.text,
                                                 "title":myControllerTitle.text,
                                                 "tagIds":selectedIds,
-                                                "time":dateTime,
+                                                "time":"$dateTime",
                                                 "linkName":formNameController.text,
                                                 "linkToAction":myControllerFormLink.text,
                                                 "location":myControllerLocation.text,
@@ -374,16 +376,5 @@ class _AddPostEventsState extends State<AddPostEvents> {
           );
         }
     );
-  }
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-
-    return dateTimeFormat.format(localDateTime);
   }
 }
