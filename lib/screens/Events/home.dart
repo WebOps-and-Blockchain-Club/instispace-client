@@ -69,7 +69,7 @@ class _HomeState extends State<EventsHome> {
         return Query(
             options: QueryOptions(
               document: gql(getEvents),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue},
+              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
             ),
             builder: (QueryResult result, { fetchMore, refetch }){
               if (result.hasException) {
