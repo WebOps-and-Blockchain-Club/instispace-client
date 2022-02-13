@@ -66,7 +66,7 @@ class _Post_ListingState extends State<Post_Listing> {
         return Query(
             options: QueryOptions(
               document: gql(getNetops),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds,"isStared":isStarred}},
+              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
             ),
             builder: (QueryResult result, {fetchMore, refetch}){
               print("Query running");
@@ -137,7 +137,7 @@ class _Post_ListingState extends State<Post_Listing> {
               };
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"skip":skip+10,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":(selectedFilterIds.isEmpty || selectedFilterIds==[])? null:selectedFilterIds,"isStared":isStarred}},
+                  variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
                   updateQuery: (previousResultData,fetchMoreResultData){
                     // print("previousResultData:$previousResultData");
                     // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
