@@ -152,6 +152,11 @@ query GetTag(\$tag: String!) {
       content
       isStared
       id
+      tags {
+        id
+        title
+        category
+      }
     }
     events {
       id
@@ -159,6 +164,12 @@ query GetTag(\$tag: String!) {
       content
       isStared
       time
+      location
+      tags {
+        id
+        title
+        category
+      }
     }
   }
 }
