@@ -8,8 +8,11 @@ import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
+import 'package:client/screens/tagPage.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../graphQL/auth.dart';
 import '../../graphQL/hostelProfile.dart';
 import '../Events/singlepost.dart';
 import 'networking_and _opportunities/singlepost.dart';
@@ -26,9 +29,8 @@ class EventsHomeCard extends StatefulWidget {
 
 class _EventsHomeCardState extends State<EventsHomeCard> {
 
-  String toggleStar=netopsQuery().toggleStar;
   String getEvent = eventsQuery().getEvent;
-  String toggelStarEvent = homeQuery().toggelStarEvent;
+  String toggleStarEvent = eventsQuery().toggleStar;
    late bool isStared;
    String month = '';
 
@@ -40,7 +42,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
     return Query(
         options: QueryOptions(
         document: gql(getEvent),
-          variables: {"eventId":widget.events.id}
+          variables: {"eventId" : widget.events.id}
     ),
     builder:(QueryResult result, {fetchMore, refetch}) {
       if (result.hasException) {
@@ -73,114 +75,130 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       if(widget.events.time.split("-")[1] == "12") {month = "DEC";}
 
       return Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-        child: InkWell(
-          onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SinglePost(refetch: refetch, post: widget.events, isStarred: isStared,)));
-          },
-          child: Card(
-            color: Colors.blue[800],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0)),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+        child: ExpandableNotifier(
+          child: ScrollOnExpand(
+            child: ExpandablePanel(
+              theme: const ExpandableThemeData(
+                tapBodyToCollapse: true,
+                tapBodyToExpand: true
+              ),
+              expanded: SizedBox(
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 1,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 1,
+                  child: SinglePost(refetch: refetch, post: widget.events, isStarred: isStared,)
+              ),
+              collapsed: Card(
+                color: Colors.blue[800],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: Column(
                   children: [
-                    Text(
-                      widget.events.title
-                    ),
-                    Mutation(
-                        options:MutationOptions(
-                            document: gql(toggelStarEvent)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.events.title
                         ),
-                        builder: (
-                            RunMutation runMutation,
-                            QueryResult? result,
-                            ){
-                          if (result!.hasException){
-                            print(result.exception.toString());
-                          }
-                          return IconButton(
-                            onPressed: (){
-                              runMutation({
-                                "eventId":widget.events.id
-                              });
-                              refetch!();
-                            },
-                            icon: isStared?Icon(Icons.star):Icon(Icons.star_border),
-                            color: isStared? Colors.amber:Colors.grey,
-                          );
-                        }
-                    ),
-                  ],
-                ),
-                // Text(
-                //   widget.events.location
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 240.0,
-                      height: 30.0,
-                      child: ListView(
-                        scrollDirection: Axis
-                            .horizontal,
-                        children: tags.map((tag) =>
-                            SizedBox(
-                              height: 25.0,
-                              child: Padding(
-                                padding: const EdgeInsets
-                                    .fromLTRB(
-                                    2.0, 0.0, 2.0,
-                                    0.0),
-                                child: ElevatedButton(
-                                    onPressed: () =>
-                                    {
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .all(
-                                            Colors
-                                                .grey),
-                                        shape: MaterialStateProperty
-                                            .all<
-                                            RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(
-                                                  30.0),
-                                            ))
-                                    ),
-                                    child: Text(
-                                      tag.Tag_name,
-                                    )),
-                              ),
-                            )).toList(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.lightBlueAccent,
+                        Mutation(
+                            options:MutationOptions(
+                                document: gql(toggleStarEvent)
+                            ),
+                            builder: (
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ){
+                              if (result!.hasException){
+                                print(result.exception.toString());
+                              }
+                              return IconButton(
+                                onPressed: (){
+                                  runMutation({
+                                    "eventId": widget.events.id
+                                  });
+                                  refetch!();
+                                },
+                                icon: isStared? const Icon(Icons.star): const Icon(Icons.star_border),
+                                color: isStared? Colors.amber:Colors.grey,
+                              );
+                            }
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            children: [
-                              Text("${widget.events.time.split("-").last.split("T").first} $month"),
-                            ],
+                      ],
+                    ),
+                    // Text(
+                    //   widget.events.location
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 240.0,
+                          height: 30.0,
+                          child: ListView(
+                            scrollDirection: Axis
+                                .horizontal,
+                            children: tags.map((tag) =>
+                                SizedBox(
+                                  height: 25.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets
+                                        .fromLTRB(
+                                        2.0, 0.0, 2.0,
+                                        0.0),
+                                    child: ElevatedButton(
+                                        onPressed: () => {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (BuildContext context) => TagPage(tagId: tag.id)))
+                                        },
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty
+                                                .all(
+                                                Colors
+                                                    .grey),
+                                            shape: MaterialStateProperty
+                                                .all<
+                                                RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius
+                                                      .circular(
+                                                      30.0),
+                                                ))
+                                        ),
+                                        child: Text(
+                                          tag.Tag_name,
+                                        )),
+                                  ),
+                                )).toList(),
                           ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.lightBlueAccent,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Column(
+                                children: [
+                                  Text("${widget.events.time.split("-").last.split("T").first} $month"),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -202,8 +220,7 @@ class NetOpHomeCard extends StatefulWidget {
 
 class _NetOpHomeCardState extends State<NetOpHomeCard> {
 
-  String toggleStar=netopsQuery().toggleStar;
-  String toggelStarEvent = homeQuery().toggelStarEvent;
+  String toggleStarNetop = netopsQuery().toggleStar;
   String getMeHome = homeQuery().getMeHome;
   String getNetop = netopsQuery().getNetop;
   late bool isStared;
@@ -214,7 +231,7 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     return Query(
         options: QueryOptions(
         document: gql(getNetop),
-          variables: {"getNetopNetopId":widget.netops.id}
+          variables: {"getNetopNetopId" : widget.netops.id}
     ),
     builder:(QueryResult result, {fetchMore, refetch}) {
     if (result.hasException) {
@@ -235,95 +252,122 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     isStared = result.data!["getNetop"]["isStared"];
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-      child: InkWell(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Single_Post(post: widget.netops, isStarred: isStared, refetch: refetch,)));
-        },
-        child: Card(
-          color: Colors.blue[800],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0)),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      widget.netops.title
-                  ),
-                  Mutation(
-                      options:MutationOptions(
-                          document: gql(toggelStarEvent)
-                      ),
-                      builder: (
-                          RunMutation runMutation,
-                          QueryResult? result,
-                          ){
-                        if (result!.hasException){
-                          print(result.exception.toString());
-                        }
-                        return IconButton(
-                          onPressed: (){
-                            runMutation({
-                              "eventId":widget.netops.id
-                            });
-                            refetch!();
-                          },
-                          icon: isStared?const Icon(Icons.star):const Icon(Icons.star_border),
-                          color: isStared? Colors.amber:Colors.grey,
-                        );
-                      }
-                  ),
-                ],
-              ),
-              // Text(
-              //     widget.netops.location
-              // ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 240.0,
-                    height: 30.0,
-                    child: ListView(
-                      scrollDirection: Axis
-                          .horizontal,
-                      children: tags.map((tag) =>
-                          SizedBox(
-                            height: 25.0,
-                            child: Padding(
-                              padding: const EdgeInsets
-                                  .fromLTRB(
-                                  2.0, 0.0, 2.0,
-                                  0.0),
-                              child: ElevatedButton(
-                                  onPressed: () =>
-                                  {
-                                  },
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty
-                                          .all(
-                                          Colors
-                                              .grey),
-                                      shape: MaterialStateProperty
-                                          .all<
-                                          RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius
-                                                .circular(
-                                                30.0),
-                                          ))
-                                  ),
-                                  child: Text(
-                                    tag.Tag_name,
-                                  )),
+      child: ExpandableNotifier(
+        child: ScrollOnExpand(
+          child: ExpandablePanel(
+            theme: const ExpandableThemeData(
+              tapBodyToCollapse: true,
+              tapBodyToExpand: true
+            ),
+            expanded: SizedBox(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 1,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 1,
+              child: Single_Post(post: widget.netops, isStarred: isStared, refetch: refetch,),
+            ),
+            collapsed: Card(
+              color: Colors.blue[800],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: SizedBox(
+                // height: MediaQuery
+                //     .of(context)
+                //     .size
+                //     .height * 0.3,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 1,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            widget.netops.title
+                        ),
+                        Mutation(
+                            options:MutationOptions(
+                                document: gql(toggleStarNetop)
                             ),
-                          )).toList(),
+                            builder: (
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ){
+                              if (result!.hasException){
+                                print(result.exception.toString());
+                              }
+                              return IconButton(
+                                onPressed: (){
+                                  runMutation({
+                                    "toggleStarNetopId" : widget.netops.id
+                                  });
+                                  refetch!();
+                                },
+                                icon: isStared?const Icon(Icons.star):const Icon(Icons.star_border),
+                                color: isStared? Colors.amber:Colors.grey,
+                              );
+                            }
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    // Text(
+                    //     widget.netops.location
+                    // ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 240.0,
+                          height: 30.0,
+                          child: ListView(
+                            scrollDirection: Axis
+                                .horizontal,
+                            children: tags.map((tag) =>
+                                SizedBox(
+                                  height: 25.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets
+                                        .fromLTRB(
+                                        2.0, 0.0, 2.0,
+                                        0.0),
+                                    child: ElevatedButton(
+                                        onPressed: () => {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (BuildContext context) => TagPage(tagId: tag.id)
+                                          ))
+                                        },
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty
+                                                .all(
+                                                Colors
+                                                    .grey),
+                                            shape: MaterialStateProperty
+                                                .all<
+                                                RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius
+                                                      .circular(
+                                                      30.0),
+                                                ))
+                                        ),
+                                        child: Text(
+                                          tag.Tag_name,
+                                        )),
+                                  ),
+                                )).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -346,21 +390,36 @@ class AnnouncementHomeCard extends StatefulWidget {
 class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
   @override
   Widget build(BuildContext context) {
-    return  InkWell(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => SingleAnnouncement(announcement: widget.announcements,)));
-      },
-      child: Card(
-        color: Colors.blue[800],
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)),
-        child: SizedBox(
-          width: 450.0,
-          height: 50.0,
-          child: Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Text(widget.announcements.title),
+    return  ExpandableNotifier(
+      child: ScrollOnExpand(
+        child: ExpandablePanel(
+          theme: const ExpandableThemeData(
+            tapBodyToExpand: true,
+            tapBodyToCollapse: true
+          ),
+          expanded: SizedBox(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 1,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 1,
+              child: SingleAnnouncement(announcement: widget.announcements,)
+          ),
+          collapsed: Card(
+            color: Colors.blue[800],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            child: SizedBox(
+              width: 450.0,
+              height: 50.0,
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(widget.announcements.title),
+              ),
+            ),
           ),
         ),
       ),
