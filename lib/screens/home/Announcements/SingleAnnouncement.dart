@@ -11,17 +11,6 @@ class SingleAnnouncement extends StatelessWidget {
   Widget build(BuildContext context) {
     var endtime = dateTimeString(announcement.endTime);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          announcement.title,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 22
-          ),
-        ),
-        backgroundColor: Color(0xFF5451FD),
-      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 5.0),
         child: Column(
