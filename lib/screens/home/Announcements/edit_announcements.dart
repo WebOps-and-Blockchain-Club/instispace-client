@@ -172,7 +172,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                         DateTimePicker(
                           type: DateTimePickerType.dateTimeSeparate,
                           dateMask: 'd MMM, yyyy',
-                          initialValue: DateTime.now().toIso8601String(),
+                          initialValue: widget.announcement.endTime,
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2100),
                           icon: Icon(Icons.event),
@@ -189,21 +189,21 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               endTime = val;
                             });
                           },
-                          validator: (val) {
-                            if (endTimeEntered == "No") {
-                              // setState(() {
-                              //   errorEndTime = "Please select an End Time for the announcement";
-                              // });
-                              return "Please select an End Time for the announcement";
-                            }
-                          },
+                          // validator: (val) {
+                          //   if (endTimeEntered == "No") {
+                          //     // setState(() {
+                          //     //   errorEndTime = "Please select an End Time for the announcement";
+                          //     // });
+                          //     return "Please select an End Time for the announcement";
+                          //   }
+                          // },
                           onSaved: (val) {
                             setState(() {
                               endTime = val;
                             });
                           },
                         ),
-                        errorMessages(errorEndTime),
+                        // errorMessages(errorEndTime),
                         SizedBox(height: 10.0),
                         Text(
                           'Image*',
@@ -367,7 +367,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                               options: MutationOptions(
                                   document: gql(editAnnouncements),
                                   onCompleted: (dynamic resultData) {
-                                    if (resultData["createAnnouncement"] ==
+                                    if (resultData["editAnnouncement"] ==
                                         true) {
                                       Navigator.pop(context);
                                       widget.refetchAnnouncement!();
@@ -375,14 +375,14 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Created Successfully')),
+                                                'Announcement Edited Successfully')),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Announcement Creation Failed')),
+                                                'Announcement Edition Failed')),
                                       );
                                     }
                                   },
@@ -391,7 +391,7 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                         .showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              'Announcement Creation Failed, Server Error')),
+                                              'Announcement Edition Failed, Server Error')),
                                     );
                                   }),
                               builder: (
@@ -432,21 +432,24 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
                                             "selectedHostels:$selectedHostels");
                                         print(
                                             "textController: ${titleController.text}");
-                                        runMutation({
-                                          'announcementInput': {
-                                            "title": titleController.text,
-                                            "description":
-                                            descriptionController.text,
-                                            "hostelIds": selectedHostels,
-                                            "endTime": "$endTime:00+05:30",
-                                          },
-                                          "images": multipartFile,
-                                        });
-                                      }
+                                      runMutation({
+                                        'announcementId':
+                                        widget.announcement.id,
+                                        'updateAnnouncementInput': {
+                                          "title": titleController.text,
+                                          "description":
+                                          descriptionController.text,
+                                          "endTime": "$endTime:00+05:30",
+                                          "hostelIds": selectedHostels,
+                                        },
+                                        "images": multipartFile,
+                                      });
+
+                                    }
                                     }
                                   },
                                   child: Text(
-                                    "Add Announcement",
+                                    "Edit Announcement",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 15.0),
                                   ),
