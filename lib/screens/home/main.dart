@@ -322,6 +322,9 @@ class _HomePageState extends State<HomePage> {
                           () => "announcement");
                 }
               }
+              if( isAnnouncements == true || isEvents == true || isNetops == true ) {
+                isAll = false;
+              }
               userName = result.data!["getMe"]["name"];
               return Scaffold(
                   appBar: AppBar(
@@ -396,13 +399,12 @@ class _HomePageState extends State<HomePage> {
                                             });
                                             },
                                           style: ElevatedButton.styleFrom(
-                                            primary: isAll? Colors.white:Colors.lightGreen,
+                                            primary: isAll? Colors.blue:Color(0xFFDEDDFF),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20.0)
                                             ),
-                                            side: const BorderSide(width: 1, color:Colors.green),
                                           ),
-                                          child: const Text("All", style: TextStyle(color: Colors.green),),
+                                          child: const Text("All", style: TextStyle(color: Colors.black),),
                                         ),
                                       ),
                                       Padding(
@@ -417,13 +419,12 @@ class _HomePageState extends State<HomePage> {
                                             });
                                             },
                                           style: ElevatedButton.styleFrom(
-                                            primary: isAnnouncements? Colors.white:Colors.lightGreen,
+                                            primary: isAnnouncements? Colors.blue:Color(0xFFDEDDFF),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20.0)
                                             ),
-                                            side: const BorderSide(width: 1, color:Colors.green),
                                           ),
-                                          child: const Text("Announcements",style: TextStyle(color: Colors.green),),
+                                          child: const Text("Announcements",style: TextStyle(color: Colors.black),),
                                         ),
                                       ),
                                       Padding(
@@ -438,13 +439,12 @@ class _HomePageState extends State<HomePage> {
                                             });
                                             },
                                           style: ElevatedButton.styleFrom(
-                                            primary: isEvents? Colors.white:Colors.lightGreen,
+                                            primary: isEvents? Colors.blue:Color(0xFFDEDDFF),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20.0)
                                             ),
-                                            side: const BorderSide(width: 1, color:Colors.green),
                                           ),
-                                          child: const Text("Events",style: TextStyle(color: Colors.green),),
+                                          child: const Text("Events",style: TextStyle(color: Colors.black),),
                                         ),
                                       ),
                                       ElevatedButton(
@@ -453,17 +453,17 @@ class _HomePageState extends State<HomePage> {
                                             isNetops = !isNetops;
                                             isEvents = false;
                                             isAnnouncements = false;
+                                            isAll = !isAll;
                                           });
                                           },
                                         style: ElevatedButton.styleFrom(
-                                          primary: isNetops? Colors.white:Colors.lightGreen,
+                                          primary: isNetops? Colors.blue:Color(0xFFDEDDFF),
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(20.0)
                                           ),
-                                          side: const BorderSide(width: 1, color: Colors.green),
                                         ),
                                         child: const Text("NetOP",style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.black,
                                         ),),
                                       ),
                                     ],
