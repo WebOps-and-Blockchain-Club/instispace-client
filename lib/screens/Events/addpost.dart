@@ -82,6 +82,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
               ),
               backgroundColor: Color(0xFF5451FD),
             ),
+
             body: Form(
               key: _formKey,
               child: Padding(

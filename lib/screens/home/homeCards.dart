@@ -368,7 +368,6 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
   }
 }
 
-
 class HostelAmenity extends StatefulWidget {
 
   final Amenities amenities;
@@ -378,25 +377,56 @@ class HostelAmenity extends StatefulWidget {
   _HostelAmenityState createState() => _HostelAmenityState();
 }
 
+//Hostel Amenity Card
 class _HostelAmenityState extends State<HostelAmenity> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Column(
-        children: [
-          Center(child: Text(widget.amenities.name)),
-          Text(widget.amenities.description),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        color: Color(0xFFDEDDFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+        child: Column(
+          children: [
+            //Name
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
+              child: Center(
+                child: Row(
+                  children: [
+                    Text(widget.amenities.name,
+                      style: TextStyle(
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+              ),
+                  ],
+                ),
+              ),
+            ),
+
+            //Description
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
+              child: Row(
+                children: [
+                  Text(widget.amenities.description,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
 
 class HostelContacts extends StatefulWidget {
 
@@ -407,27 +437,107 @@ class HostelContacts extends StatefulWidget {
   _HostelContactsState createState() => _HostelContactsState();
 }
 
+//Hostel Contacts Card
 class _HostelContactsState extends State<HostelContacts> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(child: Text(widget.contacts.type)),
-          Text(widget.contacts.name),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                launch('tel:${widget.contacts.contact}');
-              },
-                child: Text(widget.contacts.contact)),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        color: Color(0xFFDEDDFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //Content
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //Names
+                Column(
+                  children: [
+                    //Designation
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(widget.contacts.type,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //Contact Name
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(widget.contacts.name,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                //Mobile
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+                  child: SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.305,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          launch('tel:${widget.contacts.contact}');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF6B7AFF),
+                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: Size(50, 35),
+                        ),
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.call,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+
+                              SizedBox(
+                                width: 5,
+                              ),
+
+                              Text(widget.contacts.contact,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -443,28 +553,94 @@ class EmergencyContacts extends StatefulWidget {
   _EmergencyContactsState createState() => _EmergencyContactsState();
 }
 
+//Emergency Contact List
 class _EmergencyContactsState extends State<EmergencyContacts> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: Text(widget.Emergencycontacts.name)),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    launch('tel:${widget.Emergencycontacts.contact}');
-                  },
-                  child: Text(widget.Emergencycontacts.contact)),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        color: Color(0xFFDEDDFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //Name
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
+                child: SizedBox(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.40,
+                  child: Text(widget.Emergencycontacts.name,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+
+              //Mobile
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
+                child: SizedBox(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.35,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        launch('tel:${widget.Emergencycontacts.contact}');
+                      },
+
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFF6B7AFF),
+                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      minimumSize: Size(50, 35),
+                    ),
+
+                    child: Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.28,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.call,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+
+                            SizedBox(
+                              width: 5,
+                            ),
+
+                            Text(widget.Emergencycontacts.contact,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

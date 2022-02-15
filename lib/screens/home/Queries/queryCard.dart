@@ -45,6 +45,7 @@ class _QueryCardState extends State<QueryCard> {
         int likeCount = result.data!["getMyQuery"]["likeCount"];
         bool isLiked = result.data!["getMyQuery"]["isLiked"];
         userId = result.data!["getMe"]["id"];
+
         return ExpandableNotifier(
             child: ScrollOnExpand(
               child: ExpandablePanel(
@@ -52,65 +53,138 @@ class _QueryCardState extends State<QueryCard> {
                     tapBodyToCollapse: true,
                     tapBodyToExpand: true,
                   ),
+
                   expanded: singleQuery(post: post,),
-                  collapsed: Card(
-                    child: Column(
-                      children: [
-                        Text(post.title),
-                        if(post.photo!='')
-                          Image.network(post.photo),
-                        Text(post.content),
-                        Row(
-                          children: [
-                            Mutation(
-                                options:MutationOptions(
-                                    document: gql(toggleLike)
+
+                  //Short Card
+                  collapsed: Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 3, 2, 3),
+                    child: Card(
+                      color: Color(0xFFDEDDFF),
+                      child: Column(
+                        children: [
+                          //Title
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
+                            child: Row(
+                              children: [
+                                Text(post.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Color(0xFF000000),
+                                  ),
                                 ),
-                                builder: (
-                                    RunMutation runMutation,
-                                    QueryResult? result,
-                                    ){
-                                  if (result!.hasException){
-                                    print(result.exception.toString());
-                                  }
-                                  return IconButton(
-                                    onPressed: (){
-                                      runMutation({
-                                        "id":post.id
-                                      });
-                                      refetch!();
-                                      print("isLiked:$isLiked");
-                                    },
-                                    icon: Icon(Icons.thumb_up),
-                                    color: isLiked? Colors.blue:Colors.grey,
-                                  );
-                                }
+                              ],
                             ),
-                            Text("$likeCount"),
-                            IconButton(onPressed: () =>
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => queryComments(post:post),
+                          ),
+
+                          //Image
+                          if(post.photo!='')
+                            Image.network(post.photo),
+
+                          //Description
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                            child: Container(
+                              child: Text(post.content,
+                                style: TextStyle(
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+
+                          //Buttons
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 3, 5, 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    //Like Button
+                                    Mutation(
+                                        options:MutationOptions(
+                                            document: gql(toggleLike)
+                                        ),
+                                        builder: (
+                                            RunMutation runMutation,
+                                            QueryResult? result,
+                                            ){
+                                          if (result!.hasException){
+                                            print(result.exception.toString());
+                                          }
+                                          return IconButton(
+                                            onPressed: (){
+                                              runMutation({
+                                                "id":post.id
+                                              });
+                                              refetch!();
+                                              print("isLiked:$isLiked");
+                                            },
+                                            icon: Icon(Icons.thumb_up),
+                                            color: isLiked? Colors.blue:Colors.grey,
+                                            iconSize: 22,
+                                          );
+                                        }
+                                    ),
+
+                                    //Like Count
+                                    Text("$likeCount",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                      ),),
+
+                                    //Comment Button
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      child: IconButton(
+                                        onPressed: () =>
+                                        {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => queryComments(post:post),
+                                              )
+                                          ),
+                                          print('commented'),
+                                        },
+                                        icon: Icon(Icons.comment),
+                                        color: Colors.grey,
+                                        iconSize: 22,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                //Edit Button
+                                if(userId == post.createdById)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                  child: IconButton(
+                                    onPressed: () =>
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => EditQuery(post:post, refetchQuery: widget.refetchQuery,),
+                                            )
+                                        ),
+                                        print('commented'),
+                                      },
+                                    icon: Icon(Icons.edit),
+                                    color: Colors.grey,
+                                    iconSize: 22,
+                                  ),
                                 )
-                              ),
-                              print('commented'),
-                            }, icon: Icon(Icons.comment)),
-                            if(userId == post.createdById)
-                            IconButton(onPressed: () =>
-                            {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditQuery(post:post, refetchQuery: widget.refetchQuery,),
-                                  )
-                              ),
-                              print('commented'),
-                            }, icon: Icon(Icons.edit))
-                          ],
-                        ),
-                      ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   builder: (_, collapsed, expanded) =>
@@ -158,58 +232,122 @@ class _singleQueryState extends State<singleQuery> {
         bool isLiked = result.data!["getMyQuery"]["isLiked"];
 
         return SafeArea(
-            child:Column(
-              children: [
-                Text("single Post"),
-                Text(post.title),
-                if(post.photo!='')
-                  Image.network(post.photo),
-                Row(
+            child:Padding(
+              padding: const EdgeInsets.fromLTRB(3, 2, 3, 3),
+              child: Card(
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(8)
+                // ),
+                color: Color(0xFFDEDDFF),
+                child: Column(
                   children: [
-                    Mutation(
-                        options:MutationOptions(
-                            document: gql(toggleLike)
-                        ),
-                        builder: (
-                            RunMutation runMutation,
-                            QueryResult? result,
-                            ){
-                          if (result!.hasException){
-                            print(result.exception.toString());
-                          }
-                          return IconButton(
-                            onPressed: (){
-                              runMutation({
-                                "id":post.id
-                              });
-                              refetch!();
-                              print("isLiked:$isLiked");
-                            },
-                            icon: Icon(Icons.thumb_up),
-                            color: isLiked? Colors.blue:Colors.grey,
-                          );
-                        }
-                    ),
-                    Text("$likeCount"),
-                    IconButton(onPressed: () =>
-                    {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => queryComments(post:post),
-                          )
+                    //Title
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
+                      child: Row(
+                        children: [
+                          Text(post.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color(0xFF000000),
+                            ),
+                          ),
+                        ],
                       ),
-                      print('commented'),
-                    }, icon: Icon(Icons.comment)),
+                    ),
+
+                    //Image
+                    if(post.photo!='')
+                      Image.network(post.photo),
+
+                    //Buttons
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 3, 5, 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              //Like Button
+                              Mutation(
+                                  options:MutationOptions(
+                                      document: gql(toggleLike)
+                                  ),
+                                  builder: (
+                                      RunMutation runMutation,
+                                      QueryResult? result,
+                                      ){
+                                    if (result!.hasException){
+                                      print(result.exception.toString());
+                                    }
+                                    return IconButton(
+                                      onPressed: (){
+                                        runMutation({
+                                          "id":post.id
+                                        });
+                                        refetch!();
+                                        print("isLiked:$isLiked");
+                                      },
+                                      icon: Icon(Icons.thumb_up),
+                                      color: isLiked? Colors.blue:Colors.grey,
+                                      iconSize: 22,
+                                    );
+                                  }
+                              ),
+
+                              //Like Count
+                              Text("$likeCount",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),),
+
+                              //Comment Button
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                child: IconButton(
+                                  onPressed: () =>
+                                  {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => queryComments(post:post),
+                                        )
+                                    ),
+                                    print('commented'),
+                                  },
+                                  icon: Icon(Icons.comment),
+                                  color: Colors.grey,
+                                  iconSize: 22,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //Description
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+                      child: Container(
+                        child: Text(post.content,
+                          style: TextStyle(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+
+                    if(attachment !=null && attachment != "")
+                    IconButton(onPressed: (){
+                      launch(attachment);
+                    }, icon: Icon(Icons.attachment)),
                   ],
                 ),
-                Text(post.content),
-
-                if(attachment !=null && attachment != "")
-                IconButton(onPressed: (){
-                  launch(attachment);
-                }, icon: Icon(Icons.attachment)),
-              ],
+              ),
             )
         );
         },

@@ -27,9 +27,14 @@ class _CommentsState extends State<Comments> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Comments'),
-        backgroundColor:Color(0xFFE6CCA9),
+        title: Text('Comments',
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+          ),),
+        backgroundColor:Color(0xFF5451FD),
       ),
+
       body: Query(
         options:QueryOptions(
           document: gql(getNetop),
@@ -52,51 +57,73 @@ class _CommentsState extends State<Comments> {
                 )
             );
           }
-          return Column(
+
+          return ListView(
             children: [
               SizedBox(
-                height: 570.0,
-                width: 400.0,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.73,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.8,
                 child: ListView(
                   children: [
                     Column(
                       children : comments.map((comment) => Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: Card(
-                          child: Row(
+                          color: Color(0xFFDEDDFF),
+                          child: Column(
                             children: [
-                              Container(
-                                height: 50.0,
-                                width: 50.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                child: Row(
+                                  children: [
+                                    //PP
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                                      child: Container(
+                                        height:30.0,
+                                        width: 30.0,
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                                        ),
+                                      ),
+                                    ),
+
+                                    //Name
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(5, 6, 10, 0),
+                                      child: Text(
+                                        comment.name,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                // child: CircleAvatar(
-                                //   radius: 50.0,
-                                //   backgroundImage: NetworkImage(comment.profile_pic_url),
-                                // ),
                               ),
-                              SizedBox(
-                                width: 20.0,
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    comment.name,
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
+
+                              //Comment
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 5, 10, 8),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      comment.message,
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w300,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    comment.message,
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w100,
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -106,75 +133,88 @@ class _CommentsState extends State<Comments> {
                   ],
                 ),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4.0, 0.0, 2.0, 0.0),
-                    child: Container(
-                      height: 50.0,
-                      width: 50.0,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      ),
-                      child: CircleAvatar(
-                        radius: 50.0,
-                        backgroundImage: NetworkImage('https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 16),
-                    child: SizedBox(
-                      width: 270.0,
-                      child: TextFormField(
-                        controller: commentController,
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'write a comment'
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 5.0, 12.0, 0.0),
+                      child: Container(
+                        height: 35.0,
+                        width: 35.0,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        ),
+                        child: CircleAvatar(
+                          radius: 30.0,
+                          backgroundImage: NetworkImage('https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
                         ),
                       ),
                     ),
-                  ),
-                  Mutation(
-                    options: MutationOptions(
-                        document: gql(createComments),
-                      onCompleted: (dynamic resultData){
-                          print("comment result data: $resultData");
-                          refetch!();
-                          commentController.clear();
-                      }
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 16),
+                      child: SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.64,
+                        child: TextFormField(
+                          controller: commentController,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Write a comment',
+                          ),
+                        ),
+                      ),
                     ),
-                    builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                        ){
-                      if (result!.hasException){
-                        print(result.exception.toString());
-                      }
-                      if(result.isLoading){
-                        return Scaffold(
-                          appBar:AppBar(
-                            title: Text('Comments'),
-                            backgroundColor:Color(0xFFE6CCA9),
-                          ),
-                          body: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+
+                    Mutation(
+                      options: MutationOptions(
+                          document: gql(createComments),
+                          onCompleted: (dynamic resultData){
+                            print("comment result data: $resultData");
+                            refetch!();
+                            commentController.clear();
+                          }
+                      ),
+                      builder: (
+                          RunMutation runMutation,
+                          QueryResult? result,
+                          ){
+                        if (result!.hasException){
+                          print(result.exception.toString());
+                        }
+                        if(result.isLoading){
+                          return Scaffold(
+                            appBar:AppBar(
+                              title: Text('Comments'),
+                              backgroundColor:Color(0xFFE6CCA9),
+                            ),
+                            body: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return IconButton(
+                          onPressed: ()
+                          {
+                            print(widget.post.id);
+                            runMutation(
+                                {
+                                  "content":commentController.text,
+                                  "id":widget.post.id,
+                                }
+                            );
+                          },
+                          icon: Icon(Icons.send),
+                          iconSize: 24,
                         );
-                      }
-                      return IconButton(onPressed: (){
-                        print(widget.post.id);
-                        runMutation(
-                            {
-                              "content":commentController.text,
-                              "netopId":widget.post.id,
-                            }
-                        );
-                      }, icon: Icon(Icons.send));
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           );

@@ -148,6 +148,8 @@ class _HomeState extends State<EventsHome> {
                   scrollController.jumpTo(triggerFetchMoreSize);
                 }
               });
+
+
               return Scaffold(
                 key: ScaffoldKey,
                 appBar: AppBar(

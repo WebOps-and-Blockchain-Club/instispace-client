@@ -65,6 +65,7 @@ class SinglePost extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10.0),
+
             //Tags
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

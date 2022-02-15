@@ -71,6 +71,7 @@ class _PostCardState extends State<PostCard> {
                           tapBodyToCollapse: true,
                           tapBodyToExpand: true,
                         ),
+
                         expanded: SizedBox(
                             height: MediaQuery
                                 .of(context)
@@ -81,261 +82,368 @@ class _PostCardState extends State<PostCard> {
                                 .size
                                 .width * 1,
                             child: Single_Post(post: widget.post,isStarred: isStarred,refetch: refetch,)),
-                        collapsed: Card(
-                            clipBehavior: Clip.antiAlias,
-                            elevation: 5.0,
-                            color: Color(0xFFF9F6F2),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10.0, 0.0, 10.0, 5.0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .spaceBetween,
-                                          children: [
-                                            Text(
-                                              widget.post.title,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
+
+                        collapsed: Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 2, 2, 3),
+                          child: Card(
+                              clipBehavior: Clip.antiAlias,
+                              elevation: 5.0,
+                              color: Color(0xFF808CFF),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          //Title & Star
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              //Title
+                                              SizedBox(
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width * 0.5,
+                                                child: Text(
+                                                  widget.post.title,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            if(userId==createdId)
-                                            SizedBox(
-                                              width: 60,
-                                              height: 20,
-                                              child: ElevatedButton(
-                                                child: Text('edit'),
-                                                onPressed: (){
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
-                                                },
-                                              ),
-                                            ),
-                                            if(userId==createdId)
-                                            Mutation(
-                                              options: MutationOptions(
-                                                document: gql(deleteNetop)
-                                              ),
-                                              builder:(
-                                                  RunMutation runMutation,
-                                                  QueryResult? result,
-                                              ){
-                                                if (result!.hasException){
-                                                  print(result.exception.toString());
-                                                }
-                                                if(result.isLoading){
-                                                  return CircularProgressIndicator();
-                                                }
-                                                return SizedBox(
-                                                  width: 75,
-                                                  height: 20,
-                                                  child: ElevatedButton(
+
+                                              Mutation(
+                                                  options:MutationOptions(
+                                                      document: gql(toggleStar)
+                                                  ),
+                                                  builder: (
+                                                      RunMutation runMutation,
+                                                      QueryResult? result,
+                                                      ){
+                                                    if (result!.hasException){
+                                                      print(result.exception.toString());
+                                                    }
+                                                    return IconButton(
                                                       onPressed: (){
                                                         runMutation({
-                                                          "deleteNetopNetopId":widget.post.id
+                                                          "toggleStarNetopId":widget.post.id
                                                         });
-                                                        widget.refetchPosts!();
-                                                  },
-                                                      child: Text('delete')),
-                                                );
-                                              }
-                                            ),
-                                            Mutation(
-                                                options:MutationOptions(
-                                                    document: gql(toggleStar)
-                                                ),
-                                                builder: (
-                                                    RunMutation runMutation,
-                                                    QueryResult? result,
-                                                    ){
-                                                  if (result!.hasException){
-                                                    print(result.exception.toString());
+                                                        refetch!();
+                                                      },
+                                                      icon: isStarred?Icon(Icons.star):Icon(Icons.star_border),
+                                                      color: isStarred? Colors.amber:Colors.white,
+                                                    );
                                                   }
-                                                  return IconButton(
-                                                    onPressed: (){
-                                                      runMutation({
-                                                        "toggleStarNetopId":widget.post.id
-                                                      });
-                                                      refetch!();
-                                                    },
-                                                    icon: isStarred?Icon(Icons.star):Icon(Icons.star_border),
-                                                    color: isStarred? Colors.amber:Colors.grey,
-                                                  );
-                                                }
-                                            ),
-                                          ],
-                                        ),
-                                        if(widget.post.imgUrl==null)
-                                          Text(
-                                            widget.post.description.length > 250
-                                                ? widget.post.description.substring(
-                                                0, 250) + '...'
-                                                : widget.post.description,
-                                            style: TextStyle(
-                                              fontSize: 15.0,
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                        if(widget.post.imgUrl !=null)
-                                          SizedBox(
-                                              width: 400.0,
-                                              child: Image.network(
-                                                  widget.post.imgUrl!,
-                                                  height: 150.0)
-                                          ),
-                                        Row(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    IconButton(onPressed: () =>
-                                                    {
-                                                      print(dateTime),
-                                                      print('shared')
-                                                    }, icon: Icon(Icons.share)),
 
-                                                    IconButton(onPressed: () =>
-                                                    {
-                                                      print('remainder added')
-                                                    },
-                                                        icon: Icon(
-                                                            Icons.access_alarm)),
-                                                    Mutation(
-                                                        options:MutationOptions(
-                                                            document: gql(toggleLike)
-                                                        ),
-                                                        builder: (
-                                                            RunMutation runMutation,
-                                                            QueryResult? result,
-                                                            ){
-                                                          if (result!.hasException){
-                                                            print(result.exception.toString());
-                                                          }
-                                                          return IconButton(
-                                                            onPressed: (){
-                                                              runMutation({
-                                                                "netopId":widget.post.id
-                                                              });
-                                                               refetch!();
-                                                              print("isLiked:$isLiked");
-                                                            },
-                                                            icon: Icon(Icons.thumb_up),
-                                                            color: isLiked? Colors.blue:Colors.grey,
-                                                          );
-                                                        }
-                                                    ),
-                                                    Container(
-                                                      margin: EdgeInsets.only(left: 20.0),
-                                                      child: Text(
-                                                        "$likeCount likes",
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    IconButton(onPressed: () =>
-                                                    {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Comments(post: widget
-                                                                    .post,)),
-                                                      ),
-                                                      print('commented'),
-                                                    }, icon: Icon(Icons.comment)),
-                                                  ],
-                                                ),
-                                                Row(
+                                          //Images
+                                          if(widget.post.imgUrl==null)
+                                            Text(
+                                              widget.post.description.length > 250
+                                                  ? widget.post.description.substring(
+                                                  0, 250) + '...'
+                                                  : widget.post.description,
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                              ),
+                                            ),
+                                          if(widget.post.imgUrl !=null)
+                                            SizedBox(
+                                                width: 400.0,
+                                                child: Image.network(
+                                                    widget.post.imgUrl!,
+                                                    height: 150.0)
+                                            ),
+
+                                          //Rows for Tags, Icons
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(0, 5, 12, 5),
+                                            child: Row(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    SizedBox(
-                                                      width: 240.0,
-                                                      height: 30.0,
-                                                      child: ListView(
-                                                        scrollDirection: Axis
-                                                            .horizontal,
-                                                        children: tags.map((tag) =>
-                                                            SizedBox(
-                                                              height: 25.0,
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                    .fromLTRB(
-                                                                    2.0, 0.0, 2.0,
-                                                                    0.0),
-                                                                child: ElevatedButton(
-                                                                    onPressed: () =>
-                                                                    {
-                                                                    },
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor: MaterialStateProperty
-                                                                            .all(
-                                                                            Colors
-                                                                                .grey),
-                                                                        shape: MaterialStateProperty
-                                                                            .all<
-                                                                            RoundedRectangleBorder>(
-                                                                            RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius
-                                                                                  .circular(
-                                                                                  30.0),
-                                                                            ))
-                                                                    ),
+                                                    //Tags
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                      child: SizedBox(
+                                                        width: 200.0,
+                                                        height: 20.0,
+                                                        child: ListView(
+                                                          scrollDirection: Axis.horizontal,
+                                                          children: tags.map((tag) =>
+                                                              SizedBox(
+                                                                height: 25.0,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
+                                                                  child: ElevatedButton(
+                                                                      onPressed: () => {},
+                                                                      style: ElevatedButton.styleFrom(
+                                                                        primary: Color(0xFFFFFFFF),
+                                                                        padding: EdgeInsets.symmetric(
+                                                                            vertical: 2,
+                                                                            horizontal: 6),
+                                                                      ),
                                                                     child: Text(
                                                                       tag.Tag_name,
-                                                                    )),
-                                                              ),
-                                                            )).toList(),
+                                                                      style: TextStyle(
+                                                                        color: Color(0xFF021096),
+                                                                        fontSize: 12.5,
+                                                                        fontWeight: FontWeight.bold,
+                                                                      ),
+                                                                    ),),
+                                                                ),
+                                                              )).toList(),
+                                                        ),
                                                       ),
                                                     ),
+
+                                                    //Icons
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                                                      child: Row(
+                                                        children: [
+                                                          //Share Icon
+                                                          Ink(
+                                                            decoration: const ShapeDecoration(
+                                                                color: Color(0xFFFFFFFF),
+                                                                shape: CircleBorder(
+                                                                  side: BorderSide.none,
+                                                                )
+                                                            ),
+                                                            height: 36,
+                                                            width: 36,
+                                                            child: Center(
+                                                              child: IconButton(onPressed: () =>
+                                                              {
+                                                                print(dateTime),
+                                                                print('shared')
+                                                              }, icon: Icon(Icons.share),
+                                                                iconSize: 20,
+                                                                color: Color(0xFF021096),),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5,),
+
+                                                          //Reminder
+                                                          Ink(
+                                                            decoration: const ShapeDecoration(
+                                                                color: Colors.white,
+                                                                shape: CircleBorder(
+                                                                  side: BorderSide.none,
+                                                                )
+                                                            ),
+                                                            height: 36,
+                                                            width: 36,
+                                                            child: Center(
+                                                              child: IconButton(onPressed: () =>
+                                                              {
+                                                                print('remainder added')
+                                                              },
+                                                                icon: Icon(Icons.access_alarm),
+                                                                iconSize: 20,
+                                                                color: Color(0xFF021096),),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5,),
+
+                                                          Mutation(
+                                                              options:MutationOptions(
+                                                                  document: gql(toggleLike)
+                                                              ),
+                                                              builder: (
+                                                                  RunMutation runMutation,
+                                                                  QueryResult? result,
+                                                                  ){
+                                                                if (result!.hasException){
+                                                                  print(result.exception.toString());
+                                                                }
+                                                                return Ink(
+                                                                  decoration: const ShapeDecoration(
+                                                                      color: Color(0xFFFFFFFF),
+                                                                      shape: CircleBorder(
+                                                                        side: BorderSide.none,
+                                                                      )
+                                                                  ),
+                                                                  height: 36,
+                                                                  width: 36,
+                                                                  child: Center(
+                                                                    child: IconButton(onPressed: () =>
+                                                                    {
+                                                                      Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                Comments(post: widget
+                                                                                    .post,)),
+                                                                      ),
+                                                                      print('commented'),
+                                                                    }, icon: Icon(Icons.comment),
+                                                                      iconSize: 20,
+                                                                      color: Color(0xFF021096),),
+                                                                  ),
+                                                                );
+                                                              }
+                                                          ),
+                                                          SizedBox(width: 5,),
+
+                                                          Mutation(
+                                                              options:MutationOptions(
+                                                                  document: gql(toggleLike)
+                                                              ),
+                                                              builder: (
+                                                                  RunMutation runMutation,
+                                                                  QueryResult? result,
+                                                                  ){
+                                                                if (result!.hasException){
+                                                                  print(result.exception.toString());
+                                                                }
+                                                                return Ink(
+                                                                  decoration: const ShapeDecoration(
+                                                                      color: Color(0xFFFFFFFF),
+                                                                      shape: CircleBorder(
+                                                                        side: BorderSide.none,
+                                                                      )
+                                                                  ),
+                                                                  height: 36,
+                                                                  width: 36,
+                                                                  child: Center(
+                                                                    child: IconButton(
+                                                                      onPressed: () =>
+                                                                      {
+                                                                        print('remainder added')
+                                                                      },
+                                                                      icon: Icon(Icons.thumb_up),
+                                                                      iconSize: 20,
+                                                                      color: Color(0xFF021096),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                          ),
+
+                                                          Container(
+                                                            margin: EdgeInsets.only(left: 10.0),
+                                                            child: Text(
+                                                              "$likeCount likes",
+                                                              style: TextStyle(
+                                                                color: Color(0xFFFFFFFF),
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16.0,
+                                                              ),
+                                                            ),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                    //Button Row
+                                                    Row(
+                                                      children: [
+                                                        if(userId==createdId)
+                                                          SizedBox(
+                                                            width: 60,
+                                                            child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                primary: Color(0xFF021096),
+                                                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                                minimumSize: Size(35,25),
+                                                              ),
+                                                              child: Text('Edit',
+                                                                style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),),
+                                                              onPressed: (){
+                                                                Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
+                                                              },
+                                                            ),
+                                                          ),
+                                                        SizedBox(width: 8,),
+
+                                                        if(userId==createdId)
+                                                          Mutation(
+                                                              options: MutationOptions(
+                                                                  document: gql(deleteNetop)
+                                                              ),
+                                                              builder:(
+                                                                  RunMutation runMutation,
+                                                                  QueryResult? result,
+                                                                  ){
+                                                                if (result!.hasException){
+                                                                  print(result.exception.toString());
+                                                                }
+                                                                if(result.isLoading){
+                                                                  return CircularProgressIndicator();
+                                                                }
+                                                                return SizedBox(
+                                                                  width: 65,
+                                                                  child: ElevatedButton(
+                                                                      style: ElevatedButton.styleFrom(
+                                                                        primary: Color(0xFF021096),
+                                                                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                                        minimumSize: Size(35,25),
+                                                                      ),
+                                                                      onPressed: (){
+                                                                        runMutation({
+                                                                          "eventId":widget.post.id
+                                                                        });
+                                                                      },
+                                                                      child: Text('Delete',
+                                                                        style: TextStyle(
+                                                                          color: Colors.white,
+                                                                          fontSize: 14,
+                                                                          fontWeight: FontWeight.w500,
+                                                                        ),)
+                                                                  ),
+                                                                );
+                                                              }
+                                                          ),
+                                                        SizedBox(width: 8,),
+
+                                                        SizedBox(
+                                                          child: ElevatedButton(
+                                                            child: Text('Report',
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w500,
+                                                              ),),
+                                                            style: ElevatedButton.styleFrom(
+                                                              primary: Color(0xFF021096),
+                                                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                              minimumSize: Size(35,25),
+                                                            ),
+                                                            onPressed: (){
+                                                              return showAlertDialog(context);
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
                                                   ],
                                                 ),
-                                                SizedBox(
-                                                  child: ElevatedButton(
-                                                    child: Text('report'),
-                                                    onPressed: (){
-                                                      return showAlertDialog(context);
-                                                    },
-                                                  ),
-                                                )
                                               ],
                                             ),
-                                            // SizedBox(
-                                            //     width: 120,
-                                            //     height: 50,
-                                            //     child: Container(
-                                            //       decoration: BoxDecoration(
-                                            //         color: Colors.grey,
-                                            //         borderRadius: BorderRadius
-                                            //             .circular(10.0),
-                                            //       ),
-                                            //       child: Padding(
-                                            //         padding: const EdgeInsets
-                                            //             .fromLTRB(2.0, 8.0, 8.0, 0.0),
-                                            //         child: Column(
-                                            //           children: [
-                                            //             Text(time),
-                                            //             Text(date),
-                                            //           ],
-                                            //         ),
-                                            //       ),
-                                            //     )
-                                            // )
-                                          ],
-                                        ),
+                                          ),
 
-                                      ],
-                                    ),
-                                  ]
-                              ),
-                            )
+                                        ],
+                                      ),
+                                    ]
+                                ),
+                              )
+                          ),
                         ),
                         builder: (_, collapsed, expanded) =>
                             Expandable(

@@ -94,100 +94,139 @@ class _HostelProfileState extends State<HostelProfile> {
           name: 'Prime mart'
       ));
 
-
-
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Hostel Profile",style: TextStyle(fontWeight: FontWeight.bold),),
+          title: const Text("My Hostel",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+
+            ),
+          ),
+          backgroundColor: Color(0xFF5451FD),
           elevation: 0.0,
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
         ),
+
+        //UI
         body: ListView(
           shrinkWrap: true,
-          children: [Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      "$hostelName Hostel",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 35.0
+          children: [Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Hostel Name
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Column(
+                      children: [
+                        Text(
+                            "$hostelName Hostel",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 22,
+                            color: Color(0xFF5050ED),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              const Text(
-                "Hostel Amenities",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
-                child: ListView(
-                  controller: scrollController,
-                  shrinkWrap: true,
-                    children: [Column(
-                      children: amenities
-                          .map((post) => HostelAmenity(
-                        amenities: post,
-                      ))
-                          .toList(),
+
+                //HOSTEL AMENITIES
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
+                  child: Text(
+                    "HOSTEL AMENITIES",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.5,
+                      color: Color(0xFF808080),
                     ),
-                  ]
+                  ),
                 ),
-              ),
-              const Text(
-                "Hostel Contacts",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 0.0),
+                  child: ListView(
+                    controller: scrollController,
+                    shrinkWrap: true,
+                      children: [Column(
+                        children: amenities
+                            .map((post) => HostelAmenity(
+                          amenities: post,
+                        ))
+                            .toList(),
+                      ),
+                    ]
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
-                child: ListView(
-                  controller: scrollController,
-                  shrinkWrap: true,
-                  children:[ Column(
-                      children: contacts
-                          .map((post) => HostelContacts(
-                        contacts: post,
-                      ))
-                          .toList(),
+
+                //HOSTEL CONTACTS
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
+                  child: const Text(
+                    "HOSTEL CONTACTS",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.5,
+                      color: Color(0xFF808080),
                     ),
-                  ]
+                  ),
                 ),
-              ),
-              const Text(
-                "Emergency Contacts",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
+
+                //H-Contact List
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 0.0),
+                  child: ListView(
+                    controller: scrollController,
+                    shrinkWrap: true,
+                    children:[ Column(
+                        children: contacts
+                            .map((post) => HostelContacts(
+                          contacts: post,
+                        ))
+                            .toList(),
+                      ),
+                    ]
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 0.0),
-                child: ListView(
-                  controller: scrollController,
-                  shrinkWrap: true,
-                    children: [Column(
-                      children: emergencyContacts
-                          .map((post) => EmergencyContacts(
-                        Emergencycontacts: post,
-                      ))
-                          .toList(),
+
+                //EMERGENCY CONTACTS
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
+                  child: const Text(
+                    "EMERGENCY CONTACTS",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.5,
+                      color: Color(0xFF808080),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+
+                //E-Contact List
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 15.0),
+                  child: ListView(
+                    controller: scrollController,
+                    shrinkWrap: true,
+                      children: [Column(
+                        children: emergencyContacts
+                            .map((post) => EmergencyContacts(
+                          Emergencycontacts: post,
+                        ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-      ]
+      ],
         ),
       );
     });

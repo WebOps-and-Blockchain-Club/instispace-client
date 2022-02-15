@@ -71,181 +71,300 @@ class _EditPostState extends State<EditPost> {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('Edit Post'),
-            backgroundColor: Color(0xFFE6CCA9),
+            title: const Text('Edit Post',
+              style: TextStyle(
+                  color: Color(0xFFFFFFFF),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+              ),),
+            backgroundColor: Color(0xFF5451FD),
           ),
+
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
               child: SizedBox(
-                height: 750,
-                width: 400,
-                child: Column(
+                child: ListView(
                   children: [
-                    SizedBox(
-                      height: 600.0,
-                      width: 400.0,
-                      child: SingleChildScrollView(
+                    SingleChildScrollView(
+                      child:
+                      Form(
                         child:
-                        Form(
-                          child:
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ElevatedButton(onPressed: ()async{
-                                final finalResult=await showSearch(
-                                  context: context,
-                                  delegate: CustomSearchDelegate(searchTerms:tagList),
-                                );
-                                setState(() {
-                                  if(finalResult!=''){
-                                    selectedTags.add(finalResult);
-                                  }
-                                });
-                                print("finalResult:$finalResult");
-                                print("SelectedTags:$selectedTags");
-                              },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(Colors.grey),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        )
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //Title Name
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("Title",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
                                     ),
                                   ),
-                                  child: Text(
-                                    'select tags',
-                                  )
+                                ],
                               ),
-                              selectedTags==[]?Container():
-                              Wrap(
-                                children:selectedTags.map((e) =>
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: MaterialButton(//shape,color etc...
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedTags.remove(e);
-                                          });
-                                        },
-                                        child: Text(e),
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                ).toList(),
-                              ),
-                              Text(
-                                'Title',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              SizedBox(
+                            ),
+
+                            //Title Field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                              child: SizedBox(
                                 height: 35.0,
                                 child: TextFormField(
                                   controller: titleController,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(100.0),
-                                    ),
-                                    hintText: 'Enter Title',
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Text(
-                                'Description',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              TextFormField(
-                                controller: descriptionController,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  hintText: 'Enter Description',
-                                ),
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
 
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Text(
-                                'image',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 450.0,
-                                child: StatefulBuilder(
-                                  builder: (BuildContext context,StateSetter setState){
-                                    return ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Colors.blue[200],
-                                            elevation: 0.0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                        ),
-                                        onPressed: () async {
-                                          final FilePickerResult? result =
-                                          await FilePicker.platform.pickFiles(
-                                            type: FileType.image,
-                                            allowMultiple: false,
-                                          );
-                                          if (result != null) {
-                                            PlatformFile file = result.files.first;
-                                            setState(() {
-                                              selectedImage = file.name;
-                                            });
-                                          }
-                                          imageResult=result;
-                                          print(result.toString());
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                          child: Text(
-                                            selectedImage.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 17.0,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                          ),
-                                        ));
-                                  },
-                                )
-                              ),
-                              Text(
-                                'Url',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 35.0,
-                                child: TextFormField(
-                                  controller: urlController,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(100.0),
                                     ),
+
+                                    hintText: 'Enter title',
                                   ),
+
+                                  validator: (value){
+                                    if (value == null || value.isEmpty) {
+                                      return 'Item Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
-                              Text('End Time'),
-                              DateTimePicker(
+                            ),
+
+                            //Description
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("Description",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //Desc Field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                              child: SizedBox(
+                                height: 35.0,
+                                child: TextFormField(
+                                  controller: descriptionController,
+
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+
+                                    hintText: 'Enter description',
+                                  ),
+                                  keyboardType: TextInputType.multiline,
+                                  validator: (value){
+                                    if (value == null || value.isEmpty) {
+                                      return 'Item Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            //Images Text
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("Select Images, Attachments & Tags",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //Image Selector
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                              child: Center(
+                                child: SizedBox(
+                                    width: 250.0,
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,StateSetter setState){
+                                        return ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Color(0x664A47F0),
+                                                elevation: 0.0,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                            ),
+                                            onPressed: () async {
+                                              final FilePickerResult? result =
+                                              await FilePicker.platform.pickFiles(
+                                                type: FileType.image,
+                                                allowMultiple: false,
+                                              );
+                                              if (result != null) {
+                                                PlatformFile file = result.files.first;
+                                                setState(() {
+                                                  selectedImage = file.name;
+                                                });
+                                              }
+                                              imageResult=result;
+                                              print(result.toString());
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                              child: Text(
+                                                selectedImage.toString(),
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 17.0,
+                                                    fontWeight: FontWeight.w300
+                                                ),
+                                              ),
+                                            ));
+                                      },
+                                    )
+                                ),
+                              ),
+                            ),
+                            //Attachment Selector
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 250.0,
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Color(0x664A47F0),
+                                          elevation: 0.0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                      ),
+                                      onPressed: () async {
+                                        final FilePickerResult? result =
+                                        await FilePicker.platform.pickFiles(
+                                          type: FileType.custom,
+                                          allowedExtensions: ["pdf"],
+                                          allowMultiple: true,
+                                          withData: true,
+                                        );
+                                        if (result != null) {
+                                          setState(() {
+                                            AttachmentNames.clear();
+                                            for (var i=0;i<result.files.length;i++){
+                                              AttachmentNames.add(result.files[i].name);
+                                              byteDataAttachment.add(result.files[i].bytes);
+                                              multipartfileAttachment.add(MultipartFile.fromBytes(
+                                                'file',
+                                                byteDataAttachment[i],
+                                                filename: AttachmentNames[i],
+                                                contentType: MediaType("file","pdf"),
+                                              ));
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                        child: Text(
+                                          AttachmentNames.toString(),
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 17.0,
+                                              fontWeight: FontWeight.w300
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ),
+                            //Tag Selector
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 250,
+                                  child: ElevatedButton(
+                                      onPressed: ()async{
+                                        final finalResult=await showSearch(
+                                          context: context,
+                                          delegate: CustomSearchDelegate(searchTerms:tagList),
+                                        );
+                                        setState(() {
+                                          if(finalResult!=''){
+                                            selectedTags.add(finalResult);
+                                          }
+                                        });
+                                        print("finalResult:$finalResult");
+                                        print("SelectedTags:$selectedTags");
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Color(0x664A47F0),
+                                          elevation: 0.0,
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                                      ),
+                                      child: Text('Select tags',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.w300
+                                        ),)),
+                                ),
+                              ),
+                            ),
+                            selectedTags==[]?Container():
+                            Wrap(
+                              children:selectedTags.map((e) =>
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: MaterialButton(//shape,color etc...
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedTags.remove(e);
+                                        });
+                                      },
+                                      child: Text(e),
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                              ).toList(),
+                            ),
+
+                            //End Time
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("End Time",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //Date Time Picker
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 0, 15, 5),
+                              child: DateTimePicker(
                                 type: DateTimePickerType.dateTimeSeparate,
                                 dateMask: 'd MMM, yyyy',
-                                initialValue: post.endTime,
+                                initialValue: DateTime.now().toString(),
                                 firstDate: DateTime(2000),
                                 lastDate: DateTime(2100),
                                 icon: Icon(Icons.event),
@@ -260,139 +379,205 @@ class _EditPostState extends State<EditPost> {
                                 },
                                 onSaved: (val) => print(val),
                               ),
-                              Text('what is the url about',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              TextFormField(
-                                controller: urlNameController,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                  ),
-                                  hintText: 'Eg form link',
-                                ),
-                              ),
-                              Text(
-                                'attachments',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 450.0,
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Colors.blue[200],
-                                        elevation: 0.0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                    ),
-                                    onPressed: () async {
-                                      final FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles(
-                                        type: FileType.custom,
-                                        allowedExtensions: ["pdf"],
-                                        allowMultiple: true,
-                                        withData: true,
-                                      );
-                                      if (result != null) {
-                                        setState(() {
-                                          AttachmentNames.clear();
-                                          for (var i=0;i<result.files.length;i++){
-                                            AttachmentNames.add(result.files[i].name);
-                                            byteDataAttachment.add(result.files[i].bytes);
-                                            multipartfileAttachment.add(MultipartFile.fromBytes(
-                                              'file',
-                                              byteDataAttachment[i],
-                                              filename: AttachmentNames[i],
-                                              contentType: MediaType("file","pdf"),
-                                            ));
-                                          }
-                                        });
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                      child: Text(
-                                        AttachmentNames.toString(),
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 17.0,
-                                            fontWeight: FontWeight.w300
-                                        ),
-                                      ),
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
 
+                            //URL
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("CTA Link",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //Link Field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                              child: SizedBox(
+                                height: 35.0,
+                                child: TextFormField(
+                                  controller: urlController,
+
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+
+                                    hintText: 'Enter URL',
+                                  ),
+                                  keyboardType: TextInputType.multiline,
+                                  validator: (value){
+                                    if (value == null || value.isEmpty) {
+                                      return 'Item Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            //Link Name
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                              child: Row(
+                                children: [
+                                  Text("CTA Button Name",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Color(0xFF4151E5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //Link Field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                              child: SizedBox(
+                                height: 35.0,
+                                child: TextFormField(
+                                  controller: urlNameController,
+
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+
+                                    hintText: 'Enter a name',
+                                  ),
+                                  keyboardType: TextInputType.multiline,
+                                  validator: (value){
+                                    if (value == null || value.isEmpty) {
+                                      return 'Item Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+
                     Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TextButton(onPressed: ()=>{}, child:Text('Delete')),
-                        TextButton(onPressed: ()=>{}, child:Text('Save')),
-                        Mutation(
-                            options: MutationOptions(
-                              document: gql(editNetop),
-                                onCompleted: (dynamic resultData){
-                                  print(resultData);
-                                  if(resultData["editNetop"]==true){
-                                    Navigator.pop(context);
-                                    widget.refetchPosts!();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Post Edited')),
-                                    );
-                                  }
-                                  else{
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Post Creation Failed')),
-                                    );
-                                  }
-                                },
-                                onError: (dynamic error){
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Post Creation Failed,server error')),
-                                  );
-                                }
+
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          //Delete Button
+                          ElevatedButton(
+                            onPressed: ()=>{},
+                            child:Text('Delete',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(80, 35),
                             ),
-                            builder: (
-                                RunMutation runMutation,
-                                QueryResult? result,
-                                ) {
-                              if (result!.hasException){
-                                print(result.exception.toString());
-                              }
-                              if(result.isLoading){}
-                              return TextButton(
-                                  onPressed: ()=>{
-                                    for(var i=0;i<selectedTags.length;i++){
-                                      key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i],orElse: ()=>""),
-                                      selectedIds.add(key),
-                                    },
-                                    runMutation({
-                                      "editNetopNetopId":post.id,
-                                      "editNetopsData":{
-                                        "title":titleController.text,
-                                        "content":descriptionController.text,
-                                        "endTime":dateTime,
-                                        "tagIds":selectedIds,
-                                        "linkName":urlNameController.text,
-                                        "linkToAction":urlController.text,
-                                      },
-                                      "editNetopImage":imageResult,
-                                      "editNetopAttachments":multipartfileAttachment,
-                                    })
+                          ),
+
+                          //Save Button
+                          ElevatedButton(
+                            onPressed: ()=>{},
+                            child:Text('Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF6B7AFF),
+                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: Size(80, 35),
+                            ),
+                          ),
+
+                          Mutation(
+                              options: MutationOptions(
+                                document: gql(editNetop),
+                                  onCompleted: (dynamic resultData){
+                                    print(resultData);
+                                    if(resultData["editNetop"]==true){
+                                      Navigator.pop(context);
+                                      widget.refetchPosts!();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Post Edited')),
+                                      );
+                                    }
+                                    else{
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Post Creation Failed')),
+                                      );
+                                    }
                                   },
-                                  child:Text('Submit'));
-                            }
-                        ),
-                      ],
+                                  onError: (dynamic error){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Post Creation Failed,server error')),
+                                    );
+                                  }
+                              ),
+                              builder: (
+                                  RunMutation runMutation,
+                                  QueryResult? result,
+                                  ) {
+                                if (result!.hasException){
+                                  print(result.exception.toString());
+                                }
+                                if(result.isLoading){}
+                                return ElevatedButton(
+                                    onPressed: ()=>{
+                                      for(var i=0;i<selectedTags.length;i++){
+                                        key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i],orElse: ()=>""),
+                                        selectedIds.add(key),
+                                      },
+                                      runMutation({
+                                        "editNetopNetopId":post.id,
+                                        "editNetopsData":{
+                                          "title":titleController.text,
+                                          "content":descriptionController.text,
+                                          "endTime":dateTime,
+                                          "tagIds":selectedIds,
+                                          "linkName":urlNameController.text,
+                                          "linkToAction":urlController.text,
+                                        },
+                                        "editNetopImage":imageResult,
+                                        "editNetopAttachments":multipartfileAttachment,
+                                      })
+                                    },
+                                    child:Text('Submit',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Color(0xFF6B7AFF),
+                                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                      minimumSize: Size(80, 35),
+                                    ),
+                                );
+                              }
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

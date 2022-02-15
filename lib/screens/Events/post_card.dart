@@ -85,6 +85,7 @@ class _PostCardState extends State<PostCard> {
                     tapBodyToCollapse: true,
                     tapBodyToExpand: true,
                   ),
+
                   expanded: SizedBox(
                       height: MediaQuery
                           .of(context)
@@ -95,6 +96,7 @@ class _PostCardState extends State<PostCard> {
                           .size
                           .width * 1,
                       child: SinglePost(post: widget.post,isStarred: isStarred,refetch: refetch,)),
+
                   collapsed: Card(
                       clipBehavior: Clip.antiAlias,
                       elevation: 5.0,
@@ -111,14 +113,21 @@ class _PostCardState extends State<PostCard> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        widget.post.title,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w600,
+                                      SizedBox(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.5,
+                                        child: Text(
+                                          widget.post.title,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
+
                                       Mutation(
                                           options:MutationOptions(
                                               document: gql(toggleStar)
@@ -144,6 +153,7 @@ class _PostCardState extends State<PostCard> {
                                       ),
                                     ],
                                   ),
+
                                   //Images & Alt Text
                                   if(widget.post.imgUrl.isEmpty)
                                     Text(
@@ -170,6 +180,7 @@ class _PostCardState extends State<PostCard> {
                                   SizedBox(
                                     height: 10,
                                   ),
+
                                   //Row for Tags, Icons, Container
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),

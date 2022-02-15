@@ -74,9 +74,16 @@ class _QueryHomeState extends State<QueryHome> {
           }
         });
         print("after search $posts");
+
+        //Page
         return Scaffold(
           appBar: AppBar(
-            title: Text("Queries"),
+            title: Text("Queries",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+              ),),
+            backgroundColor: Color(0xFF5451FD),
             actions: [
             Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -109,18 +116,32 @@ class _QueryHomeState extends State<QueryHome> {
               IconButton(onPressed: (){
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => AddQuery(refetchQuery: refetch,)));
-              }, icon: Icon(Icons.add)),
+              }, icon: Icon(Icons.add,
+                size: 28,
+              )
+              ),
             ],
           ),
+
+          //UI
           body:  SafeArea(
                   child:Column(
                       children:[
-                        SizedBox(
-                          width: 400,
-                          height: 700,
-                          child: ListView(
-                            controller: scrollController,
-                            children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,)).toList(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 15, 12, 10),
+                          child: SizedBox(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.750,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.550,
+                            child: ListView(
+                              controller: scrollController,
+                              children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,)).toList(),
+                            ),
                           ),
                         )
                       ]

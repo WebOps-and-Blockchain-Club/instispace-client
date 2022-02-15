@@ -45,12 +45,14 @@ class _AnnouncementsState extends State<Announcements> {
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 22.0,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
                 elevation: 0.0,
                 automaticallyImplyLeading: false,
                 backgroundColor: Color(0xFF5451FD),
               ),
+
               body: Center(
                 child: CircularProgressIndicator(
                   color: Color(0xFFD0DDFA),
@@ -161,6 +163,7 @@ class _AnnouncementsState extends State<Announcements> {
                       scrollController.jumpTo(triggerFetchMoreSize);
                     }
                   });
+
                   return Scaffold(
                     key: ScaffoldKey,
                     appBar: AppBar(
@@ -186,7 +189,9 @@ class _AnnouncementsState extends State<Announcements> {
                             icon: Icon(Icons.add))
                       ],
                     ),
+
                     backgroundColor: Color(0xFFF7F7F7),
+
                     body: Container(
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
