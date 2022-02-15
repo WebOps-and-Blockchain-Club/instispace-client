@@ -182,7 +182,7 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                                         ),
                                     onPressed: () {
                                       runMutation({
-                                        'deleteAnnouncementAnnouncementId2':
+                                        'announcementId':
                                             widget.announcement.id
                                       });
                                       Navigator.pop(context);
