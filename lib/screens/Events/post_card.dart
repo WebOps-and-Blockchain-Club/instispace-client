@@ -88,6 +88,7 @@ class _PostCardState extends State<PostCard> {
                     tapBodyToCollapse: true,
                     tapBodyToExpand: true,
                   ),
+
                   expanded: SizedBox(
                       height: MediaQuery
                           .of(context)
@@ -98,6 +99,7 @@ class _PostCardState extends State<PostCard> {
                           .size
                           .width * 1,
                       child: SinglePost(post: widget.post,isStarred: isStarred,refetch: refetch,)),
+
                   collapsed: Card(
                       clipBehavior: Clip.antiAlias,
                       elevation: 5.0,

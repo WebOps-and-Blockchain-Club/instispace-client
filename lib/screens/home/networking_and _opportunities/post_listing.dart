@@ -160,9 +160,33 @@ class _Post_ListingState extends State<Post_Listing> {
                 }
               });
 
+              //UI
               return Scaffold(
                 key: _scaffoldKey,
                 backgroundColor: Colors.white,
+                appBar: AppBar(
+                  title: const Text('All Posts',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
+                    ),),
+                  backgroundColor: Color(0xFF5451FD),
+                  actions: [
+                    IconButton(
+                        onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+                        icon: Icon(Icons.filter_alt_outlined)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)
+                              )
+                          );
+                        },
+                        iconSize: 30.0,
+                        icon: Icon(Icons.add)),
+                  ],
+                ),
                 endDrawer: new Drawer(
                   child: StatefulBuilder(
                     builder: (BuildContext context,StateSetter setState){
@@ -232,39 +256,25 @@ class _Post_ListingState extends State<Post_Listing> {
                     },
                   )
                 ),
-                appBar: AppBar(
-                  title: const Text('All Posts'),
-                  backgroundColor: Color(0xFFE6CCA9),
-                  actions: [
-                    IconButton(
-                        onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-                        icon: Icon(Icons.filter_alt_outlined)),
-                    IconButton(
-                        onPressed: () {
-                           Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)
-                              )
-                          );
-                        },
-                        iconSize: 35.0,
-                        icon: Icon(Icons.add_box)),
-                  ],
-                ),
+
+                //Page
                 body: ListView(
                   controller: scrollController,
                   children: [
-                    Column(
-                      children: posts
-                          .map((post) => PostCard(
-                        refetchPosts: refetch,
-                        post: post,
-                      ))
-                          .toList(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+                      child: Column(
+                        children: posts
+                            .map((post) => PostCard(
+                          refetchPosts: refetch,
+                          post: post,
+                        ))
+                            .toList(),
+                      ),
                     ),
                     if(result.isLoading)
                       Center(
-                          child: CircularProgressIndicator(color: Colors.yellow,)
+                          child: CircularProgressIndicator(color: Colors.lightBlueAccent,)
                       ),
                   ],
                 ),
