@@ -220,65 +220,87 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               }
-              all.clear();
-              for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-                all.putIfAbsent(Announcement(
-                    title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-                    hostelIds: [],
-                    description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-                    endTime: '',
-                    id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-                    images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-                    createdByUserId: ''
-                ),
-                        () => "announcement");
-              }
-              for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
-                List<Tag> tags = [];
-                for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
-                  // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                  tags.add(
-                  Tag(
-                    Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-                    category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-                    id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
+              if(isAll) {
+                all.clear();
+                for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
+                  all.putIfAbsent(Announcement(
+                      title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
+                      hostelIds: [],
+                      description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
+                      endTime: '',
+                      id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
+                      images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
+                      createdByUserId: ''
                   ),
+                          () => "announcement");
+                }
+                for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
+                  List<Tag> tags = [];
+                  for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
+                    // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                    tags.add(
+                      Tag(
+                        Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
+                        category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
+                        id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
+                      ),
+                    );
+                  }
+                  all.putIfAbsent(Post(
+                    title: result.data!["getMe"]["getHome"]["events"][i]["title"],
+                    tags: tags,
+                    id: result.data!["getMe"]["getHome"]["events"][i]["id"], createdById: '',
+                    likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: null,
+                    time: result.data!["getMe"]["getHome"]["events"][i]["time"],
+                    location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+                    // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+                  ),
+                        () => "event",
                   );
                 }
-                all.putIfAbsent(Post(
-                title: result.data!["getMe"]["getHome"]["events"][i]["title"],
-                tags: tags,
-                  id: result.data!["getMe"]["getHome"]["events"][i]["id"], createdById: '',
-                  likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
-                  time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-                  location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-            // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                ),
-                      () => "event",
-                );
+                for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
+                  List<Tag> tags = [];
+                  for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
+                    // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                    tags.add(
+                      Tag(
+                        Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
+                        category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
+                        id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
+                      ),
+                    );
+                  }
+                  all.putIfAbsent(NetOpPost(
+                    title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
+                    tags: tags,
+                    id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: null, imgUrl: null, linkToAction: null, linkName: null,
+                    description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
+                  ),
+                          ()=>"netop");
+                }
               }
               if(isNetops) {
                 all.clear();
-              }
-              for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
-                List<Tag> tags = [];
-                for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
-          // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                  tags.add(
-                    Tag(
-                      Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
-                      category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
-                      id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
-                    ),
-                  );
+                for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
+                  List<Tag> tags = [];
+                  for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
+                    // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                    tags.add(
+                      Tag(
+                        Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
+                        category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
+                        id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
+                      ),
+                    );
+                  }
+                  all.putIfAbsent(NetOpPost(
+                    title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
+                    tags: tags,
+                    id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: null, imgUrl: null, linkToAction: null, linkName: null,
+                    description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
+                  ),
+                          ()=>"netop");
                 }
-                all.putIfAbsent(NetOpPost(
-                  title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
-                  tags: tags,
-                  id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: '', imgUrl: '', linkToAction: '', linkName: '',
-                  description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
-                ),
-                        ()=>"netop");
               }
               if(isEvents) {
                 all.clear();
@@ -298,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                     title: result.data!["getMe"]["getHome"]["events"][i]["title"],
                     tags: tags,
                     id: result.data!["getMe"]["getHome"]["events"][i]["id"], createdById: '',
-                    likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
+                    likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: null,
                     time: result.data!["getMe"]["getHome"]["events"][i]["time"],
                     location: result.data!["getMe"]["getHome"]["events"][i]["location"],
             // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
