@@ -87,308 +87,294 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
         child: ExpandableNotifier(
-      child: ScrollOnExpand(
-      child: ExpandablePanel(
-        theme: const ExpandableThemeData(
-        tapBodyToCollapse: true,
-        tapBodyToExpand: true,
-      ),
-
-      expanded: SizedBox(
-      height: MediaQuery
-          .of(context)
-          .size
-          .height * 1,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * 1,
-      child: SinglePost(post: widget.events,isStarred: isStared,refetch: refetch,)),
-
-      collapsed: Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 5.0,
-      color: const Color(0xFF808CFF),
-      child: SizedBox(
-      height: MediaQuery
-          .of(context)
-          .size
-          .height * 0.3,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * 1,
-      child: Padding(
-      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0, 0),
-      child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-      Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-      //Title & Star
-      Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-      Text(
-      widget.events.title,
-      style: const TextStyle(
-      fontSize: 20,
-      color: Colors.black,
-      fontWeight: FontWeight.w600,
-      ),
-      ),
-      Mutation(
-      options:MutationOptions(
-      document: gql(toggleStarEvent)
-      ),
-      builder: (
-      RunMutation runMutation,
-      QueryResult? result,
-      ){
-      if (result!.hasException){
-      print(result.exception.toString());
-      }
-      return IconButton(
-      onPressed: (){
-      runMutation({
-      "eventId":widget.events.id
-      });
-      refetch!();
-      },
-      icon: isStared?const Icon(Icons.star): const Icon(Icons.star_border),
-      color: isStared? Colors.amber:Colors.grey,
-      );
-      }
-      ),
-      ],
-      ),
-      //Images & Alt Text
-      if(widget.events.imgUrl.isEmpty)
-      Text(
-      widget.events.description.length > 250
-      ? widget.events.description.substring(
-      0, 250) + '...'
-          : widget.events.description,
-      style: const TextStyle(
-      fontSize: 15.0,
-      ),
-      ),
-      if(widget.events.imgUrl.isNotEmpty)
-      CarouselSlider(
-      items: widget.events.imgUrl.map((item) => Container(
-      child: Center(
-      child: Image.network(item,fit: BoxFit.cover,width: 400,),
-      ),
-      )
-      ).toList(),
-      options: CarouselOptions(
-      enableInfiniteScroll: false,
-      ),
-      ),
-      const SizedBox(
-      height: 10,
-      ),
-      //Row for Tags, Icons, Container
-      Padding(
-      padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),
-      child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-      Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-      //Tags Row
-      Row(
-      children: [
-      Padding(
-      padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-      child: SizedBox(
-      width: MediaQuery.of(context).size.width*0.5,
-      height: 20,
-      child: ListView(
-      scrollDirection: Axis.horizontal,
-      children: tags.map((tag) =>
-      SizedBox(
-      child: Padding(
-      padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-      child: ElevatedButton(
-      onPressed: () => {
-      Navigator.of(context).push(MaterialPageRoute(
-      builder: (BuildContext context) => TagPage(tagId: tag.id)))
-      },
-      child: Text(
-      tag.Tag_name,
-      style: const TextStyle(
-      color: Color(0xFF021096),
-      fontSize: 12.5,
-      fontWeight: FontWeight.bold,
-      ),
-      ),
-      style: ElevatedButton.styleFrom(
-      primary: const Color(0xFFFFFFFF),
-      padding: const EdgeInsets.symmetric(
-      vertical: 2,
-      horizontal: 6),
-      ),
-      ),
-      ),
-      )).toList(),
-      ),
-      ),
-      ),
-      ],
-      ),
-      //Icons Row
-      Padding(
-      padding: const EdgeInsets.fromLTRB(2, 10, 0, 0),
-      child: Row(
-      children: [
-      //Share Icon
-      Ink(
-      decoration: const ShapeDecoration(
-      color: Color(0xFFFFFFFF),
-      shape: CircleBorder(
-      side: BorderSide.none,
-      )
-      ),
-      height: MediaQuery.of(context).size.height*0.05,
-      width: MediaQuery.of(context).size.width*0.1,
-      child: Center(
-      child: IconButton(
-      onPressed: () =>
-      {
-      print(dateTime.toString().split(" ").first),
-      print(dateTime.toString().split(" ").last.split(".").first),
-      print(widget.events.location),
-      print('shared')
-      },
-      icon: const Icon(Icons.share),
-      iconSize: 20,
-      color: const Color(0xFF021096),
-      ),
-      ),
-      ),
-      const SizedBox(width: 5,),
-      //Reminder Icon
-      Ink(
-      decoration: const ShapeDecoration(
-      color: Colors.white,
-      shape: CircleBorder(
-      side: BorderSide.none,
-      )
-      ),
-      height: MediaQuery.of(context).size.height*0.05,
-      width: MediaQuery.of(context).size.width*0.1,
-      child: Center(
-      child: IconButton(
-      onPressed: () =>
-      {
-      print('remainder added')
-      },
-      icon: const Icon(Icons.access_alarm),
-      iconSize: 20,
-      color: const Color(0xFF021096),
-      ),
-      ),
-      ),
-      const SizedBox(width: 5,),
-      //Like Icon
-      Mutation(
-      options:MutationOptions(
-      document: gql(toggleLike)
-      ),
-      builder: (
-      RunMutation runMutation,
-      QueryResult? result,
-      ){
-      if (result!.hasException){
-      print(result.exception.toString());
-      }
-      return Ink(
-      decoration: const ShapeDecoration(
-      color: Color(0xFFFFFFFF),
-      shape: CircleBorder(
-      side: BorderSide.none,
-      )
-      ),
-      height: MediaQuery.of(context).size.height*0.05,
-      width: MediaQuery.of(context).size.width*0.1,
-      child: Center(
-      child: IconButton(
-      onPressed: ()
-      {
-      runMutation({
-      "eventId":widget.events.id
-      });
-      refetch!();
-      print('is liked');
-      },
-      icon: const Icon(Icons.thumb_up),
-      iconSize: 20,
-      color: isLiked? Colors.blue:Colors.grey,
-      ),
-      ),
-      );
-      }
-      ),
-      //Like Count
-      Container(
-      margin: const EdgeInsets.only(left: 10.0),
-      child: Text(
-      "$likeCount likes",
-      style: const TextStyle(
-      color: Color(0xFFFFFFFF),
-      fontWeight: FontWeight.bold,
-      fontSize: 16.0,
-      ),
-      ),
-      ),
-      ],
-      ),
-      ),],
-      ),
-      //Location & Date
-      Container(
-      height: MediaQuery.of(context).size.height*0.15,
-      width: MediaQuery.of(context).size.width*.25,
-      decoration: BoxDecoration(
-      color: const Color(0xFFD3D8FF),
-      borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Center(
-      child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-      Center(
-      child: Text(
-      widget.events.location,
-      style: const TextStyle(
-      color: Color(0xFF808CFF),
-      fontWeight: FontWeight.w900,
-      fontSize: 14,
-      ),
-      ),
-      ),
-      const SizedBox(height: 3,),
-      Center(
-      child: Text(
-      "$date $month $year",
-      style: const TextStyle(
-      color: Color(0xFF808CFF),
-      fontWeight: FontWeight.w900,
-      fontSize: 14,
-      ),
-      ),
-      ),
-      ],
-      ),
-      ),
-      ),
-      ],
-      ),
-      ),
+          child: ScrollOnExpand(
+            child: ExpandablePanel(
+                theme: const ExpandableThemeData(
+                  tapBodyToCollapse: true,
+                  tapBodyToExpand: true,
+                ),
+                expanded: SizedBox(
+                    height: MediaQuery.of(context).size.height * 1,
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: SinglePost(post: widget.events,isStarred: isStared,refetch: refetch,)),
+                collapsed: Card(
+                    clipBehavior: Clip.antiAlias,
+                    elevation: 5.0,
+                    color: const Color(0xFF808CFF),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0, 0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //Title & Star
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      widget.events.title,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Mutation(
+                                        options:MutationOptions(
+                                            document: gql(toggleStarEvent)
+                                        ),
+                                        builder: (
+                                            RunMutation runMutation,
+                                            QueryResult? result,
+                                            ) {
+                                          if (result!.hasException){
+                                            print(result.exception.toString());
+                                          }
+                                          return IconButton(
+                                            onPressed: (){
+                                              runMutation({
+                                                "eventId":widget.events.id
+                                              });
+                                              refetch!();
+                                              },
+                                            icon: isStared?const Icon(Icons.star): const Icon(Icons.star_border),
+                                            color: isStared? Colors.amber:Colors.grey,
+                                          );
+                                        }
+                                        ),
+                                  ],
+                                ),
+                                  //Images & Alt Text
+                                  if(widget.events.imgUrl.isEmpty)
+                                    Text(
+                                      widget.events.description.length > 250
+                                          ? widget.events.description.substring(
+                                          0, 250) + '...'
+                                          : widget.events.description,
+                                      style: const TextStyle(
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                  if(widget.events.imgUrl.isNotEmpty)
+                                    CarouselSlider(
+                                      items: widget.events.imgUrl.map((item) => Container(
+                                        child: Center(
+                                          child: Image.network(item,fit: BoxFit.cover,width: 400,),
+                                        ),
+                                      )
+                                      ).toList(),
+                                      options: CarouselOptions(
+                                        enableInfiniteScroll: false,
+                                      ),
+                                    ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  //Row for Tags, Icons, Container
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            //Tags Row
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                                  child: SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.5,
+                                                    height: 20,
+                                                    child: ListView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      children: tags.map((tag) =>
+                                                          SizedBox(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
+                                                              child: ElevatedButton(
+                                                                onPressed: () => {
+                                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                                      builder: (BuildContext context) => TagPage(tagId: tag.id)))
+                                                                },
+                                                                child: Text(
+                                                                  tag.Tag_name,
+                                                                  style: const TextStyle(
+                                                                    color: Color(0xFF021096),
+                                                                    fontSize: 12.5,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                ),
+                                                                style: ElevatedButton.styleFrom(
+                                                                  primary: const Color(0xFFFFFFFF),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      vertical: 2,
+                                                                      horizontal: 6),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )).toList(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            //Icons Row
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(2, 10, 0, 0),
+                                              child: Row(
+                                                children: [
+                                                  //Share Icon
+                                                  Ink(
+                                                    decoration: const ShapeDecoration(
+                                                        color: Color(0xFFFFFFFF),
+                                                        shape: CircleBorder(
+                                                          side: BorderSide.none,
+                                                        )
+                                                    ),
+                                                    height: MediaQuery.of(context).size.height*0.05,
+                                                    width: MediaQuery.of(context).size.width*0.1,
+                                                    child: Center(
+                                                      child: IconButton(
+                                                        onPressed: () =>
+                                                        {
+                                                          print(dateTime.toString().split(" ").first),
+                                                          print(dateTime.toString().split(" ").last.split(".").first),
+                                                          print(widget.events.location),
+                                                          print('shared')
+                                                        },
+                                                        icon: const Icon(Icons.share),
+                                                        iconSize: 20,
+                                                        color: const Color(0xFF021096),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 5,),
+                                                  //Reminder Icon
+                                                  Ink(
+                                                    decoration: const ShapeDecoration(
+                                                        color: Colors.white,
+                                                        shape: CircleBorder(
+                                                          side: BorderSide.none,
+                                                        )
+                                                    ),
+                                                    height: MediaQuery.of(context).size.height*0.05,
+                                                    width: MediaQuery.of(context).size.width*0.1,
+                                                    child: Center(
+                                                      child: IconButton(
+                                                        onPressed: () =>
+                                                        {
+                                                          print('remainder added')
+                                                        },
+                                                        icon: const Icon(Icons.access_alarm),
+                                                        iconSize: 20,
+                                                        color: const Color(0xFF021096),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 5,),
+                                                  //Like Icon
+                                                  Mutation(
+                                                      options:MutationOptions(
+                                                          document: gql(toggleLike)
+                                                      ),
+                                                      builder: (
+                                                          RunMutation runMutation,
+                                                          QueryResult? result,
+                                                          ){
+                                                        if (result!.hasException){
+                                                          print(result.exception.toString());
+                                                        }
+                                                        return Ink(
+                                                          decoration: const ShapeDecoration(
+                                                              color: Color(0xFFFFFFFF),
+                                                              shape: CircleBorder(
+                                                                side: BorderSide.none,
+                                                              )
+                                                          ),
+                                                          height: MediaQuery.of(context).size.height*0.05,
+                                                          width: MediaQuery.of(context).size.width*0.1,
+                                                          child: Center(
+                                                            child: IconButton(
+                                                              onPressed: ()
+                                                              {
+                                                                runMutation({
+                                                                  "eventId":widget.events.id
+                                                                });
+                                                                refetch!();
+                                                                print('is liked');
+                                                                },
+                                                              icon: const Icon(Icons.thumb_up),
+                                                              iconSize: 20,
+                                                              color: isLiked? Colors.blue:Colors.grey,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                      ),
+                                                  //Like Count
+                                                  Container(
+                                                    margin: const EdgeInsets.only(left: 10.0),
+                                                    child: Text(
+                                                      "$likeCount likes",
+                                                      style: const TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),],
+                                        ),
+                                        //Location & Date
+                                        Container(
+                                          height: MediaQuery.of(context).size.height*0.15,
+                                          width: MediaQuery.of(context).size.width*.25,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFD3D8FF),
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    widget.events.location,
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF808CFF),
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 3,),
+                                                Center(
+                                                  child: Text(
+                                                    "$date $month $year",
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF808CFF),
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
       //Edit & Delete buttons
       // Row(
       // children: [
@@ -457,20 +443,20 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       // ),
       // ],
       // ),
-      ],
-      ),
-      ]
-      ),
-      ),
-      )
-      ),
-      builder: (_, collapsed, expanded) =>
-      Expandable(
-      collapsed: collapsed, expanded: expanded,)
-      ),
-      ),
-      // ),
-      ),
+                                ],
+                              ),
+                            ]
+                        ),
+                      ),
+                    )
+                ),
+                builder: (_, collapsed, expanded) =>
+                    Expandable(
+                      collapsed: collapsed, expanded: expanded,)
+            ),
+          ),
+          // ),
+        ),
       );
     }
     );
@@ -609,7 +595,7 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                       ? widget.netops.description.substring(
                                       0, 250) + '...'
                                       : widget.netops.description,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 15.0,
                                   ),
                                 ),
@@ -688,7 +674,7 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                                     color:const Color(0xFF021096),),
                                                 ),
                                               ),
-                                              SizedBox(width: 5,),
+                                              const SizedBox(width: 5,),
 
                                               //Reminder
                                               Ink(
@@ -705,12 +691,12 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                                   {
                                                     print('remainder added')
                                                   },
-                                                    icon: Icon(Icons.access_alarm),
+                                                    icon: const Icon(Icons.access_alarm),
                                                     iconSize: 20,
-                                                    color: Color(0xFF021096),),
+                                                    color: const Color(0xFF021096),),
                                                 ),
                                               ),
-                                              SizedBox(width: 5,),
+                                              const SizedBox(width: 5,),
 
                                               Mutation(
                                                   options:MutationOptions(
@@ -743,14 +729,14 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                                                         .netops,)),
                                                           ),
                                                           print('commented'),
-                                                        }, icon: Icon(Icons.comment),
+                                                        }, icon: const Icon(Icons.comment),
                                                           iconSize: 20,
-                                                          color: Color(0xFF021096),),
+                                                          color: const Color(0xFF021096),),
                                                       ),
                                                     );
                                                   }
                                               ),
-                                              SizedBox(width: 5,),
+                                              const SizedBox(width: 5,),
 
                                               Mutation(
                                                   options:MutationOptions(
@@ -778,9 +764,9 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                                           {
                                                             print('remainder added')
                                                           },
-                                                          icon: Icon(Icons.thumb_up),
+                                                          icon: const Icon(Icons.thumb_up),
                                                           iconSize: 20,
-                                                          color: Color(0xFF021096),
+                                                          color: const Color(0xFF021096),
                                                         ),
                                                       ),
                                                     );
@@ -788,10 +774,10 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
                                               ),
 
                                               Container(
-                                                margin: EdgeInsets.only(left: 10.0),
+                                                margin: const EdgeInsets.only(left: 10.0),
                                                 child: Text(
                                                   "$likeCount likes",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Color(0xFFFFFFFF),
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 16.0,
@@ -1158,25 +1144,25 @@ class _HostelContactsState extends State<HostelContacts> {
                           launch('tel:${widget.contacts.contact}');
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF6B7AFF),
-                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: Size(50, 35),
+                          primary: const Color(0xFF6B7AFF),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: const Size(50, 35),
                         ),
                         child: Container(
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.call,
                                 color: Colors.white,
                                 size: 14,
                               ),
 
-                              SizedBox(
+                              const SizedBox(
                                 width: 5,
                               ),
 
                               Text(widget.contacts.contact,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -1214,7 +1200,7 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: Card(
-        color: Color(0xFFDEDDFF),
+        color: const Color(0xFFDEDDFF),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0)),
 
@@ -1233,7 +1219,7 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       .size
                       .width * 0.40,
                   child: Text(widget.Emergencycontacts.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1255,9 +1241,9 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       },
 
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF6B7AFF),
-                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      minimumSize: Size(50, 35),
+                      primary: const Color(0xFF6B7AFF),
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      minimumSize: const Size(50, 35),
                     ),
 
                     child: Container(
@@ -1268,18 +1254,18 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       child: Center(
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.call,
                               color: Colors.white,
                               size: 14,
                             ),
 
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
 
                             Text(widget.Emergencycontacts.contact,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

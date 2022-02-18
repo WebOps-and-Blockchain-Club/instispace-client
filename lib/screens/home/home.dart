@@ -46,6 +46,8 @@ class _HomePageState extends State<HomePage> {
   bool isNetops = false;
   Map all = {};
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -133,71 +135,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => const QueryHome()));
-                        },
-                        iconSize: 30.0,
-                        icon: const Icon(Icons.query_stats_rounded),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => EventsHome()));
-                                },
-                                iconSize: 30.0,
-                                icon: const Icon(Icons.event),
-                              ),
-                              const Text("Events",style: TextStyle(fontSize: 10.0),),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (BuildContext context) => Announcements()));
-                                  },
-                                  iconSize: 30.0,
-                                  icon: const Icon(Icons.announcement)
-                              ),
-                              const Text("Announcements", style: TextStyle(fontSize: 10.0),)
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (BuildContext context) => Post_Listing()));
-                                  },
-                                  iconSize: 30.0,
-                                  icon: const Icon(Icons.connect_without_contact_sharp)
-                              ),
-                              const Text("Networking & Opportunities", style: TextStyle(fontSize: 10.0),)
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (BuildContext context) => const LNFListing()));
-                                  },
-                                  iconSize: 30.0,
-                                  icon: const Icon(Icons.local_grocery_store_outlined)
-                              ),
-                              const Text("Lost & Found", style: TextStyle(fontSize: 10.0),)
-                            ],
-                          )
-                        ],
-                      )
                     ],
                   ),
                   ]
@@ -329,12 +266,20 @@ class _HomePageState extends State<HomePage> {
 
                   //User UI
                   return Scaffold(
+                    key: _scaffoldKey,
                     appBar: AppBar(
                       backgroundColor: const Color(0xFF5451FD),
-                      title: const Text("InstiVerse",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                      title: Row(
+                        children: const [
+                          CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage('https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
+                            child: Text("InstiVerse", style: TextStyle(fontSize: 30.0),),
+                          ),
+                        ],
                       ),
                       actions: [
                         IconButton(onPressed: (){
@@ -342,26 +287,15 @@ class _HomePageState extends State<HomePage> {
                               builder: (BuildContext context) => const searchUser()));
                         },
                             icon: const Icon(Icons.search_outlined)),
-                        // Column(
-                        //   children: [
-                        //     IconButton(
-                        //         onPressed: () {
-                        //           _auth.clearAuth();
-                        //         },
-                        //         icon: const Icon(Icons.logout)
-                        //     ),
-                        //     const Text("Logout", style: TextStyle(fontSize: 10.0),)
-                        //   ],
-                        // ),
                         IconButton(
                             onPressed: () {},
                             icon: const Icon(Icons.notifications)
                         ),
                         IconButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => const HostelHome()));
+                             _scaffoldKey.currentState?.openEndDrawer();
                             },
-                            icon: const Icon(Icons.account_balance),
+                            icon: const Icon(Icons.menu),
                           iconSize: 22.0,
                         )
                       ],
@@ -531,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]
                     ),
-                    drawer: Drawer(
+                    endDrawer: Drawer(
                     child: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
                         return Container(
@@ -561,11 +495,19 @@ class _HomePageState extends State<HomePage> {
                                 },
                               ),
                               ListTile(
-                                leading: const Icon(Icons.account_circle_outlined),
-                                title: const Text("Update Profile"),
+                                leading: const Icon(Icons.vpn_key_sharp),
+                                title: const Text("Update Password"),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) => UserPage()));
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.account_balance),
+                                title: const Text("My Hostel"),
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => HostelHome()));
                                 },
                               ),
                               ListTile(
