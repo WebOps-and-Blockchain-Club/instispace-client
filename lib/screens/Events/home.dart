@@ -10,6 +10,8 @@ import 'post.dart';
 import 'post_card.dart';
 
 class EventsHome extends StatefulWidget {
+  const EventsHome({Key? key}) : super(key: key);
+
 
   @override
   _HomeState createState() => _HomeState();

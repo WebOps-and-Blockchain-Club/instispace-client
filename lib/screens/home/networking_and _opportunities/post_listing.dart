@@ -9,6 +9,8 @@ import '../../../models/tag.dart';
 import 'package:client/graphQL/netops.dart';
 
 class Post_Listing extends StatefulWidget {
+  const Post_Listing({Key? key}) : super(key: key);
+
 
   @override
   _Post_ListingState createState() => _Post_ListingState();
@@ -44,7 +46,7 @@ class _Post_ListingState extends State<Post_Listing> {
           return Scaffold(
               appBar: AppBar(
                 title: const Text('All Posts'),
-                backgroundColor: Color(0xFFE6CCA9),
+                backgroundColor: Color(0xFF5451FD),
               ),
               body: Center(
                 child: CircularProgressIndicator(),
@@ -80,7 +82,7 @@ class _Post_ListingState extends State<Post_Listing> {
                   return Scaffold(
                     appBar: AppBar(
                       title: const Text('All Posts'),
-                      backgroundColor: Color(0xFFE6CCA9),
+                      backgroundColor: Color(0xFF5451FD),
                     ),
                     body: Center(
                         child: CircularProgressIndicator(),

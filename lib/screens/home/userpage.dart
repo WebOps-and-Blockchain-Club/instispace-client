@@ -49,7 +49,7 @@ class UserPage extends StatelessWidget {
             ),
           ),
           backgroundColor: Color(0xFF5451FD),
-          automaticallyImplyLeading: true,
+          automaticallyImplyLeading: false,
         ),
 
         //UI
