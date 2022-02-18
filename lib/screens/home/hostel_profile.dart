@@ -19,8 +19,6 @@ class _HostelProfileState extends State<HostelProfile> {
   String hostelName = '';
   String amenityName = '';
   List<Amenities> amenities = [];
-  List<Contacts> contacts = [];
-  List<emergencycontacts> emergencyContacts = [];
   ScrollController scrollController = ScrollController(initialScrollOffset: 0.0);
 
   @override
@@ -44,8 +42,6 @@ class _HostelProfileState extends State<HostelProfile> {
       hostelName = result.data!["getMe"]["hostel"]["name"];
 
       amenities.clear();
-      contacts.clear();
-      emergencyContacts.clear();
       for(var i = 0; i < result.data!["getMe"]["hostel"]["amenities"].length; i++) {
         amenities.add(Amenities(
             name: result.data!["getMe"]["hostel"]["amenities"][i]["name"],
@@ -53,57 +49,16 @@ class _HostelProfileState extends State<HostelProfile> {
         ));
       }
 
-      for(var i = 0; i < result.data!["getMe"]["hostel"]["contacts"].length; i++) {
-        contacts.add(Contacts(
-            name: result.data!["getMe"]["hostel"]["contacts"][i]["name"],
-            type: result.data!["getMe"]["hostel"]["contacts"][i]["type"],
-            contact: result.data!["getMe"]["hostel"]["contacts"][i]["contact"]
-        ));
-      }
-
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422578185',
-          name: 'Electrical Emergency'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422579999',
-          name: 'Security Duty'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422578888',
-          name: 'Hospital enquiries'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422579999',
-          name: 'Animals related'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422578510',
-          name: 'CCW Accounts related'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422578513',
-          name: 'Accomodation related'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422578511',
-          name: 'Mess related'
-      ));
-      emergencyContacts.add(emergencycontacts(
-          contact: '04422579476',
-          name: 'Prime mart'
-      ));
-
       return Scaffold(
         appBar: AppBar(
-          title: const Text("My Hostel",
+          title: const Text("Hostel Amenities",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
 
             ),
           ),
-          backgroundColor: Color(0xFF5451FD),
+          backgroundColor: const Color(0xFF5451FD),
           elevation: 0.0,
           automaticallyImplyLeading: true,
         ),
@@ -124,7 +79,7 @@ class _HostelProfileState extends State<HostelProfile> {
                       children: [
                         Text(
                             "$hostelName Hostel",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 22,
                             color: Color(0xFF5050ED),
@@ -136,8 +91,8 @@ class _HostelProfileState extends State<HostelProfile> {
                 ),
 
                 //HOSTEL AMENITIES
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(6, 15, 0, 0),
                   child: Text(
                     "HOSTEL AMENITIES",
                     style: TextStyle(
@@ -161,66 +116,6 @@ class _HostelProfileState extends State<HostelProfile> {
                             .toList(),
                       ),
                     ]
-                  ),
-                ),
-
-                //HOSTEL CONTACTS
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
-                  child: const Text(
-                    "HOSTEL CONTACTS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.5,
-                      color: Color(0xFF808080),
-                    ),
-                  ),
-                ),
-
-                //H-Contact List
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 0.0),
-                  child: ListView(
-                    controller: scrollController,
-                    shrinkWrap: true,
-                    children:[ Column(
-                        children: contacts
-                            .map((post) => HostelContacts(
-                          contacts: post,
-                        ))
-                            .toList(),
-                      ),
-                    ]
-                  ),
-                ),
-
-                //EMERGENCY CONTACTS
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
-                  child: const Text(
-                    "EMERGENCY CONTACTS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.5,
-                      color: Color(0xFF808080),
-                    ),
-                  ),
-                ),
-
-                //E-Contact List
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 15.0),
-                  child: ListView(
-                    controller: scrollController,
-                    shrinkWrap: true,
-                      children: [Column(
-                        children: emergencyContacts
-                            .map((post) => EmergencyContacts(
-                          Emergencycontacts: post,
-                        ))
-                            .toList(),
-                      ),
-                    ],
                   ),
                 ),
               ],

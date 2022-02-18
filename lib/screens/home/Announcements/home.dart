@@ -9,6 +9,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 
 class Announcements extends StatefulWidget {
+  const Announcements({Key? key}) : super(key: key);
+
   @override
   _AnnouncementsState createState() => _AnnouncementsState();
 }
@@ -50,7 +52,7 @@ class _AnnouncementsState extends State<Announcements> {
                 ),
                 elevation: 0.0,
                 automaticallyImplyLeading: false,
-                backgroundColor: Color(0xFF5451FD),
+                backgroundColor: const Color(0xFF5451FD),
               ),
 
               body: Center(
@@ -167,16 +169,15 @@ class _AnnouncementsState extends State<Announcements> {
                   return Scaffold(
                     key: ScaffoldKey,
                     appBar: AppBar(
-                      title: Text(
+                      title: const Text(
                         "Announcements",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22.0,
                             fontWeight: FontWeight.bold),
                       ),
                       elevation: 0.0,
                       automaticallyImplyLeading: false,
-                      backgroundColor: Color(0xFF5451FD),
+                      backgroundColor: const Color(0xFF5451FD),
                       actions: [
                         IconButton(
                             onPressed: () {
@@ -234,7 +235,7 @@ class _AnnouncementsState extends State<Announcements> {
                   if (announcements.isEmpty && result.isLoading) {
                     return Scaffold(
                       appBar: AppBar(
-                        title: Text(
+                        title: const Text(
                           "Announcements",
                           style: TextStyle(
                               color: Colors.white,
@@ -242,7 +243,7 @@ class _AnnouncementsState extends State<Announcements> {
                               fontWeight: FontWeight.bold),
                         ),
                         elevation: 0.0,
-                        backgroundColor: Colors.deepPurpleAccent,
+                        backgroundColor: const Color(0xFF5451FD),
                       ),
                       body: Center(
                         child: CircularProgressIndicator(
