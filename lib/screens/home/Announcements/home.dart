@@ -8,6 +8,8 @@ import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../../../widgets/text.dart';
+
 class Announcements extends StatefulWidget {
   const Announcements({Key? key}) : super(key: key);
 
@@ -26,6 +28,7 @@ var ScaffoldKey = GlobalKey<ScaffoldState>();
 class _AnnouncementsState extends State<Announcements> {
   static var role;
   late String userHostelID;
+  late String userHostelName;
   int skip = 0;
   int take = 10;
   ScrollController scrollController = ScrollController();
@@ -219,6 +222,7 @@ class _AnnouncementsState extends State<Announcements> {
                 });
           } else {
             userHostelID = result.data!["getMe"]["hostel"]["id"];
+            userHostelName = result.data!["getMe"]["hostel"]["name"];
             print(userHostelID);
             return Query(
                 options: QueryOptions(
@@ -235,8 +239,8 @@ class _AnnouncementsState extends State<Announcements> {
                   if (announcements.isEmpty && result.isLoading) {
                     return Scaffold(
                       appBar: AppBar(
-                        title: const Text(
-                          "Announcements",
+                        title: Text(
+                          "$userHostelName Hostel",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -319,7 +323,7 @@ class _AnnouncementsState extends State<Announcements> {
                     key: ScaffoldKey,
                     appBar: AppBar(
                       title: Text(
-                        "Announcements",
+                        "$userHostelName Hostel",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 22.0,
@@ -332,6 +336,7 @@ class _AnnouncementsState extends State<Announcements> {
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                       child: ListView(controller: scrollController, children: [
+                        PageTitle('Announcements'),
                         Column(
                           children: announcements
                               .map((post) => AnnouncementCard(

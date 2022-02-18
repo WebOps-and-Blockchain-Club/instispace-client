@@ -6,6 +6,7 @@ import 'package:client/screens/Events/addpost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../widgets/text.dart';
 import 'post.dart';
 import 'post_card.dart';
 
@@ -154,32 +155,23 @@ class _HomeState extends State<EventsHome> {
 
               return Scaffold(
                 key: ScaffoldKey,
-                appBar: AppBar(
-                  title: Text("All Events",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                    ),),
-                  actions: [
-                    IconButton(onPressed: () =>
-                        ScaffoldKey.currentState?.openEndDrawer(),
-                        icon: Icon(Icons.filter_alt_outlined)
-                    ),
-                    if(userRole=="ADMIN")
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context)=> AddPostEvents(refetchPosts: refetch,)));
-                        }, icon: Icon(Icons.add_box))
-                  ],
-                  backgroundColor: Color(0xFF5451FD),
-                ),
                 backgroundColor: Color(0xFFF7F7F7),
+                floatingActionButton: _getFAB(refetch),
                 body: SafeArea(
                   child: ListView(
                     controller: scrollController,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PageTitle('All Events'),
+                          IconButton(onPressed: () =>
+                              ScaffoldKey.currentState?.openEndDrawer(),
+                              icon: Icon(Icons.filter_alt_outlined),
+                            color: Color(0xFF5451FD),
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                         child: Column(children: posts
@@ -198,7 +190,7 @@ class _HomeState extends State<EventsHome> {
                     ],
                   ),
                 ),
-                endDrawer: new Drawer(
+                endDrawer: Drawer(
                     child: StatefulBuilder(
                       builder: (BuildContext context,StateSetter setState){
                         return SafeArea(
@@ -268,5 +260,20 @@ class _HomeState extends State<EventsHome> {
         );
       },
     );
+  }
+  Widget? _getFAB(Future<QueryResult?> Function()? refetch) {
+    if(userRole=="ADMIN"){
+      return FloatingActionButton(onPressed: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (BuildContext context)=> AddPostEvents(refetchPosts: refetch,)));
+      },
+        child: Icon(Icons.add),
+        backgroundColor: Color(0xFF5451FD),
+      );
+    }
+    else {
+      return null;
+    }
   }
 }

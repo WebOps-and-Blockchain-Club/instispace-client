@@ -87,7 +87,7 @@ class _HostelcontactsState extends State<Hostelcontacts> {
 
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Hostel Contacts",
+          title: Text("$hostelName Hostel",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -105,34 +105,18 @@ class _HostelcontactsState extends State<Hostelcontacts> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //Hostel Name
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Column(
-                      children: [
-                        Text(
-                          "$hostelName Hostel",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 22,
-                            color: Color(0xFF5050ED),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
                 //HOSTEL CONTACTS
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(6, 15, 0, 0),
-                  child: Text(
-                    "HOSTEL CONTACTS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.5,
-                      color: Color(0xFF808080),
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Text(
+                      "HOSTEL CONTACTS",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 22,
+                        color: Color(0xFF5050ED),
+                      ),
                     ),
                   ),
                 ),
@@ -155,17 +139,32 @@ class _HostelcontactsState extends State<Hostelcontacts> {
                 ),
 
                 //EMERGENCY CONTACTS
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
-                  child: const Text(
-                    "EMERGENCY CONTACTS",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.5,
-                      color: Color(0xFF808080),
+
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Text(
+                      "EMERGENCY CONTACTS",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 22,
+                        color: Color(0xFF5050ED),
+                      ),
                     ),
                   ),
                 ),
+
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
+                //   child: const Text(
+                //     "EMERGENCY CONTACTS",
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.w400,
+                //       fontSize: 16.5,
+                //       color: Color(0xFF808080),
+                //     ),
+                //   ),
+                // ),
 
                 //E-Contact List
                 Padding(

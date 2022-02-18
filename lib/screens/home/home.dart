@@ -15,6 +15,7 @@ import 'package:client/screens/home/feedback_type_pages/feedback.dart';
 import 'package:client/screens/home/homeCards.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
+import 'package:client/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
@@ -268,37 +269,20 @@ class _HomePageState extends State<HomePage> {
                   return Scaffold(
                     key: _scaffoldKey,
                     appBar: AppBar(
-                      backgroundColor: const Color(0xFF5451FD),
-                      title: Row(
-                        children: const [
-                          CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage('https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                            child: Text("InstiVerse", style: TextStyle(fontSize: 30.0),),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        IconButton(onPressed: (){
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => const searchUser()));
-                        },
-                            icon: const Icon(Icons.search_outlined)),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.notifications)
+                      title: Text(
+                        'Welcome ${userName.split(" ").first} !!',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
-                        IconButton(
-                            onPressed: () {
-                             _scaffoldKey.currentState?.openEndDrawer();
-                            },
-                            icon: const Icon(Icons.menu),
-                          iconSize: 22.0,
+                      ),
+                      elevation: 0.0,
+                      backgroundColor: Color(0xFF5451FD),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(15.0),
                         )
-                      ],
+                      ),
                     ),
                     body: ListView(
                       children: [Column(
@@ -465,88 +449,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]
                     ),
-                    endDrawer: Drawer(
-                    child: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return Container(
-                          child: ListView(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: const [
-                                    CircleAvatar(
-                                        radius: 20,
-                                        backgroundImage: NetworkImage('https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                                      child: Text("InstiVerse", style: TextStyle(fontSize: 30.0),),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.account_circle_outlined),
-                                title: const Text("My Profile"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => UserPage()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.vpn_key_sharp),
-                                title: const Text("Update Password"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => UserPage()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.account_balance),
-                                title: const Text("My Hostel"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => HostelHome()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.alternate_email),
-                                title: const Text("About Us"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => AboutUs()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.contact_page_outlined),
-                                title: const Text("Contact Us"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => ContactUs()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.feedback),
-                                title: const Text("Feedback"),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => FeedBack()));
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.logout),
-                                title: const Text("Logout"),
-                                onTap: () {
-                                  _auth.clearAuth();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
 
                   );
                 }

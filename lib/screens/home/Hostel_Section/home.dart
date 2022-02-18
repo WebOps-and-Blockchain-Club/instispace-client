@@ -32,9 +32,7 @@ class _HostelHomeState extends State<HostelHome> {
   Widget build(BuildContext context) {
             //User UI
             return Scaffold(
-              // body: Center(
-              //   child: _widgetOptions.elementAt(_selectedIndex),
-              // ),
+
               body: PageView(
                 controller: _pageController,
                 onPageChanged: _onItemTapped,
@@ -68,7 +66,7 @@ class _HostelHomeState extends State<HostelHome> {
                   ),
                 ],
                 selectedItemColor: Color(0xFFFFFFFF),
-                // onTap: _onItemTapped,
+                showUnselectedLabels: true,
                 onTap: (index) {
                   _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
                 },

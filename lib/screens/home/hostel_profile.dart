@@ -51,8 +51,8 @@ class _HostelProfileState extends State<HostelProfile> {
 
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Hostel Amenities",
-            style: TextStyle(
+          title:Text("$hostelName Hostel",
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
 
@@ -76,10 +76,10 @@ class _HostelProfileState extends State<HostelProfile> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
                     child: Column(
-                      children: [
+                      children: const [
                         Text(
-                            "$hostelName Hostel",
-                          style: const TextStyle(
+                            "HOSTEL AMENITIES",
+                          style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 22,
                             color: Color(0xFF5050ED),
@@ -91,17 +91,6 @@ class _HostelProfileState extends State<HostelProfile> {
                 ),
 
                 //HOSTEL AMENITIES
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(6, 15, 0, 0),
-                  child: Text(
-                    "HOSTEL AMENITIES",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.5,
-                      color: Color(0xFF808080),
-                    ),
-                  ),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.fromLTRB(5.0, 8.0, 5.0, 0.0),
