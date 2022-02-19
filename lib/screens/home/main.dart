@@ -194,48 +194,43 @@ class _mainHomeState extends State<mainHome> {
                   },
                 ),
               ),
-                    bottomNavigationBar: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(15.0)
-                      ),
-                      child: BottomNavigationBar(
-                        currentIndex: _selectedIndex,
-                        items: const <BottomNavigationBarItem>[
+                    bottomNavigationBar: BottomNavigationBar(
+                      currentIndex: _selectedIndex,
+                      items: const <BottomNavigationBarItem>[
 
-                          //L&F Button
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.local_grocery_store),
-                            label: 'L&F',
-                            backgroundColor: Color(0xFF5451FD),
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.query_stats_rounded),
-                            label: 'Queries',
-                            backgroundColor: Color(0xFF5451FD),
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.home),
-                            label: 'Home',
-                            backgroundColor: Color(0xFF5451FD),
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.event),
-                            label: 'Events',
-                            backgroundColor: Color(0xFF5451FD),
-                          ),
-                          BottomNavigationBarItem(
-                            icon: Icon(Icons.connect_without_contact_sharp),
-                            label: 'Net&Op',
-                            backgroundColor: Color(0xFF5451FD),
-                          ),
-                        ],
-                        selectedItemColor: Color(0xFFFFFFFF),
-                        showUnselectedLabels: true,
-                        elevation: 0.0,
-                        onTap: (index) {
-                          _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                        //L&F Button
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.local_grocery_store),
+                          label: 'L&F',
+                          backgroundColor: Color(0xFF5451FD),
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.query_stats_rounded),
+                          label: 'Queries',
+                          backgroundColor: Color(0xFF5451FD),
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.home),
+                          label: 'Home',
+                          backgroundColor: Color(0xFF5451FD),
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.event),
+                          label: 'Events',
+                          backgroundColor: Color(0xFF5451FD),
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.connect_without_contact_sharp),
+                          label: 'Net&Op',
+                          backgroundColor: Color(0xFF5451FD),
+                        ),
+                      ],
+                      selectedItemColor: Color(0xFFFFFFFF),
+                      showUnselectedLabels: true,
+                      elevation: 0.0,
+                      onTap: (index) {
+                        _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
     },
-                      ),
                     ),
                   );
   }
