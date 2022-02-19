@@ -4,11 +4,14 @@ import 'package:client/screens/home/networking_and%20_opportunities/addpost.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
+import '../../../widgets/text.dart';
 import 'post_card.dart';
 import '../../../models/tag.dart';
 import 'package:client/graphQL/netops.dart';
 
 class Post_Listing extends StatefulWidget {
+  const Post_Listing({Key? key}) : super(key: key);
+
 
   @override
   _Post_ListingState createState() => _Post_ListingState();
@@ -28,6 +31,7 @@ class _Post_ListingState extends State<Post_Listing> {
   int skip=0;
   int take=10;
   ScrollController scrollController =ScrollController();
+
   late int total;
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,7 @@ class _Post_ListingState extends State<Post_Listing> {
           return Scaffold(
               appBar: AppBar(
                 title: const Text('All Posts'),
-                backgroundColor: Color(0xFFE6CCA9),
+                backgroundColor: Color(0xFF5451FD),
               ),
               body: Center(
                 child: CircularProgressIndicator(),
@@ -80,7 +84,7 @@ class _Post_ListingState extends State<Post_Listing> {
                   return Scaffold(
                     appBar: AppBar(
                       title: const Text('All Posts'),
-                      backgroundColor: Color(0xFFE6CCA9),
+                      backgroundColor: Color(0xFF5451FD),
                     ),
                     body: Center(
                         child: CircularProgressIndicator(),
@@ -164,30 +168,7 @@ class _Post_ListingState extends State<Post_Listing> {
               return Scaffold(
                 key: _scaffoldKey,
                 backgroundColor: Colors.white,
-                appBar: AppBar(
-                  title: const Text('All Posts',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                    ),),
-                  backgroundColor: Color(0xFF5451FD),
-                  actions: [
-                    IconButton(
-                        onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-                        icon: Icon(Icons.filter_alt_outlined)),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)
-                              )
-                          );
-                        },
-                        iconSize: 30.0,
-                        icon: Icon(Icons.add)),
-                  ],
-                ),
-                endDrawer: new Drawer(
+                endDrawer: Drawer(
                   child: StatefulBuilder(
                     builder: (BuildContext context,StateSetter setState){
                       return SafeArea(
@@ -256,11 +237,30 @@ class _Post_ListingState extends State<Post_Listing> {
                     },
                   )
                 ),
+                floatingActionButton: FloatingActionButton(onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)));
+                },
+                  child: Icon(Icons.add),
+                  backgroundColor: Color(0xFF5451FD),
+                ),
 
                 //Page
                 body: ListView(
                   controller: scrollController,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        PageTitle('All Netops'),
+                        IconButton(onPressed: () =>
+                            _scaffoldKey.currentState?.openEndDrawer(),
+                          icon: Icon(Icons.filter_alt_outlined),
+                          color: Color(0xFF5451FD),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
                       child: Column(

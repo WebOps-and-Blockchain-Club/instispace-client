@@ -2,6 +2,7 @@ import 'package:client/graphQL/LnF.dart';
 import 'package:client/screens/home/lost%20and%20found/L&FCard.dart';
 import 'package:client/screens/home/lost%20and%20found/addfound.dart';
 import 'package:client/screens/home/lost%20and%20found/addlost.dart';
+import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -162,85 +163,88 @@ class _LNFListingState extends State<LNFListing> {
                 ),
               ),
               body: SafeArea(
-                child: Column(
-                  children: [
-                    //Button Row
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          //Lost Button
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
-                              },
-                              child: Text('Lost Something?',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                child: ListView(
+                  children: [Column(
+                    children: [
+                      //Button Row
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            //Lost Button
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
+                                },
+                                child: Text('Lost Something?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF6B7AFF),
+                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                minimumSize: Size(50, 35),
                               ),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color(0xFF6B7AFF),
-                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              minimumSize: Size(50, 35),
                             ),
-                          ),
 
-                          //Found Button
-                          ElevatedButton(
-                              onPressed: ()  {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
-                              },
-                              child: Text('Found Something?',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                            //Found Button
+                            ElevatedButton(
+                                onPressed: ()  {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
+                                },
+                                child: Text('Found Something?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF6B7AFF),
+                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                minimumSize: Size(50, 35),
                               ),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color(0xFF6B7AFF),
-                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              minimumSize: Size(50, 35),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
-                    //List of Posts
-                    SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.79,
-                      width: 400,
-                      child: ListView(
-                        controller: scrollController,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                            child: Column(
-                              children: Posts.map((post) => LFCard(
-                                    refetchPosts: refetch,
-                                    userId: userId,
-                                    post: post,
-                                  )).toList(),
+                      //List of Posts
+                      SizedBox(
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.79,
+                        width: 400,
+                        child: ListView(
+                          controller: scrollController,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                              child: Column(
+                                children: Posts.map((post) => LFCard(
+                                      refetchPosts: refetch,
+                                      userId: userId,
+                                      post: post,
+                                    )).toList(),
+                              ),
                             ),
-                          ),
-                          if (result.isLoading)
-                          Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                            if (result.isLoading)
+                            Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  ]
                 ),
               ));
         }

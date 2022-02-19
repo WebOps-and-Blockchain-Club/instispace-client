@@ -8,7 +8,11 @@ import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../../../widgets/text.dart';
+
 class Announcements extends StatefulWidget {
+  const Announcements({Key? key}) : super(key: key);
+
   @override
   _AnnouncementsState createState() => _AnnouncementsState();
 }
@@ -24,6 +28,7 @@ var ScaffoldKey = GlobalKey<ScaffoldState>();
 class _AnnouncementsState extends State<Announcements> {
   static var role;
   late String userHostelID;
+  late String userHostelName;
   int skip = 0;
   int take = 10;
   ScrollController scrollController = ScrollController();
@@ -50,7 +55,7 @@ class _AnnouncementsState extends State<Announcements> {
                 ),
                 elevation: 0.0,
                 automaticallyImplyLeading: false,
-                backgroundColor: Color(0xFF5451FD),
+                backgroundColor: const Color(0xFF5451FD),
               ),
 
               body: Center(
@@ -167,16 +172,15 @@ class _AnnouncementsState extends State<Announcements> {
                   return Scaffold(
                     key: ScaffoldKey,
                     appBar: AppBar(
-                      title: Text(
+                      title: const Text(
                         "Announcements",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22.0,
                             fontWeight: FontWeight.bold),
                       ),
                       elevation: 0.0,
                       automaticallyImplyLeading: false,
-                      backgroundColor: Color(0xFF5451FD),
+                      backgroundColor: const Color(0xFF5451FD),
                       actions: [
                         IconButton(
                             onPressed: () {
@@ -218,6 +222,7 @@ class _AnnouncementsState extends State<Announcements> {
                 });
           } else {
             userHostelID = result.data!["getMe"]["hostel"]["id"];
+            userHostelName = result.data!["getMe"]["hostel"]["name"];
             print(userHostelID);
             return Query(
                 options: QueryOptions(
@@ -235,14 +240,14 @@ class _AnnouncementsState extends State<Announcements> {
                     return Scaffold(
                       appBar: AppBar(
                         title: Text(
-                          "Announcements",
+                          "$userHostelName Hostel",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold),
                         ),
                         elevation: 0.0,
-                        backgroundColor: Colors.deepPurpleAccent,
+                        backgroundColor: const Color(0xFF5451FD),
                       ),
                       body: Center(
                         child: CircularProgressIndicator(
@@ -318,7 +323,7 @@ class _AnnouncementsState extends State<Announcements> {
                     key: ScaffoldKey,
                     appBar: AppBar(
                       title: Text(
-                        "Announcements",
+                        "$userHostelName Hostel",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 22.0,
@@ -331,6 +336,7 @@ class _AnnouncementsState extends State<Announcements> {
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                       child: ListView(controller: scrollController, children: [
+                        PageTitle('Announcements'),
                         Column(
                           children: announcements
                               .map((post) => AnnouncementCard(
