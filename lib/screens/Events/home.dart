@@ -3,6 +3,7 @@ import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/addpost.dart';
+import 'package:client/widgets/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -161,13 +162,15 @@ class _HomeState extends State<EventsHome> {
                   child: ListView(
                     controller: scrollController,
                     children: [
+                      PageTitle('All Events'),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PageTitle('All Events'),
-                          IconButton(onPressed: () =>
-                              ScaffoldKey.currentState?.openEndDrawer(),
-                              icon: Icon(Icons.filter_alt_outlined),
+                          // Search(),
+                          IconButton(onPressed: () {
+                            ScaffoldKey.currentState?.openEndDrawer();
+                            },
+                            icon: Icon(Icons.filter_alt_outlined),
                             color: Color(0xFF5451FD),
                           ),
                         ],

@@ -86,18 +86,6 @@ class _HostelcontactsState extends State<Hostelcontacts> {
       ));
 
       return Scaffold(
-        appBar: AppBar(
-          title: Text("$hostelName Hostel",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-
-            ),
-          ),
-          backgroundColor: Color(0xFF5451FD),
-          elevation: 0.0,
-          automaticallyImplyLeading: true,
-        ),
         body: ListView(
           shrinkWrap: true,
           children: [Padding(

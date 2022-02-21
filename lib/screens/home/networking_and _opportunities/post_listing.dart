@@ -1,6 +1,7 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/networking_and%20_opportunities/addpost.dart';
+import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
@@ -21,8 +22,9 @@ class _Post_ListingState extends State<Post_Listing> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String getNetops = netopsQuery().getNetops;
   String getTags = authQuery().getTags;
+  TextEditingController searchController = TextEditingController();
+  String search = "";
   List<NetOpPost> posts = [];
-
   bool mostlikesvalue =false;
   bool isStarred =false;
 
@@ -70,7 +72,7 @@ class _Post_ListingState extends State<Post_Listing> {
         return Query(
             options: QueryOptions(
               document: gql(getNetops),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+              variables: {"take":take,"lastNetopId":"","orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
             ),
             builder: (QueryResult result, {fetchMore, refetch}){
               print("Query running");
@@ -141,11 +143,12 @@ class _Post_ListingState extends State<Post_Listing> {
               };
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  variables: {"take":take,"lastNetopId":posts.last.id,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
                   updateQuery: (previousResultData,fetchMoreResultData){
                     // print("previousResultData:$previousResultData");
                     // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
                     // print("posts:$posts");
+                    posts.clear();
                     final List<dynamic> repos = [
                       ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
                       ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
@@ -250,10 +253,11 @@ class _Post_ListingState extends State<Post_Listing> {
                 body: ListView(
                   controller: scrollController,
                   children: [
+                    PageTitle('All Netops'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        PageTitle('All Netops'),
+                        Search(searchController: searchController, search: search, refetch: refetch),
                         IconButton(onPressed: () =>
                             _scaffoldKey.currentState?.openEndDrawer(),
                           icon: Icon(Icons.filter_alt_outlined),

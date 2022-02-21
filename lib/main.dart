@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
           // This is the theme of application.
 
           primarySwatch: Colors.green,
+          primaryColor: Colors.amber
         ),
         home: Wrapper(),
       ),

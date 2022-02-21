@@ -50,19 +50,6 @@ class _HostelProfileState extends State<HostelProfile> {
       }
 
       return Scaffold(
-        appBar: AppBar(
-          title:Text("$hostelName Hostel",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-
-            ),
-          ),
-          backgroundColor: const Color(0xFF5451FD),
-          elevation: 0.0,
-          automaticallyImplyLeading: true,
-        ),
-
         //UI
         body: ListView(
           shrinkWrap: true,

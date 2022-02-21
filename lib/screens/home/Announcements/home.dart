@@ -321,17 +321,6 @@ class _AnnouncementsState extends State<Announcements> {
                   });
                   return Scaffold(
                     key: ScaffoldKey,
-                    appBar: AppBar(
-                      title: Text(
-                        "$userHostelName Hostel",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      elevation: 0.0,
-                      backgroundColor: Color(0xFF5451FD),
-                    ),
                     body: Container(
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),

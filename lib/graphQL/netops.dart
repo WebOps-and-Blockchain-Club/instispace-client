@@ -1,6 +1,6 @@
 class netopsQuery{
-  String getNetops ="""query(\$skip: Float!, \$take: Float!,\$orderByLikes: Boolean,\$filteringCondition: fileringConditions,){
-  getNetops(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
+  String getNetops ="""query(\$take: Float!, \$lastNetopId: String!, \$fileringCondition: fileringConditions, \$orderByLikes: Boolean){
+  getNetops(take: \$take, LastNetopId: \$lastNetopId, FileringCondition: \$fileringCondition, OrderByLikes: \$orderByLikes) {
     netopList {
       id,
       content,
@@ -29,7 +29,7 @@ class netopsQuery{
       attachments
     }
     total
-  },
+  }
 }""";
   String createComment = """
   mutation(\$content: String!, \$netopId: String!){

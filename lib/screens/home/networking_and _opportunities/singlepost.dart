@@ -184,7 +184,9 @@ class Single_Post extends StatelessWidget {
                             //Text or Image
                             if(post.imgUrl != null)
                             SizedBox(
-                              child: ListView(children:[
+                              child: ListView(
+                                shrinkWrap: true,
+                                  children:[
                                 Text(post.description,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
