@@ -5,8 +5,9 @@ class LnFQuery{
   }
   """;
   String getItems="""
-   query(\$itemsFilter: [Category!]!,\$skip: Float!, \$take: Float!){
-    getItems(ItemsFilter: \$itemsFilter,skip: \$skip, take: \$take){
+   query(\$take: Float!, \$lastItemId: String!, \$itemsFilter: [Category!]!, \$search: String){
+  getItems(take: \$take, LastItemId: \$lastItemId, ItemsFilter: \$itemsFilter, search: \$search) {
+    total
     itemsList{
       id
       category
@@ -22,12 +23,11 @@ class LnFQuery{
         mobile
       }
     }
-    total
   }
-    getMe {
+  getMe {
     id
   }
-  }
+}
   """;
   String editItem="""
   mutation(\$editItemInput: EditItemInput!, \$itemId: String!, \$editItemsImages: [Upload!]){
