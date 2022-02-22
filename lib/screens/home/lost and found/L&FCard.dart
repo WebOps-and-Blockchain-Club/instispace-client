@@ -33,7 +33,7 @@ class LFCard extends StatelessWidget {
         children: [
           //Title Container
           Container(
-            color: Color(0xFF6B7AFF),
+            color: const Color(0xFF6B7AFF),
             child: Padding(
               //Conditional Padding
               padding: (userId==post.createdId)
@@ -133,7 +133,7 @@ class LFCard extends StatelessWidget {
 
           //Location & Time & Contact
           Container(
-            color: Color(0xFF6B7AFF),
+            color: Color(0xFFDEDDFF),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

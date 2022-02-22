@@ -5,6 +5,8 @@ import 'package:client/screens/home/lost%20and%20found/addlost.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'LFclass.dart';
 
@@ -22,10 +24,9 @@ class _LNFListingState extends State<LNFListing> {
   bool lostFilterValue = true;
   bool foundFilterValue = true;
   List itemFilter = [];
-  int skip=0;
-  int take=10;
+  int take = 10;
   late int total;
-  ScrollController scrollController =ScrollController();
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +41,39 @@ class _LNFListingState extends State<LNFListing> {
     return Query(
         options: QueryOptions(
           document: gql(getItems),
-          variables: {"itemsFilter": itemFilter,"skip":skip,"take":take},
+          variables: {
+            "take": take,
+            "lastItemId": "",
+            "itemsFilter": itemFilter,
+            "search": ""
+          },
         ),
-        builder: (QueryResult result, {fetchMore, refetch}){
-
+        builder: (QueryResult result, {fetchMore, refetch}) {
           if (result.hasException) {
             print(result.exception.toString());
             return Text(result.exception.toString());
           }
-          if(Posts.isEmpty){
-            if(result.isLoading){
+          if (Posts.isEmpty) {
+            if (result.isLoading) {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text('Lost & Found'),
-                  backgroundColor: Color(0xFF5451FD),
+                  title: const Text('Lost & Found'),
+                  backgroundColor: const Color(0xFF5451FD),
                 ),
                 body: Center(
-                  child: CircularProgressIndicator(),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: ListView.separated(
+                                itemBuilder: (context, index) => NewCardSkeleton(),
+                                separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                itemCount: 5)
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               );
             }
@@ -65,162 +82,209 @@ class _LNFListingState extends State<LNFListing> {
           var data = result.data!["getItems"]["itemsList"];
           for (var i = 0; i < data.length; i++) {
             var contact;
-            List<String> imageUrls=[];
-            if(data[i]["images"]!=null)
-            {imageUrls=data[i]["images"].split(" AND ");}
-            data[i]["contact"]==null ?
-            (
-                data[i]["user"]["mobile"] == null
-                ? contact = "${data[i]["user"]["roll"]}@smail.iitm.ac.in"
-                : contact = data[i]["user"]["mobile"]
-            ): contact=data[i]["contact"];
+            List<String> imageUrls = [];
+            if (data[i]["images"] != null) {
+              imageUrls = data[i]["images"].split(" AND ");
+            }
+            data[i]["contact"] == null
+                ? (data[i]["user"]["mobile"] == null
+                    ? contact = "${data[i]["user"]["roll"]}@smail.iitm.ac.in"
+                    : contact = data[i]["user"]["mobile"])
+                : contact = data[i]["contact"];
             Posts.add(LnF(
-                category: data[i]["category"],
-                what: data[i]["name"],
-                id: data[i]["id"],
-                location: data[i]["location"],
-                time: data[i]["time"],
-                contact: contact,
-                createdId: data[i]["user"]["id"],
-                imageUrl: imageUrls,
+              category: data[i]["category"],
+              what: data[i]["name"],
+              id: data[i]["id"],
+              location: data[i]["location"],
+              time: data[i]["time"],
+              contact: contact,
+              createdId: data[i]["user"]["id"],
+              imageUrl: imageUrls,
             ));
           }
-          total=result.data!["getItems"]["total"];
+          total = result.data!["getItems"]["total"];
           userId = result.data!["getMe"]["id"];
-          FetchMoreOptions opts =FetchMoreOptions(
-              variables: {"itemsFilter": itemFilter,"skip":skip+10,"take":take},
-              updateQuery: (previousResultData,fetchMoreResultData){
+          FetchMoreOptions opts = FetchMoreOptions(
+              variables: {
+                "take": take,
+                "lastItemId": Posts.last.id,
+                "itemsFilter": itemFilter,
+                "search": ""
+              },
+              updateQuery: (previousResultData, fetchMoreResultData) {
                 // print("previousResultData:$previousResultData");
                 // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
                 // print("posts:$posts");
                 final List<dynamic> repos = [
-                  ...previousResultData!["getItems"]["itemsList"] as List<dynamic>,
-                  ...fetchMoreResultData!["getItems"]["itemsList"] as List<dynamic>
+                  ...previousResultData!["getItems"]["itemsList"]
+                      as List<dynamic>,
+                  ...fetchMoreResultData!["getItems"]["itemsList"]
+                      as List<dynamic>
                 ];
                 fetchMoreResultData["getItems"]["itemsList"] = repos;
                 return fetchMoreResultData;
-              }
-          );
-          scrollController.addListener(()async {
+              });
+          scrollController.addListener(() async {
             var triggerFetchMoreSize =
                 0.99 * scrollController.position.maxScrollExtent;
-            if (scrollController.position.pixels >
-                triggerFetchMoreSize && total>Posts.length){
+            if (scrollController.position.pixels > triggerFetchMoreSize &&
+                total > Posts.length) {
               await fetchMore!(opts);
               scrollController.jumpTo(triggerFetchMoreSize);
             }
-          }
-          );
+          });
 
           return Scaffold(
-              appBar: AppBar(
-                title: Text('Lost & Found',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                backgroundColor: Color(0xFF5451FD),
-              ),
-              backgroundColor: Color(0xFFF7F7F7),
-              endDrawer: Drawer(
-                child: StatefulBuilder(
-                  builder: (BuildContext context, StateSetter stateState) {
-                    return SafeArea(
-                        child: ListView(
-                        primary: false,
-                        children: [
-                        Column(
-                          children: [
-                            Text("Filter"),
-                            CheckboxListTile(
-                                title: Text('Lost'),
-                                value: lostFilterValue,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    lostFilterValue = value!;
-                                  });
-                                }),
-                            CheckboxListTile(
-                                title: Text('Found'),
-                                value: foundFilterValue,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    foundFilterValue = value!;
-                                  });
-                                }),
-                            ElevatedButton(
-                              onPressed: () {
-                                refetch!();
-                              },
-                              child: Text('Apply'),
-                            )
-                          ],
-                        )
-                      ],
-                    ));
-                  },
-                ),
+              // appBar: AppBar(
+              //   title: const Text('Lost & Found',
+              //     style: TextStyle(
+              //         color: Colors.white,
+              //         fontWeight: FontWeight.bold
+              //     ),
+              //   ),
+              //   backgroundColor: const Color(0xFF5451FD),
+              // ),
+              backgroundColor: const Color(0xFFF7F7F7),
+              // endDrawer: Drawer(
+              //   child: StatefulBuilder(
+              //     builder: (BuildContext context, StateSetter stateState) {
+              //       return SafeArea(
+              //           child: ListView(
+              //           primary: false,
+              //           children: [
+              //           Column(
+              //             children: [
+              //               Text("Filter"),
+              //               CheckboxListTile(
+              //                   title: Text('Lost'),
+              //                   value: lostFilterValue,
+              //                   onChanged: (bool? value) {
+              //                     setState(() {
+              //                       lostFilterValue = value!;
+              //                     });
+              //                   }),
+              //               CheckboxListTile(
+              //                   title: Text('Found'),
+              //                   value: foundFilterValue,
+              //                   onChanged: (bool? value) {
+              //                     setState(() {
+              //                       foundFilterValue = value!;
+              //                     });
+              //                   }),
+              //               ElevatedButton(
+              //                 onPressed: () {
+              //                   refetch!();
+              //                 },
+              //                 child: Text('Apply'),
+              //               )
+              //             ],
+              //           )
+              //         ],
+              //       ));
+              //     },
+              //   ),
+              // ),
+              floatingActionButton: SpeedDial(
+                animatedIcon: AnimatedIcons.menu_arrow,
+                backgroundColor: const Color(0xFF5451FD),
+                children: [
+                  SpeedDialChild(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => AddLost(
+                                  refetchPosts: refetch,
+                                )));
+                      },
+                      child: const Icon(Icons.label),
+                      label: 'Lost something?'),
+                  SpeedDialChild(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => AddFound(
+                                  refetchPosts: refetch,
+                                )));
+                      },
+                      child: const Icon(Icons.label),
+                      label: "Found something?"),
+                ],
               ),
               body: SafeArea(
-                child: ListView(
-                  children: [Column(
+                child: ListView(children: [
+                  Column(
                     children: [
-                      //Button Row
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            //Lost Button
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
-                                },
-                                child: Text('Lost Something?',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF6B7AFF),
-                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                minimumSize: Size(50, 35),
-                              ),
+                      //Title
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius:
+                              BorderRadius.vertical(bottom: Radius.circular(7)),
+                          color: Color(0xFF5451FD),
+                        ),
+                        width: MediaQuery.of(context).size.width * 1,
+                        height: 45,
+                        child: const Center(
+                          child: Text(
+                            'Lost & Found',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
                             ),
-
-                            //Found Button
-                            ElevatedButton(
-                                onPressed: ()  {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
-                                },
-                                child: Text('Found Something?',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF6B7AFF),
-                                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                minimumSize: Size(50, 35),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
 
+                      // //Button Row
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: [
+                      //       //Lost Button
+                      //       ElevatedButton(
+                      //           onPressed: () {
+                      //             Navigator.of(context).push(MaterialPageRoute(
+                      //                 builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
+                      //           },
+                      //           child: Text('Lost Something?',
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontSize: 14,
+                      //               fontWeight: FontWeight.bold,
+                      //             ),
+                      //           ),
+                      //         style: ElevatedButton.styleFrom(
+                      //           primary: Color(0xFF6B7AFF),
+                      //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      //           minimumSize: Size(50, 35),
+                      //         ),
+                      //       ),
+                      //
+                      //       //Found Button
+                      //       ElevatedButton(
+                      //           onPressed: ()  {
+                      //             Navigator.of(context).push(MaterialPageRoute(
+                      //                 builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
+                      //           },
+                      //           child: Text('Found Something?',
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontSize: 14,
+                      //               fontWeight: FontWeight.bold,
+                      //             ),
+                      //           ),
+                      //         style: ElevatedButton.styleFrom(
+                      //           primary: Color(0xFF6B7AFF),
+                      //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      //           minimumSize: Size(50, 35),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+
                       //List of Posts
                       SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.79,
+                        height: MediaQuery.of(context).size.height * 0.75,
                         width: 400,
                         child: ListView(
                           controller: scrollController,
@@ -236,18 +300,86 @@ class _LNFListingState extends State<LNFListing> {
                               ),
                             ),
                             if (result.isLoading)
-                            Center(
-                              child: CircularProgressIndicator(),
-                            ),
+                              const Center(
+                                child: CircularProgressIndicator(),
+                              ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
-                  ]
-                ),
+                ]),
               ));
-        }
-        );
+        });
+  }
+}
+
+class NewCardSkeleton extends StatelessWidget {
+  const NewCardSkeleton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Skeleton(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.65,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Skeleton(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.09,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Skeleton(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.09,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Row(
+          children: [
+            Skeleton(
+              height: 100,
+              width: MediaQuery.of(context).size.width * 0.875,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class Skeleton extends StatelessWidget {
+  const Skeleton({
+    Key? key,
+    this.height,
+    this.width,
+  }) : super(key: key);
+
+  final double? height, width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+    );
   }
 }
