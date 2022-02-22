@@ -73,7 +73,7 @@ class _HomeState extends State<EventsHome> {
         return Query(
             options: QueryOptions(
               document: gql(getEvents),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+              variables: {"getEventsTake":take,"lastEventId": "","orderByLikes":mostlikesvalue,"fileringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
             ),
             builder: (QueryResult result, { fetchMore, refetch }){
               if (result.hasException) {
@@ -132,7 +132,7 @@ class _HomeState extends State<EventsHome> {
               };
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"skip":skip+10,"take":take,"orderByLikes":mostlikesvalue,"filteringConditions":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  variables: {"getEventsTake":take,"lastEventId": posts.last.id,"orderByLikes":mostlikesvalue,"fileringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
                   updateQuery: (previousResultData,fetchMoreResultData){
 
                     final List<dynamic> repos = [

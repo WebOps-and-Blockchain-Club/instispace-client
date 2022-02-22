@@ -1,8 +1,8 @@
 class eventsQuery{
   String getEvents="""
-query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean, \$filteringCondition: fileringConditions){
-  getEvents(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
-    list {
+  query(\$getEventsTake: Float!, \$lastEventId: String!, \$orderByLikes: Boolean, \$fileringCondition: fileringConditions){
+  getEvents(take: \$getEventsTake, lastEventId: \$lastEventId, OrderByLikes: \$orderByLikes, FileringCondition: \$fileringCondition) {
+  list {
       id
       createdAt
       title
@@ -30,7 +30,7 @@ query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean, \$filteringCondit
   getMe {
     id
     role
-  }
+  } 
 }
 """;
   String toggleLike = """
