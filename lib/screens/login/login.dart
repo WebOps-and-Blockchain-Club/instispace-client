@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -28,9 +29,15 @@ class LogIn extends StatefulWidget {
   static var isNewUser;
   static var role;
   String login=authQuery().login;
-
+  late String fcmToken;
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
+
+    _firebaseMessaging.getToken().then((token){
+      fcmToken= token!;
+      print("token:$token");
+    });
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -146,14 +153,14 @@ class LogIn extends StatefulWidget {
                           options:MutationOptions(
                               document: gql(login),
                               onCompleted:(dynamic resultData){
-                                print(resultData);
+                                // print(resultData);
                                 token = resultData["login"]["token"];
                                 isNewUser=resultData["login"]["isNewUser"];
                                 role=resultData["login"]["role"];
                                 _auth.setToken(token);
                                 _auth.setisNewUser(isNewUser);
                                 _auth.setRole(role);
-                                print(resultData["login"]);
+                                print("loginPage");
                               }
                           ),
                           builder: (
@@ -176,7 +183,11 @@ class LogIn extends StatefulWidget {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                                 ),
                                 onPressed: () {
+                                  FirebaseMessaging.instance.getToken().then((token){
+                                    print("token login:$token");
+                                  });
                                    runMutation({
+                                     // "fcmToken":fcmToken,
                                     'loginInputs' :{
                                       "roll": usernameController.text,
                                       "pass": passwordController.text,

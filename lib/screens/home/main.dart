@@ -1,3 +1,4 @@
+import 'package:client/main.dart';
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/home.dart';
@@ -11,18 +12,19 @@ import 'package:client/screens/home/Queries/home.dart';
 import 'package:client/screens/home/homeCards.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
-import 'package:client/screens/userInit/updatepass.dart';
+import 'package:client/services/notification.dart';
+import 'package:client/services/storeMe.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
-import 'package:http/http.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'hostel_profile.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -34,23 +36,69 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late AuthService _auth;
+  // late StoreMe _storeMe;
   String getMe = homeQuery().getMe;
   String getMeHome = homeQuery().getMeHome;
 
   var result;
   late String userName;
   late String userRole;
-Map all = {};
-
+  Map all = {};
+  late String fcmtoken;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);
+      // _storeMe = Provider.of<StoreMe>(context,listen: false);
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if(notification !=null && android !=null){
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+            )
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
+      print('A new onMessageOpenedApp event was published');
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if(notification !=null && android != null){
+        showDialog(
+            context: context,
+            builder:(_){
+              return AlertDialog(
+                title: Text(notification.title!),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(notification.body!)
+                    ],
+                  ),
+                ),
+              );
+            }
+        );
+      }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +117,15 @@ Map all = {};
               ),
             );
           }
+          // var data = result.data!["getMe"];
+          // List<String> interests = [];
+          // for(var i=0;i<data["interest"].length;i++){
+          //  interests.add("${data["interest"][i]}");
+          // }
+          // _storeMe.setUser(data["roll"], data["name"], data["role"], "", interests);
           userRole = result.data!["getMe"]["role"];
+          // _storeMe.loadUser();
+          // print("user data:roll:${_storeMe.roll},name:${_storeMe.name},role:${_storeMe.role},mobile:${_storeMe.mobile},interests:${_storeMe.interest}");
           print(userRole);
 
           if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
@@ -100,7 +156,7 @@ Map all = {};
                             fontSize: 20,
                           ),
                         ),
-                      
+
                         ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -294,6 +350,10 @@ Map all = {};
             actions: [
               IconButton(onPressed: (){
                 Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Notifications()));
+              }, icon: Icon(Icons.notifications_active)),
+              IconButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => searchUser()));
               }, icon: Icon(Icons.search_outlined)),
               Column(
@@ -311,7 +371,8 @@ Map all = {};
                 children: [
                   IconButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => HostelProfile()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => HostelProfile()));
                       },
                       icon: Icon(Icons.account_balance)
                   ),

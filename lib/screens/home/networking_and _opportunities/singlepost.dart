@@ -89,7 +89,8 @@ class Single_Post extends StatelessWidget {
                           {
                           Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Comments(post: post,)),
+                          MaterialPageRoute(
+                              builder: (context) => Comments(post: post,)),
                           ),
                             print('commented'),
                           }, icon: Icon(Icons.comment)),

@@ -1,6 +1,7 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/networking_and%20_opportunities/addpost.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
@@ -33,7 +34,7 @@ class _Post_ListingState extends State<Post_Listing> {
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
-        document: gql(getTags)
+        document: gql(getTags),
       ),
       builder:(QueryResult result, {fetchMore, refetch}){
         filterSettings.clear();
@@ -59,18 +60,19 @@ class _Post_ListingState extends State<Post_Listing> {
                  id: tagData[i]["id"],
                  Tag_name: tagData[i]["title"],
           ), () => false);
-        };
+        }
         // print("filterIds:$selectedFilterIds");
         // print("$filterSettings");
         // print("isStarred:$isStarred");
         return Query(
             options: QueryOptions(
               document: gql(getNetops),
-              variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+              variables: {"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred,},"lastId":""},
             ),
             builder: (QueryResult result, {fetchMore, refetch}){
               print("Query running");
-              print("tags filter:${(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds}");
+              print("query skip:$skip");
+              // print("tags filter:${(selectedFilterIds.isEmpty || selectedFilterIds == [])? null:selectedFilterIds}");
               if (result.hasException) {
                 print(result.exception.toString());
                 return Text(result.exception.toString());
@@ -93,24 +95,24 @@ class _Post_ListingState extends State<Post_Listing> {
               var netopList= data["netopList"];
               // print("${result.data}");
               posts.clear();
-              for(var i=0;i<result.data!["getNetops"]["netopList"].length;i++){
-                List<Comment> comments=[];
-                List<Tag> tags=[];
-                for(var j=0;j<netopList[i]["comments"].length;j++){
+              for(var i=0;i<result.data!["getNetops"]["netopList"].length;i++) {
+                List<Comment> comments = [];
+                List<Tag> tags = [];
+                for (var j = 0; j < netopList[i]["comments"].length; j++) {
                   // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
                   comments.add(
                       Comment(
                         message: netopList[i]["comments"][j]["content"],
                         id: netopList[i]["comments"][j]["id"],
                         name: "Name",
-                          //ToDO comment name
-                          // netopList[i]["comments"][j]["createdBy"]["name"]
+                        //ToDO comment name
+                        // netopList[i]["comments"][j]["createdBy"]["name"]
                       )
                   );
                 }
                 // print(comments);
                 // print("${netopList[i]["tags"].length}");
-                for(var k=0;k<netopList[i]["tags"].length;k++){
+                for (var k = 0; k < netopList[i]["tags"].length; k++) {
                   // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
                   tags.add(
                     Tag(
@@ -122,26 +124,28 @@ class _Post_ListingState extends State<Post_Listing> {
                 }
                 posts.add(NetOpPost(
                   title: netopList[i]["title"],
-                  comments:comments,
+                  comments: comments,
                   description: netopList[i]["content"],
                   like_counter: netopList[i]["likeCount"],
                   tags: tags,
                   endTime: netopList[i]["endTime"],
-                  linkToAction:netopList[i]["linkToAction"],
+                  linkToAction: netopList[i]["linkToAction"],
                   linkName: netopList[i]["linkName"],
                   imgUrl: netopList[i]["photo"],
-                  attachment:netopList[i]["attachments"],
-                  id:netopList[i]["id"],
+                  attachment: netopList[i]["attachments"],
+                  id: netopList[i]["id"],
                 )
                 );
-              };
+              }
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"skip":skip,"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  variables: {"take":take,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred},"lastId":posts.last.id},
                   updateQuery: (previousResultData,fetchMoreResultData){
+                    // print("fetch query skip:$skip");
                     // print("previousResultData:$previousResultData");
                     // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
                     // print("posts:$posts");
+                    print("fetchmore running");
                     final List<dynamic> repos = [
                       ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
                       ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
@@ -157,13 +161,17 @@ class _Post_ListingState extends State<Post_Listing> {
                     triggerFetchMoreSize && total>posts.length){
                   await fetchMore!(opts);
                   scrollController.jumpTo(triggerFetchMoreSize);
+                  skip=skip+10;
+                  if (kDebugMode) {
+                    print("skip:$skip");
+                  }
                 }
               });
 
               return Scaffold(
                 key: _scaffoldKey,
                 backgroundColor: Colors.white,
-                endDrawer: new Drawer(
+                endDrawer: Drawer(
                   child: StatefulBuilder(
                     builder: (BuildContext context,StateSetter setState){
                       return SafeArea(

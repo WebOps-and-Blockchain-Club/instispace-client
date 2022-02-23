@@ -121,7 +121,10 @@ class _PostCardState extends State<PostCard> {
                                             if(userId==createdId)
                                             Mutation(
                                               options: MutationOptions(
-                                                document: gql(deleteNetop)
+                                                document: gql(deleteNetop),
+                                                onCompleted: (dynamic resultData){
+                                                  widget.refetchPosts!();
+                                                }
                                               ),
                                               builder:(
                                                   RunMutation runMutation,
@@ -141,7 +144,6 @@ class _PostCardState extends State<PostCard> {
                                                         runMutation({
                                                           "deleteNetopNetopId":widget.post.id
                                                         });
-                                                        widget.refetchPosts!();
                                                   },
                                                       child: Text('delete')),
                                                 );

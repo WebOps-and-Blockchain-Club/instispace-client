@@ -1,6 +1,6 @@
 class netopsQuery{
-  String getNetops ="""query(\$skip: Float!, \$take: Float!,\$orderByLikes: Boolean,\$filteringCondition: fileringConditions,){
-  getNetops(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
+  String getNetops ="""query( \$take: Float!,\$orderByLikes: Boolean,\$filteringCondition: fileringConditions,\$lastId: String!){
+  getNetops(take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition,LastNetopId: \$lastId) {
     netopList {
       id,
       content,
@@ -93,6 +93,15 @@ class netopsQuery{
   String reportNetop="""
   mutation(\$description: String!, \$reportNetopNetopId: String!){
   reportNetop(description: \$description, NetopId: \$reportNetopNetopId)
+}
+  """;
+  String netopSubscription = """
+  subscription{
+  createNetop2 {
+    id
+    title
+    content
+  }
 }
   """;
 }
