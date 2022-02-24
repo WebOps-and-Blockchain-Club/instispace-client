@@ -66,7 +66,8 @@ class _mainHomeState extends State<mainHome> {
             //User UI
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: const Color(0xFF5451FD),
+                // backgroundColor: const Color(0xFF5451FD),
+                backgroundColor: Colors.white,
                 title: Row(
                   children: const [
                     CircleAvatar(
@@ -75,7 +76,7 @@ class _mainHomeState extends State<mainHome> {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                      child: Text("InstiVerse",),
+                      child: Text("InstiVerse",style: TextStyle(color: Colors.black),),
                     ),
                   ],
                 ),
@@ -84,17 +85,17 @@ class _mainHomeState extends State<mainHome> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => const searchUser()));
                   },
-                      icon: const Icon(Icons.search_outlined)),
+                      icon: const Icon(Icons.search_outlined,color: Colors.black,)),
                   IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.notifications)
+                      icon: const Icon(Icons.notifications,color: Colors.black,)
                   ),
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => const HostelHome()));
                     },
-                    icon: const Icon(Icons.account_balance),
+                    icon: const Icon(Icons.account_balance,color: Colors.black,),
                     iconSize: 22.0,
                   )
                 ],
@@ -186,6 +187,9 @@ class _mainHomeState extends State<mainHome> {
                 ),
               ),
                     bottomNavigationBar: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      unselectedItemColor: Color(0xFF5451FD),
+                      backgroundColor: Colors.white,
                       currentIndex: _selectedIndex,
                       items: const <BottomNavigationBarItem>[
 
@@ -216,7 +220,7 @@ class _mainHomeState extends State<mainHome> {
                           backgroundColor: Color(0xFF5451FD),
                         ),
                       ],
-                      selectedItemColor: Color(0xFFFFFFFF),
+                      selectedItemColor: Colors.black,
                       showUnselectedLabels: true,
                       elevation: 0.0,
                       onTap: _onItemTapped,

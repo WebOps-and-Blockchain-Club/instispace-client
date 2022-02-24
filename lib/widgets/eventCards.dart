@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/screens/Events/post.dart';
+import 'package:client/screens/home/Announcements/expand_description.dart';
 import 'package:client/widgets/tagButtons.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -101,15 +102,16 @@ Widget EventsCard (
                         ),
                         //Images & Alt Text
                         if(events.imgUrl.isEmpty)
-                          Text(
-                            events.description.length > 250
-                                ? events.description.substring(
-                                0, 250) + '...'
-                                : events.description,
-                            style: const TextStyle(
-                              fontSize: 15.0,
-                            ),
-                          ),
+                          DescriptionTextWidget(text: events.description),
+                          // Text(
+                          //   events.description.length > 250
+                          //       ? events.description.substring(
+                          //       0, 250) + '...'
+                          //       : events.description,
+                          //   style: const TextStyle(
+                          //     fontSize: 15.0,
+                          //   ),
+                          // ),
                         if(events.imgUrl.isNotEmpty)
                           CarouselSlider(
                             items: events.imgUrl.map((item) => Container(
@@ -304,6 +306,7 @@ Widget EventsCard (
                           ),
                         ),
                         //Edit & Delete buttons
+                        if (page == 'eventsSection')
                         Row(
                           children: [
                             if(userId==createdId)

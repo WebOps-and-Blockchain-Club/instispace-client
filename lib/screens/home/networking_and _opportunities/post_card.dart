@@ -427,7 +427,7 @@ class _PostCardState extends State<PostCard> {
                           //       ),
                           //     )
                           // ),
-                          child: cards(context, toggleStar, toggleLike, likeCount, refetch, widget.refetchPosts, isStarred, tags, deleteNetop, reportController, reportNetop,values.title,values.description,values.imgUrl,values.linkToAction,values.like_counter,values.endTime,values.id,values.attachment,values.linkName, userId, createdId,null,null,'',isLiked,values, 'Netop','postListing'),
+                          child: NetopsCard(context, refetch, refetch, isStarred, tags, userId, createdId, reportController, values,'NetopsSection'),
                         ),
                         builder: (_, collapsed, expanded) =>
                             Expandable(
@@ -439,64 +439,64 @@ class _PostCardState extends State<PostCard> {
               }
           );
         }
-  // showAlertDialog(BuildContext context) {
-  //
-  //   // set up the buttons
-  //   Widget cancelButton = TextButton(
-  //     child: Text("Cancel"),
-  //     onPressed:  () {
-  //       Navigator.of(context).pop();
-  //       reportController.clear();
-  //     },
-  //   );
-  //   Widget continueButton = Mutation(
-  //     options: MutationOptions(
-  //         document: gql(reportNetop)
-  //     ),
-  //     builder:(RunMutation runMutation,
-  //         QueryResult? result,) {
-  //       if (result!.hasException) {
-  //         print(result.exception.toString());
-  //       }
-  //       return ElevatedButton(
-  //         onPressed: () {
-  //           print("reported");
-  //           print(reportController.text);
-  //           runMutation({
-  //             "description": reportController.text,
-  //             "reportNetopNetopId": widget.post.id,
-  //           });
-  //           Navigator.of(context).pop();
-  //           reportController.clear();
-  //         },
-  //         child: Text("report"),
-  //       );
-  //     }
-  //   );
-  //
-  //    Widget textField =TextFormField(
-  //     controller: reportController,
-  //   );
-  //
-  //   // set up the AlertDialog
-  //   AlertDialog alert = AlertDialog(
-  //     title: Text("AlertDialog"),
-  //     content: Text("reason for reporting"),
-  //     actions: [
-  //       textField,
-  //       cancelButton,
-  //       continueButton,
-  //     ],
-  //   );
-  //
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
+  showAlertDialog(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+        reportController.clear();
+      },
+    );
+    Widget continueButton = Mutation(
+      options: MutationOptions(
+          document: gql(reportNetop)
+      ),
+      builder:(RunMutation runMutation,
+          QueryResult? result,) {
+        if (result!.hasException) {
+          print(result.exception.toString());
+        }
+        return ElevatedButton(
+          onPressed: () {
+            print("reported");
+            print(reportController.text);
+            runMutation({
+              "description": reportController.text,
+              "reportNetopNetopId": widget.post.id,
+            });
+            Navigator.of(context).pop();
+            reportController.clear();
+          },
+          child: Text("report"),
+        );
+      }
+    );
+
+     Widget textField =TextFormField(
+      controller: reportController,
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("AlertDialog"),
+      content: Text("reason for reporting"),
+      actions: [
+        textField,
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
   }
 
 

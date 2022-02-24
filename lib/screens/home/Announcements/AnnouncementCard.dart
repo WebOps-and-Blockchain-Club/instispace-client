@@ -4,6 +4,7 @@ import 'package:client/graphQL/home.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/widgets/NetOpCards.dart';
+import 'package:client/widgets/announcementCard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
@@ -31,7 +32,7 @@ String deleteAnnouncement = AnnouncementMutations().deleteAnnouncement;
 
 TextEditingController noUse = TextEditingController();
 var role;
-late String Id;
+late String userId;
 List<String> images = [];
 bool isReadmore = false;
 
@@ -54,7 +55,7 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
             );
           }
           role = result.data!["getMe"]["role"];
-          Id = result.data!["getMe"]["id"];
+          userId = result.data!["getMe"]["id"];
           if (widget.announcement.images != null) {
             images = widget.announcement.images!.split(" AND ");
           }
@@ -90,135 +91,135 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                 ),
                 collapsed: Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-                  child: Card(
-                    color: Color(0xFFDEDDFF),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                          child: Text(
-                            widget.announcement.title,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        if (images[0] != "")
-                          ClipRect(
-                            child: SizedBox(
-                              width: 400.0,
-                              child: CarouselSlider(
-                                items: images
-                                    .map((item) => Container(
-                                  child: Center(
-                                    child: Image.network(
-                                      item,
-                                      fit: BoxFit.cover,
-                                      width: 400,
-                                    ),
-                                  ),
-                                ))
-                                    .toList(),
-                                options: CarouselOptions(
-                                  enableInfiniteScroll: false,
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (images[0] == "")
-                          DescriptionTextWidget(
-                              text: widget.announcement.description),
-                        if (role == "ADMIN" ||
-                            role == "HAS" ||
-                            Id == widget.announcement.createdByUserId)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 1),
-                            child: Row(
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFF6464DA),
-                                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                    minimumSize: Size(40,24),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            EditAnnouncements(
-                                              announcement: Announcement(
-                                                title: widget.announcement.title,
-                                                description:
-                                                widget.announcement.description,
-                                                endTime: widget.announcement.endTime,
-                                                id: widget.announcement.id,
-                                                images: widget.announcement.images,
-                                                createdByUserId: widget
-                                                    .announcement.createdByUserId,
-                                                hostelIds:
-                                                widget.announcement.hostelIds,
-                                              ),
-                                              refetchAnnouncement: widget.refetchAnnouncement,
-                                            )));
-                                  },
-                                  child: Text(
-                                    "Edit",
-                                    style:
-                                    TextStyle(color: Colors.white, fontSize: 12.0),
-                                  ),
-                                ),
-                                Mutation(
-                                    options: MutationOptions(
-                                      document: gql(deleteAnnouncement),
-                                    ),
-                                    builder: (
-                                        RunMutation runMutation,
-                                        QueryResult? result,
-                                        ) {
-                                      if (result!.hasException) {
-                                        print(result.exception.toString());
-                                      }
-                                      if (result.isLoading) {
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            color: Color(0xFF6464DA),
-                                          ),
-                                        );
-                                      }
-                                      return ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFF6464DA),
-                                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                          minimumSize: Size(40,24),
-                                        ),
-                                    onPressed: () {
-                                      runMutation({
-                                        'announcementId':
-                                            widget.announcement.id
-                                          });
-                                          Navigator.pop(context);
-                                          widget.refetchAnnouncement!();
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (BuildContext context) =>
-                                                      Announcements()));
-                                        },
-                                        child: Text(
-                                          "Delete",
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 12.0),
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
+                  // child: Card(
+                  //   color: Color(0xFFDEDDFF),
+                  //   shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10.0)),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
+                  //         child: Text(
+                  //           widget.announcement.title,
+                  //           style: TextStyle(
+                  //               color: Colors.black,
+                  //               fontSize: 18.0,
+                  //               fontWeight: FontWeight.w500),
+                  //         ),
+                  //       ),
+                  //       if (images[0] != "")
+                  //         ClipRect(
+                  //           child: SizedBox(
+                  //             width: 400.0,
+                  //             child: CarouselSlider(
+                  //               items: images
+                  //                   .map((item) => Container(
+                  //                 child: Center(
+                  //                   child: Image.network(
+                  //                     item,
+                  //                     fit: BoxFit.cover,
+                  //                     width: 400,
+                  //                   ),
+                  //                 ),
+                  //               ))
+                  //                   .toList(),
+                  //               options: CarouselOptions(
+                  //                 enableInfiniteScroll: false,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       if (images[0] == "")
+                  //         DescriptionTextWidget(text: widget.announcement.description),
+                  //       if (role == "ADMIN" ||
+                  //           role == "HAS" ||
+                  //           Id == widget.announcement.createdByUserId)
+                  //         Padding(
+                  //           padding: const EdgeInsets.fromLTRB(10, 5, 10, 1),
+                  //           child: Row(
+                  //             children: [
+                  //               ElevatedButton(
+                  //                 style: ElevatedButton.styleFrom(
+                  //                   primary: Color(0xFF6464DA),
+                  //                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  //                   minimumSize: Size(40,24),
+                  //                 ),
+                  //                 onPressed: () {
+                  //                   Navigator.of(context).push(MaterialPageRoute(
+                  //                       builder: (BuildContext context) =>
+                  //                           EditAnnouncements(
+                  //                             announcement: Announcement(
+                  //                               title: widget.announcement.title,
+                  //                               description:
+                  //                               widget.announcement.description,
+                  //                               endTime: widget.announcement.endTime,
+                  //                               id: widget.announcement.id,
+                  //                               images: widget.announcement.images,
+                  //                               createdByUserId: widget
+                  //                                   .announcement.createdByUserId,
+                  //                               hostelIds:
+                  //                               widget.announcement.hostelIds,
+                  //                             ),
+                  //                             refetchAnnouncement: widget.refetchAnnouncement,
+                  //                           )));
+                  //                 },
+                  //                 child: Text(
+                  //                   "Edit",
+                  //                   style:
+                  //                   TextStyle(color: Colors.white, fontSize: 12.0),
+                  //                 ),
+                  //               ),
+                  //               Mutation(
+                  //                   options: MutationOptions(
+                  //                     document: gql(deleteAnnouncement),
+                  //                   ),
+                  //                   builder: (
+                  //                       RunMutation runMutation,
+                  //                       QueryResult? result,
+                  //                       ) {
+                  //                     if (result!.hasException) {
+                  //                       print(result.exception.toString());
+                  //                     }
+                  //                     if (result.isLoading) {
+                  //                       return Center(
+                  //                         child: CircularProgressIndicator(
+                  //                           color: Color(0xFF6464DA),
+                  //                         ),
+                  //                       );
+                  //                     }
+                  //                     return ElevatedButton(
+                  //                       style: ElevatedButton.styleFrom(
+                  //                         primary: Color(0xFF6464DA),
+                  //                         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  //                         minimumSize: Size(40,24),
+                  //                       ),
+                  //                   onPressed: () {
+                  //                     runMutation({
+                  //                       'announcementId':
+                  //                           widget.announcement.id
+                  //                         });
+                  //                         Navigator.pop(context);
+                  //                         widget.refetchAnnouncement!();
+                  //                         Navigator.of(context).push(
+                  //                             MaterialPageRoute(
+                  //                                 builder: (BuildContext context) =>
+                  //                                     Announcements()));
+                  //                       },
+                  //                       child: Text(
+                  //                         "Delete",
+                  //                         style: TextStyle(
+                  //                             color: Colors.white, fontSize: 12.0),
+                  //                       ),
+                  //                     );
+                  //                   }),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //     ],
+                  //   ),
+                  // ),
+                  child: AnnouncementsCards(context, images, role, userId, widget.refetchAnnouncement, widget.announcement,'announcementsSection'),
                   // child: cards(context, '', '', 0, refetch, widget.refetchAnnouncement, false, [], deleteAnnouncement, noUse, '', widget.announcement.title, widget.announcement.description, widget.announcement.images, '', 0, widget.announcement.endTime, widget.announcement.id, '', '', Id, widget.announcement.createdByUserId, '', [], '', false, null, 'Announcement', 'AnnouncementHome'),
                 ),
                   builder: (_, collapsed, expanded) =>

@@ -253,8 +253,8 @@ class _HomePageState extends State<HomePage> {
                         likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
                         time: result.data!["getMe"]["getHome"]["events"][i]["time"],
                         location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                        isLiked: false,
-                        isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStarred"],
+                        isLiked: result.data!["getMe"]["getHome"]["events"][i]["isLiked"],
+                        isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
                         // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
                       ),
                             () => "event",
@@ -294,6 +294,7 @@ class _HomePageState extends State<HomePage> {
                     //   ),
                     //   elevation: 0.0,
                     //   backgroundColor: Color(0xFF5451FD),
+                    backgroundColor: Colors.white,
                     //   shape: RoundedRectangleBorder(
                     //     borderRadius: BorderRadius.vertical(
                     //       bottom: Radius.circular(15.0),
@@ -311,16 +312,13 @@ class _HomePageState extends State<HomePage> {
                             width: MediaQuery.of(context).size.width*0.9,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(0.0, 15, 5, 10),
-                              child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    //Selectors
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        //Selected
-
-                                        if(isAll)
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  //Selected
+                                  Row(
+                                    children: [
+                                      if(isAll)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -351,9 +349,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
 
-                                        //Announcements Selected
+                                      //Announcements Selected
 
-                                        if(isAnnouncements)
+                                      if(isAnnouncements)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -384,9 +382,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
 
-                                        //Events Selected
+                                      //Events Selected
 
-                                        if(isEvents)
+                                      if(isEvents)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -417,9 +415,9 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
 
-                                        //Netop Selected
+                                      //Netop Selected
 
-                                        if(isNetops)
+                                      if(isNetops)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -449,16 +447,19 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                         ),
-
-                                        IconButton(
-                                          onPressed: () {
-                                            showModalBottomSheet(context: context, builder: (BuildContext context) {return homeFilters();});
-                                          },
-                                          icon: Icon(Icons.filter_alt_outlined),
-                                        ),
-                                      ],
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,0,0,12),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showModalBottomSheet(context: context, builder: (BuildContext context) {return homeFilters();});
+                                      },
+                                      icon: Icon(Icons.filter_alt_outlined,color: Color(0xFF6B7AFF),),
                                     ),
-                                  ]
+                                  ),
+
+                                ],
                               ),
                             ),
                           ),

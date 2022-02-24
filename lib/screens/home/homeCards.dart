@@ -8,6 +8,7 @@ import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
+import 'package:client/screens/home/Announcements/AnnouncementCard.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
 import 'package:client/screens/tagPage.dart';
 import 'package:client/widgets/NetOpCards.dart';
@@ -17,6 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../graphQL/auth.dart';
 import '../../graphQL/hostelProfile.dart';
+import '../../widgets/announcementCard.dart';
+import '../../widgets/eventCards.dart';
 import '../../widgets/titles.dart';
 import '../Events/singlepost.dart';
 import 'Announcements/expand_description.dart';
@@ -40,6 +43,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
   String toggleStarEvent = eventsQuery().toggleStar;
    late bool isStared;
   late bool isLiked;
+  late String userId;
    String month = '';
   String date = '';
   String year = '';
@@ -75,6 +79,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       isStared = result.data!["getEvent"]["isStared"];
       likeCount=result.data!["getEvent"]["likeCount"];
       isLiked=result.data!["getEvent"]["isLiked"];
+      userId = result.data!["getMe"]["id"];
       if(widget.events.time.split("-")[1] == "01") {month = "JAN";}
       if(widget.events.time.split("-")[1] == "02") {month = "FEB";}
       if(widget.events.time.split("-")[1] == "03") {month = "MARCH";}
@@ -432,7 +437,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       //                   ),
       //                 )
       //             ),
-                  child: cards(context, toggleStarEvent, toggleLike, likeCount, refetch, refetch, isStared, tags, '', noUse, '', values.title,values.description,null,values.linkToAction,values.likeCount,null,values.id,null,values.linkName, '', '',values.location,values.imgUrl,values.time,isLiked,null, 'Event','HomePage'),
+                  child: EventsCard(context, refetch, refetch, tags,values, userId,values.createdById,'homePage'),
                 ),
                 builder: (_, collapsed, expanded) =>
                     Expandable(
@@ -462,9 +467,10 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
   String toggleStarNetop = netopsQuery().toggleStar;
   String toggleLike = netopsQuery().toggleLike;
   late bool isLiked;
-  String getMeHome = homeQuery().getMeHome;
   String getNetop = netopsQuery().getNetop;
   late bool isStared;
+  late String userId;
+  late String createdById;
   TextEditingController noUse = TextEditingController();
 
   @override
@@ -495,6 +501,8 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     isStared = result.data!["getNetop"]["isStared"];
     likeCount = result.data!["getNetop"]["likeCount"];
     isLiked = result.data!["getNetop"]["isLiked"];
+    userId = result.data!["getMe"]["id"];
+    createdById = result.data!["getNetop"]["createdBy"]["id"];
     var values = widget.netops;
     return ExpandableNotifier(
       child: ScrollOnExpand(
@@ -855,7 +863,8 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
               // ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
-                child: cards(context, toggleStarNetop, toggleLike, likeCount, refetch, refetch, isStared, tags, '', noUse, '', values.title,values.description,values.imgUrl,values.linkToAction,values.like_counter,values.endTime,values.id,values.attachment,values.linkName, '', '',null,null,'',isLiked,values, 'Netop','HomePage'),
+                // child: Container(),
+                child: NetopsCard(context, refetch, refetch, isStared, tags, userId,createdById,noUse, values,'HomePage'),
               ),
             ),
             builder: (_, collapsed, expanded) =>
@@ -883,6 +892,7 @@ class AnnouncementHomeCard extends StatefulWidget {
 class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
 
   var images;
+  Future<QueryResult?> Function()? refetch;
 
   @override
   Widget build(BuildContext context) {
@@ -920,45 +930,46 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
             ),
             collapsed: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-              child: Card(
-                color: const Color(0xFFDEDDFF),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                      child: SubHeading(widget.announcements.title)
-                    ),
-                    if (images[0] != "")
-                      ClipRect(
-                        child: SizedBox(
-                          width: 400.0,
-                          child: CarouselSlider(
-                            items: images
-                                .map((item) => Container(
-                              child: Center(
-                                child: Image.network(
-                                  item,
-                                  fit: BoxFit.cover,
-                                  width: 400,
-                                ),
-                              ),
-                            ))
-                                .toList(),
-                            options: CarouselOptions(
-                              enableInfiniteScroll: false,
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (images[0] == "")
-                      DescriptionTextWidget(
-                          text: widget.announcements.description),
-                  ],
-                ),
-              ),
+              // child: Card(
+              //   color: const Color(0xFFDEDDFF),
+              //   shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(10.0)),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.stretch,
+              //     children: [
+              //       Padding(
+              //         padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
+              //         child: SubHeading(widget.announcements.title)
+              //       ),
+              //       if (images[0] != "")
+              //         ClipRect(
+              //           child: SizedBox(
+              //             width: 400.0,
+              //             child: CarouselSlider(
+              //               items: images
+              //                   .map((item) => Container(
+              //                 child: Center(
+              //                   child: Image.network(
+              //                     item,
+              //                     fit: BoxFit.cover,
+              //                     width: 400,
+              //                   ),
+              //                 ),
+              //               ))
+              //                   .toList(),
+              //               options: CarouselOptions(
+              //                 enableInfiniteScroll: false,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       if (images[0] == "")
+              //         DescriptionTextWidget(
+              //             text: widget.announcements.description),
+              //     ],
+              //   ),
+              // ),
+              child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
             ),
             builder: (_, collapsed, expanded) =>
                 Expandable(
