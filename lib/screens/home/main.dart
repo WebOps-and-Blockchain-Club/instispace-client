@@ -20,6 +20,7 @@ import 'feedback_type_pages/about_us.dart';
 import 'feedback_type_pages/contact_us.dart';
 import 'feedback_type_pages/feedback.dart';
 import 'home.dart';
+import 'package:bottom_drawer/bottom_drawer.dart';
 import 'hostel_profile.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
@@ -37,8 +38,6 @@ class mainHome extends StatefulWidget {
 class _mainHomeState extends State<mainHome> {
   late AuthService _auth;
   int _selectedIndex = 2;
-  PageController _pageController = PageController(initialPage: 2);
-
   static const List<Widget> _widgetOptions = <Widget>[
     LNFListing(),
     QueryHome(),
@@ -101,16 +100,8 @@ class _mainHomeState extends State<mainHome> {
                 ],
                 elevation: 0.0,
               ),
-              body: PageView(
-                controller: _pageController,
-                onPageChanged: _onItemTapped,
-                children: const [
-                  LNFListing(),
-                  QueryHome(),
-                  HomePage(),
-                  EventsHome(),
-                  Post_Listing(),
-                ],
+              body: Center(
+                child: _widgetOptions.elementAt(_selectedIndex),
               ),
               drawer: Drawer(
                 child: StatefulBuilder(
@@ -228,10 +219,9 @@ class _mainHomeState extends State<mainHome> {
                       selectedItemColor: Color(0xFFFFFFFF),
                       showUnselectedLabels: true,
                       elevation: 0.0,
-                      onTap: (index) {
-                        _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    },
+                      onTap: _onItemTapped,
                     ),
                   );
   }
 }
+

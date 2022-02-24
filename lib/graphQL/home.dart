@@ -18,6 +18,7 @@ query{
         title
         id
         isStared
+        isLiked
         tags {
           title
           category
@@ -57,6 +58,7 @@ query{
     interest {
       title
       id
+      category
     }
     name
     roll
@@ -116,8 +118,8 @@ query{
   }
   """;
   String searchUser="""
-  query(\$skip: Float!, \$take: Float!, \$search: String!){
-  searchUser(skip: \$skip, take: \$take, search: \$search) {
+query(\$take: Float!, \$lastUserId: String!, \$search: String){
+  searchUser(take: \$take, LastUserId: \$lastUserId, search: \$search) {
     usersList {
       id
       name
@@ -127,6 +129,7 @@ query{
         name
       }
     }
+    total
   }
 }
   """;

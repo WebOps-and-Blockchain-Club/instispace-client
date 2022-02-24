@@ -2,12 +2,16 @@ import 'package:client/graphQL/LnF.dart';
 import 'package:client/screens/home/lost%20and%20found/L&FCard.dart';
 import 'package:client/screens/home/lost%20and%20found/addfound.dart';
 import 'package:client/screens/home/lost%20and%20found/addlost.dart';
+import 'package:client/widgets/search.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../models/tag.dart';
+import '../../../widgets/Filters.dart';
+import '../../../widgets/loading screens.dart';
 import 'LFclass.dart';
 
 class LNFListing extends StatefulWidget {
@@ -23,10 +27,16 @@ class _LNFListingState extends State<LNFListing> {
   late String userId;
   bool lostFilterValue = true;
   bool foundFilterValue = true;
-  List itemFilter = [];
+  List<String> itemFilter = [];
   int take = 10;
   late int total;
+  String search = "";
+  bool display = false;
+  TextEditingController searchController = TextEditingController();
   ScrollController scrollController = ScrollController();
+  var ScaffoldKey = GlobalKey<ScaffoldState>();
+
+  Map<Tag,bool> filterSettings = {};
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +47,17 @@ class _LNFListingState extends State<LNFListing> {
     if (foundFilterValue) {
       itemFilter.add("FOUND");
     }
+
+    filterSettings.putIfAbsent(Tag(
+      category: '',
+      id: "id",
+      Tag_name: 'Lost',
+    ), () => false);
+    filterSettings.putIfAbsent(Tag(
+      category: '',
+      id: "id",
+      Tag_name: "Found",
+    ), () => false);
     print("itemFilter:$itemFilter");
     return Query(
         options: QueryOptions(
@@ -45,7 +66,7 @@ class _LNFListingState extends State<LNFListing> {
             "take": take,
             "lastItemId": "",
             "itemsFilter": itemFilter,
-            "search": ""
+            "search": search
           },
         ),
         builder: (QueryResult result, {fetchMore, refetch}) {
@@ -56,23 +77,21 @@ class _LNFListingState extends State<LNFListing> {
           if (Posts.isEmpty) {
             if (result.isLoading) {
               return Scaffold(
-                appBar: AppBar(
-                  title: const Text('Lost & Found'),
-                  backgroundColor: const Color(0xFF5451FD),
-                ),
+                // appBar: AppBar(
+                //   title: const Text('Lost & Found'),
+                //   backgroundColor: const Color(0xFF5451FD),
+                // ),
                 body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                    child: Column(
-                      children: [
-                        Expanded(
-                            child: ListView.separated(
-                                itemBuilder: (context, index) => NewCardSkeleton(),
-                                separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                                itemCount: 5)
-                        )
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      PageTitle('Lost & Found', context),
+                      Expanded(
+                          child: ListView.separated(
+                              itemBuilder: (context, index) => NewCardSkeleton(),
+                              separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                              itemCount: 5)
+                      )
+                    ],
                   ),
                 ),
               );
@@ -109,7 +128,7 @@ class _LNFListingState extends State<LNFListing> {
                 "take": take,
                 "lastItemId": Posts.last.id,
                 "itemsFilter": itemFilter,
-                "search": ""
+                "search": search
               },
               updateQuery: (previousResultData, fetchMoreResultData) {
                 // print("previousResultData:$previousResultData");
@@ -145,45 +164,45 @@ class _LNFListingState extends State<LNFListing> {
               //   backgroundColor: const Color(0xFF5451FD),
               // ),
               backgroundColor: const Color(0xFFF7F7F7),
-              // endDrawer: Drawer(
-              //   child: StatefulBuilder(
-              //     builder: (BuildContext context, StateSetter stateState) {
-              //       return SafeArea(
-              //           child: ListView(
-              //           primary: false,
-              //           children: [
-              //           Column(
-              //             children: [
-              //               Text("Filter"),
-              //               CheckboxListTile(
-              //                   title: Text('Lost'),
-              //                   value: lostFilterValue,
-              //                   onChanged: (bool? value) {
-              //                     setState(() {
-              //                       lostFilterValue = value!;
-              //                     });
-              //                   }),
-              //               CheckboxListTile(
-              //                   title: Text('Found'),
-              //                   value: foundFilterValue,
-              //                   onChanged: (bool? value) {
-              //                     setState(() {
-              //                       foundFilterValue = value!;
-              //                     });
-              //                   }),
-              //               ElevatedButton(
-              //                 onPressed: () {
-              //                   refetch!();
-              //                 },
-              //                 child: Text('Apply'),
-              //               )
-              //             ],
-              //           )
-              //         ],
-              //       ));
-              //     },
-              //   ),
-              // ),
+              endDrawer: Drawer(
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter stateState) {
+                    return SafeArea(
+                        child: ListView(
+                        primary: false,
+                        children: [
+                        Column(
+                          children: [
+                            Text("Filter"),
+                            CheckboxListTile(
+                                title: Text('Lost'),
+                                value: lostFilterValue,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    lostFilterValue = value!;
+                                  });
+                                }),
+                            CheckboxListTile(
+                                title: Text('Found'),
+                                value: foundFilterValue,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    foundFilterValue = value!;
+                                  });
+                                }),
+                            ElevatedButton(
+                              onPressed: () {
+                                refetch!();
+                              },
+                              child: Text('Apply'),
+                            )
+                          ],
+                        )
+                      ],
+                    ));
+                  },
+                ),
+              ),
               floatingActionButton: SpeedDial(
                 animatedIcon: AnimatedIcons.menu_arrow,
                 backgroundColor: const Color(0xFF5451FD),
@@ -211,27 +230,57 @@ class _LNFListingState extends State<LNFListing> {
               body: SafeArea(
                 child: ListView(children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       //Title
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius:
-                              BorderRadius.vertical(bottom: Radius.circular(7)),
-                          color: Color(0xFF5451FD),
-                        ),
-                        width: MediaQuery.of(context).size.width * 1,
-                        height: 45,
-                        child: const Center(
-                          child: Text(
-                            'Lost & Found',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
+                      PageTitle("Lost & Found",context),
+                  // Padding(
+                  //   padding: const EdgeInsets.fromLTRB(24,8,10,8),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.end,
+                  //     children: [
+                  //       if (display)
+                  //       Expanded(
+                  //         flex: 12,
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                  //           child: TextFormField(
+                  //             controller: searchController,
+                  //             // onChanged: (String value){
+                  //             //   if(value.length>=3){
+                  //             //
+                  //             //   }
+                  //             // },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //
+                  //       IconButton(onPressed: (){
+                  //         setState(() {
+                  //           display = !display;
+                  //           search=searchController.text;
+                  //           // print("search String $search");
+                  //         });
+                  //         if(!display){
+                  //           refetch!();
+                  //         }
+                  //       }, icon: Icon(Icons.search_outlined),color: Color(0xFF5451FD),
+                  //       ),
+                  //
+                  //       Padding(
+                  //         padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                  //         child: IconButton(
+                  //             onPressed: () {
+                  //               ScaffoldKey.currentState?.openEndDrawer();
+                  //             },
+                  //             icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF5451FD),),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+
+
+                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'L&F', widget: Filters(isStarred: false, filterSettings: filterSettings, selectedFilterIds: [], mostLikeValues: false, refetch: refetch,page: 'L&F',),),
 
                       // //Button Row
                       // Padding(
@@ -290,7 +339,7 @@ class _LNFListingState extends State<LNFListing> {
                           controller: scrollController,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
                               child: Column(
                                 children: Posts.map((post) => LFCard(
                                       refetchPosts: refetch,
@@ -311,75 +360,5 @@ class _LNFListingState extends State<LNFListing> {
                 ]),
               ));
         });
-  }
-}
-
-class NewCardSkeleton extends StatelessWidget {
-  const NewCardSkeleton({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Skeleton(
-              height: 40,
-              width: MediaQuery.of(context).size.width * 0.65,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Skeleton(
-              height: 40,
-              width: MediaQuery.of(context).size.width * 0.09,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Skeleton(
-              height: 40,
-              width: MediaQuery.of(context).size.width * 0.09,
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Row(
-          children: [
-            Skeleton(
-              height: 100,
-              width: MediaQuery.of(context).size.width * 0.875,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class Skeleton extends StatelessWidget {
-  const Skeleton({
-    Key? key,
-    this.height,
-    this.width,
-  }) : super(key: key);
-
-  final double? height, width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.04),
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-      ),
-    );
   }
 }

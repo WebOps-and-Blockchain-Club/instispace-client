@@ -6,6 +6,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
 
 import '../../graphQL/hostelProfile.dart';
+import '../../widgets/text.dart';
+import 'package:client/widgets/loading screens.dart';
 
 class HostelProfile extends StatefulWidget {
   const HostelProfile({Key? key}) : super(key: key);
@@ -32,9 +34,19 @@ class _HostelProfileState extends State<HostelProfile> {
         print(result.exception.toString());
       }
       if (result.isLoading) {
-        return Center(
-          child: CircularProgressIndicator(
-            color: Colors.blue[700],
+        return Scaffold(
+          body: Center(
+            child: Column(
+              children: [
+                PageTitle('Hostel Amenities', context),
+                Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) => NewCardSkeleton(),
+                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                        itemCount: 5)
+                )
+              ],
+            ),
           ),
         );
       }
@@ -53,29 +65,31 @@ class _HostelProfileState extends State<HostelProfile> {
         //UI
         body: ListView(
           shrinkWrap: true,
-          children: [Padding(
+          children: [
+            PageTitle('HOSTEL AMENITIES', context),
+            Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Hostel Name
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Column(
-                      children: const [
-                        Text(
-                            "HOSTEL AMENITIES",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 22,
-                            color: Color(0xFF5050ED),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: Padding(
+                //     padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                //     child: Column(
+                //       children: const [
+                //         Text(
+                //             "HOSTEL AMENITIES",
+                //           style: TextStyle(
+                //             fontWeight: FontWeight.w900,
+                //             fontSize: 22,
+                //             color: Color(0xFF5050ED),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
 
                 //HOSTEL AMENITIES
 

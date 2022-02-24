@@ -1,9 +1,9 @@
 class AnnouncementQueries {
   String getAnnouncements = """
-   query(\$hostelId: String!, \$skip: Float!, \$take: Float!) {
-    getAnnouncements(HostelId: \$hostelId, skip: \$skip, take: \$take) {
-      announcementsList {
-        title
+   query GetAnnouncements(\$hostelId: String!, \$take: Float!, \$lastAnnouncementId: String!, \$search: String) {
+  getAnnouncements(HostelId: \$hostelId, take: \$take, LastAnnouncementId: \$lastAnnouncementId, search: \$search) {
+    announcementsList {
+      title
         description
         endTime
         id
@@ -16,17 +16,19 @@ class AnnouncementQueries {
           name
           id
         }
-      }
-      total
     }
+    total
   }
+}
+
   """;
 
   String getAllAnnouncements = """
-   query (\$skip: Float!, \$take: Float!) {
-    getAllAnnouncements(skip: \$skip, take: \$take) {
-      announcementsList {
-        title
+query GetAllAnnouncements(\$take: Float!, \$lastAnnouncementId: String!, \$search: String) {
+  getAllAnnouncements(take: \$take, LastAnnouncementId: \$lastAnnouncementId, search: \$search) {
+    total
+    announcementsList {
+    title
         description
         endTime
         id
@@ -40,9 +42,8 @@ class AnnouncementQueries {
           name
           id
         }
-      }
-      total
     }
   }
+}
  """;
 }

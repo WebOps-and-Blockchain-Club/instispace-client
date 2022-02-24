@@ -10,11 +10,14 @@ import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
 import 'package:client/screens/tagPage.dart';
+import 'package:client/widgets/NetOpCards.dart';
+import 'package:client/widgets/tagButtons.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../graphQL/auth.dart';
 import '../../graphQL/hostelProfile.dart';
+import '../../widgets/titles.dart';
 import '../Events/singlepost.dart';
 import 'Announcements/expand_description.dart';
 import 'networking_and _opportunities/comments.dart';
@@ -47,6 +50,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
     var likeCount;
     List<Tag>tags = widget.events.tags;
     DateTime dateTime = DateTime.parse(widget.events.time);
+    TextEditingController noUse = TextEditingController();
     return Query(
         options: QueryOptions(
         document: gql(getEvent),
@@ -84,6 +88,8 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       if(widget.events.time.split("-")[1] == "11") {month = "NOV";}
       if(widget.events.time.split("-")[1] == "12") {month = "DEC";}
 
+      var values = widget.events;
+
       return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
         child: ExpandableNotifier(
@@ -97,358 +103,336 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
                     height: MediaQuery.of(context).size.height * 1,
                     width: MediaQuery.of(context).size.width * 1,
                     child: SinglePost(post: widget.events,isStarred: isStared,refetch: refetch,)),
-                collapsed: Card(
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    color: const Color(0xFF808CFF),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0, 0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //Title & Star
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      widget.events.title,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Mutation(
-                                        options:MutationOptions(
-                                            document: gql(toggleStarEvent)
-                                        ),
-                                        builder: (
-                                            RunMutation runMutation,
-                                            QueryResult? result,
-                                            ) {
-                                          if (result!.hasException){
-                                            print(result.exception.toString());
-                                          }
-                                          return IconButton(
-                                            onPressed: (){
-                                              runMutation({
-                                                "eventId":widget.events.id
-                                              });
-                                              refetch!();
-                                              },
-                                            icon: isStared?const Icon(Icons.star): const Icon(Icons.star_border),
-                                            color: isStared? Colors.amber:Colors.grey,
-                                          );
-                                        }
-                                        ),
-                                  ],
-                                ),
-                                  //Images & Alt Text
-                                  if(widget.events.imgUrl.isEmpty)
-                                    Text(
-                                      widget.events.description.length > 250
-                                          ? widget.events.description.substring(
-                                          0, 250) + '...'
-                                          : widget.events.description,
-                                      style: const TextStyle(
-                                        fontSize: 15.0,
-                                      ),
-                                    ),
-                                  if(widget.events.imgUrl.isNotEmpty)
-                                    CarouselSlider(
-                                      items: widget.events.imgUrl.map((item) => Container(
-                                        child: Center(
-                                          child: Image.network(item,fit: BoxFit.cover,width: 400,),
-                                        ),
-                                      )
-                                      ).toList(),
-                                      options: CarouselOptions(
-                                        enableInfiniteScroll: false,
-                                      ),
-                                    ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  //Row for Tags, Icons, Container
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            //Tags Row
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                                                  child: SizedBox(
-                                                    width: MediaQuery.of(context).size.width*0.5,
-                                                    height: 20,
-                                                    child: ListView(
-                                                      scrollDirection: Axis.horizontal,
-                                                      children: tags.map((tag) =>
-                                                          SizedBox(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-                                                              child: ElevatedButton(
-                                                                onPressed: () => {
-                                                                  Navigator.of(context).push(MaterialPageRoute(
-                                                                      builder: (BuildContext context) => TagPage(tagId: tag.id)))
-                                                                },
-                                                                child: Text(
-                                                                  tag.Tag_name,
-                                                                  style: const TextStyle(
-                                                                    color: Color(0xFF021096),
-                                                                    fontSize: 12.5,
-                                                                    fontWeight: FontWeight.bold,
-                                                                  ),
-                                                                ),
-                                                                style: ElevatedButton.styleFrom(
-                                                                  primary: const Color(0xFFFFFFFF),
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      vertical: 2,
-                                                                      horizontal: 6),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )).toList(),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            //Icons Row
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(2, 10, 0, 0),
-                                              child: Row(
-                                                children: [
-                                                  //Share Icon
-                                                  Ink(
-                                                    decoration: const ShapeDecoration(
-                                                        color: Color(0xFFFFFFFF),
-                                                        shape: CircleBorder(
-                                                          side: BorderSide.none,
-                                                        )
-                                                    ),
-                                                    height: MediaQuery.of(context).size.height*0.05,
-                                                    width: MediaQuery.of(context).size.width*0.1,
-                                                    child: Center(
-                                                      child: IconButton(
-                                                        onPressed: () =>
-                                                        {
-                                                          print(dateTime.toString().split(" ").first),
-                                                          print(dateTime.toString().split(" ").last.split(".").first),
-                                                          print(widget.events.location),
-                                                          print('shared')
-                                                        },
-                                                        icon: const Icon(Icons.share),
-                                                        iconSize: 20,
-                                                        color: const Color(0xFF021096),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 5,),
-                                                  //Reminder Icon
-                                                  Ink(
-                                                    decoration: const ShapeDecoration(
-                                                        color: Colors.white,
-                                                        shape: CircleBorder(
-                                                          side: BorderSide.none,
-                                                        )
-                                                    ),
-                                                    height: MediaQuery.of(context).size.height*0.05,
-                                                    width: MediaQuery.of(context).size.width*0.1,
-                                                    child: Center(
-                                                      child: IconButton(
-                                                        onPressed: () =>
-                                                        {
-                                                          print('remainder added')
-                                                        },
-                                                        icon: const Icon(Icons.access_alarm),
-                                                        iconSize: 20,
-                                                        color: const Color(0xFF021096),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 5,),
-                                                  //Like Icon
-                                                  Mutation(
-                                                      options:MutationOptions(
-                                                          document: gql(toggleLike)
-                                                      ),
-                                                      builder: (
-                                                          RunMutation runMutation,
-                                                          QueryResult? result,
-                                                          ){
-                                                        if (result!.hasException){
-                                                          print(result.exception.toString());
-                                                        }
-                                                        return Ink(
-                                                          decoration: const ShapeDecoration(
-                                                              color: Color(0xFFFFFFFF),
-                                                              shape: CircleBorder(
-                                                                side: BorderSide.none,
-                                                              )
-                                                          ),
-                                                          height: MediaQuery.of(context).size.height*0.05,
-                                                          width: MediaQuery.of(context).size.width*0.1,
-                                                          child: Center(
-                                                            child: IconButton(
-                                                              onPressed: ()
-                                                              {
-                                                                runMutation({
-                                                                  "eventId":widget.events.id
-                                                                });
-                                                                refetch!();
-                                                                print('is liked');
-                                                                },
-                                                              icon: const Icon(Icons.thumb_up),
-                                                              iconSize: 20,
-                                                              color: isLiked? Colors.blue:Colors.grey,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
-                                                      ),
-                                                  //Like Count
-                                                  Container(
-                                                    margin: const EdgeInsets.only(left: 10.0),
-                                                    child: Text(
-                                                      "$likeCount likes",
-                                                      style: const TextStyle(
-                                                        color: Color(0xFFFFFFFF),
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 16.0,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),],
-                                        ),
-                                        //Location & Date
-                                        Container(
-                                          height: MediaQuery.of(context).size.height*0.15,
-                                          width: MediaQuery.of(context).size.width*.25,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFD3D8FF),
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                    widget.events.location,
-                                                    style: const TextStyle(
-                                                      color: Color(0xFF808CFF),
-                                                      fontWeight: FontWeight.w900,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 3,),
-                                                Center(
-                                                  child: Text(
-                                                    "$date $month $year",
-                                                    style: const TextStyle(
-                                                      color: Color(0xFF808CFF),
-                                                      fontWeight: FontWeight.w900,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-      //Edit & Delete buttons
-      // Row(
-      // children: [
-      // if(userId==createdId)
-      // SizedBox(
-      // width: 60,
-      // child: ElevatedButton(
-      // style: ElevatedButton.styleFrom(
-      // primary: const Color(0xFF021096),
-      // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      // minimumSize: const Size(35,25),
-      // ),
-      // child: const Text('Edit',
-      // style: TextStyle(
-      // color: Colors.white,
-      // fontSize: 14,
-      // fontWeight: FontWeight.w500,
-      // ),),
-      // onPressed: (){
-      // Navigator.of(context).push(
-      // MaterialPageRoute(
-      // builder: (BuildContext context)=> EditPostEvents(post: widget.post,refetchPosts: widget.refetchPosts,)));
-      // },
-      // ),
-      // ),
-      // const SizedBox(
-      // width: 8,
-      // ),
-      // if(userId==createdId)
-      // Mutation(
-      // options: MutationOptions(
-      // document: gql(deleteEvent)
-      // ),
-      // builder:(
-      // RunMutation runMutation,
-      // QueryResult? result,
-      // ){
-      // if (result!.hasException){
-      // print(result.exception.toString());
-      // }
-      // if(result.isLoading){
-      // return const CircularProgressIndicator();
-      // }
-      // return SizedBox(
-      // width: 65,
-      // child: ElevatedButton(
-      // style: ElevatedButton.styleFrom(
-      // primary: const Color(0xFF021096),
-      // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      // minimumSize: const Size(35,25),
-      // ),
-      // onPressed: (){
-      // runMutation({
-      // "eventId":widget.post.id
-      // });
-      // },
-      // child: const Text('Delete',
-      // style: TextStyle(
-      // color: Colors.white,
-      // fontSize: 14,
-      // fontWeight: FontWeight.w500,
-      // ),)
-      // ),
-      // );
-      // }
-      // ),
-      // ],
-      // ),
-                                ],
-                              ),
-                            ]
-                        ),
-                      ),
-                    )
+                collapsed: Padding(
+                  padding: const EdgeInsets.fromLTRB(2,2,2,3),
+      //             child: Card(
+      //                 clipBehavior: Clip.antiAlias,
+      //                 elevation: 5.0,
+      //                 color: const Color(0xFF808CFF),
+      //                 child: SizedBox(
+      //                   height: MediaQuery.of(context).size.height * 0.3,
+      //                   width: MediaQuery.of(context).size.width * 1,
+      //                   child: Padding(
+      //                     padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0, 0),
+      //                     child: Column(
+      //                         crossAxisAlignment: CrossAxisAlignment.stretch,
+      //                         children: [
+      //                           Column(
+      //                             crossAxisAlignment: CrossAxisAlignment.start,
+      //                             children: [
+      //                               //Title & Star
+      //                             Row(
+      //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                               children: [
+      //                                 SubHeading(widget.events.title),
+      //                                 Mutation(
+      //                                     options:MutationOptions(
+      //                                         document: gql(toggleStarEvent)
+      //                                     ),
+      //                                     builder: (
+      //                                         RunMutation runMutation,
+      //                                         QueryResult? result,
+      //                                         ) {
+      //                                       if (result!.hasException){
+      //                                         print(result.exception.toString());
+      //                                       }
+      //                                       return IconButton(
+      //                                         onPressed: (){
+      //                                           runMutation({
+      //                                             "eventId":widget.events.id
+      //                                           });
+      //                                           refetch!();
+      //                                           },
+      //                                         icon: isStared?const Icon(Icons.star): const Icon(Icons.star_border),
+      //                                         color: isStared? Colors.amber:Colors.grey,
+      //                                       );
+      //                                     }
+      //                                     ),
+      //                               ],
+      //                             ),
+      //                               //Images & Alt Text
+      //                               if(widget.events.imgUrl.isEmpty)
+      //                                 Text(
+      //                                   widget.events.description.length > 250
+      //                                       ? widget.events.description.substring(
+      //                                       0, 250) + '...'
+      //                                       : widget.events.description,
+      //                                   style: const TextStyle(
+      //                                     fontSize: 15.0,
+      //                                   ),
+      //                                 ),
+      //                               if(widget.events.imgUrl.isNotEmpty)
+      //                                 CarouselSlider(
+      //                                   items: widget.events.imgUrl.map((item) => Container(
+      //                                     child: Center(
+      //                                       child: Image.network(item,fit: BoxFit.cover,width: 400,),
+      //                                     ),
+      //                                   )
+      //                                   ).toList(),
+      //                                   options: CarouselOptions(
+      //                                     enableInfiniteScroll: false,
+      //                                   ),
+      //                                 ),
+      //                               const SizedBox(
+      //                                 height: 10,
+      //                               ),
+      //                               //Row for Tags, Icons, Container
+      //                               Padding(
+      //                                 padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),
+      //                                 child: Row(
+      //                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                                   children: [
+      //                                     Column(
+      //                                       crossAxisAlignment: CrossAxisAlignment.start,
+      //                                       children: [
+      //                                         //Tags Row
+      //                                         Row(
+      //                                           children: [
+      //                                             Padding(
+      //                                               padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+      //                                               child: SizedBox(
+      //                                                 width: MediaQuery.of(context).size.width*0.5,
+      //                                                 height: 20,
+      //                                                 child: ListView(
+      //                                                   scrollDirection: Axis.horizontal,
+      //                                                   children: tags.map((tag) =>
+      //                                                       SizedBox(
+      //                                                         child: Padding(
+      //                                                           padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
+      //                                                           child: TagButtons(tag, context)
+      //                                                         ),
+      //                                                       )).toList(),
+      //                                                 ),
+      //                                               ),
+      //                                             ),
+      //                                           ],
+      //                                         ),
+      //                                         //Icons Row
+      //                                         Padding(
+      //                                           padding: const EdgeInsets.fromLTRB(2, 10, 0, 0),
+      //                                           child: Row(
+      //                                             children: [
+      //                                               //Share Icon
+      //                                               Ink(
+      //                                                 decoration: const ShapeDecoration(
+      //                                                     color: Color(0xFFFFFFFF),
+      //                                                     shape: CircleBorder(
+      //                                                       side: BorderSide.none,
+      //                                                     )
+      //                                                 ),
+      //                                                 height: MediaQuery.of(context).size.height*0.05,
+      //                                                 width: MediaQuery.of(context).size.width*0.1,
+      //                                                 child: Center(
+      //                                                   child: IconButton(
+      //                                                     onPressed: () =>
+      //                                                     {
+      //                                                       print(dateTime.toString().split(" ").first),
+      //                                                       print(dateTime.toString().split(" ").last.split(".").first),
+      //                                                       print(widget.events.location),
+      //                                                       print('shared')
+      //                                                     },
+      //                                                     icon: const Icon(Icons.share),
+      //                                                     iconSize: 20,
+      //                                                     color: const Color(0xFF021096),
+      //                                                   ),
+      //                                                 ),
+      //                                               ),
+      //                                               const SizedBox(width: 5,),
+      //                                               //Reminder Icon
+      //                                               Ink(
+      //                                                 decoration: const ShapeDecoration(
+      //                                                     color: Colors.white,
+      //                                                     shape: CircleBorder(
+      //                                                       side: BorderSide.none,
+      //                                                     )
+      //                                                 ),
+      //                                                 height: MediaQuery.of(context).size.height*0.05,
+      //                                                 width: MediaQuery.of(context).size.width*0.1,
+      //                                                 child: Center(
+      //                                                   child: IconButton(
+      //                                                     onPressed: () =>
+      //                                                     {
+      //                                                       print('remainder added')
+      //                                                     },
+      //                                                     icon: const Icon(Icons.access_alarm),
+      //                                                     iconSize: 20,
+      //                                                     color: const Color(0xFF021096),
+      //                                                   ),
+      //                                                 ),
+      //                                               ),
+      //                                               const SizedBox(width: 5,),
+      //                                               //Like Icon
+      //                                               Mutation(
+      //                                                   options:MutationOptions(
+      //                                                       document: gql(toggleLike)
+      //                                                   ),
+      //                                                   builder: (
+      //                                                       RunMutation runMutation,
+      //                                                       QueryResult? result,
+      //                                                       ){
+      //                                                     if (result!.hasException){
+      //                                                       print(result.exception.toString());
+      //                                                     }
+      //                                                     return Ink(
+      //                                                       decoration: const ShapeDecoration(
+      //                                                           color: Color(0xFFFFFFFF),
+      //                                                           shape: CircleBorder(
+      //                                                             side: BorderSide.none,
+      //                                                           )
+      //                                                       ),
+      //                                                       height: MediaQuery.of(context).size.height*0.05,
+      //                                                       width: MediaQuery.of(context).size.width*0.1,
+      //                                                       child: Center(
+      //                                                         child: IconButton(
+      //                                                           onPressed: ()
+      //                                                           {
+      //                                                             runMutation({
+      //                                                               "eventId":widget.events.id
+      //                                                             });
+      //                                                             refetch!();
+      //                                                             print('is liked');
+      //                                                             },
+      //                                                           icon: const Icon(Icons.thumb_up),
+      //                                                           iconSize: 20,
+      //                                                           color: isLiked? Colors.blue:Colors.grey,
+      //                                                         ),
+      //                                                       ),
+      //                                                     );
+      //                                                   }
+      //                                                   ),
+      //                                               //Like Count
+      //                                               Container(
+      //                                                 margin: const EdgeInsets.only(left: 10.0),
+      //                                                 child: Text(
+      //                                                   "$likeCount likes",
+      //                                                   style: const TextStyle(
+      //                                                     color: Color(0xFFFFFFFF),
+      //                                                     fontWeight: FontWeight.bold,
+      //                                                     fontSize: 16.0,
+      //                                                   ),
+      //                                                 ),
+      //                                               ),
+      //                                             ],
+      //                                           ),
+      //                                         ),],
+      //                                     ),
+      //                                     //Location & Date
+      //                                     Container(
+      //                                       height: MediaQuery.of(context).size.height*0.15,
+      //                                       width: MediaQuery.of(context).size.width*.25,
+      //                                       decoration: BoxDecoration(
+      //                                         color: const Color(0xFFD3D8FF),
+      //                                         borderRadius: BorderRadius.circular(10.0),
+      //                                       ),
+      //                                       child: Center(
+      //                                         child: Column(
+      //                                           mainAxisAlignment: MainAxisAlignment.center,
+      //                                           crossAxisAlignment: CrossAxisAlignment.center,
+      //                                           children: [
+      //                                             Center(
+      //                                               child: Text(
+      //                                                 widget.events.location,
+      //                                                 style: const TextStyle(
+      //                                                   color: Color(0xFF808CFF),
+      //                                                   fontWeight: FontWeight.w900,
+      //                                                   fontSize: 14,
+      //                                                 ),
+      //                                               ),
+      //                                             ),
+      //                                             const SizedBox(height: 3,),
+      //                                             Center(
+      //                                               child: Text(
+      //                                                 "$date $month $year",
+      //                                                 style: const TextStyle(
+      //                                                   color: Color(0xFF808CFF),
+      //                                                   fontWeight: FontWeight.w900,
+      //                                                   fontSize: 14,
+      //                                                 ),
+      //                                               ),
+      //                                             ),
+      //                                           ],
+      //                                         ),
+      //                                       ),
+      //                                     ),
+      //                                   ],
+      //                                 ),
+      //                               ),
+      // //Edit & Delete buttons
+      // // Row(
+      // // children: [
+      // // if(userId==createdId)
+      // // SizedBox(
+      // // width: 60,
+      // // child: ElevatedButton(
+      // // style: ElevatedButton.styleFrom(
+      // // primary: const Color(0xFF021096),
+      // // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      // // minimumSize: const Size(35,25),
+      // // ),
+      // // child: const Text('Edit',
+      // // style: TextStyle(
+      // // color: Colors.white,
+      // // fontSize: 14,
+      // // fontWeight: FontWeight.w500,
+      // // ),),
+      // // onPressed: (){
+      // // Navigator.of(context).push(
+      // // MaterialPageRoute(
+      // // builder: (BuildContext context)=> EditPostEvents(post: widget.post,refetchPosts: widget.refetchPosts,)));
+      // // },
+      // // ),
+      // // ),
+      // // const SizedBox(
+      // // width: 8,
+      // // ),
+      // // if(userId==createdId)
+      // // Mutation(
+      // // options: MutationOptions(
+      // // document: gql(deleteEvent)
+      // // ),
+      // // builder:(
+      // // RunMutation runMutation,
+      // // QueryResult? result,
+      // // ){
+      // // if (result!.hasException){
+      // // print(result.exception.toString());
+      // // }
+      // // if(result.isLoading){
+      // // return const CircularProgressIndicator();
+      // // }
+      // // return SizedBox(
+      // // width: 65,
+      // // child: ElevatedButton(
+      // // style: ElevatedButton.styleFrom(
+      // // primary: const Color(0xFF021096),
+      // // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      // // minimumSize: const Size(35,25),
+      // // ),
+      // // onPressed: (){
+      // // runMutation({
+      // // "eventId":widget.post.id
+      // // });
+      // // },
+      // // child: const Text('Delete',
+      // // style: TextStyle(
+      // // color: Colors.white,
+      // // fontSize: 14,
+      // // fontWeight: FontWeight.w500,
+      // // ),)
+      // // ),
+      // // );
+      // // }
+      // // ),
+      // // ],
+      // // ),
+      //                             ],
+      //                           ),
+      //                         ]
+      //                     ),
+      //                   ),
+      //                 )
+      //             ),
+                  child: cards(context, toggleStarEvent, toggleLike, likeCount, refetch, refetch, isStared, tags, '', noUse, '', values.title,values.description,null,values.linkToAction,values.likeCount,null,values.id,null,values.linkName, '', '',values.location,values.imgUrl,values.time,isLiked,null, 'Event','HomePage'),
                 ),
                 builder: (_, collapsed, expanded) =>
                     Expandable(
@@ -481,6 +465,7 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
   String getMeHome = homeQuery().getMeHome;
   String getNetop = netopsQuery().getNetop;
   late bool isStared;
+  TextEditingController noUse = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -509,6 +494,8 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     }
     isStared = result.data!["getNetop"]["isStared"];
     likeCount = result.data!["getNetop"]["likeCount"];
+    isLiked = result.data!["getNetop"]["isLiked"];
+    var values = widget.netops;
     return ExpandableNotifier(
       child: ScrollOnExpand(
         child: ExpandablePanel(
@@ -530,363 +517,345 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
 
             collapsed: Padding(
               padding: const EdgeInsets.fromLTRB(2, 2, 2, 3),
-              child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  elevation: 5.0,
-                  color: const Color(0xFF808CFF),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //Title & Star
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  //Title
-                                  SizedBox(
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.5,
-                                    child: Text(
-                                      widget.netops.title,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-
-                                  Mutation(
-                                      options:MutationOptions(
-                                          document: gql(toggleStarNetop)
-                                      ),
-                                      builder: (
-                                          RunMutation runMutation,
-                                          QueryResult? result,
-                                          ){
-                                        if (result!.hasException){
-                                          print(result.exception.toString());
-                                        }
-                                        return IconButton(
-                                          onPressed: (){
-                                            runMutation({
-                                              "toggleStarNetopId":widget.netops.id
-                                            });
-                                            refetch!();
-                                          },
-                                          icon: isStared? const Icon(Icons.star): const Icon(Icons.star_border),
-                                          color: isStared? Colors.amber:Colors.white,
-                                        );
-                                      }
-                                  ),
-                                ],
-                              ),
-
-                              //Images
-                              if(widget.netops.imgUrl==null)
-                                Text(
-                                  widget.netops.description.length > 250
-                                      ? widget.netops.description.substring(
-                                      0, 250) + '...'
-                                      : widget.netops.description,
-                                  style: const TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                                ),
-                              if(widget.netops.imgUrl !=null)
-                                SizedBox(
-                                    width: 400.0,
-                                    child: Image.network(
-                                        widget.netops.imgUrl!,
-                                        height: 150.0)
-                                ),
-
-                              //Rows for Tags, Icons
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 12, 5),
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        //Tags
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                          child: SizedBox(
-                                            width: 200.0,
-                                            height: 20.0,
-                                            child: ListView(
-                                              scrollDirection: Axis.horizontal,
-                                              children: tags.map((tag) =>
-                                                  SizedBox(
-                                                    height: 25.0,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-                                                      child: ElevatedButton(
-                                                        onPressed: () => {},
-                                                        style: ElevatedButton.styleFrom(
-                                                          primary: const Color(0xFFFFFFFF),
-                                                          padding: const EdgeInsets.symmetric(
-                                                              vertical: 2,
-                                                              horizontal: 6),
-                                                        ),
-                                                        child: Text(
-                                                          tag.Tag_name,
-                                                          style: const TextStyle(
-                                                            color: Color(0xFF021096),
-                                                            fontSize: 12.5,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),),
-                                                    ),
-                                                  )).toList(),
-                                            ),
-                                          ),
-                                        ),
-
-                                        //Icons
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                                          child: Row(
-                                            children: [
-                                              //Share Icon
-                                              Ink(
-                                                decoration: const ShapeDecoration(
-                                                    color: Color(0xFFFFFFFF),
-                                                    shape: CircleBorder(
-                                                      side: BorderSide.none,
-                                                    )
-                                                ),
-                                                height: 36,
-                                                width: 36,
-                                                child: Center(
-                                                  child: IconButton(onPressed: () =>
-                                                  {
-                                                    print('shared')
-                                                  }, icon: const Icon(Icons.share),
-                                                    iconSize: 20,
-                                                    color:const Color(0xFF021096),),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 5,),
-
-                                              //Reminder
-                                              Ink(
-                                                decoration: const ShapeDecoration(
-                                                    color: Colors.white,
-                                                    shape: CircleBorder(
-                                                      side: BorderSide.none,
-                                                    )
-                                                ),
-                                                height: 36,
-                                                width: 36,
-                                                child: Center(
-                                                  child: IconButton(onPressed: () =>
-                                                  {
-                                                    print('remainder added')
-                                                  },
-                                                    icon: const Icon(Icons.access_alarm),
-                                                    iconSize: 20,
-                                                    color: const Color(0xFF021096),),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 5,),
-
-                                              Mutation(
-                                                  options:MutationOptions(
-                                                      document: gql(toggleLike)
-                                                  ),
-                                                  builder: (
-                                                      RunMutation runMutation,
-                                                      QueryResult? result,
-                                                      ){
-                                                    if (result!.hasException){
-                                                      print(result.exception.toString());
-                                                    }
-                                                    return Ink(
-                                                      decoration: const ShapeDecoration(
-                                                          color: Color(0xFFFFFFFF),
-                                                          shape: CircleBorder(
-                                                            side: BorderSide.none,
-                                                          )
-                                                      ),
-                                                      height: 36,
-                                                      width: 36,
-                                                      child: Center(
-                                                        child: IconButton(onPressed: () =>
-                                                        {
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    Comments(post: widget
-                                                                        .netops,)),
-                                                          ),
-                                                          print('commented'),
-                                                        }, icon: const Icon(Icons.comment),
-                                                          iconSize: 20,
-                                                          color: const Color(0xFF021096),),
-                                                      ),
-                                                    );
-                                                  }
-                                              ),
-                                              const SizedBox(width: 5,),
-
-                                              Mutation(
-                                                  options:MutationOptions(
-                                                      document: gql(toggleLike)
-                                                  ),
-                                                  builder: (
-                                                      RunMutation runMutation,
-                                                      QueryResult? result,
-                                                      ){
-                                                    if (result!.hasException){
-                                                      print(result.exception.toString());
-                                                    }
-                                                    return Ink(
-                                                      decoration: const ShapeDecoration(
-                                                          color: Color(0xFFFFFFFF),
-                                                          shape: CircleBorder(
-                                                            side: BorderSide.none,
-                                                          )
-                                                      ),
-                                                      height: 36,
-                                                      width: 36,
-                                                      child: Center(
-                                                        child: IconButton(
-                                                          onPressed: () =>
-                                                          {
-                                                            print('remainder added')
-                                                          },
-                                                          icon: const Icon(Icons.thumb_up),
-                                                          iconSize: 20,
-                                                          color: const Color(0xFF021096),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                              ),
-
-                                              Container(
-                                                margin: const EdgeInsets.only(left: 10.0),
-                                                child: Text(
-                                                  "$likeCount likes",
-                                                  style: const TextStyle(
-                                                    color: Color(0xFFFFFFFF),
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16.0,
-                                                  ),
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                        ),
-
-                                        //Button Row
-                                        // Row(
-                                        //   children: [
-                                        //     if(userId==createdId)
-                                        //       SizedBox(
-                                        //         width: 60,
-                                        //         child: ElevatedButton(
-                                        //           style: ElevatedButton.styleFrom(
-                                        //             primary: Color(0xFF021096),
-                                        //             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                        //             minimumSize: Size(35,25),
-                                        //           ),
-                                        //           child: Text('Edit',
-                                        //             style: TextStyle(
-                                        //               color: Colors.white,
-                                        //               fontSize: 14,
-                                        //               fontWeight: FontWeight.bold,
-                                        //             ),),
-                                        //           onPressed: (){
-                                        //             Navigator.of(context).push(
-                                        //                 MaterialPageRoute(
-                                        //                     builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
-                                        //           },
-                                        //         ),
-                                        //       ),
-                                        //     SizedBox(width: 8,),
-                                        //
-                                        //     if(userId==createdId)
-                                        //       Mutation(
-                                        //           options: MutationOptions(
-                                        //               document: gql(deleteNetop)
-                                        //           ),
-                                        //           builder:(
-                                        //               RunMutation runMutation,
-                                        //               QueryResult? result,
-                                        //               ){
-                                        //             if (result!.hasException){
-                                        //               print(result.exception.toString());
-                                        //             }
-                                        //             if(result.isLoading){
-                                        //               return CircularProgressIndicator();
-                                        //             }
-                                        //             return SizedBox(
-                                        //               width: 65,
-                                        //               child: ElevatedButton(
-                                        //                   style: ElevatedButton.styleFrom(
-                                        //                     primary: Color(0xFF021096),
-                                        //                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                        //                     minimumSize: Size(35,25),
-                                        //                   ),
-                                        //                   onPressed: (){
-                                        //                     runMutation({
-                                        //                       "eventId":widget.post.id
-                                        //                     });
-                                        //                   },
-                                        //                   child: Text('Delete',
-                                        //                     style: TextStyle(
-                                        //                       color: Colors.white,
-                                        //                       fontSize: 14,
-                                        //                       fontWeight: FontWeight.w500,
-                                        //                     ),)
-                                        //               ),
-                                        //             );
-                                        //           }
-                                        //       ),
-                                        //     SizedBox(width: 8,),
-                                        //
-                                        //     SizedBox(
-                                        //       child: ElevatedButton(
-                                        //         child: Text('Report',
-                                        //           style: TextStyle(
-                                        //             color: Colors.white,
-                                        //             fontSize: 14,
-                                        //             fontWeight: FontWeight.w500,
-                                        //           ),),
-                                        //         style: ElevatedButton.styleFrom(
-                                        //           primary: Color(0xFF021096),
-                                        //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                        //           minimumSize: Size(35,25),
-                                        //         ),
-                                        //         onPressed: (){
-                                        //           return showAlertDialog(context);
-                                        //         },
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ]
-                    ),
-                  )
+              // child: Card(
+              //     clipBehavior: Clip.antiAlias,
+              //     elevation: 5.0,
+              //     color: const Color(0xFF808CFF),
+              //     child: Padding(
+              //       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
+              //       child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.stretch,
+              //           children: [
+              //             Column(
+              //               crossAxisAlignment: CrossAxisAlignment.start,
+              //               children: [
+              //                 //Title & Star
+              //                 Row(
+              //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                   children: [
+              //                     //Title
+              //                     SizedBox(
+              //                       width: MediaQuery
+              //                           .of(context)
+              //                           .size
+              //                           .width * 0.5,
+              //                       child: SubHeading(widget.netops.title)
+              //                     ),
+              //
+              //                     Mutation(
+              //                         options:MutationOptions(
+              //                             document: gql(toggleStarNetop)
+              //                         ),
+              //                         builder: (
+              //                             RunMutation runMutation,
+              //                             QueryResult? result,
+              //                             ){
+              //                           if (result!.hasException){
+              //                             print(result.exception.toString());
+              //                           }
+              //                           return IconButton(
+              //                             onPressed: (){
+              //                               runMutation({
+              //                                 "toggleStarNetopId":widget.netops.id
+              //                               });
+              //                               refetch!();
+              //                             },
+              //                             icon: isStared? const Icon(Icons.star): const Icon(Icons.star_border),
+              //                             color: isStared? Colors.amber:Colors.white,
+              //                           );
+              //                         }
+              //                     ),
+              //                   ],
+              //                 ),
+              //
+              //                 //Images
+              //                 if(widget.netops.imgUrl==null)
+              //                   Text(
+              //                     widget.netops.description.length > 250
+              //                         ? widget.netops.description.substring(
+              //                         0, 250) + '...'
+              //                         : widget.netops.description,
+              //                     style: const TextStyle(
+              //                       fontSize: 15.0,
+              //                     ),
+              //                   ),
+              //                 if(widget.netops.imgUrl !=null)
+              //                   SizedBox(
+              //                       width: 400.0,
+              //                       child: Image.network(
+              //                           widget.netops.imgUrl!,
+              //                           height: 150.0)
+              //                   ),
+              //
+              //                 //Rows for Tags, Icons
+              //                 Padding(
+              //                   padding: const EdgeInsets.fromLTRB(0, 5, 12, 5),
+              //                   child: Row(
+              //                     children: [
+              //                       Column(
+              //                         crossAxisAlignment: CrossAxisAlignment.start,
+              //                         children: [
+              //                           //Tags
+              //                           Padding(
+              //                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              //                             child: SizedBox(
+              //                               width: 200.0,
+              //                               height: 20.0,
+              //                               child: ListView(
+              //                                 scrollDirection: Axis.horizontal,
+              //                                 children: tags.map((tag) =>
+              //                                     SizedBox(
+              //                                       height: 25.0,
+              //                                       child: Padding(
+              //                                         padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
+              //                                         child: TagButtons(tag, context)
+              //                                       ),
+              //                                     )).toList(),
+              //                               ),
+              //                             ),
+              //                           ),
+              //
+              //                           //Icons
+              //                           Padding(
+              //                             padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+              //                             child: Row(
+              //                               children: [
+              //                                 //Share Icon
+              //                                 Ink(
+              //                                   decoration: const ShapeDecoration(
+              //                                       color: Color(0xFFFFFFFF),
+              //                                       shape: CircleBorder(
+              //                                         side: BorderSide.none,
+              //                                       )
+              //                                   ),
+              //                                   height: 36,
+              //                                   width: 36,
+              //                                   child: Center(
+              //                                     child: IconButton(onPressed: () =>
+              //                                     {
+              //                                       print('shared')
+              //                                     }, icon: const Icon(Icons.share),
+              //                                       iconSize: 20,
+              //                                       color:const Color(0xFF021096),),
+              //                                   ),
+              //                                 ),
+              //                                 const SizedBox(width: 5,),
+              //
+              //                                 //Reminder
+              //                                 Ink(
+              //                                   decoration: const ShapeDecoration(
+              //                                       color: Colors.white,
+              //                                       shape: CircleBorder(
+              //                                         side: BorderSide.none,
+              //                                       )
+              //                                   ),
+              //                                   height: 36,
+              //                                   width: 36,
+              //                                   child: Center(
+              //                                     child: IconButton(onPressed: () =>
+              //                                     {
+              //                                       print('remainder added')
+              //                                     },
+              //                                       icon: const Icon(Icons.access_alarm),
+              //                                       iconSize: 20,
+              //                                       color: const Color(0xFF021096),),
+              //                                   ),
+              //                                 ),
+              //                                 const SizedBox(width: 5,),
+              //
+              //                                 Mutation(
+              //                                     options:MutationOptions(
+              //                                         document: gql(toggleLike)
+              //                                     ),
+              //                                     builder: (
+              //                                         RunMutation runMutation,
+              //                                         QueryResult? result,
+              //                                         ){
+              //                                       if (result!.hasException){
+              //                                         print(result.exception.toString());
+              //                                       }
+              //                                       return Ink(
+              //                                         decoration: const ShapeDecoration(
+              //                                             color: Color(0xFFFFFFFF),
+              //                                             shape: CircleBorder(
+              //                                               side: BorderSide.none,
+              //                                             )
+              //                                         ),
+              //                                         height: 36,
+              //                                         width: 36,
+              //                                         child: Center(
+              //                                           child: IconButton(onPressed: () =>
+              //                                           {
+              //                                             Navigator.push(
+              //                                               context,
+              //                                               MaterialPageRoute(
+              //                                                   builder: (context) =>
+              //                                                       Comments(post: widget
+              //                                                           .netops,)),
+              //                                             ),
+              //                                             print('commented'),
+              //                                           }, icon: const Icon(Icons.comment),
+              //                                             iconSize: 20,
+              //                                             color: const Color(0xFF021096),),
+              //                                         ),
+              //                                       );
+              //                                     }
+              //                                 ),
+              //                                 const SizedBox(width: 5,),
+              //
+              //                                 Mutation(
+              //                                     options:MutationOptions(
+              //                                         document: gql(toggleLike)
+              //                                     ),
+              //                                     builder: (
+              //                                         RunMutation runMutation,
+              //                                         QueryResult? result,
+              //                                         ){
+              //                                       if (result!.hasException){
+              //                                         print(result.exception.toString());
+              //                                       }
+              //                                       return Ink(
+              //                                         decoration: const ShapeDecoration(
+              //                                             color: Color(0xFFFFFFFF),
+              //                                             shape: CircleBorder(
+              //                                               side: BorderSide.none,
+              //                                             )
+              //                                         ),
+              //                                         height: 36,
+              //                                         width: 36,
+              //                                         child: Center(
+              //                                           child: IconButton(
+              //                                             onPressed: () =>
+              //                                             {
+              //                                               print('remainder added')
+              //                                             },
+              //                                             icon: const Icon(Icons.thumb_up),
+              //                                             iconSize: 20,
+              //                                             color: const Color(0xFF021096),
+              //                                           ),
+              //                                         ),
+              //                                       );
+              //                                     }
+              //                                 ),
+              //
+              //                                 Container(
+              //                                   margin: const EdgeInsets.only(left: 10.0),
+              //                                   child: Text(
+              //                                     "$likeCount likes",
+              //                                     style: const TextStyle(
+              //                                       color: Color(0xFFFFFFFF),
+              //                                       fontWeight: FontWeight.bold,
+              //                                       fontSize: 16.0,
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //
+              //                               ],
+              //                             ),
+              //                           ),
+              //
+              //                           //Button Row
+              //                           // Row(
+              //                           //   children: [
+              //                           //     if(userId==createdId)
+              //                           //       SizedBox(
+              //                           //         width: 60,
+              //                           //         child: ElevatedButton(
+              //                           //           style: ElevatedButton.styleFrom(
+              //                           //             primary: Color(0xFF021096),
+              //                           //             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              //                           //             minimumSize: Size(35,25),
+              //                           //           ),
+              //                           //           child: Text('Edit',
+              //                           //             style: TextStyle(
+              //                           //               color: Colors.white,
+              //                           //               fontSize: 14,
+              //                           //               fontWeight: FontWeight.bold,
+              //                           //             ),),
+              //                           //           onPressed: (){
+              //                           //             Navigator.of(context).push(
+              //                           //                 MaterialPageRoute(
+              //                           //                     builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
+              //                           //           },
+              //                           //         ),
+              //                           //       ),
+              //                           //     SizedBox(width: 8,),
+              //                           //
+              //                           //     if(userId==createdId)
+              //                           //       Mutation(
+              //                           //           options: MutationOptions(
+              //                           //               document: gql(deleteNetop)
+              //                           //           ),
+              //                           //           builder:(
+              //                           //               RunMutation runMutation,
+              //                           //               QueryResult? result,
+              //                           //               ){
+              //                           //             if (result!.hasException){
+              //                           //               print(result.exception.toString());
+              //                           //             }
+              //                           //             if(result.isLoading){
+              //                           //               return CircularProgressIndicator();
+              //                           //             }
+              //                           //             return SizedBox(
+              //                           //               width: 65,
+              //                           //               child: ElevatedButton(
+              //                           //                   style: ElevatedButton.styleFrom(
+              //                           //                     primary: Color(0xFF021096),
+              //                           //                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              //                           //                     minimumSize: Size(35,25),
+              //                           //                   ),
+              //                           //                   onPressed: (){
+              //                           //                     runMutation({
+              //                           //                       "eventId":widget.post.id
+              //                           //                     });
+              //                           //                   },
+              //                           //                   child: Text('Delete',
+              //                           //                     style: TextStyle(
+              //                           //                       color: Colors.white,
+              //                           //                       fontSize: 14,
+              //                           //                       fontWeight: FontWeight.w500,
+              //                           //                     ),)
+              //                           //               ),
+              //                           //             );
+              //                           //           }
+              //                           //       ),
+              //                           //     SizedBox(width: 8,),
+              //                           //
+              //                           //     SizedBox(
+              //                           //       child: ElevatedButton(
+              //                           //         child: Text('Report',
+              //                           //           style: TextStyle(
+              //                           //             color: Colors.white,
+              //                           //             fontSize: 14,
+              //                           //             fontWeight: FontWeight.w500,
+              //                           //           ),),
+              //                           //         style: ElevatedButton.styleFrom(
+              //                           //           primary: Color(0xFF021096),
+              //                           //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              //                           //           minimumSize: Size(35,25),
+              //                           //         ),
+              //                           //         onPressed: (){
+              //                           //           return showAlertDialog(context);
+              //                           //         },
+              //                           //       ),
+              //                           //     ),
+              //                           //   ],
+              //                           // )
+              //                         ],
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ),
+              //
+              //               ],
+              //             ),
+              //           ]
+              //       ),
+              //     )
+              // ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
+                child: cards(context, toggleStarNetop, toggleLike, likeCount, refetch, refetch, isStared, tags, '', noUse, '', values.title,values.description,values.imgUrl,values.linkToAction,values.like_counter,values.endTime,values.id,values.attachment,values.linkName, '', '',null,null,'',isLiked,values, 'Netop','HomePage'),
               ),
             ),
             builder: (_, collapsed, expanded) =>
@@ -960,13 +929,7 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-                      child: Text(
-                        widget.announcements.title,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500),
-                      ),
+                      child: SubHeading(widget.announcements.title)
                     ),
                     if (images[0] != "")
                       ClipRect(

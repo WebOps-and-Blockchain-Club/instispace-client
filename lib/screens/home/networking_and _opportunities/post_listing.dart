@@ -1,11 +1,14 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/networking_and%20_opportunities/addpost.dart';
+import 'package:client/widgets/Filters.dart';
+import 'package:client/widgets/iconButtons.dart';
 import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/post.dart';
 import '../../../widgets/text.dart';
+import 'package:client/widgets/loading screens.dart';
 import 'post_card.dart';
 import '../../../models/tag.dart';
 import 'package:client/graphQL/netops.dart';
@@ -22,12 +25,12 @@ class _Post_ListingState extends State<Post_Listing> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String getNetops = netopsQuery().getNetops;
   String getTags = authQuery().getTags;
-  TextEditingController searchController = TextEditingController();
   String search = "";
   List<NetOpPost> posts = [];
   bool mostlikesvalue =false;
   bool isStarred =false;
-
+  bool display = false;
+  TextEditingController searchController = TextEditingController();
   Map<Tag,bool> filterSettings={};
   List<String>selectedFilterIds=[];
   int skip=0;
@@ -48,13 +51,19 @@ class _Post_ListingState extends State<Post_Listing> {
         }
         if(result.isLoading){
           return Scaffold(
-              appBar: AppBar(
-                title: const Text('All Posts'),
-                backgroundColor: Color(0xFF5451FD),
-              ),
               body: Center(
-                child: CircularProgressIndicator(),
-              )
+                child: Column(
+                  children: [
+                    PageTitle('Netops', context),
+                    Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (context, index) => NewCardSkeleton(),
+                            separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                            itemCount: 5)
+                    )
+                  ],
+                ),
+              ),
           );
         }
         var tagData = result.data!["getTags"];
@@ -84,13 +93,19 @@ class _Post_ListingState extends State<Post_Listing> {
               if(posts.isEmpty) {
                 if (result.isLoading) {
                   return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('All Posts'),
-                      backgroundColor: Color(0xFF5451FD),
-                    ),
                     body: Center(
-                        child: CircularProgressIndicator(),
-                  )
+                      child: Column(
+                        children: [
+                          PageTitle('Netops', context),
+                          Expanded(
+                              child: ListView.separated(
+                                  itemBuilder: (context, index) => NewCardSkeleton(),
+                                  separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                  itemCount: 5)
+                          )
+                        ],
+                      ),
+                    ),
                   );
                 }
               }
@@ -253,18 +268,38 @@ class _Post_ListingState extends State<Post_Listing> {
                 body: ListView(
                   controller: scrollController,
                   children: [
-                    PageTitle('All Netops'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Search(searchController: searchController, search: search, refetch: refetch),
-                        IconButton(onPressed: () =>
-                            _scaffoldKey.currentState?.openEndDrawer(),
-                          icon: Icon(Icons.filter_alt_outlined),
-                          color: Color(0xFF5451FD),
-                        ),
-                      ],
-                    ),
+                    PageTitle('Netops',context),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Expanded(
+                    //         flex: 6,
+                    //         child: TextFormField(
+                    //           controller: searchController,
+                    //           // onChanged: (String value){
+                    //           //   if(value.length>=3){
+                    //           //
+                    //           //   }
+                    //           // },
+                    //         ),
+                    //       ),
+                    //       IconButton(onPressed: (){
+                    //         setState(() {
+                    //           display = !display;
+                    //           search=searchController.text;
+                    //           // print("search String $search");
+                    //         });
+                    //         if(!display){
+                    //           refetch!();
+                    //         }
+                    //       }, icon: Icon(Icons.search_outlined)),
+                    //     ],
+                    //   ),
+                    // ),
+
+                    Search(search: search, refetch: refetch, ScaffoldKey: _scaffoldKey, page: 'Netops', widget: Filters(mostLikeValues: mostlikesvalue, isStarred: isStarred, selectedFilterIds: selectedFilterIds, filterSettings: filterSettings, refetch: refetch,page: 'Netops',),),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
                       child: Column(

@@ -1,9 +1,12 @@
 import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
 import 'package:client/screens/home/Queries/queryCard.dart';
+import 'package:client/widgets/Filters.dart';
+import 'package:client/widgets/search.dart';
+import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
+import 'package:client/widgets/loading screens.dart';
 import 'addQuery.dart';
 
 class QueryHome extends StatefulWidget {
@@ -25,21 +28,32 @@ class _QueryHomeState extends State<QueryHome> {
   TextEditingController searchController = TextEditingController();
   String search = "";
   ScrollController scrollController =ScrollController();
+  var ScaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
           document: gql(searchQueries),
-          variables: {"skip":skip,"take":take,"search":search}
+          variables: {"take":take,"lastEventId": "","search":search}
       ),
       builder: (QueryResult result, {fetchMore, refetch}){
         if (result.hasException) {
           print(result.exception.toString());
         }
         if (result.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: Colors.blue[700],
+          return Scaffold(
+            body: Center(
+              child: Column(
+                children: [
+                  PageTitle('Queries', context),
+                  Expanded(
+                      child: ListView.separated(
+                          itemBuilder: (context, index) => NewCardSkeleton(),
+                          separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                          itemCount: 5)
+                  )
+                ],
+              ),
             ),
           );
         }
@@ -50,7 +64,7 @@ class _QueryHomeState extends State<QueryHome> {
           posts.add(queryClass(id: data[i]["id"], title: data[i]["title"], likeCount: data[i]["likeCount"], content: data[i]["content"], createdByName: data[i]["createdBy"]["name"], createdByRoll: data[i]["createdBy"]["roll"], photo:data[i]["photo"]!=null?data[i]["photo"]:"",isLiked: data[i]["isLiked"],createdById: data[i]["createdBy"]["id"], ));
         }
         FetchMoreOptions opts =FetchMoreOptions(
-            variables: {"skip":skip+10,"take":take,"search":search},
+            variables: {"take":take,"lastEventId": posts.last.id,"search":search},
             updateQuery: (previousResultData,fetchMoreResultData){
               // print("previousResultData:$previousResultData");
               // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
@@ -77,74 +91,77 @@ class _QueryHomeState extends State<QueryHome> {
 
         //Page
         return Scaffold(
-          appBar: AppBar(
-            title: Text("Queries",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-              ),),
-            backgroundColor: Color(0xFF5451FD),
-            actions: [
-            Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if(display)
-                SizedBox(
-                    width: 80,
-                    height: 40,
-                    child: TextFormField(
-                      controller: searchController,
-                      // onChanged: (String value){
-                      //   if(value.length>=3){
-                      //
-                      //   }
-                      // },
-                    )
-                ),
-              IconButton(onPressed: (){
-                setState(() {
-                  display = !display;
-                  search=searchController.text;
-                  // print("search String $search");
-                });
-                if(!display){
-                  refetch!();
-                }
-              }, icon: Icon(Icons.search_outlined)),
-            ],
-          ),
-              IconButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => AddQuery(refetchQuery: refetch,)));
-              }, icon: Icon(Icons.add,
-                size: 28,
-              )
-              ),
-            ],
-          ),
 
           //UI
+          floatingActionButton: FloatingActionButton(onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
+          },
+            child: Icon(Icons.add),
+            backgroundColor: Color(0xFF5451FD),
+          ),
           body:  SafeArea(
-                  child:Column(
-                      children:[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 15, 12, 10),
-                          child: SizedBox(
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.750,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.550,
-                            child: ListView(
-                              controller: scrollController,
-                              children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,)).toList(),
-                            ),
-                          ),
-                        )
-                      ]
+                  child:ListView(
+                    children: [ Column(
+                        children:[
+                          PageTitle('Queries', context),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Padding(
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Expanded(
+                              //         flex: 6,
+                              //         child: TextFormField(
+                              //           controller: searchController,
+                              //           // onChanged: (String value){
+                              //           //   if(value.length>=3){
+                              //           //
+                              //           //   }
+                              //           // },
+                              //         ),
+                              //       ),
+                              //       IconButton(onPressed: (){
+                              //         setState(() {
+                              //           display = !display;
+                              //           search=searchController.text;
+                              //           // print("search String $search");
+                              //         });
+                              //         if(!display){
+                              //           refetch!();
+                              //         }
+                              //       }, icon: Icon(Icons.search_outlined)),
+                              //     ],
+                              //   ),
+                              // ),
+
+                              Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'Queries', widget: Filters(filterSettings: {}, refetch: refetch, selectedFilterIds: [], isStarred: false, mostLikeValues: false,page: 'Queries',),),
+                              SizedBox(
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.750,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.550,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(10,8,10,10),
+                                  child: ListView(
+                                    controller: scrollController,
+                                    children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,)).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ]
+                    ),
+                    ]
                   )
               ),
         );

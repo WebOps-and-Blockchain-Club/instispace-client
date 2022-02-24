@@ -3,6 +3,7 @@ import 'package:client/graphQL/announcement_queries.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/home.dart';
+import 'package:client/widgets/NetOpCards.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
@@ -28,6 +29,7 @@ String getMe = homeQuery().getMe;
 String getAllAnnouncements = AnnouncementQueries().getAllAnnouncements;
 String deleteAnnouncement = AnnouncementMutations().deleteAnnouncement;
 
+TextEditingController noUse = TextEditingController();
 var role;
 late String Id;
 List<String> images = [];
@@ -217,6 +219,7 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                       ],
                     ),
                   ),
+                  // child: cards(context, '', '', 0, refetch, widget.refetchAnnouncement, false, [], deleteAnnouncement, noUse, '', widget.announcement.title, widget.announcement.description, widget.announcement.images, '', 0, widget.announcement.endTime, widget.announcement.id, '', '', Id, widget.announcement.createdByUserId, '', [], '', false, null, 'Announcement', 'AnnouncementHome'),
                 ),
                   builder: (_, collapsed, expanded) =>
                       Expandable(

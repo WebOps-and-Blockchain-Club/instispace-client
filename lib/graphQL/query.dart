@@ -1,9 +1,9 @@
 class Queries{
   String getMyQueries = """
-  query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean){
-  getMyQuerys(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes) {
+  query GetMyQuerys(\$lastEventId: String!, \$take: Float!, \$orderByLikes: Boolean) {
+  getMyQuerys(lastEventId: \$lastEventId, take: \$take, OrderByLikes: \$orderByLikes) {
     queryList {
-      id
+       id
       title
       photo
       content
@@ -60,10 +60,10 @@ class Queries{
 }
   """;
   String searchQuery ="""
-  query(\$skip: Float!, \$take: Float!, \$search: String!){
-  searchQueries(skip: \$skip, take: \$take, search: \$search) {
+  query SearchQueries(\$lastEventId: String!, \$take: Float!, \$search: String!, \$orderByLikes: Boolean) {
+  searchQueries(lastEventId: \$lastEventId, take: \$take, search: \$search, OrderByLikes: \$orderByLikes) {
     queryList {
-      id
+       id
       title
       photo
       content
@@ -77,7 +77,6 @@ class Queries{
     }
     total
   }
- 
 }
   """;
   String editQuery = """

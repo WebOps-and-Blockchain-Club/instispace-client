@@ -12,6 +12,8 @@ class Post {
   String time;
   int likeCount;
   List<Tag> tags;
+  bool isStarred;
+  bool isLiked;
 
   Post(
       {required this.title,
@@ -24,5 +26,7 @@ class Post {
       required this.tags,
       required this.likeCount,
       required this.createdById,
+      required this.isStarred,
+      required this.isLiked,
       required this.linkName});
 }

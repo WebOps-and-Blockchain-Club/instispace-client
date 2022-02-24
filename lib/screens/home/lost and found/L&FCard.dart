@@ -99,10 +99,11 @@ class LFCard extends StatelessWidget {
                             await Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (BuildContext context)=> EditLost(post: post,refetchPost: refetchPosts,)));
-                          if(post.category=="FOUND")
+                          if(post.category=="FOUND") {
                             await Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (BuildContext context)=> EditFound(post: post,refetchPost: refetchPosts,)));
+                          }
                           refetchPosts!();
                         },
                         icon:Icon(Icons.edit),

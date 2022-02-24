@@ -1,4 +1,5 @@
 
+import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/models/tag.dart';
@@ -7,7 +8,9 @@ import 'package:client/widgets/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../widgets/Filters.dart';
 import '../../widgets/text.dart';
+import 'package:client/widgets/loading screens.dart';
 import 'post.dart';
 import 'post_card.dart';
 
@@ -27,9 +30,12 @@ class _HomeState extends State<EventsHome> {
   List<String>selectedFilterIds=[];
   int skip=0;
   int take=10;
+  bool display = false;
+  TextEditingController searchController = TextEditingController();
   late int total;
   List<Post> posts =[];
   late String userRole;
+  String search = "";
 
   ScrollController scrollController =ScrollController();
   var ScaffoldKey = GlobalKey<ScaffoldState>();
@@ -47,18 +53,19 @@ class _HomeState extends State<EventsHome> {
         }
         if(result.isLoading){
           return Scaffold(
-              appBar: AppBar(
-                title: Text("All Events",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                backgroundColor: Color(0xFF5451FD),
-              ),
               body: Center(
-                child: CircularProgressIndicator(),
-              )
+                child: Column(
+                  children: [
+                    PageTitle('Events', context),
+                    Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (context, index) => NewCardSkeleton(),
+                            separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                            itemCount: 5)
+                    )
+                  ],
+                ),
+              ),
           );
         }
         var tagData = result.data!["getTags"];
@@ -83,13 +90,19 @@ class _HomeState extends State<EventsHome> {
               if(posts.isEmpty) {
                 if (result.isLoading) {
                   return Scaffold(
-                      appBar: AppBar(
-                        title: const Text('All Events'),
-                        backgroundColor: Color(0xFF5451FD),
-                      ),
                       body: Center(
-                        child: CircularProgressIndicator(),
-                      )
+                        child: Column(
+                          children: [
+                            PageTitle('Events', context),
+                            Expanded(
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) => NewCardSkeleton(),
+                                    separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                    itemCount: 5)
+                            )
+                          ],
+                        ),
+                      ),
                   );
                 }
               }
@@ -127,6 +140,8 @@ class _HomeState extends State<EventsHome> {
                   linkToAction:eventList[i]["linkToAction"],
                   imgUrl: imageUrls,
                   id:eventList[i]["id"],
+                  isLiked: eventList[i]["isLiked"],
+                  isStarred: eventList[i]["isStared"],
                 )
                 );
               };
@@ -162,19 +177,38 @@ class _HomeState extends State<EventsHome> {
                   child: ListView(
                     controller: scrollController,
                     children: [
-                      PageTitle('All Events'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Search(),
-                          IconButton(onPressed: () {
-                            ScaffoldKey.currentState?.openEndDrawer();
-                            },
-                            icon: Icon(Icons.filter_alt_outlined),
-                            color: Color(0xFF5451FD),
-                          ),
-                        ],
-                      ),
+                      PageTitle('Events',context),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Expanded(
+                      //         flex: 6,
+                      //         child: TextFormField(
+                      //           controller: searchController,
+                      //           // onChanged: (String value){
+                      //           //   if(value.length>=3){
+                      //           //
+                      //           //   }
+                      //           // },
+                      //         ),
+                      //       ),
+                      //       IconButton(onPressed: (){
+                      //         setState(() {
+                      //           display = !display;
+                      //           search=searchController.text;
+                      //           // print("search String $search");
+                      //         });
+                      //         if(!display){
+                      //           refetch!();
+                      //         }
+                      //       }, icon: Icon(Icons.search_outlined)),
+                      //     ],
+                      //   ),
+                      // ),
+
+                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'Events' ,widget: Filters(refetch: refetch, mostLikeValues: mostlikesvalue, isStarred: isStarred, filterSettings: filterSettings, selectedFilterIds: selectedFilterIds,page: 'Events',)),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                         child: Column(children: posts

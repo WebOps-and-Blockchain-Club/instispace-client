@@ -1,8 +1,11 @@
 import 'package:client/graphQL/home.dart';
+import 'package:client/widgets/headings.dart';
+import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../graphQL/hostelProfile.dart';
 import '../homeCards.dart';
+import 'package:client/widgets/loading screens.dart';
 
 class Hostelcontacts extends StatefulWidget {
   const Hostelcontacts({Key? key}) : super(key: key);
@@ -31,9 +34,19 @@ class _HostelcontactsState extends State<Hostelcontacts> {
         print(result.exception.toString());
       }
       if (result.isLoading) {
-        return Center(
-          child: CircularProgressIndicator(
-            color: Colors.blue[700],
+        return Scaffold(
+          body: Center(
+            child: Column(
+              children: [
+                PageTitle('Contacts', context),
+                Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) => NewCardSkeleton(),
+                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                        itemCount: 5)
+                )
+              ],
+            ),
           ),
         );
       }
@@ -88,24 +101,18 @@ class _HostelcontactsState extends State<Hostelcontacts> {
       return Scaffold(
         body: ListView(
           shrinkWrap: true,
-          children: [Padding(
+          children: [
+            PageTitle('Contacts', context),
+            Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                //HOSTEL CONTACTS
-                const Center(
+                Center(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Text(
-                      "HOSTEL CONTACTS",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22,
-                        color: Color(0xFF5050ED),
-                      ),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Heading("Hostel Contacts")
                   ),
                 ),
 
@@ -128,17 +135,10 @@ class _HostelcontactsState extends State<Hostelcontacts> {
 
                 //EMERGENCY CONTACTS
 
-                const Center(
+                Center(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Text(
-                      "EMERGENCY CONTACTS",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 22,
-                        color: Color(0xFF5050ED),
-                      ),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Heading("Emergency Contacts")
                   ),
                 ),
 

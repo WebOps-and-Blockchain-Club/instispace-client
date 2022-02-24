@@ -7,8 +7,8 @@ import 'package:client/screens/home/Announcements/add_announcements.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
-
 import '../../../widgets/text.dart';
+import 'package:client/widgets/loading screens.dart';
 
 class Announcements extends StatefulWidget {
   const Announcements({Key? key}) : super(key: key);
@@ -34,6 +34,7 @@ class _AnnouncementsState extends State<Announcements> {
   ScrollController scrollController = ScrollController();
   late int total;
   late var createdAt;
+  String search = "";
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +45,17 @@ class _AnnouncementsState extends State<Announcements> {
         builder: (QueryResult result, {fetchMore, refetch}) {
           if (result.isLoading) {
             return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  "Announcements",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                elevation: 0.0,
-                automaticallyImplyLeading: false,
-                backgroundColor: const Color(0xFF5451FD),
-              ),
-
               body: Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFFD0DDFA),
+                child: Column(
+                  children: [
+                    PageTitle('Announcements', context),
+                    Expanded(
+                        child: ListView.separated(
+                            itemBuilder: (context, index) => NewCardSkeleton(),
+                            separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                            itemCount: 5)
+                    )
+                  ],
                 ),
               ),
             );
@@ -73,25 +68,21 @@ class _AnnouncementsState extends State<Announcements> {
             return Query(
                 options: QueryOptions(
                     document: gql(getAllAnnouncements),
-                    variables: {"skip": skip, "take": take}),
+                    variables: {"take": take,"lastAnnouncementId":"","search": ""}),
                 builder: (QueryResult result, {fetchMore, refetch}) {
                   if (announcements.isEmpty && result.isLoading) {
                     return Scaffold(
-                      appBar: AppBar(
-                        title: Text(
-                          "Announcements",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        elevation: 0.0,
-                        automaticallyImplyLeading: false,
-                        backgroundColor: Color(0xFF5451FD),
-                      ),
                       body: Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFFD0DDFA),
+                        child: Column(
+                          children: [
+                            PageTitle('Announcements', context),
+                            Expanded(
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) => NewCardSkeleton(),
+                                    separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                    itemCount: 5)
+                            )
+                          ],
                         ),
                       ),
                     );
@@ -141,8 +132,9 @@ class _AnnouncementsState extends State<Announcements> {
                   total = result.data!["getAllAnnouncements"]["total"];
                   FetchMoreOptions opts = FetchMoreOptions(
                       variables: {
-                        "skip": skip + 10,
+                        "lastAnnouncementId": announcements.last.id,
                         "take": take,
+                        "search": search,
                       },
                       updateQuery: (previousResultData, fetchMoreResultData) {
                         // print("previousResultData:$previousResultData");
@@ -229,8 +221,9 @@ class _AnnouncementsState extends State<Announcements> {
                     document: gql(getAnnouncements),
                     variables: {
                       "hostelId": userHostelID,
-                      "skip": skip,
-                      "take": take
+                      "lastAnnouncementId": "",
+                      "take": take,
+                      "search": search,
                     }),
                 builder: (QueryResult result, {fetchMore, refetch}) {
                   if (result.hasException) {
@@ -238,20 +231,28 @@ class _AnnouncementsState extends State<Announcements> {
                   }
                   if (announcements.isEmpty && result.isLoading) {
                     return Scaffold(
-                      appBar: AppBar(
-                        title: Text(
-                          "$userHostelName Hostel",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        elevation: 0.0,
-                        backgroundColor: const Color(0xFF5451FD),
-                      ),
+                      // appBar: AppBar(
+                      //   title: Text(
+                      //     "$userHostelName Hostel",
+                      //     style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 20.0,
+                      //         fontWeight: FontWeight.bold),
+                      //   ),
+                      //   elevation: 0.0,
+                      //   backgroundColor: const Color(0xFF5451FD),
+                      // ),
                       body: Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.blue[700],
+                        child: Column(
+                          children: [
+                            PageTitle('Announcements', context),
+                            Expanded(
+                                child: ListView.separated(
+                                    itemBuilder: (context, index) => NewCardSkeleton(),
+                                    separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                    itemCount: 5)
+                            )
+                          ],
                         ),
                       ),
                     );
@@ -292,8 +293,10 @@ class _AnnouncementsState extends State<Announcements> {
                   total = result.data!["getAnnouncements"]["total"];
                   FetchMoreOptions opts = FetchMoreOptions(
                       variables: {
-                        "skip": skip + 10,
+                        "lastAnnouncementId": announcements.last.id,
+                        "hostelId": userHostelID,
                         "take": take,
+                        "search": search,
                       },
                       updateQuery: (previousResultData, fetchMoreResultData) {
                         // print("previousResultData:$previousResultData");
@@ -322,26 +325,26 @@ class _AnnouncementsState extends State<Announcements> {
                   return Scaffold(
                     key: ScaffoldKey,
                     body: Container(
-                        child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
-                      child: ListView(controller: scrollController, children: [
-                        PageTitle('Announcements'),
-                        Column(
-                          children: announcements
-                              .map((post) => AnnouncementCard(
-                                    announcement: post,
-                                    refetchAnnouncement: refetch,
-                                  ))
-                              .toList(),
-                        ),
-                        if (result.isLoading)
-                          Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xFFDEDDFF),
+                        child: ListView(controller: scrollController, children: [
+                          PageTitle('Announcements',context),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
+                            child: Column(
+                              children: announcements
+                                  .map((post) => AnnouncementCard(
+                                        announcement: post,
+                                        refetchAnnouncement: refetch,
+                                      ))
+                                  .toList(),
                             ),
                           ),
-                      ]),
-                    )),
+                          if (result.isLoading)
+                            Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFFDEDDFF),
+                              ),
+                            ),
+                        ])),
                   );
                 });
           }

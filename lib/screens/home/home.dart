@@ -1,3 +1,4 @@
+import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/home.dart';
@@ -15,12 +16,13 @@ import 'package:client/screens/home/feedback_type_pages/feedback.dart';
 import 'package:client/screens/home/homeCards.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
+import 'package:client/widgets/iconButtons.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
-import 'package:client/screens/home/lost and found/home.dart';
+import 'package:client/widgets/loading screens.dart';
 import 'package:client/screens/home/networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -69,9 +71,14 @@ class _HomePageState extends State<HomePage> {
             print(result.exception.toString());
           }
           if (result.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue[700],
+            return Scaffold(
+              body: Center(
+                child: Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) => NewCardSkeleton(),
+                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                        itemCount: 5)
+                ),
               ),
             );
           }
@@ -152,9 +159,14 @@ class _HomePageState extends State<HomePage> {
                     print(result.exception.toString());
                   }
                   if (result.isLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.blue[700],
+                    return Scaffold(
+                      body: Center(
+                        child: Expanded(
+                            child: ListView.separated(
+                                itemBuilder: (context, index) => NewCardSkeleton(),
+                                separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                itemCount: 5)
+                        ),
                       ),
                     );
                   }
@@ -190,6 +202,8 @@ class _HomePageState extends State<HomePage> {
                       likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
                       time: result.data!["getMe"]["getHome"]["events"][i]["time"],
                       location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+                      isLiked: result.data!["getMe"]["getHome"]["events"][i]["isLiked"],
+                      isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
                       // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
                     ),
                           () => "event",
@@ -239,6 +253,8 @@ class _HomePageState extends State<HomePage> {
                         likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
                         time: result.data!["getMe"]["getHome"]["events"][i]["time"],
                         location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+                        isLiked: false,
+                        isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStarred"],
                         // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
                       ),
                             () => "event",
@@ -268,24 +284,26 @@ class _HomePageState extends State<HomePage> {
                   //User UI
                   return Scaffold(
                     key: _scaffoldKey,
-                    appBar: AppBar(
-                      title: Text(
-                        'Welcome ${userName.split(" ").first} !!',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
-                      ),
-                      elevation: 0.0,
-                      backgroundColor: Color(0xFF5451FD),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          bottom: Radius.circular(15.0),
-                        )
-                      ),
-                    ),
+                    // appBar: AppBar(
+                    //   title: Text(
+                    //     'Welcome ${userName.split(" ").first} !!',
+                    //     style: const TextStyle(
+                    //       fontWeight: FontWeight.bold,
+                    //       color: Colors.white
+                    //     ),
+                    //   ),
+                    //   elevation: 0.0,
+                    //   backgroundColor: Color(0xFF5451FD),
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.vertical(
+                    //       bottom: Radius.circular(15.0),
+                    //     )
+                    //   ),
+                    // ),
                     body: ListView(
-                      children: [Column(
+                      children: [
+                        PageTitle('Welcome ${userName.split(" ").first}!!', context),
+                        Column(
                         children: [
                           //Selectors
                           SizedBox(
@@ -300,7 +318,9 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        //All Selected
+                                        //Selected
+
+                                        if(isAll)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -317,9 +337,9 @@ class _HomePageState extends State<HomePage> {
                                               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                               minimumSize: Size(50, 35),
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20.0)
+                                                  borderRadius: BorderRadius.circular(20.0)
                                               ),
-                                                side: BorderSide(color: Color(0xFF6B7AFF)),
+                                              side: BorderSide(color: Color(0xFF6B7AFF)),
                                             ),
                                             child: Text("All",
                                               style: TextStyle(
@@ -332,6 +352,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
 
                                         //Announcements Selected
+
+                                        if(isAnnouncements)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -350,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(20.0)
                                                 ),
-                                              side: BorderSide(color: Color(0xFF6B7AFF))
+                                                side: BorderSide(color: Color(0xFF6B7AFF))
                                             ),
                                             child: Text("Announcements",
                                               style: TextStyle(
@@ -363,6 +385,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
 
                                         //Events Selected
+
+                                        if(isEvents)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -381,7 +405,7 @@ class _HomePageState extends State<HomePage> {
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(20.0)
                                                 ),
-                                              side: BorderSide(color: Color(0xFF6B7AFF))
+                                                side: BorderSide(color: Color(0xFF6B7AFF))
                                             ),
                                             child: Text("Events",
                                               style: TextStyle(
@@ -394,6 +418,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
 
                                         //Netop Selected
+
+                                        if(isNetops)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
                                           child: ElevatedButton(
@@ -412,7 +438,7 @@ class _HomePageState extends State<HomePage> {
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(20.0)
                                                 ),
-                                              side: BorderSide(color: Color(0xFF6B7AFF))
+                                                side: BorderSide(color: Color(0xFF6B7AFF))
                                             ),
                                             child: Text("Netops",
                                               style: TextStyle(
@@ -422,6 +448,13 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           ),
+                                        ),
+
+                                        IconButton(
+                                          onPressed: () {
+                                            showModalBottomSheet(context: context, builder: (BuildContext context) {return homeFilters();});
+                                          },
+                                          icon: Icon(Icons.filter_alt_outlined),
                                         ),
                                       ],
                                     ),
@@ -470,4 +503,284 @@ class _HomePageState extends State<HomePage> {
     return Container();
   }
 
+  Widget homeFilters () {
+    return ListView(
+      children: [Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isAnnouncements = false;
+                  isEvents = false;
+                  isNetops = false;
+                  isAll = true;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                primary: isAll? const Color(0xFF6B7AFF):Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                minimumSize: Size(50, 35),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)
+                ),
+                side: BorderSide(color: Color(0xFF6B7AFF)),
+              ),
+              child: Text("All",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isAll? Colors.white:Color(0xFF6B7AFF),
+                    fontSize: 15
+                ),
+              ),
+            ),
+          ),
+
+          //Announcements Selected
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isAnnouncements = !isAnnouncements;
+                  isEvents = false;
+                  isNetops = false;
+                  isAll = !isAll;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                  primary: isAnnouncements? const Color(0xFF6B7AFF):Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  minimumSize: Size(50, 35),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                  ),
+                  side: BorderSide(color: Color(0xFF6B7AFF))
+              ),
+              child: Text("Announcements",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isAnnouncements? Colors.white:Color(0xFF6B7AFF),
+                    fontSize: 15
+                ),
+              ),
+            ),
+          ),
+
+          //Events Selected
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isEvents = !isEvents;
+                  isAnnouncements =  false;
+                  isNetops = false;
+                  isAll = !isAll;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                  primary: isEvents? const Color(0xFF6B7AFF):Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  minimumSize: Size(50, 35),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                  ),
+                  side: BorderSide(color: Color(0xFF6B7AFF))
+              ),
+              child: Text("Events",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isEvents? Colors.white:Color(0xFF6B7AFF),
+                    fontSize: 15
+                ),
+              ),
+            ),
+          ),
+
+          //Netop Selected
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isNetops = !isNetops;
+                  isEvents = false;
+                  isAnnouncements = false;
+                  isAll = !isAll;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                  primary: isNetops? const Color(0xFF6B7AFF):Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  minimumSize: Size(50, 35),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                  ),
+                  side: BorderSide(color: Color(0xFF6B7AFF))
+              ),
+              child: Text("Netops",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isNetops? Colors.white:Color(0xFF6B7AFF),
+                    fontSize: 15
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ]
+    );
+  }
 }
+
+// class homeFilters extends StatefulWidget {
+//
+//   bool isAll;
+//   bool isAnnouncements;
+//   bool isEvents;
+//   bool isNetops;
+//   homeFilters({required this.isAll,required this.isAnnouncements,required this.isNetops, required this.isEvents});
+//   @override
+//   _homeFiltersState createState() => _homeFiltersState();
+// }
+//
+// class _homeFiltersState extends State<homeFilters> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 150,
+//       child: ListView(
+//             children: [Column(
+//               children: [
+//                 Padding(
+//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+//                   child: ElevatedButton(
+//                     onPressed: () {
+//                       setState(() {
+//                         widget.isAnnouncements = false;
+//                         widget.isEvents = false;
+//                         widget.isNetops = false;
+//                         widget.isAll = true;
+//                       });
+//                     },
+//                     style: ElevatedButton.styleFrom(
+//                       primary: widget.isAll? const Color(0xFF6B7AFF):Colors.white,
+//                       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//                       minimumSize: Size(50, 35),
+//                       shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(20.0)
+//                       ),
+//                       side: BorderSide(color: Color(0xFF6B7AFF)),
+//                     ),
+//                     child: Text("All",
+//                       style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           color: widget.isAll? Colors.white:Color(0xFF6B7AFF),
+//                           fontSize: 15
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//
+//                 //Announcements Selected
+//                 Padding(
+//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+//                   child: ElevatedButton(
+//                     onPressed: () {
+//                       setState(() {
+//                         widget.isAnnouncements = !widget.isAnnouncements;
+//                         widget.isEvents = false;
+//                         widget.isNetops = false;
+//                         widget.isAll = !widget.isAll;
+//                       });
+//                     },
+//                     style: ElevatedButton.styleFrom(
+//                         primary: widget.isAnnouncements? const Color(0xFF6B7AFF):Colors.white,
+//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//                         minimumSize: Size(50, 35),
+//                         shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20.0)
+//                         ),
+//                         side: BorderSide(color: Color(0xFF6B7AFF))
+//                     ),
+//                     child: Text("Announcements",
+//                       style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           color: widget.isAnnouncements? Colors.white:Color(0xFF6B7AFF),
+//                           fontSize: 15
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//
+//                 //Events Selected
+//                 Padding(
+//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+//                   child: ElevatedButton(
+//                     onPressed: () {
+//                       setState(() {
+//                         widget.isEvents = !widget.isEvents;
+//                         widget.isAnnouncements =  false;
+//                         widget.isNetops = false;
+//                         widget.isAll = !widget.isAll;
+//                       });
+//                     },
+//                     style: ElevatedButton.styleFrom(
+//                         primary: widget.isEvents? const Color(0xFF6B7AFF):Colors.white,
+//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//                         minimumSize: Size(50, 35),
+//                         shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20.0)
+//                         ),
+//                         side: BorderSide(color: Color(0xFF6B7AFF))
+//                     ),
+//                     child: Text("Events",
+//                       style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           color: widget.isEvents? Colors.white:Color(0xFF6B7AFF),
+//                           fontSize: 15
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//
+//                 //Netop Selected
+//                 Padding(
+//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
+//                   child: ElevatedButton(
+//                     onPressed: () {
+//                       setState(() {
+//                         widget.isNetops = !widget.isNetops;
+//                         widget.isEvents = false;
+//                         widget.isAnnouncements = false;
+//                         widget.isAll = !widget.isAll;
+//                       });
+//                     },
+//                     style: ElevatedButton.styleFrom(
+//                         primary: widget.isNetops? const Color(0xFF6B7AFF):Colors.white,
+//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//                         minimumSize: Size(50, 35),
+//                         shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(20.0)
+//                         ),
+//                         side: BorderSide(color: Color(0xFF6B7AFF))
+//                     ),
+//                     child: Text("Netops",
+//                       style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           color: widget.isNetops? Colors.white:Color(0xFF6B7AFF),
+//                           fontSize: 15
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             ]
+//         ),
+//     );
+//   }
+// }

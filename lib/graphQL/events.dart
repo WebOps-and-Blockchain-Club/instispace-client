@@ -14,13 +14,13 @@ class eventsQuery{
       likeCount
       isStared
       linkName
+      isLiked
       linkToAction
       tags {
         id
         title
         category
       }
-      isLiked
       createdBy {
         id
       }

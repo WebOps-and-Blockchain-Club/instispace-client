@@ -4,6 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../models/post.dart';
 import '../models/tag.dart';
+import '../widgets/loading screens.dart';
+import '../widgets/text.dart';
 import 'Events/post.dart';
 import 'home/homeCards.dart';
 
@@ -32,14 +34,20 @@ class _TagPageState extends State<TagPage> {
         return Text(result.exception.toString());
       }
       if (result.isLoading) {
-        return const Card(
-            clipBehavior: Clip.antiAlias,
-            elevation: 5.0,
-            color: Color(0xFFF9F6F2),
-            child: SizedBox(
-              height: 60,
-              width: 20,
-            )
+        return Scaffold(
+          body: Center(
+            child: Column(
+              children: [
+                PageTitle('Loading', context),
+                Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) => NewCardSkeleton(),
+                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                        itemCount: 5)
+                )
+              ],
+            ),
+          ),
         );
       }
 
@@ -68,6 +76,8 @@ class _TagPageState extends State<TagPage> {
           time: result.data!["getTag"]["events"][i]["time"],
           location: result.data!["getTag"]["events"][i]["location"],
           linkToAction: '',
+          isLiked: result.data!["getTag"]["events"][i]["isLiked"],
+          isStarred: result.data!["getTag"]["events"][i]["isStarred"],
           // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
         ),
               () => "event",
@@ -106,16 +116,18 @@ class _TagPageState extends State<TagPage> {
           elevation: 0.0,
           automaticallyImplyLeading: false,
         ),
-        body: SizedBox(
-          height: 500,
-          child: ListView(
-              children :[
-                Column(
-                  children: all.keys.map((e) => cardFunction(all[e],e)
-                  ).toList(),
-                )
-              ]
-          ),
+        body: ListView(
+          shrinkWrap: true,
+            children :[
+              Column(
+                children: all.keys.map((e) => cardFunction(all[e],e)
+                ).toList(),
+              ),
+              if(result.isLoading)
+                Center(
+                    child: CircularProgressIndicator(color: Colors.lightBlueAccent,)
+                ),
+            ]
         ),
       );
     }

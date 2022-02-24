@@ -1,6 +1,7 @@
 import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
 import 'package:client/screens/home/Queries/editPost.dart';
+import 'package:client/widgets/titles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,7 +59,7 @@ class _QueryCardState extends State<QueryCard> {
 
                   //Short Card
                   collapsed: Padding(
-                    padding: const EdgeInsets.fromLTRB(2, 3, 2, 3),
+                    padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
                     child: Card(
                       color: Color(0xFFDEDDFF),
                       child: Column(
@@ -68,13 +69,7 @@ class _QueryCardState extends State<QueryCard> {
                             padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
                             child: Row(
                               children: [
-                                Text(post.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0xFF000000),
-                                  ),
-                                ),
+                                SubHeading(post.title),
                               ],
                             ),
                           ),
@@ -246,13 +241,7 @@ class _singleQueryState extends State<singleQuery> {
                       padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
                       child: Row(
                         children: [
-                          Text(post.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Color(0xFF000000),
-                            ),
-                          ),
+                          SubHeading(post.title),
                         ],
                       ),
                     ),
