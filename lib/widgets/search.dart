@@ -34,7 +34,7 @@ class _SearchState extends State<Search> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50.0),
                       border: Border.all(
-                          color: Color(0xFF5451FD),
+                          color: Colors.grey,
                           width: 1,
                         )
                   ),
@@ -66,7 +66,7 @@ class _SearchState extends State<Search> {
             if(!display){
               widget.refetch!();
             }
-          }, icon: Icon(Icons.search_outlined),color: Color(0xFF5451FD),
+          }, icon: Icon(Icons.search_outlined),color: Color(0xFF42454D),
           ),
 
           if (widget.page != 'Queries')
@@ -79,7 +79,7 @@ class _SearchState extends State<Search> {
               return widget.widget;
             }   );
           },
-          icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF5451FD),),
+          icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF42454D),),
           ),
         ],
       ),

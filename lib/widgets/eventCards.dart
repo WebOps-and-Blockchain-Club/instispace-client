@@ -44,13 +44,15 @@ Widget EventsCard (
 
   return Card(
           clipBehavior: Clip.antiAlias,
-          elevation: 5.0,
-          color: const Color(0xFF808CFF),
+          elevation: 3,
+          borderOnForeground: true,
+          shadowColor: Colors.black54,
+          color: const Color(0xFFFFFFFF),
           child: SizedBox(
             height: MediaQuery
                 .of(context)
                 .size
-                .height * 0.3,
+                .height * 0.28,
             width: MediaQuery
                 .of(context)
                 .size

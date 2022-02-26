@@ -294,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                     //   ),
                     //   elevation: 0.0,
                     //   backgroundColor: Color(0xFF5451FD),
-                    backgroundColor: Colors.white,
+                    backgroundColor: Color(0xFFDFDFDF),
                     //   shape: RoundedRectangleBorder(
                     //     borderRadius: BorderRadius.vertical(
                     //       bottom: Radius.circular(15.0),
@@ -331,18 +331,18 @@ class _HomePageState extends State<HomePage> {
                                               });
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              primary: isAll? const Color(0xFF6B7AFF):Colors.white,
+                                              primary: isAll? const Color(0xFF42454D):Colors.white,
                                               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                               minimumSize: Size(50, 35),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(20.0)
                                               ),
-                                              side: BorderSide(color: Color(0xFF6B7AFF)),
+                                              side: BorderSide(color: Color(0xFF42454D)),
                                             ),
                                             child: Text("All",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: isAll? Colors.white:Color(0xFF6B7AFF),
+                                                  color: isAll? Colors.white:Color(0xFF42454D),
                                                   fontSize: 15
                                               ),
                                             ),
@@ -364,18 +364,18 @@ class _HomePageState extends State<HomePage> {
                                               });
                                             },
                                             style: ElevatedButton.styleFrom(
-                                                primary: isAnnouncements? const Color(0xFF6B7AFF):Colors.white,
+                                                primary: isAnnouncements? const Color(0xFF42454D):Colors.white,
                                                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                 minimumSize: Size(50, 35),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(20.0)
                                                 ),
-                                                side: BorderSide(color: Color(0xFF6B7AFF))
+                                                side: BorderSide(color: Color(0xFF42454D))
                                             ),
                                             child: Text("Announcements",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  color: isAnnouncements? Colors.white:Color(0xFF6B7AFF),
+                                                  color: isAnnouncements? Colors.white:Color(0xFF42454D),
                                                   fontSize: 15
                                               ),
                                             ),
@@ -397,13 +397,13 @@ class _HomePageState extends State<HomePage> {
                                               });
                                             },
                                             style: ElevatedButton.styleFrom(
-                                                primary: isEvents? const Color(0xFF6B7AFF):Colors.white,
+                                                primary: isEvents? const Color(0xFF42454D):Colors.white,
                                                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                 minimumSize: Size(50, 35),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.circular(20.0)
                                                 ),
-                                                side: BorderSide(color: Color(0xFF6B7AFF))
+                                                side: BorderSide(color: Color(0xFF42454D))
                                             ),
                                             child: Text("Events",
                                               style: TextStyle(
@@ -450,12 +450,14 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,0,0,12),
+                                    padding: const EdgeInsets.fromLTRB(0,0,0,8),
                                     child: IconButton(
                                       onPressed: () {
                                         showModalBottomSheet(context: context, builder: (BuildContext context) {return homeFilters();});
                                       },
-                                      icon: Icon(Icons.filter_alt_outlined,color: Color(0xFF6B7AFF),),
+                                      icon: Icon(Icons.filter_alt_outlined,color: Color(0xFF000000),
+                                        size: 22,
+                                      ),
                                     ),
                                   ),
 

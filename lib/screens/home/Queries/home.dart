@@ -99,8 +99,9 @@ class _QueryHomeState extends State<QueryHome> {
                     builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
           },
             child: Icon(Icons.add),
-            backgroundColor: Color(0xFF5451FD),
+            backgroundColor: Color(0xFFFF0000),
           ),
+          backgroundColor: Color(0xFFDFDFDF),
           body:  SafeArea(
                   child:ListView(
                     children: [ Column(

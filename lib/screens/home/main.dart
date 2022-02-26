@@ -66,8 +66,8 @@ class _mainHomeState extends State<mainHome> {
             //User UI
             return Scaffold(
               appBar: AppBar(
-                // backgroundColor: const Color(0xFF5451FD),
-                backgroundColor: Colors.white,
+                backgroundColor: const Color(0xFF2B2E35),
+                // backgroundColor: Colors.white,
                 title: Row(
                   children: const [
                     CircleAvatar(
@@ -76,7 +76,7 @@ class _mainHomeState extends State<mainHome> {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                      child: Text("InstiVerse",style: TextStyle(color: Colors.black),),
+                      child: Text("InstiVerse",style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
@@ -85,17 +85,17 @@ class _mainHomeState extends State<mainHome> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => const searchUser()));
                   },
-                      icon: const Icon(Icons.search_outlined,color: Colors.black,)),
+                      icon: const Icon(Icons.search_outlined,color: Colors.white,)),
                   IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.notifications,color: Colors.black,)
+                      icon: const Icon(Icons.notifications,color: Colors.white,)
                   ),
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => const HostelHome()));
                     },
-                    icon: const Icon(Icons.account_balance,color: Colors.black,),
+                    icon: const Icon(Icons.account_balance,color: Colors.white,),
                     iconSize: 22.0,
                   )
                 ],
@@ -120,7 +120,8 @@ class _mainHomeState extends State<mainHome> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                                  child: Text("InstiVerse", style: TextStyle(fontSize: 30.0),),
+                                  child: Text("InstiVerse", style: TextStyle(fontSize: 30.0,
+                                  color: Colors.black),),
                                 ),
                               ],
                             ),
@@ -188,39 +189,39 @@ class _mainHomeState extends State<mainHome> {
               ),
                     bottomNavigationBar: BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
-                      unselectedItemColor: Color(0xFF5451FD),
-                      backgroundColor: Colors.white,
+                      unselectedItemColor: Colors.grey,
+                      selectedItemColor: Color(0xFFFFFFFF),
+                      backgroundColor: Color(0xFF2B2E35),
                       currentIndex: _selectedIndex,
-                      items: const <BottomNavigationBarItem>[
 
+                      items: const <BottomNavigationBarItem>[
                         //L&F Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.local_grocery_store),
                           label: 'L&F',
-                          backgroundColor: Color(0xFF5451FD),
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.query_stats_rounded),
                           label: 'Queries',
-                          backgroundColor: Color(0xFF5451FD),
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.home),
                           label: 'Home',
-                          backgroundColor: Color(0xFF5451FD),
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.event),
                           label: 'Events',
-                          backgroundColor: Color(0xFF5451FD),
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.connect_without_contact_sharp),
-                          label: 'Net&Op',
-                          backgroundColor: Color(0xFF5451FD),
+                          label: 'Net Ops',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                       ],
-                      selectedItemColor: Colors.black,
                       showUnselectedLabels: true,
                       elevation: 0.0,
                       onTap: _onItemTapped,

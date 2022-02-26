@@ -4,9 +4,9 @@ Widget PageTitle(String text, BuildContext context) {
   return Container(
     decoration: const BoxDecoration(
       borderRadius:
-      BorderRadius.vertical(bottom: Radius.circular(7)),
+      BorderRadius.vertical(bottom: Radius.circular(0)),
       // color: Color(0xFF5451FD),
-      color: Colors.white
+      color: Color(0xFF2B2E35),
     ),
     width: MediaQuery.of(context).size.width * 1,
     height: 45,
@@ -15,7 +15,7 @@ Widget PageTitle(String text, BuildContext context) {
         text,
         style: TextStyle(
           // color: Colors.white,
-          color: Colors.black,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 20,
         ),

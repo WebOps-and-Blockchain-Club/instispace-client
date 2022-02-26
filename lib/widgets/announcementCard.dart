@@ -20,7 +20,10 @@ Widget AnnouncementsCards(
 
   String delete = AnnouncementMutations().deleteAnnouncement;
   return Card(
-    color: Color(0xFFDEDDFF),
+    color: Color(0xFFFFFFFF),
+    elevation: 3,
+    borderOnForeground: true,
+    shadowColor: Colors.black54,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0)),
     child: Column(

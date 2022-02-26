@@ -36,7 +36,7 @@ class _QueryCardState extends State<QueryCard> {
           return Card(
               clipBehavior: Clip.antiAlias,
               elevation: 5.0,
-              color: Color(0xFFF9F6F2),
+              color: Color(0xFFFFFFFF),
               child: SizedBox(
                 height: 60,
                 width: 20,
@@ -61,7 +61,11 @@ class _QueryCardState extends State<QueryCard> {
                   collapsed: Padding(
                     padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
                     child: Card(
-                      color: Color(0xFFDEDDFF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7)
+                      ),
+                      elevation: 3,
+                      color: Color(0xFFFFFFFF),
                       child: Column(
                         children: [
                           //Title
@@ -228,12 +232,13 @@ class _singleQueryState extends State<singleQuery> {
 
         return SafeArea(
             child:Padding(
-              padding: const EdgeInsets.fromLTRB(3, 2, 3, 3),
+              padding: const EdgeInsets.fromLTRB(0, 2, 0, 3),
               child: Card(
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(8)
-                // ),
-                color: Color(0xFFDEDDFF),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7)
+                ),
+                elevation: 3,
+                color: Color(0xFFFFFFFF),
                 child: Column(
                   children: [
                     //Title
