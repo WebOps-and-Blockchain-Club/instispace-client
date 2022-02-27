@@ -286,7 +286,7 @@ class _LNFListingState extends State<LNFListing> {
                       ),
 
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.75,
+                        height: MediaQuery.of(context).size.height * 0.68,
                         width: 400,
                         child: ListView(
                           controller: scrollController,

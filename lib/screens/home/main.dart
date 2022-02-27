@@ -67,25 +67,26 @@ class _mainHomeState extends State<mainHome> {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: const Color(0xFF2B2E35),
+                titleSpacing: 0,
                 // backgroundColor: Colors.white,
                 title: Row(
                   children: const [
                     CircleAvatar(
-                        radius: 20,
+                        radius: 18,
                         backgroundImage: NetworkImage('https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                      child: Text("InstiVerse",style: TextStyle(color: Colors.white),),
+                      child: Text("InstiSpace",style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
                 actions: [
-                  IconButton(onPressed: (){
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => const searchUser()));
-                  },
-                      icon: const Icon(Icons.search_outlined,color: Colors.white,)),
+                  // IconButton(onPressed: (){
+                  //   Navigator.of(context).push(MaterialPageRoute(
+                  //       builder: (BuildContext context) => const searchUser()));
+                  // },
+                  //     icon: const Icon(Icons.search_outlined,color: Colors.white,)),
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.notifications,color: Colors.white,)
@@ -148,6 +149,14 @@ class _mainHomeState extends State<mainHome> {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) => HostelHome()));
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.search_outlined),
+                            title: const Text("Search User"),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => const searchUser()));
                             },
                           ),
                           ListTile(

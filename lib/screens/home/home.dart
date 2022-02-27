@@ -343,14 +343,13 @@ class _HomePageState extends State<HomePage> {
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: isAll? Colors.white:Color(0xFF42454D),
-                                                  fontSize: 15
+                                                  fontSize: 15,
                                               ),
                                             ),
                                           ),
                                         ),
 
                                       //Announcements Selected
-
                                       if(isAnnouncements)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),

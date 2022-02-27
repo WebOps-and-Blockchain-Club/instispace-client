@@ -34,7 +34,7 @@ class _AddQueryState extends State<AddQuery> {
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),),
-        backgroundColor: Color(0xFF5451FD),
+        backgroundColor: Color(0xFF2B2E35),
       ),
 
       body: SafeArea(
@@ -54,7 +54,7 @@ class _AddQueryState extends State<AddQuery> {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
-                              color: Color(0xFF4151E5),
+                              color: Color(0xFF222222),
                             ),
                           ),
                         ],
@@ -96,7 +96,7 @@ class _AddQueryState extends State<AddQuery> {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
-                              color: Color(0xFF4151E5),
+                              color: Color(0xFF222222),
                             ),
                           ),
                         ],
@@ -131,7 +131,7 @@ class _AddQueryState extends State<AddQuery> {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
-                              color: Color(0xFF4151E5),
+                              color: Color(0xFF222222),
                             ),
                           ),
                         ],
@@ -148,7 +148,7 @@ class _AddQueryState extends State<AddQuery> {
                             .width * 0.65,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Color(0x664A47F0),
+                                  primary: Colors.grey,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                             ),
@@ -182,9 +182,9 @@ class _AddQueryState extends State<AddQuery> {
                               child: Text(
                                 selectedImage.toString(),
                                 style: TextStyle(
-                                    color: Colors.black87,
+                                    color: Colors.white,
                                     fontSize: 17.0,
-                                    fontWeight: FontWeight.w300
+                                    fontWeight: FontWeight.bold
                                 ),
                               ),
                             )),
@@ -219,7 +219,7 @@ class _AddQueryState extends State<AddQuery> {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
-                              color: Color(0xFF4151E5),
+                              color: Color(0xFF222222),
                             ),
                           ),
                         ],
@@ -236,7 +236,7 @@ class _AddQueryState extends State<AddQuery> {
                             .width * 0.65,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Color(0x664A47F0),
+                                primary: Colors.grey,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                             ),
@@ -269,9 +269,9 @@ class _AddQueryState extends State<AddQuery> {
                               child: Text(
                                 AttachmentNames.toString(),
                                 style: TextStyle(
-                                    color: Colors.black87,
+                                    color: Colors.white,
                                     fontSize: 17.0,
-                                    fontWeight: FontWeight.w300
+                                    fontWeight: FontWeight.bold
                                 ),
                               ),
                             )),
@@ -333,7 +333,7 @@ class _AddQueryState extends State<AddQuery> {
                                     ),
                                   ),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF6B7AFF),
+                                  primary: Color(0xFF42454D),
                                   padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                   minimumSize: Size(80, 35),
                                 ),

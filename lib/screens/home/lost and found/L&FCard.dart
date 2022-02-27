@@ -8,6 +8,8 @@ import 'editLost.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import 'package:client/widgets/marquee.dart';
+
 class LFCard extends StatelessWidget {
   final Future<QueryResult?> Function()? refetchPosts;
   final LnF post ;
@@ -40,7 +42,7 @@ class LFCard extends StatelessWidget {
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             //Title Container
             Container(
@@ -57,12 +59,11 @@ class LFCard extends StatelessWidget {
                   //Title Row
                   children: [
                     //Title
-                    Wrap(
-                      children: [
-                        Container(
-
-                          child: Text(
-                          "$category a ${post.what}",
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: MarqueeWidget(
+                        direction: Axis.horizontal,
+                        child: Text("$category a ${post.what}",
                           style: TextStyle(
                             //Conditional Font Size
                             fontWeight: (userId==post.createdId)
@@ -74,8 +75,8 @@ class LFCard extends StatelessWidget {
                                 : 18,
                             color: Colors.white,
                           ),
+                        ),
                       ),
-                        ),]
                     ),
 
                     //User Icons
@@ -141,11 +142,11 @@ class LFCard extends StatelessWidget {
             ),
 
             //Image Container
-            // if(post.imageUrl.isNotEmpty)
+            if(post.imageUrl.isNotEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               child: CarouselSlider(
-                items: testimages.map((item) => Container(
+                items: post.imageUrl.map((item) => Container(
                   child: Center(
                     child: Image.network(item,
                       fit: BoxFit.contain,
@@ -188,7 +189,7 @@ class LFCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: Text(
-                          'Created by Gautam Vaja',
+                          '$category by Gautam Vaja',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 12,

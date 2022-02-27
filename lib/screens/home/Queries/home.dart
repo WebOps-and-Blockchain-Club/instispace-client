@@ -145,7 +145,7 @@ class _QueryHomeState extends State<QueryHome> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.750,
+                                    .height * 0.70,
                                 width: MediaQuery
                                     .of(context)
                                     .size
