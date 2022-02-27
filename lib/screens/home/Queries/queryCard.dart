@@ -97,7 +97,7 @@ class _QueryCardState extends State<QueryCard> {
 
                 //Description
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  padding: const EdgeInsets.fromLTRB(6, 5, 15, 5),
                   child:
                   DescriptionTextWidget(
                     text: post.content,
@@ -150,7 +150,7 @@ class _QueryCardState extends State<QueryCard> {
                                 print("isLiked:$isLiked");
                               },
                               icon: Icon(Icons.thumb_up),
-                              color: isLiked? Colors.blue:Colors.grey,
+                              color: isLiked? Colors.black:Colors.grey,
                               iconSize: 22,
                             );
                           }

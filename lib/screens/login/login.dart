@@ -222,29 +222,11 @@ class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [
-                0.1,
-                0.3,
-                0.5,
-                0.7,
-                0.9,
-              ],
-              colors: [
-                Colors.deepPurpleAccent,
-                Colors.blue,
-                Colors.lightBlueAccent,
-                Colors.lightBlueAccent,
-                Colors.blueAccent,
-              ],
-            )
-        ),
-        child: SafeArea(
-          child: Padding(
+      backgroundColor: Color(0xFFF7F7F7),
+      body: SafeArea(
+      child: ListView(
+        children: [
+          Padding(
             padding: const EdgeInsets.all(40.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +234,7 @@ class _LogInState extends State<LogIn> {
                 Text(
                   "Sign In",
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 30.0
                   ),
@@ -270,132 +252,152 @@ class _LogInState extends State<LogIn> {
                 SizedBox(
                   height: 20.0,
                 ),
-                Text(
-                  'User*',
+
+                const Text(
+                  'UserID*',
                   style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight: FontWeight.bold
+                      color: Color(0xFF222222),
+                      fontWeight: FontWeight.w700,
+                    fontSize: 18
                   ),
                 ),
-                SizedBox(height: 10.0),
-                SizedBox(
-                  width: 400.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.blue[200]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
-                      child: TextFormField(
-                        controller: usernameController,
-                        cursorColor: Colors.blue[700],
-                        decoration: InputDecoration(
-                            hintText: 'Enter your User ID',
-                            border: InputBorder.none
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 25),
+                  child: SizedBox(
+                    width: 400.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          border: Border.all(
+                            width: 1.5,
+                            color: const Color(0xFF222222),
+                          ),
+                        color: Colors.white54,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15.0,0.0,15.0,0.0),
+                        child: TextFormField(
+                          controller: usernameController,
+                          cursorColor: Colors.black,
+                          decoration: const InputDecoration(
+                              hintText: 'Enter your User ID',
+                              border: InputBorder.none
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
+
+                const Text(
                   'Password*',
                   style: TextStyle(
-                      color: Colors.blue[900],
-                      fontWeight: FontWeight.bold
+                      color: Color(0xFF222222),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18
                   ),
                 ),
-                SizedBox(height: 10.0,),
-                SizedBox(
-                  width: 400.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.blue[200]
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
-                      child: TextFormField(
-                        controller: passwordController,
-                        cursorColor: Colors.blue[700],
-                        decoration: InputDecoration(
-                            hintText: 'Enter your password',
-                            border: InputBorder.none
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                  child: SizedBox(
+                    width: 400.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          border: Border.all(
+                            width: 1.5,
+                            color: const Color(0xFF222222),
+                          ),
+                          color: Colors.white54
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10.0,0.0,0.0,0.0),
+                        child: TextFormField(
+                          controller: passwordController,
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                              hintText: 'Enter your password',
+                              border: InputBorder.none
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 30.0),
-                Center(
-                  child:
-                  Mutation(
-                    options:MutationOptions(
-                        document: gql(login),
-                        onCompleted:(dynamic resultData){
-                          print(resultData);
-                          token = resultData["login"]["token"];
-                          isNewUser=resultData["login"]["isNewUser"];
-                          role=resultData["login"]["role"];
-                          _auth.setToken(token);
-                          _auth.setisNewUser(isNewUser);
-                          _auth.setRole(role);
-                          print(resultData["login"]);
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
+                  child: Center(
+                    child:
+                    Mutation(
+                      options:MutationOptions(
+                          document: gql(login),
+                          onCompleted:(dynamic resultData){
+                            print(resultData);
+                            token = resultData["login"]["token"];
+                            isNewUser=resultData["login"]["isNewUser"];
+                            role=resultData["login"]["role"];
+                            _auth.setToken(token);
+                            _auth.setisNewUser(isNewUser);
+                            _auth.setRole(role);
+                            print(resultData["login"]);
+                          }
+                      ),
+                      builder: (
+                          RunMutation runMutation,
+                          QueryResult? result,
+                          ) {
+                        if (result!.hasException){
+                          print(result.exception.toString());
                         }
-                    ),
-                    builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                        ) {
-                      if (result!.hasException){
-                        print(result.exception.toString());
-                      }
-                      if(result.isLoading){
-                        return Center(
-                          child: CircularProgressIndicator(color: Colors.blue[700],),
-                        );
-                      }
-                      return SizedBox(
-                        width: 400.0,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.blue[700],
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                          ),
-                          onPressed: () {
-                            runMutation({
-                              'loginInputs' :{
-                                "roll": usernameController.text,
-                                "pass": passwordController.text,
-                              }
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Log in',
-                              style: TextStyle(color: Colors.white,fontSize: 18.0,fontWeight: FontWeight.w600),
+                        if(result.isLoading){
+                          return Center(
+                            child: CircularProgressIndicator(color: Colors.blue[700],),
+                          );
+                        }
+                        return SizedBox(
+                          width: 100.0,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color(0xFF42454D),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                             ),
+                            onPressed: () {
+                              runMutation({
+                                'loginInputs' :{
+                                  "roll": usernameController.text,
+                                  "pass": passwordController.text,
+                                }
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Log In',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            // style: ElevatedButton.styleFrom(
+                            //     primary: Colors.blue[900],
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(30.0)
+                            //   )
+                            // ),
                           ),
-                          // style: ElevatedButton.styleFrom(
-                          //     primary: Colors.blue[900],
-                          //   shape: RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(30.0)
-                          //   )
-                          // ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 )
               ],
             ),
           ),
-        ),
+        ],
       ),
+        ),
     );
   }
 }
