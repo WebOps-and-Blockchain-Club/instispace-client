@@ -26,7 +26,8 @@ class _searchCardState extends State<searchCard> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0,0,0,10),
         child: Card(
-          color: Color(0xFFDEDDFF),
+          elevation: 3,
+          color: Color(0xFFFFFFFF),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12,10,0,10),
             child: Column(

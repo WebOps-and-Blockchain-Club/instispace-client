@@ -18,9 +18,9 @@ class _AddQueryState extends State<AddQuery> {
   var multipartfileImage;
   String selectedImage = "Please select images";
   PlatformFile? file=null;
-  List byteDataAttachment=[];
-  List multipartfileAttachment=[];
-  List AttachmentNames=[];
+  // List byteDataAttachment=[];
+  // List multipartfileAttachment=[];
+  // List AttachmentNames=[];
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   @override
@@ -211,72 +211,72 @@ class _AddQueryState extends State<AddQuery> {
                       ),
 
                     //Attachment
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      child: Row(
-                        children: [
-                          Text("Add attachments",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF222222),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    //Attachment Selector
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 5, 15, 0),
-                      child: SizedBox(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * 0.65,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.grey,
-                                elevation: 0.0,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                            ),
-                            onPressed: () async {
-                              final FilePickerResult? result =
-                              await FilePicker.platform.pickFiles(
-                                type: FileType.custom,
-                                allowedExtensions: ["pdf"],
-                                allowMultiple: true,
-                                withData: true,
-                              );
-                              if (result != null) {
-                                setState(() {
-                                  AttachmentNames.clear();
-                                  for (var i=0;i<result.files.length;i++){
-                                    AttachmentNames.add(result.files[i].name);
-                                    byteDataAttachment.add(result.files[i].bytes);
-                                    multipartfileAttachment.add(MultipartFile.fromBytes(
-                                      'file',
-                                      byteDataAttachment[i],
-                                      filename: AttachmentNames[i],
-                                      contentType: MediaType("file","pdf"),
-                                    ));
-                                  }
-                                });
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                              child: Text(
-                                AttachmentNames.toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17.0,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            )),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                    //   child: Row(
+                    //     children: [
+                    //       Text("Add attachments",
+                    //         style: TextStyle(
+                    //           fontWeight: FontWeight.w700,
+                    //           fontSize: 16,
+                    //           color: Color(0xFF222222),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    //
+                    // //Attachment Selector
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(12, 5, 15, 0),
+                    //   child: SizedBox(
+                    //     width: MediaQuery
+                    //         .of(context)
+                    //         .size
+                    //         .width * 0.65,
+                    //     child: ElevatedButton(
+                    //         style: ElevatedButton.styleFrom(
+                    //             primary: Colors.grey,
+                    //             elevation: 0.0,
+                    //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                    //         ),
+                    //         onPressed: () async {
+                    //           final FilePickerResult? result =
+                    //           await FilePicker.platform.pickFiles(
+                    //             type: FileType.custom,
+                    //             allowedExtensions: ["pdf"],
+                    //             allowMultiple: true,
+                    //             withData: true,
+                    //           );
+                    //           if (result != null) {
+                    //             setState(() {
+                    //               AttachmentNames.clear();
+                    //               for (var i=0;i<result.files.length;i++){
+                    //                 AttachmentNames.add(result.files[i].name);
+                    //                 byteDataAttachment.add(result.files[i].bytes);
+                    //                 multipartfileAttachment.add(MultipartFile.fromBytes(
+                    //                   'file',
+                    //                   byteDataAttachment[i],
+                    //                   filename: AttachmentNames[i],
+                    //                   contentType: MediaType("file","pdf"),
+                    //                 ));
+                    //               }
+                    //             });
+                    //           }
+                    //         },
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                    //           child: Text(
+                    //             AttachmentNames.toString(),
+                    //             style: TextStyle(
+                    //                 color: Colors.white,
+                    //                 fontSize: 17.0,
+                    //                 fontWeight: FontWeight.bold
+                    //             ),
+                    //           ),
+                    //         )),
+                    //   ),
+                    // ),
 
                     //Submit Button
                     Padding(
@@ -322,7 +322,7 @@ class _AddQueryState extends State<AddQuery> {
                                       "content": descriptionController.text,
                                       },
                                       "image": multipartfileImage,
-                                      "attachments": multipartfileAttachment,
+                                      // "attachments": multipartfileAttachment,
                                       });
                                     },
                                 child: Text("Submit",

@@ -26,15 +26,11 @@ class _searchUserState extends State<searchUser> {
         title: Text("Search Users"),
         elevation: 0.0,
         bottomOpacity: 200,
-        backgroundColor: Color(0xFF5451FD),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(7)
-          )
-        ),
+        backgroundColor: Color(0xFF2B2E35),
       ),
+      backgroundColor: Color(0xFFDFDFDF),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0,10,8,0),
+        padding: const EdgeInsets.fromLTRB(12,10,12,0),
         child: Column(
         children: [
           Query(
@@ -85,15 +81,16 @@ class _searchUserState extends State<searchUser> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
+                            borderRadius: BorderRadius.circular(40.0),
                             border: Border.all(color: Colors.black,width: 0.5)
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                width: 300,
+                                width: MediaQuery.of(context).size.width * 0.7,
                                 child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
+                                  padding: const EdgeInsets.fromLTRB(15,0,0,0),
                                   child: TextFormField(
                                     controller: searchController,
                                     decoration: const InputDecoration(
@@ -103,23 +100,30 @@ class _searchUserState extends State<searchUser> {
                                   ),
                                 ),
                               ),
-                              IconButton(onPressed: (){
-                                setState(() {
-                                  search=searchController.text;
-                                });
-                                refetch!();
-                              }, icon: Icon(Icons.search))
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                                child: IconButton(onPressed: (){
+                                  setState(() {
+                                    search=searchController.text;
+                                  });
+                                  refetch!();
+                                }, icon: Icon(Icons.search)),
+                              )
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: 400,
-                        height: MediaQuery.of(context).size.height*0.8,
-                        child: ListView(
-                          children: users.map((user) =>
-                            searchCard( user: user,)
-                        ).toList(),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width*0.92,
+                          height: MediaQuery.of(context).size.height*0.75,
+                          child: ListView(
+                            children: users.map((user) =>
+                              searchCard( user: user,)
+                          ).toList(),
+                          ),
                         ),
                       )
                     ],

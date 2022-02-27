@@ -108,11 +108,12 @@ class _mainHomeState extends State<mainHome> {
               drawer: Drawer(
                 child: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return Container(
-                      child: ListView(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
+                    return ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
                             child: Row(
                               children: const [
                                 CircleAvatar(
@@ -121,87 +122,103 @@ class _mainHomeState extends State<mainHome> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                                  child: Text("InstiVerse", style: TextStyle(fontSize: 30.0,
-                                  color: Colors.black),),
+                                  child: Text("InstiSpace",
+                                    style: TextStyle(
+                                        fontSize: 22.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black
+                                    ),),
                                 ),
                               ],
                             ),
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            title: const Text("My Profile"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => UserPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.vpn_key_sharp),
-                            title: const Text("Update Password"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => UserPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.account_balance),
-                            title: const Text("My Hostel"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => HostelHome()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.search_outlined),
-                            title: const Text("Search User"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => const searchUser()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.alternate_email),
-                            title: const Text("About Us"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => AboutUs()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.contact_page_outlined),
-                            title: const Text("Contact Us"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => ContactUs()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.feedback),
-                            title: const Text("Feedback"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => FeedBack()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.logout),
-                            title: const Text("Logout"),
-                            onTap: () {
-                              _auth.clearAuth();
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.account_circle_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("My Profile"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => UserPage()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.vpn_key_sharp),
+                          horizontalTitleGap: 0,
+                          title: const Text("Update Password"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => UserPage()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.account_balance),
+                          horizontalTitleGap: 0,
+                          title: const Text("My Hostel"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => HostelHome()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.search_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Search User"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => const searchUser()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.alternate_email),
+                          horizontalTitleGap: 0,
+                          title: const Text("About Us"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => AboutUs()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.contact_page_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Contact Us"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => ContactUs()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.feedback_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Feedback"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => FeedBack()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.logout),
+                          horizontalTitleGap: 0,
+                          title: const Text("Logout"),
+                          onTap: () {
+                            _auth.clearAuth();
+                          },
+                        ),
+                      ],
                     );
                   },
                 ),
               ),
-                    bottomNavigationBar: BottomNavigationBar(
+              bottomNavigationBar: BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
                       unselectedItemColor: Colors.grey,
-                      selectedItemColor: Color(0xFFFFFFFF),
-                      backgroundColor: Color(0xFF2B2E35),
+                      selectedItemColor: const Color(0xFFFFFFFF),
+                      backgroundColor: const Color(0xFF2B2E35),
                       currentIndex: _selectedIndex,
+
+                      iconSize: 24,
+                      unselectedFontSize: 12,
+                      selectedFontSize: 13,
 
                       items: const <BottomNavigationBarItem>[
                         //L&F Button
@@ -231,6 +248,7 @@ class _mainHomeState extends State<mainHome> {
                           backgroundColor: Color(0xFF2B2E35),
                         ),
                       ],
+
                       showUnselectedLabels: true,
                       elevation: 0.0,
                       onTap: _onItemTapped,

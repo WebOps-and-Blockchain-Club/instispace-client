@@ -99,6 +99,7 @@ class _HostelcontactsState extends State<Hostelcontacts> {
       ));
 
       return Scaffold(
+        backgroundColor: const Color(0xFFDFDFDF),
         body: ListView(
           shrinkWrap: true,
           children: [
@@ -109,10 +110,16 @@ class _HostelcontactsState extends State<Hostelcontacts> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                Center(
+                const Center(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Heading("Hostel Contacts")
+                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Text('Hostel Contacts',
+                      style: TextStyle(
+                        color: Color(0xFF222222),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
                 ),
 
@@ -134,25 +141,18 @@ class _HostelcontactsState extends State<Hostelcontacts> {
                 ),
 
                 //EMERGENCY CONTACTS
-
-                Center(
+                const Center(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Heading("Emergency Contacts")
+                    padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                    child: Text('Hostel Contacts',
+                      style: TextStyle(
+                          color: Color(0xFF222222),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
                 ),
-
-                // Padding(
-                //   padding: const EdgeInsets.fromLTRB(6, 15, 0, 0),
-                //   child: const Text(
-                //     "EMERGENCY CONTACTS",
-                //     style: TextStyle(
-                //       fontWeight: FontWeight.w400,
-                //       fontSize: 16.5,
-                //       color: Color(0xFF808080),
-                //     ),
-                //   ),
-                // ),
 
                 //E-Contact List
                 Padding(

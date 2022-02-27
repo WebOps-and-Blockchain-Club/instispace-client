@@ -63,10 +63,11 @@ class _HostelProfileState extends State<HostelProfile> {
 
       return Scaffold(
         //UI
+        backgroundColor: const Color(0xFFDFDFDF),
         body: ListView(
           shrinkWrap: true,
           children: [
-            PageTitle('HOSTEL AMENITIES', context),
+            PageTitle('Hostel Amenities', context),
             Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
             child: Column(

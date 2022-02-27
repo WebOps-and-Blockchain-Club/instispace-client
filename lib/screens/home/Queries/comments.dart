@@ -24,7 +24,7 @@ class _queryCommentsState extends State<queryComments> {
               color: Colors.white,
               fontWeight: FontWeight.bold
           ),),
-        backgroundColor: Color(0xFF5451FD),
+        backgroundColor: Color(0xFF2B2E35),
       ),
 
       body: Query(
