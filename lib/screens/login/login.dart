@@ -36,7 +36,7 @@ class LogIn extends StatefulWidget {
 
     _firebaseMessaging.getToken().then((token){
       fcmToken= token!;
-      print("token:$token");
+      print("fcmtoken:$token");
     });
     return Scaffold(
       body: Container(
@@ -187,7 +187,7 @@ class LogIn extends StatefulWidget {
                                     print("token login:$token");
                                   });
                                    runMutation({
-                                     // "fcmToken":fcmToken,
+
                                     'loginInputs' :{
                                       "roll": usernameController.text,
                                       "pass": passwordController.text,

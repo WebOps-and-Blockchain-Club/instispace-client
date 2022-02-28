@@ -1,9 +1,8 @@
 import 'dart:ui';
-import 'package:client/services/subscription.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -14,24 +13,131 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-
-    tz.initializeTimeZones();
+    // prefs = await SharedPreferences.getInstance();
+    // bool? isSwitchedNetops = prefs?.getBool('isSwitchedNetops');
+    // print("isSwitchedNetops:$isSwitchedNetops");
   }
+  SharedPreferences? prefs;
+  List<String> notificationPref=[];
+  bool isSwitchedNetops = false;
+  bool isSwitchedLnF = false;
+  bool isSwitchedEvents = false;
+  bool isSwitchedQueries = false;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
-          title: Text("Notification setting"),
+          title: const Text("Notification setting"),
         ),
         body: Column(
           children: [
-            ElevatedButton(
-              onPressed: ()=> NotificationService().showNotification(1, "title", "body", 2),
-              child: Text("Notification"),
+            ListTile(
+              leading: const Text('Netops'),
+              trailing: Switch(
+                value: isSwitchedNetops,
+                onChanged: (value) async {
+                  setState(() {
+                    isSwitchedNetops = value;
+                    print(isSwitchedNetops);
+                    if(isSwitchedNetops){
+                      notificationPref.add('Netops');
+                    }
+                    else{
+                      notificationPref.remove('Netops');
+                    }
+                    print("notificationPrefs:$notificationPref");
+                  });
+                  prefs = await SharedPreferences.getInstance();
+                  prefs?.setStringList('notificationPref', notificationPref );
+                  prefs?.setBool('isSwitchedNetops', isSwitchedNetops);
+                  var preference =prefs?.getStringList('notificationPref');
+                  print("preference: $preference");
+                },
+                activeTrackColor: Colors.lightGreenAccent,
+                activeColor: Colors.green,
+              ),
             ),
-            const Subscriptions(),
+            ListTile(
+              leading: const Text('Lost and Found'),
+              trailing: Switch(
+                value: isSwitchedLnF,
+                onChanged: (value) async {
+                  setState(() {
+                    isSwitchedLnF = value;
+                    print(isSwitchedLnF);
+                    if(isSwitchedLnF){
+                      notificationPref.add('LnF');
+                    }
+                    else{
+                      notificationPref.remove('LnF');
+                    }
+                    print("notificationPrefs:$notificationPref");
+                  });
+                  prefs = await SharedPreferences.getInstance();
+                  prefs?.setStringList('notificationPref', notificationPref );
+                  prefs?.setBool('isSwitchedLnF', isSwitchedLnF);
+                  var preference =prefs?.getStringList('notificationPref');
+                  print("preference: $preference");
+                },
+                activeTrackColor: Colors.lightGreenAccent,
+                activeColor: Colors.green,
+              ),
+            ),
+            ListTile(
+              leading: const Text('Events'),
+              trailing: Switch(
+                value: isSwitchedEvents,
+                onChanged: (value) async {
+                  setState(() {
+                    isSwitchedEvents = value;
+                    print(isSwitchedEvents);
+                    if(isSwitchedEvents){
+                      notificationPref.add('Events');
+                    }
+                    else{
+                      notificationPref.remove('Events');
+                    }
+                    print("notificationPrefs:$notificationPref");
+                  });
+                  prefs = await SharedPreferences.getInstance();
+                  prefs?.setStringList('notificationPref', notificationPref );
+                  prefs?.setBool('isSwitchedEvents', isSwitchedEvents);
+                  var preference =prefs?.getStringList('notificationPref');
+                  print("preference: $preference");
+                },
+                activeTrackColor: Colors.lightGreenAccent,
+                activeColor: Colors.green,
+              ),
+            ),
+            ListTile(
+              leading:const Text('Queries'),
+              trailing: Switch(
+                value: isSwitchedQueries,
+                onChanged: (value) async {
+                  setState(() {
+                    isSwitchedQueries = value;
+                    print(isSwitchedQueries);
+                    if(isSwitchedQueries){
+                      notificationPref.add('Queries');
+                    }
+                    else{
+                      notificationPref.remove('Queries');
+                    }
+                    print("notificationPrefs:$notificationPref");
+                  });
+                  prefs = await SharedPreferences.getInstance();
+                  prefs?.setStringList('notificationPref', notificationPref );
+                  prefs?.setBool('isSwitchedQueries', isSwitchedQueries);
+                  var preference =prefs?.getStringList('notificationPref');
+                  print("preference: $preference");
+                },
+                activeTrackColor: Colors.lightGreenAccent,
+                activeColor: Colors.green,
+              ),
+            ),
           ],
         )
     );
@@ -40,95 +146,4 @@ class _NotificationsState extends State<Notifications> {
 
 
 
-class NotificationService {
-  static final NotificationService _notificationService = NotificationService._internal();
 
-  factory NotificationService() {
-    return _notificationService;
-  }
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  NotificationService._internal();
-
-  Future<void> initNotification() async {
-    final AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings("app_icon");
-
-    final IOSInitializationSettings initializationSettingsIOS =
-    IOSInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
-
-    final InitializationSettings initializationSettings =
-    InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS
-    );
-
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  Future<void> showNotification(int id, String title, String body, int seconds) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-            'main_channel',
-            'Main Channel',
-            channelDescription: 'Main channel notifications',
-            importance: Importance.max,
-            priority: Priority.max,
-            icon: "app_icon"
-        ),
-        iOS: IOSNotificationDetails(
-          sound: 'default.wav',
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      androidAllowWhileIdle: true,
-    );
-  }
-
-  Future<void> cancelAllNotifications() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
-  }
-}
-class NotificationApi {
-
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  static Future _notificationDetails() async {
-    return NotificationDetails(
-      android: AndroidNotificationDetails(
-        'channel id',
-        'channel name',
-        channelDescription: 'channel description',
-        importance: Importance.max,
-      ),
-      iOS: IOSNotificationDetails(),
-    );
-  }
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
-  }
-
-}
