@@ -65,44 +65,52 @@ class _HostelHomeState extends State<HostelHome> {
 
             ),
           ),
-          backgroundColor: Color(0xFF5451FD),
+          backgroundColor: Color(0xFF2B2E35),
           elevation: 0.0,
           automaticallyImplyLeading: true,
         ),
         body: PageView(
           controller: _pageController,
           onPageChanged: _onItemTapped,
-          children: [
+          children: const [
             HostelProfile(),
             Announcements(),
             Hostelcontacts()
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          // backgroundColor: Color(0xFF5451FD),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: const Color(0xFF2B2E35),
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: const Color(0xFFFFFFFF),
           currentIndex: _selectedIndex,
-          items: const <BottomNavigationBarItem>[
 
+          iconSize: 24,
+          selectedFontSize: 13,
+          unselectedFontSize: 12,
+
+          items: const <BottomNavigationBarItem>[
             //L&F Button
             BottomNavigationBarItem(
               icon: Icon(Icons.category),
-              label: 'Hostel Ammenities',
-              backgroundColor: Color(0xFF5451FD),
+              label: 'Amenities',
+              backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.announcement),
               label: 'Announcements',
-              backgroundColor: Color(0xFF5451FD),
+              backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.contacts),
-              label: 'Hostel Contacts',
-              backgroundColor: Color(0xFF5451FD),
+              label: 'Contacts',
+              backgroundColor: Color(0xFF2B2E35),
             ),
           ],
-          selectedItemColor: Color(0xFFFFFFFF),
+
           showUnselectedLabels: true,
+          elevation: 0.0,
+
           onTap: (index) {
             _pageController.animateToPage(
                 index, duration: Duration(milliseconds: 500),

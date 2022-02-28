@@ -9,6 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../widgets/text.dart';
 import 'package:client/widgets/loading screens.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Announcements extends StatefulWidget {
   const Announcements({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class Announcements extends StatefulWidget {
 String getAnnouncements = AnnouncementQueries().getAnnouncements;
 String getAllAnnouncements = AnnouncementQueries().getAllAnnouncements;
 String getMe = homeQuery().getMe;
+
 
 List<Announcement> announcements = [];
 
@@ -325,29 +327,28 @@ class _AnnouncementsState extends State<Announcements> {
                   });
                   return Scaffold(
                     key: ScaffoldKey,
-                    body: Container(
-                        child: ListView(
-                          shrinkWrap: true,
-                            controller: scrollController, children: [
-                          PageTitle('Announcements',context),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
-                            child: Column(
-                              children: announcements
-                                  .map((post) => AnnouncementCard(
-                                        announcement: post,
-                                        refetchAnnouncement: refetch,
-                                      ))
-                                  .toList(),
-                            ),
+                    backgroundColor: const Color(0xFFDFDFDF),
+                    body: ListView(controller: scrollController, children: [
+                      PageTitle('Announcements',context),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
+                        child: Column(
+                          children: announcements
+                              .map((post) => AnnouncementCard(
+                                    announcement: post,
+                                    refetchAnnouncement: refetch,
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                      if (result.isLoading)
+                        Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: Colors.black54,
+                            size: 30
                           ),
-                          if (result.isLoading)
-                            Center(
-                              child: CircularProgressIndicator(
-                                color: Color(0xFFDEDDFF),
-                              ),
-                            ),
-                        ])),
+                        ),
+                    ]),
                   );
                 });
           }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../models/tag.dart';
 import '../screens/tagPage.dart';
 
-
 Widget TagButtons (Tag tag,BuildContext context) {
   return ElevatedButton(
     onPressed: () => {
@@ -31,6 +30,7 @@ Widget TagButtons (Tag tag,BuildContext context) {
       padding: const EdgeInsets.symmetric(
           vertical: 2,
           horizontal: 6),
+      minimumSize: Size(35, 30)
     ),
   );
 }

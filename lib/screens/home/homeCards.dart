@@ -289,7 +289,8 @@ class _HostelAmenityState extends State<HostelAmenity> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: Card(
-        color: const Color(0xFFDEDDFF),
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0)),
         child: Column(
@@ -302,8 +303,8 @@ class _HostelAmenityState extends State<HostelAmenity> {
                   children: [
                     Text(widget.amenities.name,
                       style: const TextStyle(
-                        fontSize: 15.5,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.bold,
                       ),
               ),
                   ],
@@ -318,7 +319,7 @@ class _HostelAmenityState extends State<HostelAmenity> {
                 children: [
                   Text(widget.amenities.description,
                     style: const TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -349,7 +350,8 @@ class _HostelContactsState extends State<HostelContacts> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: Card(
-        color: const Color(0xFFDEDDFF),
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0)),
         child: Column(
@@ -409,7 +411,7 @@ class _HostelContactsState extends State<HostelContacts> {
                           launch('tel:${widget.contacts.contact}');
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFF6B7AFF),
+                          primary: const Color(0xFF42454D),
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                           minimumSize: const Size(50, 35),
                         ),
@@ -465,7 +467,8 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
       child: Card(
-        color: const Color(0xFFDEDDFF),
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0)),
 
@@ -506,7 +509,7 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       },
 
                     style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFF6B7AFF),
+                      primary: const Color(0xFF42454D),
                       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                       minimumSize: const Size(50, 35),
                     ),

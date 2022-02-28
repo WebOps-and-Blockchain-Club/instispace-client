@@ -100,8 +100,9 @@ class _QueryHomeState extends State<QueryHome> {
             refetch!();
           },
             child: Icon(Icons.add),
-            backgroundColor: Color(0xFF5451FD),
+            backgroundColor: Color(0xFFFF0000),
           ),
+          backgroundColor: Color(0xFFDFDFDF),
           body:  SafeArea(
                   child:ListView(
                     children: [ Column(
@@ -145,7 +146,7 @@ class _QueryHomeState extends State<QueryHome> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.750,
+                                    .height * 0.70,
                                 width: MediaQuery
                                     .of(context)
                                     .size

@@ -154,16 +154,7 @@ class _LNFListingState extends State<LNFListing> {
           });
 
           return Scaffold(
-              // appBar: AppBar(
-              //   title: const Text('Lost & Found',
-              //     style: TextStyle(
-              //         color: Colors.white,
-              //         fontWeight: FontWeight.bold
-              //     ),
-              //   ),
-              //   backgroundColor: const Color(0xFF5451FD),
-              // ),
-              backgroundColor: const Color(0xFFF7F7F7),
+              backgroundColor: const Color(0xFFDFDFDF),
               endDrawer: Drawer(
                 child: StatefulBuilder(
                   builder: (BuildContext context, StateSetter stateState) {
@@ -204,8 +195,13 @@ class _LNFListingState extends State<LNFListing> {
                 ),
               ),
               floatingActionButton: SpeedDial(
+                useRotationAnimation: true,
+                buttonSize: Size(56,56),
                 animatedIcon: AnimatedIcons.menu_arrow,
-                backgroundColor: const Color(0xFF5451FD),
+                backgroundColor: const Color(0xFFFF0000),
+                overlayColor: const Color(0x00FFFFFF),
+                animationSpeed: 300,
+                renderOverlay: false,
                 children: [
                   SpeedDialChild(
                       onTap: () {
@@ -214,7 +210,7 @@ class _LNFListingState extends State<LNFListing> {
                                   refetchPosts: refetch,
                                 )));
                       },
-                      child: const Icon(Icons.label),
+                      child: const Icon(Icons.search),
                       label: 'Lost something?'),
                   SpeedDialChild(
                       onTap: () {
@@ -223,7 +219,7 @@ class _LNFListingState extends State<LNFListing> {
                                   refetchPosts: refetch,
                                 )));
                       },
-                      child: const Icon(Icons.label),
+                      child: const Icon(Icons.lightbulb_outline),
                       label: "Found something?"),
                 ],
               ),
@@ -234,112 +230,75 @@ class _LNFListingState extends State<LNFListing> {
                     children: [
                       //Title
                       PageTitle("Lost & Found",context),
-                  // Padding(
-                  //   padding: const EdgeInsets.fromLTRB(24,8,10,8),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.end,
-                  //     children: [
-                  //       if (display)
-                  //       Expanded(
-                  //         flex: 12,
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.fromLTRB(0,0,8,0),
-                  //           child: TextFormField(
-                  //             controller: searchController,
-                  //             // onChanged: (String value){
-                  //             //   if(value.length>=3){
-                  //             //
-                  //             //   }
-                  //             // },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //
-                  //       IconButton(onPressed: (){
-                  //         setState(() {
-                  //           display = !display;
-                  //           search=searchController.text;
-                  //           // print("search String $search");
-                  //         });
-                  //         if(!display){
-                  //           refetch!();
-                  //         }
-                  //       }, icon: Icon(Icons.search_outlined),color: Color(0xFF5451FD),
-                  //       ),
-                  //
-                  //       Padding(
-                  //         padding: const EdgeInsets.fromLTRB(0,0,0,0),
-                  //         child: IconButton(
-                  //             onPressed: () {
-                  //               ScaffoldKey.currentState?.openEndDrawer();
-                  //             },
-                  //             icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF5451FD),),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
-
-
-                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'L&F', widget: Filters(isStarred: false, filterSettings: filterSettings, selectedFilterIds: [], mostLikeValues: false, refetch: refetch,page: 'L&F', callback: (bool val) {  },), callback:(val) => search = val,),
-
-                      // //Button Row
                       // Padding(
-                      //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //     children: [
-                      //       //Lost Button
-                      //       ElevatedButton(
-                      //           onPressed: () {
-                      //             Navigator.of(context).push(MaterialPageRoute(
-                      //                 builder: (BuildContext context) => AddLost(refetchPosts: refetch,)));
-                      //           },
-                      //           child: Text('Lost Something?',
-                      //             style: TextStyle(
-                      //               color: Colors.white,
-                      //               fontSize: 14,
-                      //               fontWeight: FontWeight.bold,
-                      //             ),
-                      //           ),
-                      //         style: ElevatedButton.styleFrom(
-                      //           primary: Color(0xFF6B7AFF),
-                      //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      //           minimumSize: Size(50, 35),
-                      //         ),
-                      //       ),
-                      //
-                      //       //Found Button
-                      //       ElevatedButton(
-                      //           onPressed: ()  {
-                      //             Navigator.of(context).push(MaterialPageRoute(
-                      //                 builder: (BuildContext context) => AddFound(refetchPosts: refetch,)));
-                      //           },
-                      //           child: Text('Found Something?',
-                      //             style: TextStyle(
-                      //               color: Colors.white,
-                      //               fontSize: 14,
-                      //               fontWeight: FontWeight.bold,
-                      //             ),
-                      //           ),
-                      //         style: ElevatedButton.styleFrom(
-                      //           primary: Color(0xFF6B7AFF),
-                      //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      //           minimumSize: Size(50, 35),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+                    //   padding: const EdgeInsets.fromLTRB(24,8,10,8),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.end,
+                    //     children: [
+                    //       if (display)
+                    //       Expanded(
+                    //         flex: 12,
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                    //           child: TextFormField(
+                    //             controller: searchController,
+                    //             // onChanged: (String value){
+                    //             //   if(value.length>=3){
+                    //             //
+                    //             //   }
+                    //             // },
+                    //           ),
+                    //         ),
+                    //       ),
+                    //
+                    //       IconButton(onPressed: (){
+                    //         setState(() {
+                    //           display = !display;
+                    //           search=searchController.text;
+                    //           // print("search String $search");
+                    //         });
+                    //         if(!display){
+                    //           refetch!();
+                    //         }
+                    //       }, icon: Icon(Icons.search_outlined),color: Color(0xFF5451FD),
+                    //       ),
+                    //
+                    //       Padding(
+                    //         padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                    //         child: IconButton(
+                    //             onPressed: () {
+                    //               ScaffoldKey.currentState?.openEndDrawer();
+                    //             },
+                    //             icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF5451FD),),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
 
-                      //List of Posts
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                        child: Search(
+                          search: search,
+                          refetch: refetch,
+                          ScaffoldKey: ScaffoldKey,
+                          page: 'L&F',
+                          callback: ( val) {
+                            setState(() {
+                              search = val;
+                            });
+                          },
+                          widget: Filters(isStarred: false, filterSettings: filterSettings, selectedFilterIds: [], mostLikeValues: false, refetch: refetch,page: 'L&F',callback: (val) {},)),
+                      
+                      ),
+
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.75,
+                        height: MediaQuery.of(context).size.height * 0.68,
                         width: 400,
                         child: ListView(
                           controller: scrollController,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                              padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
                               child: Column(
                                 children: Posts.map((post) => LFCard(
                                       refetchPosts: refetch,

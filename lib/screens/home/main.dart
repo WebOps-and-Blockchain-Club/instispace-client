@@ -66,37 +66,37 @@ class _mainHomeState extends State<mainHome> {
             //User UI
             return Scaffold(
               appBar: AppBar(
-                // backgroundColor: const Color(0xFF2F9F65),
-                backgroundColor: Color(0xFF2B2E35),
-                iconTheme: IconThemeData(color: Colors.white),
+                backgroundColor: const Color(0xFF2B2E35),
+                titleSpacing: 0,
+                // backgroundColor: Colors.white,
                 title: Row(
                   children: const [
                     CircleAvatar(
-                        radius: 20,
+                        radius: 18,
                         backgroundImage: NetworkImage('https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                      child: Text("InstiVerse",style: TextStyle(color: Colors.white),),
+                      child: Text("InstiSpace",style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
                 actions: [
-                  IconButton(onPressed: (){
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => const searchUser()));
-                  },
-                      icon: const Icon(Icons.search_outlined,)),
+                  // IconButton(onPressed: (){
+                  //   Navigator.of(context).push(MaterialPageRoute(
+                  //       builder: (BuildContext context) => const searchUser()));
+                  // },
+                  //     icon: const Icon(Icons.search_outlined,color: Colors.white,)),
                   IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.notifications,)
+                      icon: const Icon(Icons.notifications,color: Colors.white,)
                   ),
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => const HostelHome()));
                     },
-                    icon: const Icon(Icons.account_balance,),
+                    icon: const Icon(Icons.account_balance,color: Colors.white,),
                     iconSize: 22.0,
                   )
                 ],
@@ -108,11 +108,12 @@ class _mainHomeState extends State<mainHome> {
               drawer: Drawer(
                 child: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return Container(
-                      child: ListView(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
+                    return ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
                             child: Row(
                               children: const [
                                 CircleAvatar(
@@ -121,112 +122,137 @@ class _mainHomeState extends State<mainHome> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                                  child: Text("InstiVerse", style: TextStyle(fontSize: 30.0),),
+                                  child: Text("InstiSpace",
+                                    style: TextStyle(
+                                        fontSize: 22.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black
+                                    ),),
                                 ),
                               ],
                             ),
                           ),
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            title: const Text("My Profile"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => UserPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.vpn_key_sharp),
-                            title: const Text("Update Password"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => UserPage()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.account_balance),
-                            title: const Text("My Hostel"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => HostelHome()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.alternate_email),
-                            title: const Text("About Us"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => AboutUs()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.contact_page_outlined),
-                            title: const Text("Contact Us"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => ContactUs()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.feedback),
-                            title: const Text("Feedback"),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => FeedBack()));
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.logout),
-                            title: const Text("Logout"),
-                            onTap: () {
-                              _auth.clearAuth();
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.account_circle_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("My Profile"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => UserPage()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.vpn_key_sharp),
+                          horizontalTitleGap: 0,
+                          title: const Text("Update Password"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => UserPage()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.account_balance),
+                          horizontalTitleGap: 0,
+                          title: const Text("My Hostel"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => HostelHome()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.search_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Search User"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => const searchUser()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.alternate_email),
+                          horizontalTitleGap: 0,
+                          title: const Text("About Us"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => AboutUs()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.contact_page_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Contact Us"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => ContactUs()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.feedback_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Feedback"),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => FeedBack()));
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.logout),
+                          horizontalTitleGap: 0,
+                          title: const Text("Logout"),
+                          onTap: () {
+                            _auth.clearAuth();
+                          },
+                        ),
+                      ],
                     );
                   },
                 ),
               ),
-                    bottomNavigationBar: BottomNavigationBar(
+              bottomNavigationBar: BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
+                      unselectedItemColor: Colors.grey,
+                      selectedItemColor: const Color(0xFFFFFFFF),
+                      backgroundColor: const Color(0xFF2B2E35),
                       currentIndex: _selectedIndex,
-                      items: const <BottomNavigationBarItem>[
 
+                      iconSize: 24,
+                      unselectedFontSize: 12,
+                      selectedFontSize: 13,
+
+                      items: const <BottomNavigationBarItem>[
                         //L&F Button
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.local_grocery_store,
-                          ),
+                          icon: Icon(Icons.local_grocery_store),
                           label: 'L&F',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
-                        //Queries Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.query_stats_rounded),
                           label: 'Queries',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
-                        //Home Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.home),
                           label: 'Home',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
-                        //Events Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.event),
                           label: 'Events',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
-                        //Netops Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.connect_without_contact_sharp),
-                          label: 'Net&Op',
+                          label: 'Net Ops',
+                          backgroundColor: Color(0xFF2B2E35),
                         ),
                       ],
-                      selectedItemColor: Colors.white,
-                      unselectedItemColor: Colors.grey,
+
                       showUnselectedLabels: true,
-                      backgroundColor: const Color(0xFF2B2E35),
                       elevation: 0.0,
                       onTap: _onItemTapped,
                     ),
                   );
   }
 }
-

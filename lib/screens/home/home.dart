@@ -396,7 +396,6 @@ class _HomePageState extends State<HomePage> {
                                         ),
 
                                       //Announcements Selected
-
                                       if(isAnnouncements)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
@@ -493,7 +492,7 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,0,0,12),
+                                    padding: const EdgeInsets.fromLTRB(0,0,0,8),
                                     child: IconButton(
                                       onPressed: () {
                                         showModalBottomSheet(
