@@ -39,12 +39,12 @@ Widget AnnouncementsCards(
                 fontWeight: FontWeight.w700),
           ),
         ),
-        if (images![0] != "")
+        if (images != null)
           ClipRect(
             child: SizedBox(
               width: 400.0,
               child: CarouselSlider(
-                items: images!
+                items: images
                     .map((item) => Center(
                       child: Image.network(
                         item,
@@ -59,7 +59,6 @@ Widget AnnouncementsCards(
               ),
             ),
           ),
-        if (images[0] == "")
           DescriptionTextWidget(text: announcement.description,),
         if(page == 'announcementsSection')
         if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)

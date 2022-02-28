@@ -191,83 +191,9 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
     if (widget.announcements.images != null) {
       images = widget.announcements.images!.split(" AND ");
     }
-    return ExpandableNotifier(
-      child: ScrollOnExpand(
-        child: ExpandablePanel(
-            theme: const ExpandableThemeData(
-              tapBodyToCollapse: true,
-              tapBodyToExpand: true,
-            ),
-            expanded: SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 1,
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 1,
-              child: SingleAnnouncement(
-                announcement: Announcement(
-                  title: widget.announcements.title,
-                  description: widget.announcements.description,
-                  endTime: widget.announcements.endTime,
-                  id: widget.announcements.id,
-                  images: widget.announcements.images,
-                  createdByUserId:
-                  widget.announcements.createdByUserId,
-                  hostelIds: widget.announcements.hostelIds,
-                ),
-              ),
-            ),
-            collapsed: Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-              // child: Card(
-              //   color: const Color(0xFFDEDDFF),
-              //   shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(10.0)),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.stretch,
-              //     children: [
-              //       Padding(
-              //         padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-              //         child: SubHeading(widget.announcements.title)
-              //       ),
-              //       if (images[0] != "")
-              //         ClipRect(
-              //           child: SizedBox(
-              //             width: 400.0,
-              //             child: CarouselSlider(
-              //               items: images
-              //                   .map((item) => Container(
-              //                 child: Center(
-              //                   child: Image.network(
-              //                     item,
-              //                     fit: BoxFit.cover,
-              //                     width: 400,
-              //                   ),
-              //                 ),
-              //               ))
-              //                   .toList(),
-              //               options: CarouselOptions(
-              //                 enableInfiniteScroll: false,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       if (images[0] == "")
-              //         DescriptionTextWidget(
-              //             text: widget.announcements.description),
-              //     ],
-              //   ),
-              // ),
-              child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
-            ),
-            builder: (_, collapsed, expanded) =>
-                Expandable(
-                  collapsed: collapsed, expanded: expanded,)
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+      child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
     );
   }
 }
