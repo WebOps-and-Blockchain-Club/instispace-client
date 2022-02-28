@@ -9,6 +9,7 @@ class Queries{
       content
       isLiked
       likeCount
+      createdAt
       createdBy {
         roll
         name

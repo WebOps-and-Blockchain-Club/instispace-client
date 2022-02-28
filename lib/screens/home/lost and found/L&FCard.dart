@@ -189,7 +189,7 @@ class LFCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: Text(
-                          '$category by Gautam Vaja',
+                          '$category by Anshul Mehta',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 12,

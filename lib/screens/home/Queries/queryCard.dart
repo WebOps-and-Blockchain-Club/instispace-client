@@ -2,6 +2,7 @@ import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
 import 'package:client/screens/home/Announcements/expand_description.dart';
 import 'package:client/screens/home/Queries/editPost.dart';
+import 'package:client/widgets/NetOpCards.dart';
 import 'package:client/widgets/titles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -14,7 +15,8 @@ import 'comments.dart';
 class QueryCard extends StatefulWidget {
   final queryClass post;
   final Future<QueryResult?> Function()? refetchQuery;
-  QueryCard({required this.post,required this.refetchQuery});
+  DateTime postCreated; 
+  QueryCard({required this.post,required this.refetchQuery,required this.postCreated});
   @override
   _QueryCardState createState() => _QueryCardState();
 }
@@ -23,8 +25,10 @@ class _QueryCardState extends State<QueryCard> {
   String toggleLike = Queries().toggleLike;
   String getQuery = Queries().getMyQuery;
   late String userId;
+  late String differenceTime;
   @override
   Widget build(BuildContext context) {
+    differenceTime = difference(widget.postCreated);
     queryClass post= widget.post;
     return Query(
       options: QueryOptions(
@@ -97,7 +101,7 @@ class _QueryCardState extends State<QueryCard> {
 
                 //Description
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 5, 15, 5),
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                   child:
                   DescriptionTextWidget(
                     text: post.content,
@@ -112,9 +116,9 @@ class _QueryCardState extends State<QueryCard> {
                 ),
 
                 //Creator
-                const Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Text('Created by Gautam Vaja, 6 days ago',
+                  child: Text('Created by Anshul Mehta, $differenceTime',
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 13,

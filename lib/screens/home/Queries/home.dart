@@ -26,6 +26,7 @@ class _QueryHomeState extends State<QueryHome> {
   bool display = false;
   TextEditingController searchController = TextEditingController();
   String search = "";
+  late DateTime createdAt;
   ScrollController scrollController =ScrollController();
   var ScaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -61,6 +62,7 @@ class _QueryHomeState extends State<QueryHome> {
         total = result.data!["getMyQuerys"]["total"];
         posts.clear();
         for(var i=0;i<data.length;i++){
+          createdAt = DateTime.parse(data[i]["createdAt"]);
           posts.add(queryClass(id: data[i]["id"], title: data[i]["title"], likeCount: data[i]["likeCount"], content: data[i]["content"], createdByName: data[i]["createdBy"]["name"], createdByRoll: data[i]["createdBy"]["roll"], photo:data[i]["photo"]!=null?data[i]["photo"]:"",isLiked: data[i]["isLiked"],createdById: data[i]["createdBy"]["id"], ));
         }
         FetchMoreOptions opts =FetchMoreOptions(
@@ -94,10 +96,10 @@ class _QueryHomeState extends State<QueryHome> {
 
           //UI
           floatingActionButton: FloatingActionButton(onPressed: () {
-            // Navigator.of(context).push(
-            //     MaterialPageRoute(
-            //         builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
-            refetch!();
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
+            // refetch!();
           },
             child: Icon(Icons.add),
             backgroundColor: Color(0xFFFF0000),
@@ -155,7 +157,7 @@ class _QueryHomeState extends State<QueryHome> {
                                   padding: const EdgeInsets.fromLTRB(10,8,10,10),
                                   child: ListView(
                                     controller: scrollController,
-                                    children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,)).toList(),
+                                    children: posts.map((e) => QueryCard(post: e,refetchQuery: refetch,postCreated: createdAt,)).toList(),
                                   ),
                                 ),
                               ),
