@@ -54,8 +54,9 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
               ),
             );
           }
-          role = result.data!["getMe"]["role"];
           userId = result.data!["getMe"]["id"];
+          role = result.data!["getMe"]["role"];
+
           if (widget.announcement.images != null) {
             images = widget.announcement.images!.split(" AND ");
           }

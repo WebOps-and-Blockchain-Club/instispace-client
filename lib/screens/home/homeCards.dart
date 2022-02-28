@@ -4,11 +4,12 @@ import 'package:client/graphQL/home.dart';
 import 'package:client/graphQL/hostelProfile.dart';
 import 'package:client/graphQL/hostelProfile.dart';
 import 'package:client/graphQL/netops.dart';
+import 'package:client/graphQL/query.dart';
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
-import 'package:client/screens/home/Announcements/AnnouncementCard.dart';
+// import 'package:client/screens/home/Announcements/AnnouncementCard.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
 import 'package:client/screens/tagPage.dart';
 import 'package:client/widgets/NetOpCards.dart';
@@ -186,91 +187,115 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
 
   List<String>? images;
   Future<QueryResult?> Function()? refetch;
-
+  String getMe = homeQuery().getMe;
+  late String userId;
   @override
   Widget build(BuildContext context) {
     if (widget.announcements.images != null) {
       images = widget.announcements.images!.split(" AND ");
     }
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.5),
-        ),
-        color: const Color(0xFFFFFFFF),
-        elevation: 3,
-        borderOnForeground: true,
-        shadowColor: Colors.black54,
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF42454D),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8.5),
-                    topRight: Radius.circular(8.5)),
-              ),
-              // color: const Color(0xFF42454D),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //Title
-                  Padding(
-                    //Conditional Padding
-                      padding: (userId==widget.announcements.createdByUserId)
-                          ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
-                          : const EdgeInsets.fromLTRB(18, 10, 0, 10),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        child: MarqueeWidget(
-                          direction: Axis.horizontal,
-                          child: Text(widget.announcements.title,
-                            style: TextStyle(
-                              //Conditional Font Size
-                              fontWeight: FontWeight.bold,
-                              //Conditional Font Size
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                  ),
-                ],
-              ),
-            ),
-
-            // if (images != null)
-            //   ClipRect(
-            //     child: SizedBox(
-            //       width: 400.0,
-            //       child: CarouselSlider(
-            //         items: images
-            //             .map((item) => Center(
-            //               child: Image.network(
-            //                 item,
-            //                 fit: BoxFit.cover,
-            //                 width: 400,
-            //               ),
-            //             ))
-            //             .toList(),
-            //         options: CarouselOptions(
-            //           enableInfiniteScroll: false,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: DescriptionTextWidget(text: widget.announcements.description,),
-            ),
-          ],
-        ),
+    return Query(
+      options: QueryOptions(
+        document: gql(getMe)
       ),
+      builder: (QueryResult result, {fetchMore, refetch}){
+        if (result.hasException) {
+          print(result.exception.toString());
+          return Text(result.exception.toString());
+        }
+        if (result.isLoading) {
+          return const Card(
+              clipBehavior: Clip.antiAlias,
+              elevation: 5.0,
+              color: Color(0xFFF9F6F2),
+              child: SizedBox(
+                height: 60,
+                width: 20,
+              )
+          );
+        }
+        userId = result.data!["getMe"]["id"];
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.5),
+            ),
+            color: const Color(0xFFFFFFFF),
+            elevation: 3,
+            borderOnForeground: true,
+            shadowColor: Colors.black54,
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF42454D),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8.5),
+                        topRight: Radius.circular(8.5)),
+                  ),
+                  // color: const Color(0xFF42454D),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //Title
+                      Padding(
+                        //Conditional Padding
+                          padding: ( userId ==widget.announcements.createdByUserId)
+                              ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
+                              : const EdgeInsets.fromLTRB(18, 10, 0, 10),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            child: MarqueeWidget(
+                              direction: Axis.horizontal,
+                              child: Text(widget.announcements.title,
+                                style: TextStyle(
+                                  //Conditional Font Size
+                                  fontWeight: FontWeight.bold,
+                                  //Conditional Font Size
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+
+                // if (images != null)
+                //   ClipRect(
+                //     child: SizedBox(
+                //       width: 400.0,
+                //       child: CarouselSlider(
+                //         items: images
+                //             .map((item) => Center(
+                //               child: Image.network(
+                //                 item,
+                //                 fit: BoxFit.cover,
+                //                 width: 400,
+                //               ),
+                //             ))
+                //             .toList(),
+                //         options: CarouselOptions(
+                //           enableInfiniteScroll: false,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: DescriptionTextWidget(text: widget.announcements.description,),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
