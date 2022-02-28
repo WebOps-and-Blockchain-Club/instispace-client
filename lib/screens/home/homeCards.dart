@@ -31,7 +31,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EventsHomeCard extends StatefulWidget {
   final Post events;
-  EventsHomeCard({required this.events});
+  final Future<QueryResult?> Function()? refetchPosts;
+  EventsHomeCard({required this.events,required this.refetchPosts});
   @override
   _EventsHomeCardState createState() => _EventsHomeCardState();
 }
@@ -47,6 +48,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
    String month = '';
   String date = '';
   String year = '';
+  late DateTime createdAt;
 
 
   @override
@@ -79,6 +81,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       isStared = result.data!["getEvent"]["isStared"];
       likeCount=result.data!["getEvent"]["likeCount"];
       isLiked=result.data!["getEvent"]["isLiked"];
+      createdAt = DateTime.parse(result.data!['getEvent']['createdAt']);
       userId = result.data!["getMe"]["id"];
       if(widget.events.time.split("-")[1] == "01") {month = "JAN";}
       if(widget.events.time.split("-")[1] == "02") {month = "FEB";}
@@ -97,355 +100,7 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
 
       return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-        child: ExpandableNotifier(
-          child: ScrollOnExpand(
-            child: ExpandablePanel(
-                theme: const ExpandableThemeData(
-                  tapBodyToCollapse: true,
-                  tapBodyToExpand: true,
-                ),
-                expanded: SizedBox(
-                    height: MediaQuery.of(context).size.height * 1,
-                    width: MediaQuery.of(context).size.width * 1,
-                    child: SinglePost(post: widget.events,isStarred: isStared,refetch: refetch,)),
-                collapsed: Padding(
-                  padding: const EdgeInsets.fromLTRB(2,2,2,3),
-      //             child: Card(
-      //                 clipBehavior: Clip.antiAlias,
-      //                 elevation: 5.0,
-      //                 color: const Color(0xFF808CFF),
-      //                 child: SizedBox(
-      //                   height: MediaQuery.of(context).size.height * 0.3,
-      //                   width: MediaQuery.of(context).size.width * 1,
-      //                   child: Padding(
-      //                     padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0, 0),
-      //                     child: Column(
-      //                         crossAxisAlignment: CrossAxisAlignment.stretch,
-      //                         children: [
-      //                           Column(
-      //                             crossAxisAlignment: CrossAxisAlignment.start,
-      //                             children: [
-      //                               //Title & Star
-      //                             Row(
-      //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                               children: [
-      //                                 SubHeading(widget.events.title),
-      //                                 Mutation(
-      //                                     options:MutationOptions(
-      //                                         document: gql(toggleStarEvent)
-      //                                     ),
-      //                                     builder: (
-      //                                         RunMutation runMutation,
-      //                                         QueryResult? result,
-      //                                         ) {
-      //                                       if (result!.hasException){
-      //                                         print(result.exception.toString());
-      //                                       }
-      //                                       return IconButton(
-      //                                         onPressed: (){
-      //                                           runMutation({
-      //                                             "eventId":widget.events.id
-      //                                           });
-      //                                           refetch!();
-      //                                           },
-      //                                         icon: isStared?const Icon(Icons.star): const Icon(Icons.star_border),
-      //                                         color: isStared? Colors.amber:Colors.grey,
-      //                                       );
-      //                                     }
-      //                                     ),
-      //                               ],
-      //                             ),
-      //                               //Images & Alt Text
-      //                               if(widget.events.imgUrl.isEmpty)
-      //                                 Text(
-      //                                   widget.events.description.length > 250
-      //                                       ? widget.events.description.substring(
-      //                                       0, 250) + '...'
-      //                                       : widget.events.description,
-      //                                   style: const TextStyle(
-      //                                     fontSize: 15.0,
-      //                                   ),
-      //                                 ),
-      //                               if(widget.events.imgUrl.isNotEmpty)
-      //                                 CarouselSlider(
-      //                                   items: widget.events.imgUrl.map((item) => Container(
-      //                                     child: Center(
-      //                                       child: Image.network(item,fit: BoxFit.cover,width: 400,),
-      //                                     ),
-      //                                   )
-      //                                   ).toList(),
-      //                                   options: CarouselOptions(
-      //                                     enableInfiniteScroll: false,
-      //                                   ),
-      //                                 ),
-      //                               const SizedBox(
-      //                                 height: 10,
-      //                               ),
-      //                               //Row for Tags, Icons, Container
-      //                               Padding(
-      //                                 padding: const EdgeInsets.fromLTRB(0.0,0.0,12.0,0.0),
-      //                                 child: Row(
-      //                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                                   children: [
-      //                                     Column(
-      //                                       crossAxisAlignment: CrossAxisAlignment.start,
-      //                                       children: [
-      //                                         //Tags Row
-      //                                         Row(
-      //                                           children: [
-      //                                             Padding(
-      //                                               padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-      //                                               child: SizedBox(
-      //                                                 width: MediaQuery.of(context).size.width*0.5,
-      //                                                 height: 20,
-      //                                                 child: ListView(
-      //                                                   scrollDirection: Axis.horizontal,
-      //                                                   children: tags.map((tag) =>
-      //                                                       SizedBox(
-      //                                                         child: Padding(
-      //                                                           padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-      //                                                           child: TagButtons(tag, context)
-      //                                                         ),
-      //                                                       )).toList(),
-      //                                                 ),
-      //                                               ),
-      //                                             ),
-      //                                           ],
-      //                                         ),
-      //                                         //Icons Row
-      //                                         Padding(
-      //                                           padding: const EdgeInsets.fromLTRB(2, 10, 0, 0),
-      //                                           child: Row(
-      //                                             children: [
-      //                                               //Share Icon
-      //                                               Ink(
-      //                                                 decoration: const ShapeDecoration(
-      //                                                     color: Color(0xFFFFFFFF),
-      //                                                     shape: CircleBorder(
-      //                                                       side: BorderSide.none,
-      //                                                     )
-      //                                                 ),
-      //                                                 height: MediaQuery.of(context).size.height*0.05,
-      //                                                 width: MediaQuery.of(context).size.width*0.1,
-      //                                                 child: Center(
-      //                                                   child: IconButton(
-      //                                                     onPressed: () =>
-      //                                                     {
-      //                                                       print(dateTime.toString().split(" ").first),
-      //                                                       print(dateTime.toString().split(" ").last.split(".").first),
-      //                                                       print(widget.events.location),
-      //                                                       print('shared')
-      //                                                     },
-      //                                                     icon: const Icon(Icons.share),
-      //                                                     iconSize: 20,
-      //                                                     color: const Color(0xFF021096),
-      //                                                   ),
-      //                                                 ),
-      //                                               ),
-      //                                               const SizedBox(width: 5,),
-      //                                               //Reminder Icon
-      //                                               Ink(
-      //                                                 decoration: const ShapeDecoration(
-      //                                                     color: Colors.white,
-      //                                                     shape: CircleBorder(
-      //                                                       side: BorderSide.none,
-      //                                                     )
-      //                                                 ),
-      //                                                 height: MediaQuery.of(context).size.height*0.05,
-      //                                                 width: MediaQuery.of(context).size.width*0.1,
-      //                                                 child: Center(
-      //                                                   child: IconButton(
-      //                                                     onPressed: () =>
-      //                                                     {
-      //                                                       print('remainder added')
-      //                                                     },
-      //                                                     icon: const Icon(Icons.access_alarm),
-      //                                                     iconSize: 20,
-      //                                                     color: const Color(0xFF021096),
-      //                                                   ),
-      //                                                 ),
-      //                                               ),
-      //                                               const SizedBox(width: 5,),
-      //                                               //Like Icon
-      //                                               Mutation(
-      //                                                   options:MutationOptions(
-      //                                                       document: gql(toggleLike)
-      //                                                   ),
-      //                                                   builder: (
-      //                                                       RunMutation runMutation,
-      //                                                       QueryResult? result,
-      //                                                       ){
-      //                                                     if (result!.hasException){
-      //                                                       print(result.exception.toString());
-      //                                                     }
-      //                                                     return Ink(
-      //                                                       decoration: const ShapeDecoration(
-      //                                                           color: Color(0xFFFFFFFF),
-      //                                                           shape: CircleBorder(
-      //                                                             side: BorderSide.none,
-      //                                                           )
-      //                                                       ),
-      //                                                       height: MediaQuery.of(context).size.height*0.05,
-      //                                                       width: MediaQuery.of(context).size.width*0.1,
-      //                                                       child: Center(
-      //                                                         child: IconButton(
-      //                                                           onPressed: ()
-      //                                                           {
-      //                                                             runMutation({
-      //                                                               "eventId":widget.events.id
-      //                                                             });
-      //                                                             refetch!();
-      //                                                             print('is liked');
-      //                                                             },
-      //                                                           icon: const Icon(Icons.thumb_up),
-      //                                                           iconSize: 20,
-      //                                                           color: isLiked? Colors.blue:Colors.grey,
-      //                                                         ),
-      //                                                       ),
-      //                                                     );
-      //                                                   }
-      //                                                   ),
-      //                                               //Like Count
-      //                                               Container(
-      //                                                 margin: const EdgeInsets.only(left: 10.0),
-      //                                                 child: Text(
-      //                                                   "$likeCount likes",
-      //                                                   style: const TextStyle(
-      //                                                     color: Color(0xFFFFFFFF),
-      //                                                     fontWeight: FontWeight.bold,
-      //                                                     fontSize: 16.0,
-      //                                                   ),
-      //                                                 ),
-      //                                               ),
-      //                                             ],
-      //                                           ),
-      //                                         ),],
-      //                                     ),
-      //                                     //Location & Date
-      //                                     Container(
-      //                                       height: MediaQuery.of(context).size.height*0.15,
-      //                                       width: MediaQuery.of(context).size.width*.25,
-      //                                       decoration: BoxDecoration(
-      //                                         color: const Color(0xFFD3D8FF),
-      //                                         borderRadius: BorderRadius.circular(10.0),
-      //                                       ),
-      //                                       child: Center(
-      //                                         child: Column(
-      //                                           mainAxisAlignment: MainAxisAlignment.center,
-      //                                           crossAxisAlignment: CrossAxisAlignment.center,
-      //                                           children: [
-      //                                             Center(
-      //                                               child: Text(
-      //                                                 widget.events.location,
-      //                                                 style: const TextStyle(
-      //                                                   color: Color(0xFF808CFF),
-      //                                                   fontWeight: FontWeight.w900,
-      //                                                   fontSize: 14,
-      //                                                 ),
-      //                                               ),
-      //                                             ),
-      //                                             const SizedBox(height: 3,),
-      //                                             Center(
-      //                                               child: Text(
-      //                                                 "$date $month $year",
-      //                                                 style: const TextStyle(
-      //                                                   color: Color(0xFF808CFF),
-      //                                                   fontWeight: FontWeight.w900,
-      //                                                   fontSize: 14,
-      //                                                 ),
-      //                                               ),
-      //                                             ),
-      //                                           ],
-      //                                         ),
-      //                                       ),
-      //                                     ),
-      //                                   ],
-      //                                 ),
-      //                               ),
-      // //Edit & Delete buttons
-      // // Row(
-      // // children: [
-      // // if(userId==createdId)
-      // // SizedBox(
-      // // width: 60,
-      // // child: ElevatedButton(
-      // // style: ElevatedButton.styleFrom(
-      // // primary: const Color(0xFF021096),
-      // // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      // // minimumSize: const Size(35,25),
-      // // ),
-      // // child: const Text('Edit',
-      // // style: TextStyle(
-      // // color: Colors.white,
-      // // fontSize: 14,
-      // // fontWeight: FontWeight.w500,
-      // // ),),
-      // // onPressed: (){
-      // // Navigator.of(context).push(
-      // // MaterialPageRoute(
-      // // builder: (BuildContext context)=> EditPostEvents(post: widget.post,refetchPosts: widget.refetchPosts,)));
-      // // },
-      // // ),
-      // // ),
-      // // const SizedBox(
-      // // width: 8,
-      // // ),
-      // // if(userId==createdId)
-      // // Mutation(
-      // // options: MutationOptions(
-      // // document: gql(deleteEvent)
-      // // ),
-      // // builder:(
-      // // RunMutation runMutation,
-      // // QueryResult? result,
-      // // ){
-      // // if (result!.hasException){
-      // // print(result.exception.toString());
-      // // }
-      // // if(result.isLoading){
-      // // return const CircularProgressIndicator();
-      // // }
-      // // return SizedBox(
-      // // width: 65,
-      // // child: ElevatedButton(
-      // // style: ElevatedButton.styleFrom(
-      // // primary: const Color(0xFF021096),
-      // // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      // // minimumSize: const Size(35,25),
-      // // ),
-      // // onPressed: (){
-      // // runMutation({
-      // // "eventId":widget.post.id
-      // // });
-      // // },
-      // // child: const Text('Delete',
-      // // style: TextStyle(
-      // // color: Colors.white,
-      // // fontSize: 14,
-      // // fontWeight: FontWeight.w500,
-      // // ),)
-      // // ),
-      // // );
-      // // }
-      // // ),
-      // // ],
-      // // ),
-      //                             ],
-      //                           ),
-      //                         ]
-      //                     ),
-      //                   ),
-      //                 )
-      //             ),
-                  child: EventsCard(context, refetch, refetch, tags,values, userId,values.createdById,'homePage'),
-                ),
-                builder: (_, collapsed, expanded) =>
-                    Expandable(
-                      collapsed: collapsed, expanded: expanded,)
-            ),
-          ),
-          // ),
-        ),
+        child: EventsCard(context, refetch, widget.refetchPosts,createdAt, tags,values, userId,values.createdById),
       );
     }
     );
@@ -456,7 +111,8 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
 
 class NetOpHomeCard extends StatefulWidget {
   final NetOpPost netops;
-  NetOpHomeCard({required this.netops});
+  final Future<QueryResult?> Function()? refetchPosts;
+  NetOpHomeCard({required this.netops, required this.refetchPosts});
 
   @override
   _NetOpHomeCardState createState() => _NetOpHomeCardState();
@@ -471,6 +127,7 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
   late bool isStared;
   late String userId;
   late String createdById;
+  late DateTime createdAt;
   TextEditingController noUse = TextEditingController();
 
   @override
@@ -501,379 +158,14 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     isStared = result.data!["getNetop"]["isStared"];
     likeCount = result.data!["getNetop"]["likeCount"];
     isLiked = result.data!["getNetop"]["isLiked"];
+    createdAt = DateTime.parse(result.data!['getNetop']['createdAt']);
     userId = result.data!["getMe"]["id"];
     createdById = result.data!["getNetop"]["createdBy"]["id"];
     var values = widget.netops;
-    return ExpandableNotifier(
-      child: ScrollOnExpand(
-        child: ExpandablePanel(
-            theme: const ExpandableThemeData(
-              tapBodyToCollapse: true,
-              tapBodyToExpand: true,
-            ),
-
-            expanded: SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 1,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 1,
-                child: Single_Post(post: widget.netops,isStarred: isStared,refetch: refetch,)),
-
-            collapsed: Padding(
-              padding: const EdgeInsets.fromLTRB(2, 2, 2, 3),
-              // child: Card(
-              //     clipBehavior: Clip.antiAlias,
-              //     elevation: 5.0,
-              //     color: const Color(0xFF808CFF),
-              //     child: Padding(
-              //       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
-              //       child: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.stretch,
-              //           children: [
-              //             Column(
-              //               crossAxisAlignment: CrossAxisAlignment.start,
-              //               children: [
-              //                 //Title & Star
-              //                 Row(
-              //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //                   children: [
-              //                     //Title
-              //                     SizedBox(
-              //                       width: MediaQuery
-              //                           .of(context)
-              //                           .size
-              //                           .width * 0.5,
-              //                       child: SubHeading(widget.netops.title)
-              //                     ),
-              //
-              //                     Mutation(
-              //                         options:MutationOptions(
-              //                             document: gql(toggleStarNetop)
-              //                         ),
-              //                         builder: (
-              //                             RunMutation runMutation,
-              //                             QueryResult? result,
-              //                             ){
-              //                           if (result!.hasException){
-              //                             print(result.exception.toString());
-              //                           }
-              //                           return IconButton(
-              //                             onPressed: (){
-              //                               runMutation({
-              //                                 "toggleStarNetopId":widget.netops.id
-              //                               });
-              //                               refetch!();
-              //                             },
-              //                             icon: isStared? const Icon(Icons.star): const Icon(Icons.star_border),
-              //                             color: isStared? Colors.amber:Colors.white,
-              //                           );
-              //                         }
-              //                     ),
-              //                   ],
-              //                 ),
-              //
-              //                 //Images
-              //                 if(widget.netops.imgUrl==null)
-              //                   Text(
-              //                     widget.netops.description.length > 250
-              //                         ? widget.netops.description.substring(
-              //                         0, 250) + '...'
-              //                         : widget.netops.description,
-              //                     style: const TextStyle(
-              //                       fontSize: 15.0,
-              //                     ),
-              //                   ),
-              //                 if(widget.netops.imgUrl !=null)
-              //                   SizedBox(
-              //                       width: 400.0,
-              //                       child: Image.network(
-              //                           widget.netops.imgUrl!,
-              //                           height: 150.0)
-              //                   ),
-              //
-              //                 //Rows for Tags, Icons
-              //                 Padding(
-              //                   padding: const EdgeInsets.fromLTRB(0, 5, 12, 5),
-              //                   child: Row(
-              //                     children: [
-              //                       Column(
-              //                         crossAxisAlignment: CrossAxisAlignment.start,
-              //                         children: [
-              //                           //Tags
-              //                           Padding(
-              //                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-              //                             child: SizedBox(
-              //                               width: 200.0,
-              //                               height: 20.0,
-              //                               child: ListView(
-              //                                 scrollDirection: Axis.horizontal,
-              //                                 children: tags.map((tag) =>
-              //                                     SizedBox(
-              //                                       height: 25.0,
-              //                                       child: Padding(
-              //                                         padding: const EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-              //                                         child: TagButtons(tag, context)
-              //                                       ),
-              //                                     )).toList(),
-              //                               ),
-              //                             ),
-              //                           ),
-              //
-              //                           //Icons
-              //                           Padding(
-              //                             padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-              //                             child: Row(
-              //                               children: [
-              //                                 //Share Icon
-              //                                 Ink(
-              //                                   decoration: const ShapeDecoration(
-              //                                       color: Color(0xFFFFFFFF),
-              //                                       shape: CircleBorder(
-              //                                         side: BorderSide.none,
-              //                                       )
-              //                                   ),
-              //                                   height: 36,
-              //                                   width: 36,
-              //                                   child: Center(
-              //                                     child: IconButton(onPressed: () =>
-              //                                     {
-              //                                       print('shared')
-              //                                     }, icon: const Icon(Icons.share),
-              //                                       iconSize: 20,
-              //                                       color:const Color(0xFF021096),),
-              //                                   ),
-              //                                 ),
-              //                                 const SizedBox(width: 5,),
-              //
-              //                                 //Reminder
-              //                                 Ink(
-              //                                   decoration: const ShapeDecoration(
-              //                                       color: Colors.white,
-              //                                       shape: CircleBorder(
-              //                                         side: BorderSide.none,
-              //                                       )
-              //                                   ),
-              //                                   height: 36,
-              //                                   width: 36,
-              //                                   child: Center(
-              //                                     child: IconButton(onPressed: () =>
-              //                                     {
-              //                                       print('remainder added')
-              //                                     },
-              //                                       icon: const Icon(Icons.access_alarm),
-              //                                       iconSize: 20,
-              //                                       color: const Color(0xFF021096),),
-              //                                   ),
-              //                                 ),
-              //                                 const SizedBox(width: 5,),
-              //
-              //                                 Mutation(
-              //                                     options:MutationOptions(
-              //                                         document: gql(toggleLike)
-              //                                     ),
-              //                                     builder: (
-              //                                         RunMutation runMutation,
-              //                                         QueryResult? result,
-              //                                         ){
-              //                                       if (result!.hasException){
-              //                                         print(result.exception.toString());
-              //                                       }
-              //                                       return Ink(
-              //                                         decoration: const ShapeDecoration(
-              //                                             color: Color(0xFFFFFFFF),
-              //                                             shape: CircleBorder(
-              //                                               side: BorderSide.none,
-              //                                             )
-              //                                         ),
-              //                                         height: 36,
-              //                                         width: 36,
-              //                                         child: Center(
-              //                                           child: IconButton(onPressed: () =>
-              //                                           {
-              //                                             Navigator.push(
-              //                                               context,
-              //                                               MaterialPageRoute(
-              //                                                   builder: (context) =>
-              //                                                       Comments(post: widget
-              //                                                           .netops,)),
-              //                                             ),
-              //                                             print('commented'),
-              //                                           }, icon: const Icon(Icons.comment),
-              //                                             iconSize: 20,
-              //                                             color: const Color(0xFF021096),),
-              //                                         ),
-              //                                       );
-              //                                     }
-              //                                 ),
-              //                                 const SizedBox(width: 5,),
-              //
-              //                                 Mutation(
-              //                                     options:MutationOptions(
-              //                                         document: gql(toggleLike)
-              //                                     ),
-              //                                     builder: (
-              //                                         RunMutation runMutation,
-              //                                         QueryResult? result,
-              //                                         ){
-              //                                       if (result!.hasException){
-              //                                         print(result.exception.toString());
-              //                                       }
-              //                                       return Ink(
-              //                                         decoration: const ShapeDecoration(
-              //                                             color: Color(0xFFFFFFFF),
-              //                                             shape: CircleBorder(
-              //                                               side: BorderSide.none,
-              //                                             )
-              //                                         ),
-              //                                         height: 36,
-              //                                         width: 36,
-              //                                         child: Center(
-              //                                           child: IconButton(
-              //                                             onPressed: () =>
-              //                                             {
-              //                                               print('remainder added')
-              //                                             },
-              //                                             icon: const Icon(Icons.thumb_up),
-              //                                             iconSize: 20,
-              //                                             color: const Color(0xFF021096),
-              //                                           ),
-              //                                         ),
-              //                                       );
-              //                                     }
-              //                                 ),
-              //
-              //                                 Container(
-              //                                   margin: const EdgeInsets.only(left: 10.0),
-              //                                   child: Text(
-              //                                     "$likeCount likes",
-              //                                     style: const TextStyle(
-              //                                       color: Color(0xFFFFFFFF),
-              //                                       fontWeight: FontWeight.bold,
-              //                                       fontSize: 16.0,
-              //                                     ),
-              //                                   ),
-              //                                 ),
-              //
-              //                               ],
-              //                             ),
-              //                           ),
-              //
-              //                           //Button Row
-              //                           // Row(
-              //                           //   children: [
-              //                           //     if(userId==createdId)
-              //                           //       SizedBox(
-              //                           //         width: 60,
-              //                           //         child: ElevatedButton(
-              //                           //           style: ElevatedButton.styleFrom(
-              //                           //             primary: Color(0xFF021096),
-              //                           //             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              //                           //             minimumSize: Size(35,25),
-              //                           //           ),
-              //                           //           child: Text('Edit',
-              //                           //             style: TextStyle(
-              //                           //               color: Colors.white,
-              //                           //               fontSize: 14,
-              //                           //               fontWeight: FontWeight.bold,
-              //                           //             ),),
-              //                           //           onPressed: (){
-              //                           //             Navigator.of(context).push(
-              //                           //                 MaterialPageRoute(
-              //                           //                     builder: (BuildContext context)=> EditPost(post: widget.post,refetchPosts: widget.refetchPosts,)));
-              //                           //           },
-              //                           //         ),
-              //                           //       ),
-              //                           //     SizedBox(width: 8,),
-              //                           //
-              //                           //     if(userId==createdId)
-              //                           //       Mutation(
-              //                           //           options: MutationOptions(
-              //                           //               document: gql(deleteNetop)
-              //                           //           ),
-              //                           //           builder:(
-              //                           //               RunMutation runMutation,
-              //                           //               QueryResult? result,
-              //                           //               ){
-              //                           //             if (result!.hasException){
-              //                           //               print(result.exception.toString());
-              //                           //             }
-              //                           //             if(result.isLoading){
-              //                           //               return CircularProgressIndicator();
-              //                           //             }
-              //                           //             return SizedBox(
-              //                           //               width: 65,
-              //                           //               child: ElevatedButton(
-              //                           //                   style: ElevatedButton.styleFrom(
-              //                           //                     primary: Color(0xFF021096),
-              //                           //                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              //                           //                     minimumSize: Size(35,25),
-              //                           //                   ),
-              //                           //                   onPressed: (){
-              //                           //                     runMutation({
-              //                           //                       "eventId":widget.post.id
-              //                           //                     });
-              //                           //                   },
-              //                           //                   child: Text('Delete',
-              //                           //                     style: TextStyle(
-              //                           //                       color: Colors.white,
-              //                           //                       fontSize: 14,
-              //                           //                       fontWeight: FontWeight.w500,
-              //                           //                     ),)
-              //                           //               ),
-              //                           //             );
-              //                           //           }
-              //                           //       ),
-              //                           //     SizedBox(width: 8,),
-              //                           //
-              //                           //     SizedBox(
-              //                           //       child: ElevatedButton(
-              //                           //         child: Text('Report',
-              //                           //           style: TextStyle(
-              //                           //             color: Colors.white,
-              //                           //             fontSize: 14,
-              //                           //             fontWeight: FontWeight.w500,
-              //                           //           ),),
-              //                           //         style: ElevatedButton.styleFrom(
-              //                           //           primary: Color(0xFF021096),
-              //                           //           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              //                           //           minimumSize: Size(35,25),
-              //                           //         ),
-              //                           //         onPressed: (){
-              //                           //           return showAlertDialog(context);
-              //                           //         },
-              //                           //       ),
-              //                           //     ),
-              //                           //   ],
-              //                           // )
-              //                         ],
-              //                       ),
-              //                     ],
-              //                   ),
-              //                 ),
-              //
-              //               ],
-              //             ),
-              //           ]
-              //       ),
-              //     )
-              // ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
-                // child: Container(),
-                child: NetopsCard(context, refetch, refetch, isStared, tags, userId,createdById,noUse, values,'HomePage'),
-              ),
-            ),
-            builder: (_, collapsed, expanded) =>
-                Expandable(
-                  collapsed: collapsed, expanded: expanded,)
-        ),
-      ),
-      // ),
-    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
+      child: NetopsCard(context, refetch, widget.refetchPosts, isStared,isLiked,likeCount,createdAt, tags, userId,createdById,noUse, values,'HomePage'),
+        );
     });
   }
 }
@@ -891,7 +183,7 @@ class AnnouncementHomeCard extends StatefulWidget {
 
 class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
 
-  var images;
+  List<String>? images;
   Future<QueryResult?> Function()? refetch;
 
   @override
@@ -969,7 +261,7 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
               //     ],
               //   ),
               // ),
-              child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
+              child: AnnouncementsCards(context,'','',refetch,widget.announcements,'homePage'),
             ),
             builder: (_, collapsed, expanded) =>
                 Expandable(
@@ -977,7 +269,6 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
         ),
       ),
     );
-
   }
 }
 
