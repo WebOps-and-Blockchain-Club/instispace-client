@@ -1,46 +1,68 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:client/graphQL/hostelProfile.dart';
 import 'package:client/graphQL/hostelProfile.dart';
 import 'package:client/graphQL/netops.dart';
+import 'package:client/graphQL/query.dart';
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
+// import 'package:client/screens/home/Announcements/AnnouncementCard.dart';
 import 'package:client/screens/home/Announcements/SingleAnnouncement.dart';
+import 'package:client/screens/tagPage.dart';
+import 'package:client/widgets/NetOpCards.dart';
+import 'package:client/widgets/tagButtons.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../graphQL/auth.dart';
 import '../../graphQL/hostelProfile.dart';
+import '../../widgets/announcementCard.dart';
+import '../../widgets/eventCards.dart';
+import '../../widgets/titles.dart';
 import '../Events/singlepost.dart';
+import 'Announcements/expand_description.dart';
+import 'networking_and _opportunities/comments.dart';
 import 'networking_and _opportunities/singlepost.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:client/widgets/marquee.dart';
 
 
 
 class EventsHomeCard extends StatefulWidget {
   final Post events;
-  EventsHomeCard({required this.events});
+  final Future<QueryResult?> Function()? refetchPosts;
+  EventsHomeCard({required this.events,required this.refetchPosts});
   @override
   _EventsHomeCardState createState() => _EventsHomeCardState();
 }
 
 class _EventsHomeCardState extends State<EventsHomeCard> {
 
-  String toggleStar=netopsQuery().toggleStar;
   String getEvent = eventsQuery().getEvent;
-  String toggelStarEvent = homeQuery().toggelStarEvent;
+  String toggleLike = eventsQuery().toggleLike;
+  String toggleStarEvent = eventsQuery().toggleStar;
    late bool isStared;
+  late bool isLiked;
+  late String userId;
    String month = '';
+  String date = '';
+  String year = '';
+  late DateTime createdAt;
 
 
   @override
   Widget build(BuildContext context) {
-
+    var likeCount;
     List<Tag>tags = widget.events.tags;
+    DateTime dateTime = DateTime.parse(widget.events.time);
+    TextEditingController noUse = TextEditingController();
     return Query(
         options: QueryOptions(
         document: gql(getEvent),
-          variables: {"eventId":widget.events.id}
+          variables: {"eventId" : widget.events.id}
     ),
     builder:(QueryResult result, {fetchMore, refetch}) {
       if (result.hasException) {
@@ -59,6 +81,10 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
         );
       }
       isStared = result.data!["getEvent"]["isStared"];
+      likeCount=result.data!["getEvent"]["likeCount"];
+      isLiked=result.data!["getEvent"]["isLiked"];
+      createdAt = DateTime.parse(result.data!['getEvent']['createdAt']);
+      userId = result.data!["getMe"]["id"];
       if(widget.events.time.split("-")[1] == "01") {month = "JAN";}
       if(widget.events.time.split("-")[1] == "02") {month = "FEB";}
       if(widget.events.time.split("-")[1] == "03") {month = "MARCH";}
@@ -72,118 +98,11 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
       if(widget.events.time.split("-")[1] == "11") {month = "NOV";}
       if(widget.events.time.split("-")[1] == "12") {month = "DEC";}
 
+      var values = widget.events;
+
       return Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-        child: InkWell(
-          onTap: (){
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SinglePost(refetch: refetch, post: widget.events, isStarred: isStared,)));
-          },
-          child: Card(
-            color: Colors.blue[800],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0)),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.events.title
-                    ),
-                    Mutation(
-                        options:MutationOptions(
-                            document: gql(toggelStarEvent)
-                        ),
-                        builder: (
-                            RunMutation runMutation,
-                            QueryResult? result,
-                            ){
-                          if (result!.hasException){
-                            print(result.exception.toString());
-                          }
-                          return IconButton(
-                            onPressed: (){
-                              runMutation({
-                                "eventId":widget.events.id
-                              });
-                              refetch!();
-                            },
-                            icon: isStared?Icon(Icons.star):Icon(Icons.star_border),
-                            color: isStared? Colors.amber:Colors.grey,
-                          );
-                        }
-                    ),
-                  ],
-                ),
-                // Text(
-                //   widget.events.location
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 240.0,
-                      height: 30.0,
-                      child: ListView(
-                        scrollDirection: Axis
-                            .horizontal,
-                        children: tags.map((tag) =>
-                            SizedBox(
-                              height: 25.0,
-                              child: Padding(
-                                padding: const EdgeInsets
-                                    .fromLTRB(
-                                    2.0, 0.0, 2.0,
-                                    0.0),
-                                child: ElevatedButton(
-                                    onPressed: () =>
-                                    {
-                                    },
-                                    style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .all(
-                                            Colors
-                                                .grey),
-                                        shape: MaterialStateProperty
-                                            .all<
-                                            RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(
-                                                  30.0),
-                                            ))
-                                    ),
-                                    child: Text(
-                                      tag.Tag_name,
-                                    )),
-                              ),
-                            )).toList(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.lightBlueAccent,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            children: [
-                              Text("${widget.events.time.split("-").last.split("T").first} $month"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+        child: EventsCard(context, refetch, widget.refetchPosts,createdAt, tags,values, userId,values.createdById),
       );
     }
     );
@@ -194,7 +113,8 @@ class _EventsHomeCardState extends State<EventsHomeCard> {
 
 class NetOpHomeCard extends StatefulWidget {
   final NetOpPost netops;
-  NetOpHomeCard({required this.netops});
+  final Future<QueryResult?> Function()? refetchPosts;
+  NetOpHomeCard({required this.netops, required this.refetchPosts});
 
   @override
   _NetOpHomeCardState createState() => _NetOpHomeCardState();
@@ -202,19 +122,24 @@ class NetOpHomeCard extends StatefulWidget {
 
 class _NetOpHomeCardState extends State<NetOpHomeCard> {
 
-  String toggleStar=netopsQuery().toggleStar;
-  String toggelStarEvent = homeQuery().toggelStarEvent;
-  String getMeHome = homeQuery().getMeHome;
+  String toggleStarNetop = netopsQuery().toggleStar;
+  String toggleLike = netopsQuery().toggleLike;
+  late bool isLiked;
   String getNetop = netopsQuery().getNetop;
   late bool isStared;
+  late String userId;
+  late String createdById;
+  late DateTime createdAt;
+  TextEditingController noUse = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     List<Tag>tags = widget.netops.tags;
+    var likeCount;
     return Query(
         options: QueryOptions(
         document: gql(getNetop),
-          variables: {"getNetopNetopId":widget.netops.id}
+          variables: {"getNetopNetopId" : widget.netops.id}
     ),
     builder:(QueryResult result, {fetchMore, refetch}) {
     if (result.hasException) {
@@ -233,101 +158,16 @@ class _NetOpHomeCardState extends State<NetOpHomeCard> {
     );
     }
     isStared = result.data!["getNetop"]["isStared"];
+    likeCount = result.data!["getNetop"]["likeCount"];
+    isLiked = result.data!["getNetop"]["isLiked"];
+    createdAt = DateTime.parse(result.data!['getNetop']['createdAt']);
+    userId = result.data!["getMe"]["id"];
+    createdById = result.data!["getNetop"]["createdBy"]["id"];
+    var values = widget.netops;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-      child: InkWell(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Single_Post(post: widget.netops, isStarred: isStared, refetch: refetch,)));
-        },
-        child: Card(
-          color: Colors.blue[800],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0)),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      widget.netops.title
-                  ),
-                  Mutation(
-                      options:MutationOptions(
-                          document: gql(toggelStarEvent)
-                      ),
-                      builder: (
-                          RunMutation runMutation,
-                          QueryResult? result,
-                          ){
-                        if (result!.hasException){
-                          print(result.exception.toString());
-                        }
-                        return IconButton(
-                          onPressed: (){
-                            runMutation({
-                              "eventId":widget.netops.id
-                            });
-                            refetch!();
-                          },
-                          icon: isStared?const Icon(Icons.star):const Icon(Icons.star_border),
-                          color: isStared? Colors.amber:Colors.grey,
-                        );
-                      }
-                  ),
-                ],
-              ),
-              // Text(
-              //     widget.netops.location
-              // ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 240.0,
-                    height: 30.0,
-                    child: ListView(
-                      scrollDirection: Axis
-                          .horizontal,
-                      children: tags.map((tag) =>
-                          SizedBox(
-                            height: 25.0,
-                            child: Padding(
-                              padding: const EdgeInsets
-                                  .fromLTRB(
-                                  2.0, 0.0, 2.0,
-                                  0.0),
-                              child: ElevatedButton(
-                                  onPressed: () =>
-                                  {
-                                  },
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty
-                                          .all(
-                                          Colors
-                                              .grey),
-                                      shape: MaterialStateProperty
-                                          .all<
-                                          RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius
-                                                .circular(
-                                                30.0),
-                                          ))
-                                  ),
-                                  child: Text(
-                                    tag.Tag_name,
-                                  )),
-                            ),
-                          )).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+      padding: const EdgeInsets.fromLTRB(0,0,0,10.0),
+      child: NetopsCard(context, refetch, widget.refetchPosts, isStared,isLiked,likeCount,createdAt, tags, userId,createdById,noUse, values,'HomePage'),
+        );
     });
   }
 }
@@ -344,30 +184,121 @@ class AnnouncementHomeCard extends StatefulWidget {
 }
 
 class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
+
+  List<String>? images;
+  Future<QueryResult?> Function()? refetch;
+  String getMe = homeQuery().getMe;
+  late String userId;
   @override
   Widget build(BuildContext context) {
-    return  InkWell(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => SingleAnnouncement(announcement: widget.announcements,)));
-      },
-      child: Card(
-        color: Colors.blue[800],
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)),
-        child: SizedBox(
-          width: 450.0,
-          height: 50.0,
-          child: Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Text(widget.announcements.title),
-          ),
-        ),
+    if (widget.announcements.images != null) {
+      images = widget.announcements.images!.split(" AND ");
+    }
+    return Query(
+      options: QueryOptions(
+        document: gql(getMe)
       ),
+      builder: (QueryResult result, {fetchMore, refetch}){
+        if (result.hasException) {
+          print(result.exception.toString());
+          return Text(result.exception.toString());
+        }
+        if (result.isLoading) {
+          return const Card(
+              clipBehavior: Clip.antiAlias,
+              elevation: 5.0,
+              color: Color(0xFFF9F6F2),
+              child: SizedBox(
+                height: 60,
+                width: 20,
+              )
+          );
+        }
+        userId = result.data!["getMe"]["id"];
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.5),
+            ),
+            color: const Color(0xFFFFFFFF),
+            elevation: 3,
+            borderOnForeground: true,
+            shadowColor: Colors.black54,
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF42454D),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8.5),
+                        topRight: Radius.circular(8.5)),
+                  ),
+                  // color: const Color(0xFF42454D),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //Title
+                      Padding(
+                        //Conditional Padding
+                          padding: ( userId ==widget.announcements.createdByUserId)
+                              ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
+                              : const EdgeInsets.fromLTRB(18, 10, 0, 10),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            child: MarqueeWidget(
+                              direction: Axis.horizontal,
+                              child: Text(widget.announcements.title,
+                                style: TextStyle(
+                                  //Conditional Font Size
+                                  fontWeight: FontWeight.bold,
+                                  //Conditional Font Size
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+
+                // if (images != null)
+                //   ClipRect(
+                //     child: SizedBox(
+                //       width: 400.0,
+                //       child: CarouselSlider(
+                //         items: images
+                //             .map((item) => Center(
+                //               child: Image.network(
+                //                 item,
+                //                 fit: BoxFit.cover,
+                //                 width: 400,
+                //               ),
+                //             ))
+                //             .toList(),
+                //         options: CarouselOptions(
+                //           enableInfiniteScroll: false,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: DescriptionTextWidget(text: widget.announcements.description,),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
-
 
 class HostelAmenity extends StatefulWidget {
 
@@ -378,25 +309,57 @@ class HostelAmenity extends StatefulWidget {
   _HostelAmenityState createState() => _HostelAmenityState();
 }
 
+//Hostel Amenity Card
 class _HostelAmenityState extends State<HostelAmenity> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Column(
-        children: [
-          Center(child: Text(widget.amenities.name)),
-          Text(widget.amenities.description),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+        child: Column(
+          children: [
+            //Name
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
+              child: Center(
+                child: Row(
+                  children: [
+                    Text(widget.amenities.name,
+                      style: const TextStyle(
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+              ),
+                  ],
+                ),
+              ),
+            ),
+
+            //Description
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
+              child: Row(
+                children: [
+                  Text(widget.amenities.description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
 
 class HostelContacts extends StatefulWidget {
 
@@ -407,27 +370,103 @@ class HostelContacts extends StatefulWidget {
   _HostelContactsState createState() => _HostelContactsState();
 }
 
+//Hostel Contacts Card
 class _HostelContactsState extends State<HostelContacts> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(child: Text(widget.contacts.type)),
-          Text(widget.contacts.name),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                launch('tel:${widget.contacts.contact}');
-              },
-                child: Text(widget.contacts.contact)),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //Content
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //Names
+                Column(
+                  children: [
+                    //Designation
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(widget.contacts.type,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //Contact Name
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(widget.contacts.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                //Mobile
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+                  child: SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          launch('tel:${widget.contacts.contact}');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFF42454D),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: const Size(50, 35),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.call,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+
+                            const SizedBox(
+                              width: 5,
+                            ),
+
+                            Text(widget.contacts.contact,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -443,28 +482,91 @@ class EmergencyContacts extends StatefulWidget {
   _EmergencyContactsState createState() => _EmergencyContactsState();
 }
 
+//Emergency Contact List
 class _EmergencyContactsState extends State<EmergencyContacts> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.blue,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: Text(widget.Emergencycontacts.name)),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    launch('tel:${widget.Emergencycontacts.contact}');
-                  },
-                  child: Text(widget.Emergencycontacts.contact)),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+      child: Card(
+        elevation: 3,
+        color: const Color(0xFFFFFFFF),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)),
+
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //Name
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
+                child: SizedBox(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.30,
+                  child: Wrap(
+                      children: [Text(widget.Emergencycontacts.name,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),]
+                  ),
+                ),
+              ),
+
+              //Mobile
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
+                child: SizedBox(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.35,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      launch('tel:${widget.Emergencycontacts.contact}');
+                    },
+
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFF42454D),
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      minimumSize: const Size(50, 35),
+                    ),
+
+                    child: Center(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.call,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+
+                          const SizedBox(
+                            width: 5,
+                          ),
+
+                          Text(widget.Emergencycontacts.contact,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

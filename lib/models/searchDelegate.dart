@@ -22,7 +22,7 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(onPressed: () {
       close(context, query);
-    }, icon: Icon(Icons.arrow_back)
+    }, icon: const Icon(Icons.arrow_back)
     );
   }
 

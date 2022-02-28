@@ -1,36 +1,37 @@
 class eventsQuery{
   String getEvents="""
-query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean, \$filteringCondition: fileringConditions){
-  getEvents(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
-    list {
+  query(\$getEventsTake: Float!, \$lastEventId: String!, \$orderByLikes: Boolean, \$filteringCondition: fileringConditions,\$search: String){
+  getEvents(take: \$getEventsTake, lastEventId: \$lastEventId, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition, search: \$search) {
+  list {
       id
-      createdAt
-      title
-      content
-      photo
-      isHidden
-      time
-      location
-      likeCount
-      isStared
-      linkName
-      linkToAction
-      tags {
-        id
+        createdAt
         title
-        category
-      }
-      isLiked
-      createdBy {
-        id
-      }
+        content
+        photo
+        location
+        time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdAt
+        createdBy {
+          id
+          name
+        }
     }
     total
   }
   getMe {
     id
     role
-  }
+  } 
 }
 """;
   String toggleLike = """
@@ -52,12 +53,26 @@ query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean, \$filteringCondit
   query(\$eventId: String!){
 getEvent(EventId: \$eventId) {
   id
-  isStared
-  isLiked
-  createdBy {
-    id
-  }
-  likeCount
+        createdAt
+        title
+        content
+        photo
+        location
+        time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdBy {
+          id
+          name
+        }
 },
 getMe {
     id
@@ -70,8 +85,8 @@ getMe {
 }
   """;
   String editEvent="""
-  mutation(\$editEventData: editEventInput!, \$eventId: String!, \$editEventImage: [Upload!]){
-  editEvent(EditEventData: \$editEventData, EventId: \$eventId, Image: \$editEventImage)
+  mutation(\$editEventData: editEventInput!, \$eventId: String!, \$image: [Upload!]){
+  editEvent(EditEventData: \$editEventData, EventId: \$eventId, Image: \$image)
 }
   """;
 }

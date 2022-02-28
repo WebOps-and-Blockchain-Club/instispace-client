@@ -1,7 +1,7 @@
 class Queries{
   String getMyQueries = """
-  query(\$skip: Float!, \$take: Float!, \$orderByLikes: Boolean){
-  getMyQuerys(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes) {
+  query GetMyQuerys(\$lastEventId: String!, \$take: Float!, \$search: String, \$orderByLikes: Boolean) {
+  getMyQuerys(lastEventId: \$lastEventId, take: \$take, search: \$search, OrderByLikes: \$orderByLikes) {
     queryList {
       id
       title
@@ -9,6 +9,7 @@ class Queries{
       content
       isLiked
       likeCount
+      createdAt
       createdBy {
         roll
         name
@@ -32,8 +33,8 @@ class Queries{
 }
   """;
   String createQuery="""
-  mutation(\$createQuerysInput: createQuerysInput!, \$image: Upload, \$attachments: [Upload!]){
-  createMyQuery(createQuerysInput: \$createQuerysInput, Image: \$image, Attachments: \$attachments)
+  mutation(\$createQuerysInput: createQuerysInput!, \$image: Upload){
+  createMyQuery(createQuerysInput: \$createQuerysInput, Image: \$image)
 }
   """;
   String toggleLike="""
@@ -60,10 +61,10 @@ class Queries{
 }
   """;
   String searchQuery ="""
-  query(\$skip: Float!, \$take: Float!, \$search: String!){
-  searchQueries(skip: \$skip, take: \$take, search: \$search) {
+  query SearchQueries(\$lastEventId: String!, \$take: Float!, \$search: String!, \$orderByLikes: Boolean) {
+  searchQueries(lastEventId: \$lastEventId, take: \$take, search: \$search, OrderByLikes: \$orderByLikes) {
     queryList {
-      id
+       id
       title
       photo
       content
@@ -77,12 +78,11 @@ class Queries{
     }
     total
   }
- 
 }
   """;
   String editQuery = """
-  mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!, \$attachments: [Upload!], \$image: Upload){
-  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData, Attachments: \$attachments, Image: \$image)
+  mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!, \$image: Upload){
+  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData, Image: \$image)
 }
   """;
 }

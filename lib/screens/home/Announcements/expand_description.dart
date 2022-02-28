@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -21,9 +22,9 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   void initState() {
     super.initState();
 
-    if (widget.text.length > 200) {
-      firstHalf = widget.text.substring(0, 200);
-      secondHalf = widget.text.substring(200, widget.text.length);
+    if (widget.text.length > 100) {
+      firstHalf = widget.text.substring(0, 100);
+      secondHalf = widget.text.substring(100, widget.text.length);
     } else {
       firstHalf = widget.text;
       secondHalf = "";
@@ -32,26 +33,25 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+    return Container(
       child: secondHalf.isEmpty
-          ? new MarkdownBody(
+          ?  MarkdownBody(
         data: firstHalf,
         shrinkWrap: true,
       )
-          : new Column(
+          : Column(
         children: <Widget>[
-          new MarkdownBody(
+          MarkdownBody(
               data:flag ? (firstHalf + "...") : (firstHalf + secondHalf),
             shrinkWrap: true,
           ),
-          new InkWell(
-            child: new Row(
+          InkWell(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                new Text(
+                Text(
                   flag ? "Read More" : "Read Less",
-                  style: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

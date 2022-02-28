@@ -59,6 +59,7 @@ class _SignUpState extends State<SignUp> {
               ),
               elevation: 0.0,
               backgroundColor: Colors.deepPurpleAccent,
+              automaticallyImplyLeading: true,
             ),
             body: Container(
               decoration: BoxDecoration(

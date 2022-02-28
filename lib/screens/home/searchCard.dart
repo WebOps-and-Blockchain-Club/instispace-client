@@ -1,6 +1,8 @@
 import 'package:client/graphQL/home.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/models/user.dart';
+import 'package:client/widgets/titles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -21,13 +23,21 @@ class _searchCardState extends State<searchCard> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => singleUser(user: user,)));
       },
-      child: Card(
-        child: Column(
-          children: [
-            Text(user.name),
-            Text(user.roll),
-            Text(user.hostelName),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0,0,0,10),
+        child: Card(
+          elevation: 3,
+          color: Color(0xFFFFFFFF),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12,10,0,10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SubHeading(user.name),
+                Text(user.roll),
+              ],
+            ),
+          ),
         ),
       ),
     );

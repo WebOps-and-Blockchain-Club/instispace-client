@@ -6,6 +6,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'editLost.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import 'package:client/widgets/marquee.dart';
 
 class LFCard extends StatelessWidget {
   final Future<QueryResult?> Function()? refetchPosts;
@@ -13,6 +16,11 @@ class LFCard extends StatelessWidget {
   final String userId;
   LFCard({required this.post,required this.userId,required this.refetchPosts});
   String resolveItem = LnFQuery().resolveItem;
+
+  List<String> testimages = ['https://picsum.photos/250','https://picsum.photos/251'];
+
+  // List<String> testTitles (category, name) = ['$category a $name'];
+
   @override
   Widget build(BuildContext context) {
     var time=dateTimeString(post.time);
@@ -26,139 +34,182 @@ class LFCard extends StatelessWidget {
       a="if you find";
       category="Lost";
     }
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.5),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          //Title Container
-          Container(
-            color: Color(0xFF6B7AFF),
-            child: Padding(
-              //Conditional Padding
-              padding: (userId==post.createdId)
-                  ? const EdgeInsets.fromLTRB(10, 0, 0, 0)
-                  : const EdgeInsets.fromLTRB(10, 8, 0, 8),
+          children: [
+            //Title Container
+            Container(
+              color: const Color(0xFF42454D),
+              child: Padding(
+                //Conditional Padding
+                padding: (userId==post.createdId)
+                    ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
+                    : const EdgeInsets.fromLTRB(18, 10, 0, 10),
 
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                //Title Row
-                children: [
-                  //Title
-                  Text(
-                    "$category a ${post.what}",
-                    style: TextStyle(
-                      //Conditional Font Size
-                      fontWeight: (userId==post.createdId)
-                          ? FontWeight.w700
-                          : FontWeight.bold,
-                      //Conditional Font Size
-                      fontSize: (userId==post.createdId)
-                          ? 18
-                          : 16,
-                      color: Colors.white,
+                  //Title Row
+                  children: [
+                    //Title
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: MarqueeWidget(
+                        direction: Axis.horizontal,
+                        child: Text("$category a ${post.what}",
+                          style: TextStyle(
+                            //Conditional Font Size
+                            fontWeight: (userId==post.createdId)
+                                ? FontWeight.w700
+                                : FontWeight.bold,
+                            //Conditional Font Size
+                            fontSize: (userId==post.createdId)
+                                ? 18
+                                : 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    //User Icons
+                    if(userId==post.createdId)
+                    Row(
+                      children: [
+                        //Resolved Button
+                        Mutation(
+                          options: MutationOptions(
+                            document: gql(resolveItem),
+                            onCompleted: (result){
+                              // print(result);
+                              if(result["resolveItem"]){
+                                refetchPosts!();
+                              }
+                            }
+                          ),
+                          builder: (RunMutation runMutation,
+                              QueryResult? result,){
+                            if (result!.hasException){
+                              print(result.exception.toString());
+                            }
+                            if(result.isLoading){
+                              return Center(
+                                  child: LoadingAnimationWidget.threeRotatingDots(
+                                    color: Colors.white,
+                                    size: 20,
+                                  ));
+                            }
+                            return IconButton(
+                                onPressed: (){
+                                  runMutation({
+                                    "resolveItemItemId":post.id,
+                                  });
+                                },
+                              icon: Icon(Icons.check_circle_outline),
+                              iconSize: 24,
+                              color: Colors.white,
+                              // color: Color(0xFFFF0000),
+                            );
+                          },
+                        ),
+
+                        //Edit Button
+                        IconButton(
+                          onPressed:()async{
+                            if(post.category=="LOST")
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context)=> EditLost(post: post,refetchPost: refetchPosts,)));
+                            if(post.category=="FOUND") {
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context)=> EditFound(post: post,refetchPost: refetchPosts,)));
+                            }
+                            refetchPosts!();
+                          },
+                          icon:Icon(Icons.edit),
+                          iconSize: 24,
+                          color: Colors.white,
+                          // color: Color(0xFFFF0000),
+                        )
+                      ],
+                    ),
+                  ],
+                )
+              ),
+            ),
+
+            //Image Container
+            if(post.imageUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              child: CarouselSlider(
+                items: post.imageUrl.map((item) => Container(
+                  child: Center(
+                    child: Image.network(item,
+                      fit: BoxFit.contain,
                     ),
                   ),
+                )
+                ).toList(),
+                options: CarouselOptions(
+                  enableInfiniteScroll: true,
+                  autoPlay: true,
+                ),
+              ),
+            ),
 
-                  //User Icons
-                  if(userId==post.createdId)
-                  Row(
+            //Location & Time & Contact
+              Material(
+              elevation: 3,
+              child: Container(
+                color: Color(0xFFFFFFFF),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //Resolved Button
-                      Mutation(
-                        options: MutationOptions(
-                          document: gql(resolveItem)
+                      Text("At ${post.location} & ${time}",
+                      style: TextStyle(
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.bold,
                         ),
-                        builder: (RunMutation runMutation,
-                            QueryResult? result,){
-                          if (result!.hasException){
-                            print(result.exception.toString());
-                          }
-                          if(result.isLoading){
-                            return CircularProgressIndicator();
-                          }
-                          return IconButton(
-                              onPressed: (){
-                                runMutation({
-                                  "resolveItemItemId":post.id,
-                                });
-                                refetchPosts!();
-                              },
-                            icon: Icon(Icons.check_circle_outline),
-                            iconSize: 24,
-                            color: Colors.white,
-                          );
-                        },
                       ),
-
-                      //Edit Button
-                      IconButton(
-                        onPressed:()async{
-                          if(post.category=="LOST")
-                            await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context)=> EditLost(post: post,refetchPost: refetchPosts,)));
-                          if(post.category=="FOUND")
-                            await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context)=> EditFound(post: post,refetchPost: refetchPosts,)));
-                          refetchPosts!();
-                        },
-                        icon:Icon(Icons.edit),
-                        iconSize: 24,
-                        color: Colors.white,
-                      )
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Text("Please contact me at ${post.contact} $a the item.",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                        child: Text(
+                          '$category by Anshul Mehta',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ],
-              )
-            ),
-          ),
-
-          //Image Container
-          if(post.imageUrl.isNotEmpty)
-          CarouselSlider(
-              items: post.imageUrl.map((item) => Container(
-                child: Center(
-                  child: Image.network(item,
-                    fit: BoxFit.cover,),
                 ),
-              )
-              ).toList(),
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
               ),
-          ),
-
-          //Location & Time & Contact
-          Container(
-            color: Color(0xFF6B7AFF),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("At ${post.location} & ${time}",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text("Please contact me at ${post.contact} $a the item",
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

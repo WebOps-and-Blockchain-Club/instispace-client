@@ -12,8 +12,8 @@ class AnnouncementMutations {
   """;
 
   String deleteAnnouncement = """
-   mutation(\$deleteAnnouncementAnnouncementId2: String!){
-    deleteAnnouncement(AnnouncementId: \$deleteAnnouncementAnnouncementId2)
-  }
+   mutation(\$announcementId: String!){
+  resolveAnnouncement(AnnouncementId: \$announcementId)
+}
   """;
 }

@@ -20,31 +20,43 @@ import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'Hostel_Section/home.dart';
+import 'feedback_type_pages/about_us.dart';
+import 'feedback_type_pages/contact_us.dart';
+import 'feedback_type_pages/feedback.dart';
+import 'home.dart';
+import 'package:bottom_drawer/bottom_drawer.dart';
 import 'hostel_profile.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class mainHome extends StatefulWidget {
+  const mainHome({Key? key}) : super(key: key);
   static const routeName = "/home";
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _mainHomeState createState() => _mainHomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _mainHomeState extends State<mainHome> {
   late AuthService _auth;
-  // late StoreMe _storeMe;
-  String getMe = homeQuery().getMe;
-  String getMeHome = homeQuery().getMeHome;
+  int _selectedIndex = 2;
+  static const List<Widget> _widgetOptions = <Widget>[
+    LNFListing(),
+    QueryHome(),
+    HomePage(),
+    EventsHome(),
+    Post_Listing(),
+  ];
 
-  var result;
-  late String userName;
-  late String userRole;
-  Map all = {};
-  late String fcmtoken;
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -56,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      if(notification !=null && android !=null){
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -70,437 +82,229 @@ class _HomePageState extends State<HomePage> {
                 playSound: true,
                 icon: '@mipmap/ic_launcher',
               ),
-            )
-        );
+            ));
       }
     });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published');
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      if(notification !=null && android != null){
+      if (notification != null && android != null) {
         showDialog(
             context: context,
-            builder:(_){
+            builder: (_) {
               return AlertDialog(
                 title: Text(notification.title!),
                 content: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(notification.body!)
-                    ],
+                    children: [Text(notification.body!)],
                   ),
                 ),
               );
-            }
-        );
+            });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Query(
-        options: QueryOptions(
-          document: gql(getMe),
+    //User UI
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF2B2E35),
+        titleSpacing: 0,
+        // backgroundColor: Colors.white,
+        title: Row(
+          children: const [
+            CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+            Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+              child: Text(
+                "InstiSpace",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            print(result.exception.toString());
-          }
-          if (result.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue[700],
-              ),
-            );
-          }
-          // var data = result.data!["getMe"];
-          // List<String> interests = [];
-          // for(var i=0;i<data["interest"].length;i++){
-          //  interests.add("${data["interest"][i]}");
-          // }
-          // _storeMe.setUser(data["roll"], data["name"], data["role"], "", interests);
-          userRole = result.data!["getMe"]["role"];
-          // _storeMe.loadUser();
-          // print("user data:roll:${_storeMe.roll},name:${_storeMe.name},role:${_storeMe.role},mobile:${_storeMe.mobile},interests:${_storeMe.interest}");
-          print(userRole);
-
-          if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Hey ${userRole}"),
-                backgroundColor: Colors.deepPurpleAccent,
-                actions: [
-                  IconButton(onPressed: () {_auth.clearAuth();}, icon: Icon(Icons.logout)),
-                  IconButton(onPressed: (){
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => searchUser()));
-                  }, icon: Icon(Icons.search_outlined)),
-                ],
-              ),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 500,
-                    child: Column(
-                      children: [
-                        Text(
-                          "HOMEPAGE !!!",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 20,
+        actions: [
+          // IconButton(onPressed: (){
+          //   Navigator.of(context).push(MaterialPageRoute(
+          //       builder: (BuildContext context) => const searchUser()));
+          // },
+          //     icon: const Icon(Icons.search_outlined,color: Colors.white,)),
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.notifications,
+                color: Colors.white,
+              )),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const HostelHome()));
+            },
+            icon: const Icon(
+              Icons.account_balance,
+              color: Colors.white,
+            ),
+            iconSize: 22.0,
+          )
+        ],
+        elevation: 0.0,
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      drawer: Drawer(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
+                    child: Row(
+                      children: const [
+                        CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                                'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+                          child: Text(
+                            "InstiSpace",
+                            style: TextStyle(
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
                           ),
                         ),
-
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => CreateHostel()
-                              ));
-                            }, child: Text("Create New Hostel")),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => CreateHostelAmenity()
-                              ));
-                            }, child: Text("Create Hostel Amenity")),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => CreateHostelContact()
-                              ));
-                            }, child: Text("Create Hostel Contact"))
                       ],
                     ),
                   ),
-                  IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => QueryHome()));
-                  },
-                  iconSize: 30.0,
-                  icon: Icon(Icons.query_stats_rounded),
                 ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => EventsHome()));
-                              },
-                            iconSize: 30.0,
-                              icon: const Icon(Icons.event),
-                          ),
-                          const Text("Events",style: TextStyle(fontSize: 10.0),),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => Announcements()));
-                              },
-                              iconSize: 30.0,
-                              icon: Icon(Icons.announcement)
-                          ),
-                          Text("Announcements", style: TextStyle(fontSize: 10.0),)
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Post_Listing()));
-                            },
-                              iconSize: 30.0,
-                            icon: Icon(Icons.connect_without_contact_sharp)
-                          ),
-                          Text("Networking & Opportunities", style: TextStyle(fontSize: 10.0),)
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => LNFListing()));
-                            },
-                              iconSize: 30.0,
-                            icon: Icon(Icons.local_grocery_store_outlined)
-                          ),
-                          Text("Lost & Found", style: TextStyle(fontSize: 10.0),)
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              ),
+                ListTile(
+                  leading: const Icon(Icons.account_circle_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("My Profile"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => UserPage()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.vpn_key_sharp),
+                  horizontalTitleGap: 0,
+                  title: const Text("Update Password"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => UserPage()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.account_balance),
+                  horizontalTitleGap: 0,
+                  title: const Text("My Hostel"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => HostelHome()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.search_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("Search User"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => const searchUser()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.alternate_email),
+                  horizontalTitleGap: 0,
+                  title: const Text("About Us"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => AboutUs()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.contact_page_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("Contact Us"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => ContactUs()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.feedback_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("Feedback"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => FeedBack()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  horizontalTitleGap: 0,
+                  title: const Text("Logout"),
+                  onTap: () {
+                    _auth.clearAuth();
+                  },
+                ),
+              ],
             );
-          }
-          else {
-            return Query(
-            options: QueryOptions(
-            document: gql(getMeHome),
-    ),
-    builder: (QueryResult result, {fetchMore, refetch}) {
-      if (result.hasException) {
-        print(result.exception.toString());
-      }
-      if (result.isLoading) {
-        return Center(
-          child: CircularProgressIndicator(
-            color: Colors.blue[700],
-          ),
-        );
-      }
-      all.clear();
-      for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-        all.putIfAbsent(Announcement(
-            title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-            hostelIds: [],
-            description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-            endTime: '',
-            id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-            images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-            createdByUserId: ''
-        ), () => "announcement");
-      }
-      for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
-        List<Tag> tags = [];
-        for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
-          // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-          tags.add(
-            Tag(
-              Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-              category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-              id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
-            ),
-          );
-        }
-        all.putIfAbsent(Post(
-            title: result.data!["getMe"]["getHome"]["events"][i]["title"],
-            tags: tags,
-            id: result.data!["getMe"]["getHome"]["events"][i]["id"],
-          createdById: '',
-          likeCount: 0,
-          imgUrl: [],
-          linkName: '',
-          description: '',
-          time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-          location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-          linkToAction: '',
-            // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
+          },
         ),
-            () => "event",
-        );
-      }
-      for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
-        List<Tag> tags = [];
-        for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
-          // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-          tags.add(
-            Tag(
-              Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
-              category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
-              id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
-            ),
-          );
-        }
-        all.putIfAbsent(NetOpPost(
-          title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
-          tags: tags,
-          id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: '', imgUrl: '', linkToAction: '', linkName: '',
-          description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
-
-        ),()=>"netop");
-      }
-      userName = result.data!["getMe"]["name"];
-
-      print("userName:$userName");
-      return Scaffold(
-          appBar: AppBar(
-            title:
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => UserPage()));
-                    },
-                    icon: Icon(Icons.account_circle_outlined)
-                ),
-                Text("Hey ${userName
-                    .split(" ")
-                    .first} "),
-              ],
-            ),
-            backgroundColor: Colors.deepPurpleAccent,
-            actions: [
-              IconButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => Notifications()));
-              }, icon: Icon(Icons.notifications_active)),
-              IconButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => searchUser()));
-              }, icon: Icon(Icons.search_outlined)),
-              Column(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        _auth.clearAuth();
-                      },
-                      icon: Icon(Icons.logout)
-                  ),
-                  Text("Logout", style: TextStyle(fontSize: 10.0),)
-                ],
-              ),
-              Column(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => HostelProfile()));
-                      },
-                      icon: Icon(Icons.account_balance)
-                  ),
-                  Text("My Hostel", style: TextStyle(fontSize: 10.0),)
-                ],
-              )
-            ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: const Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFF2B2E35),
+        currentIndex: _selectedIndex,
+        iconSize: 24,
+        unselectedFontSize: 12,
+        selectedFontSize: 13,
+        items: const <BottomNavigationBarItem>[
+          //L&F Button
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_grocery_store),
+            label: 'L&F',
+            backgroundColor: Color(0xFF2B2E35),
           ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 500,
-                  child: ListView(
-                      children :[
-                        Column(
-                          children: all.keys.map((e) => cardFunction(all[e],e)
-                          ).toList(),
-                        )
-                      ]
-                      ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => QueryHome()));
-                  },
-                  iconSize: 30.0,
-                  icon: Icon(Icons.query_stats_rounded),
-                ),
-
-                // Text("Networking & Opportunities"),
-                // SizedBox(
-                //   height: 250,
-                //   child: ListView(
-                //     children : netops
-                //         .map((netops) => NetOpHomeCard(
-                //       netops: netops,
-                //     ))
-                //         .toList(),
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 250,
-                //   child: ListView(
-                //     children : all
-                //         .map((netops) => NetOpHomeCard(
-                //       netops: netops,
-                //     ))
-                //         .toList(),
-                //   ),
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => EventsHome()));
-                          },
-                          iconSize: 30.0,
-                          icon: Icon(Icons.event),
-                        ),
-                        Text("Events",style: TextStyle(fontSize: 10.0),),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Announcements()));
-                            },
-                            iconSize: 30.0,
-                            icon: Icon(Icons.announcement)
-                        ),
-                        Text("Announcements", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Post_Listing()));
-                            },
-                            iconSize: 30.0,
-                            icon: Icon(Icons.connect_without_contact_sharp)
-                        ),
-                        Text("Networking & Opportunities", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => LNFListing()));
-                            },
-                            iconSize: 30.0,
-                            icon: Icon(Icons.local_grocery_store_outlined)
-                        ),
-                        Text("Lost & Found", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          ));
-    }
-            );
-          }
-    }
+          BottomNavigationBarItem(
+            icon: Icon(Icons.query_stats_rounded),
+            label: 'Queries',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Events',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.connect_without_contact_sharp),
+            label: 'Net Ops',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+        ],
+        showUnselectedLabels: true,
+        elevation: 0.0,
+        onTap: _onItemTapped,
+      ),
     );
-  }
-  Widget cardFunction (String category, post){
-    if(category == "event"){
-      return EventsHomeCard(events: post);
-    }
-    else if(category == "netop"){
-      return NetOpHomeCard(netops: post);
-    }
-    else if(category == "announcement"){
-      return AnnouncementHomeCard(announcements: post);
-    }
-    return Container();
   }
 }
