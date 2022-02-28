@@ -261,7 +261,7 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
               //     ],
               //   ),
               // ),
-              child: AnnouncementsCards(context,'','',refetch,widget.announcements,'homePage'),
+              child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
             ),
             builder: (_, collapsed, expanded) =>
                 Expandable(

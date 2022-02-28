@@ -219,7 +219,7 @@ class _AnnouncementCardState extends State<AnnouncementCard> {
                   //     ],
                   //   ),
                   // ),
-                  child: AnnouncementsCards(context,role, userId, widget.refetchAnnouncement, widget.announcement,'announcementsSection'),
+                  child: AnnouncementsCards(context,images,role, userId, widget.refetchAnnouncement, widget.announcement,'announcementsSection'),
                   // child: cards(context, '', '', 0, refetch, widget.refetchAnnouncement, false, [], deleteAnnouncement, noUse, '', widget.announcement.title, widget.announcement.description, widget.announcement.images, '', 0, widget.announcement.endTime, widget.announcement.id, '', '', Id, widget.announcement.createdByUserId, '', [], '', false, null, 'Announcement', 'AnnouncementHome'),
                 ),
                   builder: (_, collapsed, expanded) =>
