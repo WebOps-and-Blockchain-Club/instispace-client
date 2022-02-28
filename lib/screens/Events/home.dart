@@ -80,7 +80,7 @@ class _HomeState extends State<EventsHome> {
         return Query(
             options: QueryOptions(
               document: gql(getEvents),
-              variables: {"getEventsTake":take,"lastEventId": "","orderByLikes":mostlikesvalue,"fileringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+              variables: {"getEventsTake":take,"lastEventId": "","orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred},"search":search},
             ),
             builder: (QueryResult result, { fetchMore, refetch }){
               if (result.hasException) {
@@ -130,6 +130,8 @@ class _HomeState extends State<EventsHome> {
                 {imageUrls=eventList[i]["photo"].split(" AND ");}
                 posts.add(Post(
                   createdById: eventList[i]["id"],
+                  // createdByName: eventList[i]["name"],
+                  createdByName: '',
                   linkName: eventList[i]["linkName"],
                   location: eventList[i]["location"],
                   title: eventList[i]["title"],
@@ -147,7 +149,7 @@ class _HomeState extends State<EventsHome> {
               };
               total=data["total"];
               FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"getEventsTake":take,"lastEventId": posts.last.id,"orderByLikes":mostlikesvalue,"fileringCondition":{"tags":selectedFilterIds,"isStared":isStarred}},
+                  variables: {"getEventsTake":take,"lastEventId": posts.last.id,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred},"search": search},
                   updateQuery: (previousResultData,fetchMoreResultData){
 
                     final List<dynamic> repos = [
@@ -208,7 +210,27 @@ class _HomeState extends State<EventsHome> {
                       //   ),
                       // ),
 
-                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'Events' ,widget: Filters(refetch: refetch, mostLikeValues: mostlikesvalue, isStarred: isStarred, filterSettings: filterSettings, selectedFilterIds: selectedFilterIds,page: 'Events',)),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height*0.06,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        child: Search(
+                            search: search,
+                            refetch: refetch,
+                            ScaffoldKey: ScaffoldKey,
+                            page: 'Events',
+                            widget: Filters(refetch: refetch,
+                              mostLikeValues: mostlikesvalue,
+                              isStarred: isStarred,
+                              filterSettings: filterSettings,
+                              selectedFilterIds: selectedFilterIds,
+                              page: 'Events', callback: (bool val) { setState(() {
+                                isStarred= val;
+                              });},
+                            ), callback: (val) {setState(() {
+                          search = val;
+                            });},
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                         child: Column(children: posts

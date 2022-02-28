@@ -115,7 +115,7 @@ class _EditPostEventsState extends State<EditPostEvents> {
                           child: DateTimePicker(
                             type: DateTimePickerType.dateTimeSeparate,
                             dateMask: 'd MMM, yyyy',
-                            initialValue: DateTime.now().toString(),
+                            initialValue: post.time,
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                             icon: Icon(Icons.event),
@@ -258,62 +258,85 @@ class _EditPostEventsState extends State<EditPostEvents> {
                             )).toList(),
                           ),
 
-                        //Select Tags
+                        ///Select Tags
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          child: ElevatedButton(
-                            onPressed: ()async{
-                              final finalResult=await showSearch(
-                                context: context,
-                                delegate: CustomSearchDelegate(searchTerms:tagList),
-                              );
-                              setState(() {
-                                if(finalResult!=''){
-                                  selectedTags.add(finalResult);
-                                }
-                              });
-                              print("finalResult:$finalResult");
-                              print("SelectedTags:$selectedTags");
-                            },
-                            child: Text(
-                              "Select tags",
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color(0x554A47F0),
-                              elevation: 0.0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)
-                              ),
-                              side: BorderSide(
-                                width: 1.0,
-                                color: Color(0x664A47F0),
-                              ),
-                            ),
-                          ),
+                          child: StatefulBuilder(
+                              builder: (BuildContext context, StateSetter setState){
+                                return Column(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: ()async{
+                                        final finalResult=await showSearch(
+                                          context: context,
+                                          delegate: CustomSearchDelegate(searchTerms:tagList),
+                                        );
+                                        setState(() {
+                                          if(finalResult!=''){
+                                            selectedTags.add(finalResult);
+                                          }
+                                        });
+                                        print("finalResult:$finalResult");
+                                        print("SelectedTags:$selectedTags");
+                                      },
+                                      child: Text(
+                                        "Select tags",
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Color(0x554A47F0),
+                                        elevation: 0.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0)
+                                        ),
+                                        side: BorderSide(
+                                          width: 1.0,
+                                          color: Color(0x664A47F0),
+                                        ),
+                                      ),
+                                    ),
+                                    selectedTags==[]?Container():
+                                    Wrap(
+                                      children:selectedTags.map((e) =>
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: ElevatedButton(//shape,color etc...
+                                              onPressed: () {
+                                                setState(() {
+                                                  selectedTags.remove(e);
+                                                });
+                                              },
+                                              child: Text(
+                                                e,
+                                                style: const TextStyle(
+                                                  color: Color(0xFF2B2E35),
+                                                  fontSize: 12.5,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                primary: const Color(0xFFFFFFFF),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(15)
+                                                ),
+                                                // side: BorderSide(color: Color(0xFF2B2E35)),
+                                                padding: const EdgeInsets.symmetric(
+                                                    vertical: 2,
+                                                    horizontal: 6),
+                                              ),
+                                            ),
+                                          ),
+                                      ).toList(),
+                                    ),
+                                  ],
+                                );
+                              }
+                          )
                         ),
-                        selectedTags==[]?Container():
-                        Wrap(
-                          children:selectedTags.map((e) =>
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: MaterialButton(//shape,color etc...
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedTags.remove(e);
-                                    });
-                                  },
-                                  child: Text(e),
-                                  color: Colors.green,
-                                ),
-                              ),
-                          ).toList(),
-                        ),
-
                         //CTA Button Name
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -393,10 +416,10 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                   document: gql(editEvent),
                                   onCompleted: (dynamic resultData){
                                     print(resultData);
-                                    if(resultData["createEvent"]==true){
+                                    if(resultData["editEvent"]==true){
                                       Navigator.pop(context);
                                       widget.refetchPosts!();
-                                      print("post created");
+                                      print("post edited");
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text('Post Created')),
                                       );
@@ -430,7 +453,7 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                       };
                                       print("selectedTagIds:$selectedIds");
                                       await runMutation({
-                                        "newEventData":{
+                                        "editEventData":{
                                           "content":myControllerDescription.text,
                                           "title":myControllerTitle.text,
                                           "tagIds":selectedIds,
@@ -439,6 +462,7 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                           "linkToAction":myControllerFormLink.text,
                                           "location":myControllerLocation.text,
                                         },
+                                        "eventId": post.id,
                                         "image":multipartfile.isEmpty ? null : multipartfile,
                                       });
                                     }

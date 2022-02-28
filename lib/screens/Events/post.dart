@@ -9,6 +9,7 @@ class Post {
   String linkName;
   String id;
   String createdById;
+  String createdByName;
   String time;
   int likeCount;
   List<Tag> tags;
@@ -26,6 +27,7 @@ class Post {
       required this.tags,
       required this.likeCount,
       required this.createdById,
+      required this.createdByName,
       required this.isStarred,
       required this.isLiked,
       required this.linkName});
