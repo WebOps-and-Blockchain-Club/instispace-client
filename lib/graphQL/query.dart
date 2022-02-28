@@ -1,9 +1,9 @@
 class Queries{
   String getMyQueries = """
-  query GetMyQuerys(\$lastEventId: String!, \$take: Float!, \$orderByLikes: Boolean) {
-  getMyQuerys(lastEventId: \$lastEventId, take: \$take, OrderByLikes: \$orderByLikes) {
+  query GetMyQuerys(\$lastEventId: String!, \$take: Float!, \$search: String, \$orderByLikes: Boolean) {
+  getMyQuerys(lastEventId: \$lastEventId, take: \$take, search: \$search, OrderByLikes: \$orderByLikes) {
     queryList {
-       id
+      id
       title
       photo
       content

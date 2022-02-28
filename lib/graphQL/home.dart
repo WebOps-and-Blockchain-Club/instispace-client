@@ -4,28 +4,58 @@ query{
   getMe {
     getHome {
       netops {
-        title
         id
+        title
         content
+        photo
+        attachments
+        likeCount
         isStared
+        linkName
+        endTime
+        linkToAction
+        comments {
+          content
+          id
+          createdBy {
+            id
+            name
+          }
+        }
         tags {
+          id
           title
           category
+        }
+        isLiked
+        isStared
+        createdBy {
           id
+          name
         }
       }
       events {
-        title
         id
-        isStared
-        isLiked
-        tags {
-          title
-          category
-          id
-        }
+        createdAt
+        title
+        content
+        photo
         location
         time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdBy {
+          id
+          name
+        }
       }
       announcements {
         title
@@ -151,27 +181,57 @@ query GetTag(\$tag: String!) {
     title
     category
     netops {
+      id
+      createdAt
       title
       content
+      photo
+      attachments
+      endTime
+      likeCount
       isStared
-      id
+      linkName
+      linkToAction
+      comments {
+        id
+        content
+        createdBy {
+          id
+          name
+        }
+      }
       tags {
         id
         title
         category
       }
+      isLiked
+      createdBy {
+        id
+        name
+      }
     }
     events {
       id
+      createdAt
       title
       content
-      isStared
+      photo
       time
       location
+      likeCount
+      isStared
+      linkName
+      linkToAction
       tags {
         id
         title
         category
+      }
+      isLiked
+      createdBy {
+        id
+        name
       }
     }
   }

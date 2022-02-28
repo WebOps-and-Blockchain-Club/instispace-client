@@ -1,6 +1,6 @@
 class netopsQuery{
-  String getNetops ="""query(\$take: Float!, \$lastNetopId: String!, \$fileringCondition: fileringConditions, \$orderByLikes: Boolean){
-  getNetops(take: \$take, LastNetopId: \$lastNetopId, FileringCondition: \$fileringCondition, OrderByLikes: \$orderByLikes) {
+  String getNetops ="""query(\$take: Float!, \$lastNetopId: String!, \$filteringCondition: fileringConditions, \$orderByLikes: Boolean, \$search: String){
+  getNetops(take: \$take, LastNetopId: \$lastNetopId, FileringCondition: \$filteringCondition, OrderByLikes: \$orderByLikes, search:\$search) {
     netopList {
       id,
       content,
@@ -17,6 +17,8 @@ class netopsQuery{
       linkName
       linkToAction
       title
+      isLiked
+      isStared
       isHidden
       endTime
       tags {
@@ -42,7 +44,7 @@ class netopsQuery{
 }
 """;
   String toggleLike ="""
-  mutation(\$netopId: String!){
+mutation(\$netopId: String!){
   toggleLikeNetop(NetopId: \$netopId)
 }
   """;
@@ -52,6 +54,7 @@ class netopsQuery{
     likeCount
     isStared
     isLiked
+    createdAt
     comments {
       content
       id
@@ -68,9 +71,9 @@ class netopsQuery{
   }
 }
   """;
-  String toggleStar="""
-  mutation(\$toggleStarNetopId: String!){
-  toggleStar(NetopId: \$toggleStarNetopId)
+  String toggleStar = """
+  mutation(\$netopId: String!){
+  toggleStar(NetopId: \$netopId)
 }
   """;
   String getMe="""
@@ -81,18 +84,18 @@ class netopsQuery{
 }
   """;
   String deleteNetop="""
-  mutation(\$deleteNetopNetopId: String!){
-  deleteNetop(NetopId: \$deleteNetopNetopId)
+  mutation(\$netopId: String!){
+  deleteNetop(NetopId: \$netopId)
 }
   """;
   String editNetop="""
-  mutation(\$editNetopNetopId: String!, \$editNetopsData: editNetopsInput!, \$editNetopAttachments: [Upload!], \$editNetopImage: Upload){
-  editNetop(NetopId: \$editNetopNetopId, EditNetopsData: \$editNetopsData, Attachments: \$editNetopAttachments, Image: \$editNetopImage)
+  mutation EditNetop(\$editNetopsData: editNetopsInput!, \$netopId: String!, \$attachments: [Upload!], \$image: Upload) {
+  editNetop(EditNetopsData: \$editNetopsData, NetopId: \$netopId, Attachments: \$attachments, Image: \$image)
 }
   """;
   String reportNetop="""
-  mutation(\$description: String!, \$reportNetopNetopId: String!){
-  reportNetop(description: \$description, NetopId: \$reportNetopNetopId)
+ mutation(\$description: String!, \$netopId: String!){
+  reportNetop(description: \$description, NetopId: \$netopId)
 }
   """;
 }
