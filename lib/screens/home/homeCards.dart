@@ -26,6 +26,7 @@ import 'Announcements/expand_description.dart';
 import 'networking_and _opportunities/comments.dart';
 import 'networking_and _opportunities/singlepost.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:client/widgets/marquee.dart';
 
 
 
@@ -192,8 +193,84 @@ class _AnnouncementHomeCardState extends State<AnnouncementHomeCard> {
       images = widget.announcements.images!.split(" AND ");
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-      child: AnnouncementsCards(context,images,'','',refetch,widget.announcements,'homePage'),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.5),
+        ),
+        color: const Color(0xFFFFFFFF),
+        elevation: 3,
+        borderOnForeground: true,
+        shadowColor: Colors.black54,
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF42454D),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8.5),
+                    topRight: Radius.circular(8.5)),
+              ),
+              // color: const Color(0xFF42454D),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //Title
+                  Padding(
+                    //Conditional Padding
+                      padding: (userId==widget.announcements.createdByUserId)
+                          ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
+                          : const EdgeInsets.fromLTRB(18, 10, 0, 10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: MarqueeWidget(
+                          direction: Axis.horizontal,
+                          child: Text(widget.announcements.title,
+                            style: TextStyle(
+                              //Conditional Font Size
+                              fontWeight: FontWeight.bold,
+                              //Conditional Font Size
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            ),
+
+            // if (images != null)
+            //   ClipRect(
+            //     child: SizedBox(
+            //       width: 400.0,
+            //       child: CarouselSlider(
+            //         items: images
+            //             .map((item) => Center(
+            //               child: Image.network(
+            //                 item,
+            //                 fit: BoxFit.cover,
+            //                 width: 400,
+            //               ),
+            //             ))
+            //             .toList(),
+            //         options: CarouselOptions(
+            //           enableInfiniteScroll: false,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: DescriptionTextWidget(text: widget.announcements.description,),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -328,10 +405,7 @@ class _HostelContactsState extends State<HostelContacts> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 15, 0),
                   child: SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.305,
+                    width: 120,
                     child: ElevatedButton(
                         onPressed: () {
                           launch('tel:${widget.contacts.contact}');
@@ -341,28 +415,26 @@ class _HostelContactsState extends State<HostelContacts> {
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                           minimumSize: const Size(50, 35),
                         ),
-                        child: Container(
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.call,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.call,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+
+                            const SizedBox(
+                              width: 5,
+                            ),
+
+                            Text(widget.contacts.contact,
+                              style: const TextStyle(
                                 color: Colors.white,
-                                size: 14,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               ),
-
-                              const SizedBox(
-                                width: 5,
-                              ),
-
-                              Text(widget.contacts.contact,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         )),
                   ),
                 ),
@@ -411,12 +483,14 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                   width: MediaQuery
                       .of(context)
                       .size
-                      .width * 0.40,
-                  child: Text(widget.Emergencycontacts.name,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
+                      .width * 0.30,
+                  child: Wrap(
+                      children: [Text(widget.Emergencycontacts.name,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),]
                   ),
                 ),
               ),
@@ -430,9 +504,9 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       .size
                       .width * 0.35,
                   child: ElevatedButton(
-                      onPressed: () {
-                        launch('tel:${widget.Emergencycontacts.contact}');
-                      },
+                    onPressed: () {
+                      launch('tel:${widget.Emergencycontacts.contact}');
+                    },
 
                     style: ElevatedButton.styleFrom(
                       primary: const Color(0xFF42454D),
@@ -440,33 +514,27 @@ class _EmergencyContactsState extends State<EmergencyContacts> {
                       minimumSize: const Size(50, 35),
                     ),
 
-                    child: Container(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.28,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.call,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.call,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+
+                          const SizedBox(
+                            width: 5,
+                          ),
+
+                          Text(widget.Emergencycontacts.contact,
+                            style: const TextStyle(
                               color: Colors.white,
-                              size: 14,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
-
-                            const SizedBox(
-                              width: 5,
-                            ),
-
-                            Text(widget.Emergencycontacts.contact,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

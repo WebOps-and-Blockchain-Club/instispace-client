@@ -12,6 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../screens/home/networking_and _opportunities/comments.dart';
 import '../screens/home/networking_and _opportunities/editpost.dart';
 
+import 'package:client/widgets/marquee.dart';
+
 Widget NetopsCard (
     BuildContext context,
     Future<QueryResult?> Function()? refetch,
@@ -55,20 +57,35 @@ Widget NetopsCard (
 
                       ///Title
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width*0.5,
-                          child: Wrap(
-                            children:[ Text(
-                              post.title,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600
+                          width: (userId==createdId)
+                            ? MediaQuery.of(context).size.width*0.4
+                            : MediaQuery.of(context).size.width*0.68,
+                          child: MarqueeWidget(
+                            direction: Axis.horizontal,
+                            child: Text(post.title,
+                              style: TextStyle(
+                                //Conditional Font Size
+                                fontWeight: (userId==createdId)
+                                    ? FontWeight.w700
+                                    : FontWeight.bold,
+                                //Conditional Font Size
+                                fontSize: (userId==createdId)
+                                    ? 18
+                                    : 18,
+                                color: Colors.white,
                               ),
                             ),
-                            ]
                           ),
+                          // Text(
+                          //   post.title,
+                          //   style: const TextStyle(
+                          //       color: Colors.white,
+                          //       fontSize: 20,
+                          //       fontWeight: FontWeight.w600
+                          //   ),
+                          // ),
                         ),
                       ),
 

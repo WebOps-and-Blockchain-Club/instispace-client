@@ -27,6 +27,7 @@ import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -74,12 +75,15 @@ class _HomePageState extends State<HomePage> {
           if (result.isLoading) {
             return Scaffold(
               body: Center(
-                child: Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (context, index) => NewCardSkeleton(),
-                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                        itemCount: 5)
-                ),
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.black,
+                    size: 100),
+                // Expanded(
+                //     child: ListView.separated(
+                //         itemBuilder: (context, index) => NewCardSkeleton(),
+                //         separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                //         itemCount: 5)
+                // ),
               ),
             );
           }

@@ -232,7 +232,7 @@ class _HomeState extends State<EventsHome> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: Column(children: posts
                           .map((post) => PostCard(
                           refetchPosts: refetch,

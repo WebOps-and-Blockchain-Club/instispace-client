@@ -11,6 +11,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/models/tag.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:client/widgets/marquee.dart';
+
 import '../screens/Events/editEvent.dart';
 
 Widget EventsCard (
@@ -93,9 +95,9 @@ String timeDifference = difference(postCreated);
             children: [
               /// Title,edit,delete,star Row
               Container(
-                color: Color(0xFF42454D),
+                color: const Color(0xFF42454D),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(18,0,0,0),
+                  padding: const EdgeInsets.fromLTRB(15,0,0,0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -105,17 +107,30 @@ String timeDifference = difference(postCreated);
                         padding: const EdgeInsets.fromLTRB(0,0,0,0),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width*0.5,
-                          child: Wrap(
-                            children: [Text(
-                              events.title,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700
+                          child: MarqueeWidget(
+                            direction: Axis.horizontal,
+                            child: Text(events.title,
+                              style: TextStyle(
+                                //Conditional Font Size
+                                fontWeight: (userId==events.createdById)
+                                    ? FontWeight.w700
+                                    : FontWeight.bold,
+                                //Conditional Font Size
+                                fontSize: (userId==events.createdById)
+                                    ? 18
+                                    : 18,
+                                color: Colors.white,
                               ),
                             ),
-                            ]
                           ),
+                          // Text(
+                          //   events.title,
+                          //   style: const TextStyle(
+                          //       color: Colors.white,
+                          //       fontSize: 18,
+                          //       fontWeight: FontWeight.w700
+                          //   ),
+                          // ),
                         ),
                       ),
 
@@ -283,7 +298,7 @@ String timeDifference = difference(postCreated);
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF42454D),
+                            primary: const Color(0xFF42454D),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0)
                             ),
@@ -312,9 +327,9 @@ String timeDifference = difference(postCreated);
 
               ///Posted by
               Padding(
-                padding:  EdgeInsets.fromLTRB(18,10,18,0),
+                padding:  const EdgeInsets.fromLTRB(18,10,18,0),
                 child: Text(
-                  'Posted by Admin, $timeDifference ago',
+                  'Posted by Admin, $timeDifference',
                   // ${events.createdByName}
                   style: const TextStyle(
                     color: Colors.grey,

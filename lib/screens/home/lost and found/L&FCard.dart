@@ -175,7 +175,8 @@ class LFCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.5,
                         fontWeight: FontWeight.bold,
-                      ),),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                         child: Text("Please contact me at ${post.contact} $a the item.",

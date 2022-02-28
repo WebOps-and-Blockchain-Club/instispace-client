@@ -11,6 +11,7 @@ import '../../../models/post.dart';
 import '../../../models/tag.dart';
 import 'package:client/screens/home/networking_and _opportunities/comments.dart';
 import 'package:expandable/expandable.dart';
+import 'package:client/widgets/marquee.dart';
 
 
 

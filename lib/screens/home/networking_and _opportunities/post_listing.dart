@@ -197,7 +197,7 @@ class _Post_ListingState extends State<Post_Listing> {
                           builder: (BuildContext context)=> AddPost(refetchPosts: refetch,)));
                 },
                   child: const Icon(Icons.add),
-                  backgroundColor: const Color(0xFF000000),
+                  backgroundColor: const Color(0xFFFF0000),
                 ),
 
                 ///Page
@@ -206,25 +206,28 @@ class _Post_ListingState extends State<Post_Listing> {
                     Column(
                       children: [
                         PageTitle('Netops',context),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height*0.06,
-                          width: MediaQuery.of(context).size.width*1,
-                          child: Search(
-                            search: search,
-                            refetch: refetch,
-                            ScaffoldKey: _scaffoldKey,
-                            page: 'Netops', callback: (String val) { setState(() {
-                            search = val;
-                            }); }, widget: Filters(
-                            mostLikeValues: mostlikesvalue,
-                            isStarred: isStarred,
-                            selectedFilterIds: selectedFilterIds,
-                            filterSettings: filterSettings,
-                            refetch: refetch,
-                            page: 'Netops', callback: (bool val) {setState(() {
-                            isStarred = val;
-                            });},
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height*0.06,
+                            width: MediaQuery.of(context).size.width*1,
+                            child: Search(
+                              search: search,
+                              refetch: refetch,
+                              ScaffoldKey: _scaffoldKey,
+                              page: 'Netops', callback: (String val) { setState(() {
+                              search = val;
+                              }); }, widget: Filters(
+                              mostLikeValues: mostlikesvalue,
+                              isStarred: isStarred,
+                              selectedFilterIds: selectedFilterIds,
+                              filterSettings: filterSettings,
+                              refetch: refetch,
+                              page: 'Netops', callback: (bool val) {setState(() {
+                              isStarred = val;
+                              });},
+                            ),
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -233,7 +236,7 @@ class _Post_ListingState extends State<Post_Listing> {
                               controller: scrollController,
                               children: [
                                 Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                 child: Column(
                                   children: posts
                                       .map((post) => PostCard(

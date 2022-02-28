@@ -144,7 +144,7 @@ class _HostelcontactsState extends State<Hostelcontacts> {
                 const Center(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
-                    child: Text('Hostel Contacts',
+                    child: Text('Emergency Contacts',
                       style: TextStyle(
                           color: Color(0xFF222222),
                           fontSize: 20,

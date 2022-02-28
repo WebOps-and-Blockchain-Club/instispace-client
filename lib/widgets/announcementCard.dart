@@ -8,6 +8,8 @@ import '../screens/home/Announcements/edit_announcements.dart';
 import '../screens/home/Announcements/expand_description.dart';
 import '../screens/home/Announcements/home.dart';
 
+import 'package:client/widgets/marquee.dart';
+
 Widget AnnouncementsCards(
     BuildContext context,
     List<String>? images,
@@ -19,47 +21,86 @@ Widget AnnouncementsCards(
     ) {
 
   String delete = AnnouncementMutations().deleteAnnouncement;
+
   return Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8.5),
+    ),
     color: const Color(0xFFFFFFFF),
     elevation: 3,
     borderOnForeground: true,
     shadowColor: Colors.black54,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.5)),
+
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
-          child: Text(
-            announcement.title,
-            style: const TextStyle(
-                color: Colors.black,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700),
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF42454D),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8.5),
+                topRight: Radius.circular(8.5)),
+          ),
+          // color: const Color(0xFF42454D),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //Title
+              Padding(
+                //Conditional Padding
+                  padding: (userId==announcement.createdByUserId)
+                      ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
+                      : const EdgeInsets.fromLTRB(18, 10, 0, 10),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: MarqueeWidget(
+                      direction: Axis.horizontal,
+                      child: Text(announcement.title,
+                        style: TextStyle(
+                          //Conditional Font Size
+                          fontWeight: (userId==announcement.createdByUserId)
+                              ? FontWeight.w700
+                              : FontWeight.bold,
+                          //Conditional Font Size
+                          fontSize: (userId==announcement.createdByUserId)
+                              ? 18
+                              : 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )
+              ),
+            ],
           ),
         ),
-        if (images != null)
-          ClipRect(
-            child: SizedBox(
-              width: 400.0,
-              child: CarouselSlider(
-                items: images
-                    .map((item) => Center(
-                      child: Image.network(
-                        item,
-                        fit: BoxFit.cover,
-                        width: 400,
-                      ),
-                    ))
-                    .toList(),
-                options: CarouselOptions(
-                  enableInfiniteScroll: false,
-                ),
-              ),
-            ),
+
+        // if (images != null)
+        //   ClipRect(
+        //     child: SizedBox(
+        //       width: 400.0,
+        //       child: CarouselSlider(
+        //         items: images
+        //             .map((item) => Center(
+        //               child: Image.network(
+        //                 item,
+        //                 fit: BoxFit.cover,
+        //                 width: 400,
+        //               ),
+        //             ))
+        //             .toList(),
+        //         options: CarouselOptions(
+        //           enableInfiniteScroll: false,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: DescriptionTextWidget(text: announcement.description,),
           ),
-          DescriptionTextWidget(text: announcement.description,),
+
         if(page == 'announcementsSection')
         if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
           Padding(
@@ -68,7 +109,7 @@ Widget AnnouncementsCards(
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF6464DA),
+                    primary: const Color(0xFF42454D),
                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     minimumSize: const Size(40,24),
                   ),
@@ -113,13 +154,13 @@ Widget AnnouncementsCards(
                       if (result.isLoading) {
                         return const Center(
                           child: CircularProgressIndicator(
-                            color: Color(0xFF6464DA),
+                            color: Color(0xFF42454D),
                           ),
                         );
                       }
                       return ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFF6464DA),
+                          primary: const Color(0xFF42454D),
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                           minimumSize: const Size(40,24),
                         ),
