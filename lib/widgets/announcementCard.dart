@@ -20,12 +20,12 @@ Widget AnnouncementsCards(
 
   String delete = AnnouncementMutations().deleteAnnouncement;
   return Card(
-    color: Color(0xFFFFFFFF),
+    color: const Color(0xFFFFFFFF),
     elevation: 3,
     borderOnForeground: true,
     shadowColor: Colors.black54,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0)),
+        borderRadius: BorderRadius.circular(8.5)),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -33,10 +33,10 @@ Widget AnnouncementsCards(
           padding: const EdgeInsets.fromLTRB(12.0, 10.0, 0.0, 0.0),
           child: Text(
             announcement.title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.w700),
           ),
         ),
         if (images[0] != "")
@@ -45,15 +45,13 @@ Widget AnnouncementsCards(
               width: 400.0,
               child: CarouselSlider(
                 items: images
-                    .map((item) => Container(
-                  child: Center(
-                    child: Image.network(
-                      item,
-                      fit: BoxFit.cover,
-                      width: 400,
-                    ),
-                  ),
-                ))
+                    .map((item) => Center(
+                      child: Image.network(
+                        item,
+                        fit: BoxFit.cover,
+                        width: 400,
+                      ),
+                    ))
                     .toList(),
                 options: CarouselOptions(
                   enableInfiniteScroll: false,
@@ -62,7 +60,7 @@ Widget AnnouncementsCards(
             ),
           ),
         if (images[0] == "")
-          DescriptionTextWidget(text: announcement.description),
+          DescriptionTextWidget(text: announcement.description,),
         if(page == 'announcementsSection')
         if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
           Padding(
@@ -71,9 +69,9 @@ Widget AnnouncementsCards(
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF6464DA),
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    minimumSize: Size(40,24),
+                    primary: const Color(0xFF6464DA),
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    minimumSize: const Size(40,24),
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -94,7 +92,7 @@ Widget AnnouncementsCards(
                               refetchAnnouncement: refetchAnnouncements,
                             )));
                   },
-                  child: Text(
+                  child: const Text(
                     "Edit",
                     style:
                     TextStyle(color: Colors.white, fontSize: 12.0),
@@ -114,7 +112,7 @@ Widget AnnouncementsCards(
                         print(result.exception.toString());
                       }
                       if (result.isLoading) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(
                             color: Color(0xFF6464DA),
                           ),
@@ -122,9 +120,9 @@ Widget AnnouncementsCards(
                       }
                       return ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFF6464DA),
-                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: Size(40,24),
+                          primary: const Color(0xFF6464DA),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: const Size(40,24),
                         ),
                         onPressed: () {
                           runMutation({
@@ -136,9 +134,9 @@ Widget AnnouncementsCards(
                           Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      Announcements()));
+                                      const Announcements()));
                         },
-                        child: Text(
+                        child: const Text(
                           "Delete",
                           style: TextStyle(
                               color: Colors.white, fontSize: 12.0),
