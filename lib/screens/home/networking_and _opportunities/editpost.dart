@@ -9,10 +9,12 @@ import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:client/models/searchDelegate.dart';
+
+import '../../../widgets/formTexts.dart';
 class EditPost extends StatefulWidget {
   final NetOpPost post;
-  final Future<QueryResult?> Function()? refetchPosts;
-  EditPost({required this.post,required this.refetchPosts});
+  final Future<QueryResult?> Function()? refetchNetops;
+  EditPost({required this.post,required this.refetchNetops});
 
   @override
   _EditPostState createState() => _EditPostState();
@@ -35,7 +37,7 @@ class _EditPostState extends State<EditPost> {
   var key;
   List byteDataAttachment=[];
   List multipartfileAttachment=[];
-  List AttachmentNames=[];
+  List AttachmentNames=['Please select attachments'];
   @override
   Widget build(BuildContext context) {
     var post=widget.post;
@@ -59,7 +61,7 @@ class _EditPostState extends State<EditPost> {
           return Text(result.exception.toString());
         }
         if(result.isLoading){
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -77,9 +79,9 @@ class _EditPostState extends State<EditPost> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold
               ),),
-            backgroundColor: Color(0xFF5451FD),
+            backgroundColor: const Color(0xFF2B2E35),
           ),
-
+          backgroundColor: const Color(0xFFDFDFDF),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
@@ -94,20 +96,7 @@ class _EditPostState extends State<EditPost> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //Title Name
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("Title",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('Title'),
 
                             //Title Field
                             Padding(
@@ -137,20 +126,7 @@ class _EditPostState extends State<EditPost> {
                             ),
 
                             //Description
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("Description",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('Description'),
 
                             //Desc Field
                             Padding(
@@ -180,183 +156,183 @@ class _EditPostState extends State<EditPost> {
                             ),
 
                             //Images Text
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("Select Images, Attachments & Tags",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('Please Select Images'),
 
                             //Image Selector
                             Padding(
                               padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 250.0,
-                                    child: StatefulBuilder(
-                                      builder: (BuildContext context,StateSetter setState){
-                                        return ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Color(0x664A47F0),
-                                                elevation: 0.0,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                            ),
-                                            onPressed: () async {
-                                              final FilePickerResult? result =
-                                              await FilePicker.platform.pickFiles(
-                                                type: FileType.image,
-                                                allowMultiple: false,
-                                              );
-                                              if (result != null) {
-                                                PlatformFile file = result.files.first;
-                                                setState(() {
-                                                  selectedImage = file.name;
-                                                });
-                                              }
-                                              imageResult=result;
-                                              print(result.toString());
-                                            },
-                                            child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                              child: Text(
-                                                selectedImage.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 17.0,
-                                                    fontWeight: FontWeight.w300
-                                                ),
+                              child: SizedBox(
+                                  width: 250.0,
+                                  child: StatefulBuilder(
+                                    builder: (BuildContext context,StateSetter setState){
+                                      return ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: const Color(0xFF42454D),
+                                              elevation: 0.0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                          ),
+                                          onPressed: () async {
+                                            final FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                              type: FileType.image,
+                                              allowMultiple: false,
+                                            );
+                                            if (result != null) {
+                                              PlatformFile file = result.files.first;
+                                              setState(() {
+                                                selectedImage = file.name;
+                                              });
+                                            }
+                                            imageResult=result;
+                                            print(result.toString());
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                            child: Text(
+                                              selectedImage.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 17.0,
+                                                  fontWeight: FontWeight.w300
                                               ),
-                                            ));
-                                      },
-                                    )
-                                ),
+                                            ),
+                                          ));
+                                    },
+                                  )
                               ),
                             ),
+
+                            FormText('Please Select Attachments'),
                             //Attachment Selector
                             Padding(
                               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 250.0,
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Color(0x664A47F0),
-                                          elevation: 0.0,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                      ),
-                                      onPressed: () async {
-                                        final FilePickerResult? result =
-                                        await FilePicker.platform.pickFiles(
-                                          type: FileType.custom,
-                                          allowedExtensions: ["pdf"],
-                                          allowMultiple: true,
-                                          withData: true,
-                                        );
-                                        if (result != null) {
-                                          setState(() {
-                                            AttachmentNames.clear();
-                                            for (var i=0;i<result.files.length;i++){
-                                              AttachmentNames.add(result.files[i].name);
-                                              byteDataAttachment.add(result.files[i].bytes);
-                                              multipartfileAttachment.add(MultipartFile.fromBytes(
-                                                'file',
-                                                byteDataAttachment[i],
-                                                filename: AttachmentNames[i],
-                                                contentType: MediaType("file","pdf"),
-                                              ));
-                                            }
-                                          });
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                        child: Text(
-                                          AttachmentNames.toString(),
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.w300
-                                          ),
+                              child: SizedBox(
+                                width: 250.0,
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: const Color(0xFF42454D),
+                                        elevation: 0.0,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                    ),
+                                    onPressed: () async {
+                                      final FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowedExtensions: ["pdf"],
+                                        allowMultiple: true,
+                                        withData: true,
+                                      );
+                                      if (result != null) {
+                                        setState(() {
+                                          AttachmentNames.clear();
+                                          for (var i=0;i<result.files.length;i++){
+                                            AttachmentNames.add(result.files[i].name);
+                                            byteDataAttachment.add(result.files[i].bytes);
+                                            multipartfileAttachment.add(MultipartFile.fromBytes(
+                                              'file',
+                                              byteDataAttachment[i],
+                                              filename: AttachmentNames[i],
+                                              contentType: MediaType("file","pdf"),
+                                            ));
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                      child: Text(
+                                        AttachmentNames.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.w300
                                         ),
-                                      )),
-                                ),
+                                      ),
+                                    )),
                               ),
                             ),
+
+                            FormText('Please Select Tags'),
                             //Tag Selector
                             Padding(
                               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 250,
-                                  child: ElevatedButton(
-                                      onPressed: ()async{
-                                        final finalResult=await showSearch(
-                                          context: context,
-                                          delegate: CustomSearchDelegate(searchTerms:tagList),
-                                        );
-                                        setState(() {
-                                          if(finalResult!=''){
-                                            selectedTags.add(finalResult);
-                                          }
-                                        });
-                                        print("finalResult:$finalResult");
-                                        print("SelectedTags:$selectedTags");
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Color(0x664A47F0),
-                                          elevation: 0.0,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                      ),
-                                      child: Text('Select tags',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 17.0,
-                                            fontWeight: FontWeight.w300
-                                        ),)),
-                                ),
+                              child: SizedBox(
+                                width: 250,
+                                child: StatefulBuilder(
+                                  builder: (BuildContext context,StateSetter setState) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          width:250,
+                                          child: ElevatedButton(
+                                              onPressed: ()async{
+                                                final finalResult=await showSearch(
+                                                  context: context,
+                                                  delegate: CustomSearchDelegate(searchTerms:tagList),
+                                                );
+                                                setState(() {
+                                                  if(finalResult!=''){
+                                                    if(!selectedTags.contains(finalResult))
+                                                    selectedTags.add(finalResult);
+                                                  }
+                                                });
+                                                print("finalResult:$finalResult");
+                                                print("SelectedTags:$selectedTags");
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: const Color(0xFF42454D),
+                                                  elevation: 0.0,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                              ),
+                                              child: const Text('Select tags',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 17.0,
+                                                    fontWeight: FontWeight.w300
+                                                ),)),
+                                        ),
+                                        selectedTags==[]?Container():
+                                        Wrap(
+                                          children:selectedTags.map((e) =>
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: ElevatedButton(//shape,color etc...
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      selectedTags.remove(e);
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                      e,
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF2B2E35),
+                                                      fontSize: 12.5,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  style: ElevatedButton.styleFrom(
+                                                    primary: const Color(0xFFFFFFFF),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(15)
+                                                    ),
+                                                    // side: BorderSide(color: Color(0xFF2B2E35)),
+                                                    padding: const EdgeInsets.symmetric(
+                                                        vertical: 2,
+                                                        horizontal: 6),
+                                                  ),
+                                                ),
+                                              ),
+                                          ).toList(),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                )
                               ),
-                            ),
-                            selectedTags==[]?Container():
-                            Wrap(
-                              children:selectedTags.map((e) =>
-                                  Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: MaterialButton(//shape,color etc...
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedTags.remove(e);
-                                        });
-                                      },
-                                      child: Text(e),
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                              ).toList(),
                             ),
 
                             //End Time
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("End Time",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('End Time'),
 
                             //Date Time Picker
                             Padding(
@@ -364,10 +340,10 @@ class _EditPostState extends State<EditPost> {
                               child: DateTimePicker(
                                 type: DateTimePickerType.dateTimeSeparate,
                                 dateMask: 'd MMM, yyyy',
-                                initialValue: DateTime.now().toString(),
+                                initialValue: post.endTime,
                                 firstDate: DateTime(2000),
                                 lastDate: DateTime(2100),
-                                icon: Icon(Icons.event),
+                                icon: const Icon(Icons.event),
                                 dateLabelText: 'Date',
                                 timeLabelText: "Hour",
                                 onChanged: (val) => {
@@ -382,20 +358,7 @@ class _EditPostState extends State<EditPost> {
                             ),
 
                             //URL
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("CTA Link",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('CTA Link'),
 
                             //Link Field
                             Padding(
@@ -425,20 +388,7 @@ class _EditPostState extends State<EditPost> {
                             ),
 
                             //Link Name
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                              child: Row(
-                                children: [
-                                  Text("CTA Button Name",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: Color(0xFF4151E5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            FormText('CTA Button Name'),
 
                             //Link Field
                             Padding(
@@ -471,45 +421,57 @@ class _EditPostState extends State<EditPost> {
                       ),
                     ),
 
-                    Spacer(),
+                    const Spacer(),
 
                     Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          //Delete Button
+                          // //Delete Button
+                          // ElevatedButton(
+                          //   onPressed: ()=>{},
+                          //   child:const Text('Delete',
+                          //     style: TextStyle(
+                          //       color: Colors.white,
+                          //       fontSize: 16,
+                          //       fontWeight: FontWeight.bold,
+                          //     ),),
+                          //   style: ElevatedButton.styleFrom(
+                          //     primary: const Color(0xFF42454D),
+                          //     shape:RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(24)
+                          //     ) ,
+                          //     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          //     minimumSize: const Size(80, 35),
+                          //   ),
+                          // ),
+
+                          ///Cancel Button
                           ElevatedButton(
-                            onPressed: ()=>{},
-                            child:Text('Delete',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),),
+                            onPressed: ()=>{
+                              Navigator.pop(context)
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(15,5,15,5),
+                              child: Text('Cancel',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            ),
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFF6B7AFF),
-                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              minimumSize: Size(80, 35),
+                              primary: const Color(0xFF2B2E35),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24)
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: const Size(80, 35),
                             ),
                           ),
 
-                          //Save Button
-                          ElevatedButton(
-                            onPressed: ()=>{},
-                            child:Text('Save',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color(0xFF6B7AFF),
-                              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              minimumSize: Size(80, 35),
-                            ),
-                          ),
-
+                          ///Edit Button
                           Mutation(
                               options: MutationOptions(
                                 document: gql(editNetop),
@@ -517,7 +479,7 @@ class _EditPostState extends State<EditPost> {
                                     print(resultData);
                                     if(resultData["editNetop"]==true){
                                       Navigator.pop(context);
-                                      widget.refetchPosts!();
+                                      widget.refetchNetops!();
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text('Post Edited')),
                                       );
@@ -549,7 +511,7 @@ class _EditPostState extends State<EditPost> {
                                         selectedIds.add(key),
                                       },
                                       runMutation({
-                                        "editNetopNetopId":post.id,
+                                        "netopId":post.id,
                                         "editNetopsData":{
                                           "title":titleController.text,
                                           "content":descriptionController.text,
@@ -558,20 +520,26 @@ class _EditPostState extends State<EditPost> {
                                           "linkName":urlNameController.text,
                                           "linkToAction":urlController.text,
                                         },
-                                        "editNetopImage":imageResult,
-                                        "editNetopAttachments":multipartfileAttachment,
+                                        "image":imageResult,
+                                        "attachments":multipartfileAttachment,
                                       })
                                     },
-                                    child:Text('Submit',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),),
+                                    child: const Padding(
+                                      padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                      child: Text('Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                    ),
                                     style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFF6B7AFF),
-                                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                      minimumSize: Size(80, 35),
+                                      primary: const Color(0xFF2B2E35),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24)
+                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                      minimumSize: const Size(80, 35),
                                     ),
                                 );
                               }

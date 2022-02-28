@@ -1,5 +1,6 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/netops.dart';
+import 'package:client/widgets/formTexts.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -34,7 +35,7 @@ class _AddPostState extends State<AddPost> {
   var multipartfileImage;
   List byteDataAttachment=[];
   List multipartfileAttachment=[];
-  List AttachmentNames=[];
+  List AttachmentNames = ['Please select attachments'];
   PlatformFile? file=null;
   final _formKey = GlobalKey<FormState>();
   @override
@@ -50,8 +51,8 @@ class _AddPostState extends State<AddPost> {
           return Text(result.exception.toString());
         }
         if(result.isLoading){
-          return Center(
-            child: CircularProgressIndicator(),
+          return const Center(
+            child: const CircularProgressIndicator(),
           );
         }
         for (var i = 0; i < result.data!["getTags"].length; i++) {
@@ -68,528 +69,455 @@ class _AddPostState extends State<AddPost> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold
               ),),
-            backgroundColor: Color(0xFF5451FD),
+            backgroundColor: const Color(0xFF2B2E35),
+            elevation: 0.0,
           ),
+          backgroundColor: const Color(0xFFDFDFDF),
 
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0.0),
-              child: SizedBox(
-                  child: ListView(
-                    children: [
-                      SingleChildScrollView(
-                        child:
-                        Form(
-                          key:_formKey,
-                          child:
-                          //Form
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //Title Name
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("Title",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+              child: ListView(
+                children: [
+                  SingleChildScrollView(
+                    child:
+                    Form(
+                      key:_formKey,
+                      child:
+                      //Form
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //Title Name
+                          FormText('Title'),
 
-                              //Title Field
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
-                                child: SizedBox(
-                                  height: 35.0,
-                                  child: TextFormField(
-                                    controller: titleController,
-
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
-
-                                      hintText: 'Enter title',
-                                    ),
-
-                                    validator: (value){
-                                      if (value == null || value.isEmpty) {
-                                        return 'Item Name cannot be empty';
-                                      }
-                                      return null;
-                                    },
+                          //Title Field
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                            child: SizedBox(
+                              height: 35.0,
+                              child: TextFormField(
+                                controller: titleController,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
                                   ),
+
+                                  hintText: 'Enter title',
                                 ),
+
+                                validator: (value){
+                                  if (value == null || value.isEmpty) {
+                                    return 'Item Name cannot be empty';
+                                  }
+                                  return null;
+                                },
                               ),
-
-                              //Description
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("Description",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              //Desc Field
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
-                                child: SizedBox(
-                                  height: 35.0,
-                                  child: TextFormField(
-                                    controller: descriptionController,
-
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
-
-                                      hintText: 'Enter description',
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    validator: (value){
-                                      if (value == null || value.isEmpty) {
-                                        return 'Item Name cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              //Images Text
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("Select Images, Attachments & Tags",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              //Image Selector
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 250.0,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Color(0x664A47F0),
-                                            elevation: 0.0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                        ),
-                                        onPressed: () async {
-                                          final FilePickerResult? result =
-                                          await FilePicker.platform.pickFiles(
-                                            type: FileType.image,
-                                            allowMultiple: false,
-                                            withData: true,
-                                          );
-                                          if (result != null) {
-                                            file = result.files.first;
-                                            setState(() {
-                                              selectedImage = file!.name;
-                                              // print("selectedImage:$selectedImage");
-                                              // print("file:$file");
-                                              byteDataImage= file!.bytes;
-                                              print("byteData:$byteDataImage");
-                                              multipartfileImage=MultipartFile.fromBytes(
-                                                'photo',
-                                                byteDataImage,
-                                                filename: selectedImage,
-                                                contentType: MediaType("image","png"),
-                                              );
-                                              print("multipartfile:$multipartfileImage");
-                                            });
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                          child: Text(
-                                            selectedImage.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 17.0,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                          ),
-                                        )),
-                                  ),
-                                ),
-                              ),
-                              if(file!=null)
-                                InkWell(
-                                  onLongPress: (){
-                                    setState(() {
-                                      file=null;
-                                      multipartfileImage=null;
-                                      byteDataImage=null;
-                                      selectedImage = "Please select an image";
-                                    });
-                                  },
-                                  child:
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.memory(
-                                      file!.bytes!,
-                                    ),
-                                  ),
-                                ),
-                              //Attachment Selector
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 250.0,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Color(0x664A47F0),
-                                            elevation: 0.0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                        ),
-                                        onPressed: () async {
-                                          final FilePickerResult? result =
-                                          await FilePicker.platform.pickFiles(
-                                            type: FileType.custom,
-                                            allowedExtensions: ["pdf"],
-                                            allowMultiple: true,
-                                            withData: true,
-                                          );
-                                          if (result != null) {
-                                            setState(() {
-                                              AttachmentNames.clear();
-                                              for (var i=0;i<result.files.length;i++){
-                                                AttachmentNames.add(result.files[i].name);
-                                                byteDataAttachment.add(result.files[i].bytes);
-                                                multipartfileAttachment.add(MultipartFile.fromBytes(
-                                                  'file',
-                                                  byteDataAttachment[i],
-                                                  filename: AttachmentNames[i],
-                                                  contentType: MediaType("file","pdf"),
-                                                ));
-                                              }
-                                            });
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                          child: Text(
-                                            AttachmentNames.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 17.0,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                          ),
-                                        )),
-                                  ),
-                                ),
-                              ),
-                              //Tag Selector
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 250,
-                                    child: ElevatedButton(
-                                        onPressed: ()async{
-                                          final finalResult=await showSearch(
-                                            context: context,
-                                            delegate: CustomSearchDelegate(searchTerms:tagList),
-                                          );
-                                          setState(() {
-                                            if(finalResult!=''){
-                                              selectedTags.add(finalResult);
-                                            }
-                                          });
-                                          print("finalResult:$finalResult");
-                                          print("SelectedTags:$selectedTags");
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            primary: Color(0x664A47F0),
-                                            elevation: 0.0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                                        ),
-                                        child: Text('Select tags',
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.w300
-                                          ),)),
-                                  ),
-                                ),
-                              ),
-                              selectedTags==[]?Container():
-                              Wrap(
-                                children:selectedTags.map((e) =>
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: MaterialButton(//shape,color etc...
-                                        onPressed: () {
-                                          setState(() {
-                                            selectedTags.remove(e);
-                                          });
-                                        },
-                                        child: Text(e),
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                ).toList(),
-                              ),
-
-                              //End Time
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("End Time",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              //Date Time Picker
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 0, 15, 5),
-                                child: DateTimePicker(
-                                  type: DateTimePickerType.dateTimeSeparate,
-                                  dateMask: 'd MMM, yyyy',
-                                  initialValue: DateTime.now().toString(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100),
-                                  icon: Icon(Icons.event),
-                                  dateLabelText: 'Date',
-                                  timeLabelText: "Hour",
-                                  onChanged: (val) => {
-                                    dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
-                                    print("datetimr:$dateTime+05:30"),
-                                  },
-                                  validator: (val) {
-                                    print(val);
-                                    return null;
-                                  },
-                                  onSaved: (val) => print(val),
-                                ),
-                              ),
-
-                              //URL
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("CTA Link",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              //Link Field
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
-                                child: SizedBox(
-                                  height: 35.0,
-                                  child: TextFormField(
-                                    controller: urlController,
-
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
-
-                                      hintText: 'Enter URL',
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    validator: (value){
-                                      if (value == null || value.isEmpty) {
-                                        return 'Item Name cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              //Link Name
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                child: Row(
-                                  children: [
-                                    Text("CTA Button Name",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: Color(0xFF4151E5),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              //Link Field
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
-                                child: SizedBox(
-                                  height: 35.0,
-                                  child: TextFormField(
-                                    controller: urlNameController,
-
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
-
-                                      hintText: 'Enter a name',
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    validator: (value){
-                                      if (value == null || value.isEmpty) {
-                                        return 'Item Name cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
 
-                      Spacer(),
+                          //Description
+                          FormText('Description'),
 
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            //Delete Button
-                            ElevatedButton(
-                                onPressed: ()=>{},
-                                child:Text('Delete',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF6B7AFF),
-                                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  minimumSize: Size(80, 35),
+                          //Desc Field
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                            child: SizedBox(
+                              height: 35.0,
+                              child: TextFormField(
+                                controller: descriptionController,
+
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+
+                                  hintText: 'Enter description',
                                 ),
+                                keyboardType: TextInputType.multiline,
+                                validator: (value){
+                                  if (value == null || value.isEmpty) {
+                                    return 'Item Name cannot be empty';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+
+                          //Images Text
+                          FormText('Please Select Images'),
+
+                          //Image Selector
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                            child: SizedBox(
+                              width: 250.0,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: const Color(0xFF42454D),
+                                      elevation: 0.0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                  ),
+                                  onPressed: () async {
+                                    final FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                      type: FileType.image,
+                                      allowMultiple: false,
+                                      withData: true,
+                                    );
+                                    if (result != null) {
+                                      file = result.files.first;
+                                      setState(() {
+                                        selectedImage = file!.name;
+                                        // print("selectedImage:$selectedImage");
+                                        // print("file:$file");
+                                        byteDataImage= file!.bytes;
+                                        print("byteData:$byteDataImage");
+                                        multipartfileImage=MultipartFile.fromBytes(
+                                          'photo',
+                                          byteDataImage,
+                                          filename: selectedImage,
+                                          contentType: MediaType("image","png"),
+                                        );
+                                        print("multipartfile:$multipartfileImage");
+                                      });
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                    child: Text(
+                                      selectedImage.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          if(file!=null)
+                            InkWell(
+                              onLongPress: (){
+                                setState(() {
+                                  file=null;
+                                  multipartfileImage=null;
+                                  byteDataImage=null;
+                                  selectedImage = "Please select an image";
+                                });
+                              },
+                              child:
+                              SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Image.memory(
+                                  file!.bytes!,
+                                ),
+                              ),
                             ),
 
-                            Mutation(
-                                options: MutationOptions(
-                                  document: gql(createNetop),
-                                  onCompleted: (dynamic resultData){
-                                    print(resultData);
-                                    if(resultData["createNetop"]==true){
-                                      Navigator.pop(context);
-                                      widget.refetchPosts!();
-                                      print("post created");
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Post Created')),
-                                      );
-                                    }
-                                    else{
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Post Creation Failed')),
-                                      );
+                          FormText('Please Select Attachments'),
+                          //Attachment Selector
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            child: SizedBox(
+                              width: 250.0,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: const Color(0xFF42454D),
+                                      elevation: 0.0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                  ),
+                                  onPressed: () async {
+                                    final FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                      type: FileType.custom,
+                                      allowedExtensions: ["pdf"],
+                                      allowMultiple: true,
+                                      withData: true,
+                                    );
+                                    if (result != null) {
+                                      setState(() {
+                                        AttachmentNames.clear();
+                                        for (var i=0;i<result.files.length;i++){
+                                          AttachmentNames.add(result.files[i].name);
+                                          byteDataAttachment.add(result.files[i].bytes);
+                                          multipartfileAttachment.add(MultipartFile.fromBytes(
+                                            'file',
+                                            byteDataAttachment[i],
+                                            filename: AttachmentNames[i],
+                                            contentType: MediaType("file","pdf"),
+                                          ));
+                                        }
+                                      });
                                     }
                                   },
-                                  onError: (dynamic error){
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Post Creation Failed,server error')),
-                                    );
-                                  }
-                                ),
-                                builder: (
-                                    RunMutation runMutation,
-                                    QueryResult? result,
-                                    ) {
-                                  if (result!.hasException){
-                                    print(result.exception.toString());
-                                  };
-
-                                  return ElevatedButton(
-                                      onPressed: ()async{
-                                        if (_formKey.currentState!.validate()) {
-                                          print(_formKey.currentState!.validate());
-                                          for(var i=0;i<selectedTags.length;i++){
-                                            key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i]);
-                                            selectedIds.add(key);
-                                          };
-                                          print("selectedTagIds:$selectedIds");
-                                          await runMutation({
-                                            "newEventData":{
-                                              "content":descriptionController.text,
-                                              "title":titleController.text,
-                                              "tags":selectedIds,
-                                              "endTime":"$dateTime",
-                                              "linkName":urlNameController.text,
-                                              "linkToAction":urlController.text,
-                                            },
-                                            "image":multipartfileImage,
-                                            "attachments":multipartfileAttachment,
-                                          });
-                                        }
-                                      },
-                                      child:Text('Submit',
-                                        style: TextStyle(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                    child: Text(
+                                      AttachmentNames.toString(),
+                                      style: const TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.w300
                                       ),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(0xFF6B7AFF),
-                                        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                        minimumSize: Size(80, 35),
-                                      ),
+                                    ),
+                                  )),
+                            ),
+                          ),
+
+                          FormText('Please Select Tags'),
+                          //Tag Selector
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            child: SizedBox(
+                              width: 250,
+                              child: ElevatedButton(
+                                  onPressed: ()async{
+                                    final finalResult=await showSearch(
+                                      context: context,
+                                      delegate: CustomSearchDelegate(searchTerms:tagList),
+                                    );
+                                    setState(() {
+                                      if(finalResult!=''){
+                                        selectedTags.add(finalResult);
+                                      }
+                                    });
+                                    print("finalResult:$finalResult");
+                                    print("SelectedTags:$selectedTags");
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: const Color(0xFF42454D),
+                                      elevation: 0.0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                  ),
+                                  child: const Text('Select tags',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17.0,
+                                        fontWeight: FontWeight.w300
+                                    ),)),
+                            ),
+                          ),
+                          selectedTags==[]?Container():
+                          Wrap(
+                            children:selectedTags.map((e) =>
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: MaterialButton(//shape,color etc...
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedTags.remove(e);
+                                      });
+                                    },
+                                    child: Text(e),
+                                    color: Colors.green,
+                                  ),
+                                ),
+                            ).toList(),
+                          ),
+
+                          //End Time
+                          FormText('End Time'),
+
+                          //Date Time Picker
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 0, 15, 5),
+                            child: DateTimePicker(
+                              type: DateTimePickerType.dateTimeSeparate,
+                              dateMask: 'd MMM, yyyy',
+                              initialValue: DateTime.now().toString(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                              icon: const Icon(Icons.event),
+                              dateLabelText: 'Date',
+                              timeLabelText: "Hour",
+                              onChanged: (val) => {
+                                dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
+                                print("datetimr:$dateTime+05:30"),
+                              },
+                              validator: (val) {
+                                print(val);
+                                return null;
+                              },
+                              onSaved: (val) => print(val),
+                            ),
+                          ),
+
+                          ///URL
+                          FormText('CTA Link'),
+
+                          //Link Field
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                            child: SizedBox(
+                              height: 35.0,
+                              child: TextFormField(
+                                controller: urlController,
+
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+
+                                  hintText: 'Enter URL',
+                                ),
+                                keyboardType: TextInputType.multiline,
+                                validator: (value){
+                                  if (value == null || value.isEmpty) {
+                                    return 'Item Name cannot be empty';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+
+                          ///Link Name
+                          FormText('CTA Button Name'),
+
+                          ///Link Field
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                            child: SizedBox(
+                              height: 35.0,
+                              child: TextFormField(
+                                controller: urlNameController,
+
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                  ),
+
+                                  hintText: 'Enter a name',
+                                ),
+                                keyboardType: TextInputType.multiline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  ///Delete Button
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        //Delete Button
+                        ElevatedButton(
+                            onPressed: ()=>{},
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(15,5,15,5),
+                              child: Text('Delete',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: const Color(0xFF2B2E35),
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: const Size(80, 35),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24)
+                              )
+                            ),
+                        ),
+
+                        ///Submit Button
+                        Mutation(
+                            options: MutationOptions(
+                              document: gql(createNetop),
+                              onCompleted: (dynamic resultData){
+                                print(resultData);
+                                if(resultData["createNetop"]==true){
+                                  Navigator.pop(context);
+                                  widget.refetchPosts!();
+                                  print("post created");
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Post Created')),
                                   );
                                 }
+                                else{
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Post Creation Failed')),
+                                  );
+                                }
+                              },
+                              onError: (dynamic error){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Post Creation Failed,server error')),
+                                );
+                              }
                             ),
-                          ],
+                            builder: (
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ) {
+                              if (result!.hasException){
+                                print(result.exception.toString());
+                              };
+
+                              return ElevatedButton(
+                                  onPressed: ()async{
+                                    if (_formKey.currentState!.validate()) {
+                                      print(_formKey.currentState!.validate());
+                                      for(var i=0;i<selectedTags.length;i++){
+                                        key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i]);
+                                        selectedIds.add(key);
+                                      };
+                                      print("selectedTagIds:$selectedIds");
+                                      await runMutation({
+                                        "newEventData":{
+                                          "content":descriptionController.text,
+                                          "title":titleController.text,
+                                          "tags":selectedIds,
+                                          "endTime":"$dateTime",
+                                          "linkName":urlNameController.text,
+                                          "linkToAction":urlController.text,
+                                        },
+                                        "image":multipartfileImage,
+                                        "attachments":multipartfileAttachment,
+                                      });
+                                    }
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                    child: Text('Submit',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xFF2B2E35),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(24)
+                                      ),
+                                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                    minimumSize: const Size(80, 35),
+                                  ),
+                              );
+                            }
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                )
+                ],
+              )
               ),
             ),
           );
