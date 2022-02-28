@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-typedef void StringCallback(String val);
+typedef void StringCallback (String val);
 class dropDown extends StatefulWidget {
   final StringCallback callback;
   final List<String> Hostels;

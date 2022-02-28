@@ -18,8 +18,7 @@ class QueryHome extends StatefulWidget {
 
 class _QueryHomeState extends State<QueryHome> {
   List<queryClass> posts=[];
-  String getQueries = Queries().getMyQueries;
-  String searchQueries = Queries().searchQuery;
+  String getMyQueries = Queries().getMyQueries;
   late int total;
   int skip=0;
   int take=10;
@@ -33,10 +32,11 @@ class _QueryHomeState extends State<QueryHome> {
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
-          document: gql(searchQueries),
-          variables: {"take":take,"lastEventId": "","search":search}
+          document: gql(getMyQueries),
+          variables: {"take":take,"lastEventId": "","search": search, "orderByLikes":orderByLikes}
       ),
       builder: (QueryResult result, {fetchMore, refetch}){
+        print("search:$search");
         if (result.hasException) {
           print(result.exception.toString());
         }
@@ -57,14 +57,14 @@ class _QueryHomeState extends State<QueryHome> {
             ),
           );
         }
-        var data=result.data!["searchQueries"]["queryList"];
-        total = result.data!["searchQueries"]["total"];
+        var data=result.data!["getMyQuerys"]["queryList"];
+        total = result.data!["getMyQuerys"]["total"];
         posts.clear();
         for(var i=0;i<data.length;i++){
           posts.add(queryClass(id: data[i]["id"], title: data[i]["title"], likeCount: data[i]["likeCount"], content: data[i]["content"], createdByName: data[i]["createdBy"]["name"], createdByRoll: data[i]["createdBy"]["roll"], photo:data[i]["photo"]!=null?data[i]["photo"]:"",isLiked: data[i]["isLiked"],createdById: data[i]["createdBy"]["id"], ));
         }
         FetchMoreOptions opts =FetchMoreOptions(
-            variables: {"take":take,"lastEventId": posts.last.id,"search":search},
+            variables: {"take":take,"lastEventId": posts.last.id,"search":search,"orderByLikes":orderByLikes},
             updateQuery: (previousResultData,fetchMoreResultData){
               // print("previousResultData:$previousResultData");
               // print("fetchMoreResultData:${fetchMoreResultData!["getNetops"]["total"]}");
@@ -94,9 +94,10 @@ class _QueryHomeState extends State<QueryHome> {
 
           //UI
           floatingActionButton: FloatingActionButton(onPressed: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
+            // Navigator.of(context).push(
+            //     MaterialPageRoute(
+            //         builder: (BuildContext context)=> AddQuery(refetchQuery : refetch,)));
+            refetch!();
           },
             child: Icon(Icons.add),
             backgroundColor: Color(0xFF5451FD),
@@ -139,7 +140,7 @@ class _QueryHomeState extends State<QueryHome> {
                               //   ),
                               // ),
 
-                              Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'Queries', widget: Filters(filterSettings: {}, refetch: refetch, selectedFilterIds: [], isStarred: false, mostLikeValues: false,page: 'Queries',),),
+                              Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'Queries', widget: Filters(filterSettings: {}, refetch: refetch, selectedFilterIds: [], isStarred: false, mostLikeValues: false,page: 'Queries', callback: (bool val) {},), callback: (val) => search = val,),
                               SizedBox(
                                 height: MediaQuery
                                     .of(context)

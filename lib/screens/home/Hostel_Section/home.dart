@@ -17,7 +17,7 @@ class HostelHome extends StatefulWidget {
 class _HostelHomeState extends State<HostelHome> {
   String getMe = homeQuery().getMe;
   int _selectedIndex = 1;
-  String hostelName = "My";
+  String hostelName = "";
   PageController _pageController = PageController(initialPage: 1);
 
   static const List<Widget> _widgetOptions = <Widget>[
@@ -50,7 +50,11 @@ class _HostelHomeState extends State<HostelHome> {
         );
       }
 
-      hostelName = result.data!["getMe"]["hostel"]["name"];
+      String role = result.data!["getMe"]["role"];
+
+      if (role != 'ADMIN') {
+        hostelName = result.data!["getMe"]["hostel"]["name"];
+      }
       //User UI
       return Scaffold(
         appBar: AppBar(

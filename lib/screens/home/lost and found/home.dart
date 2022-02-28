@@ -280,7 +280,7 @@ class _LNFListingState extends State<LNFListing> {
                   // ),
 
 
-                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'L&F', widget: Filters(isStarred: false, filterSettings: filterSettings, selectedFilterIds: [], mostLikeValues: false, refetch: refetch,page: 'L&F',),),
+                      Search(search: search, refetch: refetch, ScaffoldKey: ScaffoldKey, page: 'L&F', widget: Filters(isStarred: false, filterSettings: filterSettings, selectedFilterIds: [], mostLikeValues: false, refetch: refetch,page: 'L&F', callback: (bool val) {  },), callback:(val) => search = val,),
 
                       // //Button Row
                       // Padding(

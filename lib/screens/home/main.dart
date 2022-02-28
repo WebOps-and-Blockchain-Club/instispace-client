@@ -66,8 +66,9 @@ class _mainHomeState extends State<mainHome> {
             //User UI
             return Scaffold(
               appBar: AppBar(
-                // backgroundColor: const Color(0xFF5451FD),
-                backgroundColor: Colors.white,
+                // backgroundColor: const Color(0xFF2F9F65),
+                backgroundColor: Color(0xFF2B2E35),
+                iconTheme: IconThemeData(color: Colors.white),
                 title: Row(
                   children: const [
                     CircleAvatar(
@@ -76,7 +77,7 @@ class _mainHomeState extends State<mainHome> {
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0,0.0,0,0),
-                      child: Text("InstiVerse",style: TextStyle(color: Colors.black),),
+                      child: Text("InstiVerse",style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
@@ -85,17 +86,17 @@ class _mainHomeState extends State<mainHome> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => const searchUser()));
                   },
-                      icon: const Icon(Icons.search_outlined,color: Colors.black,)),
+                      icon: const Icon(Icons.search_outlined,)),
                   IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.notifications,color: Colors.black,)
+                      icon: const Icon(Icons.notifications,)
                   ),
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => const HostelHome()));
                     },
-                    icon: const Icon(Icons.account_balance,color: Colors.black,),
+                    icon: const Icon(Icons.account_balance,),
                     iconSize: 22.0,
                   )
                 ],
@@ -188,40 +189,40 @@ class _mainHomeState extends State<mainHome> {
               ),
                     bottomNavigationBar: BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
-                      unselectedItemColor: Color(0xFF5451FD),
-                      backgroundColor: Colors.white,
                       currentIndex: _selectedIndex,
                       items: const <BottomNavigationBarItem>[
 
                         //L&F Button
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.local_grocery_store),
+                          icon: Icon(Icons.local_grocery_store,
+                          ),
                           label: 'L&F',
-                          backgroundColor: Color(0xFF5451FD),
                         ),
+                        //Queries Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.query_stats_rounded),
                           label: 'Queries',
-                          backgroundColor: Color(0xFF5451FD),
                         ),
+                        //Home Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.home),
                           label: 'Home',
-                          backgroundColor: Color(0xFF5451FD),
                         ),
+                        //Events Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.event),
                           label: 'Events',
-                          backgroundColor: Color(0xFF5451FD),
                         ),
+                        //Netops Button
                         BottomNavigationBarItem(
                           icon: Icon(Icons.connect_without_contact_sharp),
                           label: 'Net&Op',
-                          backgroundColor: Color(0xFF5451FD),
                         ),
                       ],
-                      selectedItemColor: Colors.black,
+                      selectedItemColor: Colors.white,
+                      unselectedItemColor: Colors.grey,
                       showUnselectedLabels: true,
+                      backgroundColor: const Color(0xFF2B2E35),
                       elevation: 0.0,
                       onTap: _onItemTapped,
                     ),

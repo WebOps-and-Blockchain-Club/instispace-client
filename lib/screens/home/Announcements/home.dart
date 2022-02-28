@@ -111,7 +111,7 @@ class _AnnouncementsState extends State<Announcements> {
                     }
                     createdAt = result.data!["getAllAnnouncements"]
                     ["announcementsList"][i]["createdAt"];
-                    print(createdAt);
+                    // print(createdAt);
 
                     announcements.add(Announcement(
                       title: result.data!["getAllAnnouncements"]
@@ -192,6 +192,7 @@ class _AnnouncementsState extends State<Announcements> {
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
                       child: ListView(
+                        shrinkWrap: true,
                           controller: scrollController,
                           children: [
                             Column(
@@ -215,7 +216,7 @@ class _AnnouncementsState extends State<Announcements> {
           } else {
             userHostelID = result.data!["getMe"]["hostel"]["id"];
             userHostelName = result.data!["getMe"]["hostel"]["name"];
-            print(userHostelID);
+            // print(userHostelID);
             return Query(
                 options: QueryOptions(
                     document: gql(getAnnouncements),
@@ -325,7 +326,9 @@ class _AnnouncementsState extends State<Announcements> {
                   return Scaffold(
                     key: ScaffoldKey,
                     body: Container(
-                        child: ListView(controller: scrollController, children: [
+                        child: ListView(
+                          shrinkWrap: true,
+                            controller: scrollController, children: [
                           PageTitle('Announcements',context),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0.0),
