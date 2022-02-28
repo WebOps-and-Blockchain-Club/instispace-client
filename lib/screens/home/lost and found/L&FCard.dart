@@ -86,7 +86,13 @@ class LFCard extends StatelessWidget {
                         //Resolved Button
                         Mutation(
                           options: MutationOptions(
-                            document: gql(resolveItem)
+                            document: gql(resolveItem),
+                            onCompleted: (result){
+                              // print(result);
+                              if(result["resolveItem"]){
+                                refetchPosts!();
+                              }
+                            }
                           ),
                           builder: (RunMutation runMutation,
                               QueryResult? result,){
@@ -105,7 +111,6 @@ class LFCard extends StatelessWidget {
                                   runMutation({
                                     "resolveItemItemId":post.id,
                                   });
-                                  refetchPosts!();
                                 },
                               icon: Icon(Icons.check_circle_outline),
                               iconSize: 24,

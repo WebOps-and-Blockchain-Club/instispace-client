@@ -144,7 +144,10 @@ Widget NetopsCard (
                               options:MutationOptions(
                                   document: gql(toggleStar),
                                 onCompleted: (result) {
-                                    print(result);
+                                    // print(result);
+                                    if(result["toggleStar"]){
+                                      refetch!();
+                                    }
                                 },
                               ),
                               builder: (
@@ -159,7 +162,6 @@ Widget NetopsCard (
                                     runMutation({
                                       "netopId" : post.id
                                     });
-                                    refetch!();
                                   },
                                   icon: isStarred? const Icon(Icons.star): const Icon(Icons.star_border),
                                   color: isStarred? Colors.white:Colors.white,
@@ -356,7 +358,13 @@ Widget NetopsCard (
                         ///Like Icon
                         Mutation(
                             options:MutationOptions(
-                                document: gql(toggleLike)
+                                document: gql(toggleLike),
+                              onCompleted: (result){
+                                  // print(result);
+                                  if(result['toggleLikeNetop']){
+                                    refetch!();
+                                  }
+                              }
                             ),
                             builder: (
                                 RunMutation runMutation,
@@ -381,8 +389,7 @@ Widget NetopsCard (
                                       runMutation({
                                         "netopId": post.id
                                       });
-                                      refetch!();
-                                      print('is liked: ${isLiked}');
+                                      // print('is liked: ${isLiked}');
                                     },
                                     icon: const Icon(Icons.thumb_up),
                                     iconSize: 20,

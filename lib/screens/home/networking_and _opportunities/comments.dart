@@ -47,13 +47,11 @@ class _CommentsState extends State<Comments> {
             return Text(result.exception.toString());
           }
           for(var j=0;j<result.data!["getNetop"]["comments"].length;j++){
-            // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
             comments.add(
                 Comment(
                   message: result.data!["getNetop"]["comments"][j]["content"],
                   id: result.data!["getNetop"]["comments"][j]["id"],
                   name: "Name",
-                    // result.data!["getNetop"]["comments"][j]["createdBy"]["name"]
                 )
             );
           }
@@ -174,9 +172,16 @@ class _CommentsState extends State<Comments> {
                       options: MutationOptions(
                           document: gql(createComments),
                           onCompleted: (dynamic resultData){
-                            print("comment result data: $resultData");
-                            refetch!();
-                            commentController.clear();
+                            // print("comment result data: $resultData");
+                            if(resultData["createCommentNetop"]){
+                              refetch!();
+                              commentController.clear();
+                            }
+                            else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Comment not created')),
+                              );
+                            }
                           }
                       ),
                       builder: (
@@ -200,11 +205,10 @@ class _CommentsState extends State<Comments> {
                         return IconButton(
                           onPressed: ()
                           {
-                            print(widget.post.id);
                             runMutation(
                                 {
                                   "content":commentController.text,
-                                  "id":widget.post.id,
+                                  "netopId":widget.post.id,
                                 }
                             );
                           },

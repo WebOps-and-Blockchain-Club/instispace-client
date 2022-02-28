@@ -33,7 +33,7 @@ Widget EventsCard (
   String month = '';
   String date = events.time.split("-")[2].split("T")[0];
   String year = events.time.split("-")[0];
-  print(events.time);
+  // print(events.time);
   String Time = events.time.split("T").last.split(".").first;
   String hourTime = Time.split(":").first;
   String dayTime = '';
@@ -123,14 +123,6 @@ String timeDifference = difference(postCreated);
                               ),
                             ),
                           ),
-                          // Text(
-                          //   events.title,
-                          //   style: const TextStyle(
-                          //       color: Colors.white,
-                          //       fontSize: 18,
-                          //       fontWeight: FontWeight.w700
-                          //   ),
-                          // ),
                         ),
                       ),
 
@@ -185,7 +177,13 @@ String timeDifference = difference(postCreated);
                           ///Star Button
                           Mutation(
                               options:MutationOptions(
-                                  document: gql(toggleStar)
+                                  document: gql(toggleStar),
+                                onCompleted: (result){
+                                    // print(result);
+                                    if(result["toggleStarEvent"]){
+                                      refetch!();
+                                    }
+                                }
                               ),
                               builder: (
                                   RunMutation runMutation,
@@ -199,7 +197,6 @@ String timeDifference = difference(postCreated);
                                     runMutation({
                                       "eventId":events.id
                                     });
-                                    refetch!();
                                   },
                                   icon: events.isStarred? const Icon(Icons.star): const Icon(Icons.star_border),
                                   color: events.isStarred? Colors.white:Colors.white,
@@ -364,7 +361,12 @@ String timeDifference = difference(postCreated);
                             ///Like Icon
                             Mutation(
                                 options:MutationOptions(
-                                    document: gql(toggleLike)
+                                    document: gql(toggleLike),
+                                  onCompleted: (result){
+                                      if(result["toggleLikeEvent"]){
+                                        refetch!();
+                                      }
+                                  }
                                 ),
                                 builder: (
                                     RunMutation runMutation,
@@ -379,8 +381,6 @@ String timeDifference = difference(postCreated);
                                       runMutation({
                                         "eventId":events.id
                                       });
-                                      refetch!();
-                                      print('is liked');
                                       },
                                     icon: const Icon(Icons.thumb_up),
                                     iconSize: 20,
