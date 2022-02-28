@@ -137,7 +137,10 @@ class _mainHomeState extends State<mainHome> {
           // },
           //     icon: const Icon(Icons.search_outlined,color: Colors.white,)),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const Notifications()));
+              },
               icon: const Icon(
                 Icons.notifications,
                 color: Colors.white,

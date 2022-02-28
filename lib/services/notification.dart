@@ -13,12 +13,28 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   @override
-  Future<void> initState() async {
+  void initState() async {
     super.initState();
-    // prefs = await SharedPreferences.getInstance();
-    // bool? isSwitchedNetops = prefs?.getBool('isSwitchedNetops');
-    // print("isSwitchedNetops:$isSwitchedNetops");
+      _sharedPreference();
   }
+
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    if(prefs?.getBool('isSwitchedNetops')==true){
+      isSwitchedNetops = true;
+    }
+    if(prefs?.getBool('isSwitchedLnF')==true){
+      isSwitchedLnF = true;
+    }
+    if(prefs?.getBool('isSwitchedQueries')==true){
+      isSwitchedQueries = true;
+    }
+    if(prefs?.getBool('isSwitchedEvents')==true){
+      isSwitchedEvents = true;
+    }
+  }
+
+
   SharedPreferences? prefs;
   List<String> notificationPref=[];
   bool isSwitchedNetops = false;
@@ -28,6 +44,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
 
+    print("isSwitchedNetops:$isSwitchedNetops");
     return Scaffold(
         appBar: AppBar(
           title: const Text("Notification setting"),

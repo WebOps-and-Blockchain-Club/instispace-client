@@ -1,6 +1,6 @@
 class authQuery{
-  String login = """mutation(\$loginInputs: LoginInput!){
-  login( LoginInputs: \$loginInputs)
+  String login = """mutation(\$loginInputs: LoginInput!,\$fcmToken: String!){
+  login( LoginInputs: \$loginInputs fcmToken: \$fcmToken)
    {
     role
     token

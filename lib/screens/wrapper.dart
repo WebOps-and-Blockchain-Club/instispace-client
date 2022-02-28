@@ -29,72 +29,72 @@ class _WrapperState extends State<Wrapper> {
   }
 }
 
-class StoreData extends StatefulWidget {
-  const StoreData({Key? key}) : super(key: key);
+// class StoreData extends StatefulWidget {
+//   const StoreData({Key? key}) : super(key: key);
+//
+//   @override
+//   _StoreDataState createState() => _StoreDataState();
+// }
+//
+// class _StoreDataState extends State<StoreData> {
+//   String getMe = homeQuery().getMe;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ChangeNotifierProvider(
+//         create: (_) => StoreMe(),
+//         child: Consumer<StoreMe>(builder: (context, auth, child) {
+//           return auth.roll == null ? StoreUser() : HomePage();
+//         }));
+//   }
+// }
 
-  @override
-  _StoreDataState createState() => _StoreDataState();
-}
-
-class _StoreDataState extends State<StoreData> {
-  String getMe = homeQuery().getMe;
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => StoreMe(),
-        child: Consumer<StoreMe>(builder: (context, auth, child) {
-          return auth.roll == null ? StoreUser() : HomePage();
-        }));
-  }
-}
-
-class StoreUser extends StatefulWidget {
-  const StoreUser({Key? key}) : super(key: key);
-
-  @override
-  _StoreUserState createState() => _StoreUserState();
-}
-
-class _StoreUserState extends State<StoreUser> {
-  late StoreMe _storeMe;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _storeMe = Provider.of<StoreMe>(context, listen: false);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Query(
-        options: QueryOptions(
-          document: gql(getMe),
-        ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            print(result.exception.toString());
-          }
-          if (result.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue[700],
-              ),
-            );
-          }
-          var data = result.data!["getMe"];
-          List<String> interests = [];
-          for (var i = 0; i < data["interest"].length; i++) {
-            interests.add("${data["interest"][i]}");
-          }
-          _storeMe.setUser(
-              data["roll"], data["name"], data["role"], "", interests);
-          _storeMe.loadUser();
-          print(
-              "user data:roll:${_storeMe.roll},name:${_storeMe.name},role:${_storeMe.role},mobile:${_storeMe.mobile},interests:${_storeMe.interest}");
-          return Container();
-        });
-  }
-}
+// class StoreUser extends StatefulWidget {
+//   const StoreUser({Key? key}) : super(key: key);
+//
+//   @override
+//   _StoreUserState createState() => _StoreUserState();
+// }
+//
+// class _StoreUserState extends State<StoreUser> {
+//   late StoreMe _storeMe;
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+//       _storeMe = Provider.of<StoreMe>(context, listen: false);
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Query(
+//         options: QueryOptions(
+//           document: gql(getMe),
+//         ),
+//         builder: (QueryResult result, {fetchMore, refetch}) {
+//           if (result.hasException) {
+//             print(result.exception.toString());
+//           }
+//           if (result.isLoading) {
+//             return Center(
+//               child: CircularProgressIndicator(
+//                 color: Colors.blue[700],
+//               ),
+//             );
+//           }
+//           var data = result.data!["getMe"];
+//           List<String> interests = [];
+//           for (var i = 0; i < data["interest"].length; i++) {
+//             interests.add("${data["interest"][i]}");
+//           }
+//           _storeMe.setUser(
+//               data["roll"], data["name"], data["role"], "", interests);
+//           _storeMe.loadUser();
+//           print(
+//               "user data:roll:${_storeMe.roll},name:${_storeMe.name},role:${_storeMe.role},mobile:${_storeMe.mobile},interests:${_storeMe.interest}");
+//           return Container();
+//         });
+//   }
+// }
