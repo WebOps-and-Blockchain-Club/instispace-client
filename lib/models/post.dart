@@ -12,7 +12,10 @@ class NetOpPost {
   String endTime;
   String id;
   String? attachment;
+  String createdByName;
   String? linkName;
+  bool isStarred;
+  bool isLiked;
 
   NetOpPost({required this.title,
   required this.description,
@@ -22,8 +25,11 @@ class NetOpPost {
   required this.tags,
     required this.comments,
     required this.endTime,
+    required this.createdByName,
     required this.id,
     required this.attachment,
     required this.linkName,
+    required this.isStarred,
+    required this.isLiked
   });
 }
