@@ -1,167 +1,222 @@
+import 'package:client/screens/userInit/dropDown.dart';
 import 'package:client/widgets/titles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
+typedef void StringCallback (bool val);
 
 class Filters extends StatefulWidget {
 
   final Map filterSettings;
   final Future<QueryResult?> Function()? refetch;
   final List<String> selectedFilterIds;
-  final bool isStarred;
-  final bool mostLikeValues;
+   bool isStarred;
+   bool mostLikeValues;
+   final StringCallback callback;
   final String page;
-  Filters({required this.filterSettings, required this.refetch,required this.selectedFilterIds,required this.isStarred,required this.mostLikeValues,required this.page});
+  Filters({required this.filterSettings, required this.refetch,required this.selectedFilterIds,required this.isStarred,required this.mostLikeValues,required this.page,required this.callback});
 
   @override
   _FiltersState createState() => _FiltersState();
 }
 
 class _FiltersState extends State<Filters> {
-  late bool isStared;
-  late bool mostLikedValue;
+
+
   @override
   Widget build(BuildContext context) {
-    isStared = widget.isStarred;
-    mostLikedValue = widget.mostLikeValues;
     return SafeArea(
       child: ListView(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    SubHeading('Filter'),
-                    Wrap(
-                      children: widget.filterSettings.keys.map((key)=>
-                      // CheckboxListTile(
-                      //   value: widget.filterSettings[key],
-                      //   onChanged:(bool? value){
-                      //     setState(() {
-                      //       widget.filterSettings[key]=value!;
-                      //     });
-                      //   },
-                      //   title: Text(key.Tag_name),
-                      // )
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              widget.filterSettings[key] = !widget.filterSettings[key];
-                              print(widget.filterSettings[key]);
-                            });
-                          },
-                          child: Text(
-                            key.Tag_name,
-                            style: TextStyle(
-                              color: widget.filterSettings[key]?  Color(0xFF021096):Color(0xFFFFFFFF),
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15,0,15,0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Filter By',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24
+                          ),
+                        ),
+                        Wrap(
+                          children: widget.filterSettings.keys.map((key)=>
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0,10,10,0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.filterSettings[key] = !widget.filterSettings[key];
+                                  print(widget.filterSettings[key]);
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(8,2,8,2),
+                                child: Text(
+                                  key.Tag_name,
+                                  style: TextStyle(
+                                    color: widget.filterSettings[key]?  Color(0xFFFFFFFF):Color(0xFF42454D),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: widget.filterSettings[key]? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                minimumSize: Size(50, 35),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)
+                                ),
+                              ),
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            primary: widget.filterSettings[key]? Color(0xFFFFFFFF):Color(0xFF021096),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 6),
+                          ).toList(),
+                        ),
+
+
+                        if(widget.page != 'L&F')
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0,20,0,0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                  const Text(
+                                    'Sort By',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                // CheckboxListTile(
+                                //     title: Text('most liked'),
+                                //     value: mostLikedValue,
+                                //     onChanged:(bool? value){
+                                //       setState(() {
+                                //         mostLikedValue=value!;
+                                //       });
+                                //     }
+                                // ),
+                                Wrap(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0,10,10,0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.mostLikeValues = !widget.mostLikeValues;
+                                            print(widget.mostLikeValues);
+                                          });
+                                        },
+                                        child: Text(
+                                          'Most Liked',
+                                          style: TextStyle(
+                                            color: widget.mostLikeValues?  Color(0xFFFFFFFF):Color(0xFF42454D),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: widget.mostLikeValues? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                          minimumSize: Size(50, 35),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // CheckboxListTile(
+                                    //     title: Text("Starred"),
+                                    //     value: isStared,
+                                    //     onChanged:(bool? value){
+                                    //       setState(() {
+                                    //         isStared=value!;
+                                    //       });
+                                    //     }
+                                    // ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0,10,10,0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.isStarred = !widget.isStarred;
+                                            widget.callback(widget.isStarred);
+                                          });
+                                        },
+                                        child: Text(
+                                          'Starred',
+                                          style: TextStyle(
+                                            color: widget.isStarred?  Color(0xFFFFFFFF):Color(0xFF42454D),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: widget.isStarred? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                          minimumSize: Size(50, 35),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0,20,0,0),
+                      child: ElevatedButton(
+                          onPressed: (){
+                            widget.selectedFilterIds.clear();
+                            widget.filterSettings.forEach((key, value) {
+                              if(value){
+                                widget.selectedFilterIds.add(key.id);
+                              }
+                            });
+                            // print("selectedFilterIds:$selectedFilterIds");
+                            Navigator.pop(context);
+                            widget.refetch!();
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(15,5,15,5),
+                            child: Text(
+                                'Apply',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFF2B2E35),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: Size(50, 35),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)
                           ),
                         ),
                       ),
-                      ).toList(),
                     ),
-
-                    if(widget.page != 'L&F')
-                      SubHeading('Sort'),
-                    // CheckboxListTile(
-                    //     title: Text('most liked'),
-                    //     value: mostLikedValue,
-                    //     onChanged:(bool? value){
-                    //       setState(() {
-                    //         mostLikedValue=value!;
-                    //       });
-                    //     }
-                    // ),
-                    if(widget.page != 'L&F')
-                      Wrap(
-                          children : [
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    mostLikedValue = !mostLikedValue;
-                                  });
-                                },
-                                child: Text(
-                                  'Most Liked',
-                                  style: TextStyle(
-                                    color: mostLikedValue?  Color(0xFF021096):Color(0xFFFFFFFF),
-                                    fontSize: 12.5,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: mostLikedValue? Color(0xFFFFFFFF):Color(0xFF021096),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2,
-                                      horizontal: 6),
-                                ),
-                              ),
-                            ),
-                            // CheckboxListTile(
-                            //     title: Text("Starred"),
-                            //     value: isStared,
-                            //     onChanged:(bool? value){
-                            //       setState(() {
-                            //         isStared=value!;
-                            //       });
-                            //     }
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isStared = !isStared;
-                                  });
-                                },
-                                child: Text(
-                                  'Starred',
-                                  style: TextStyle(
-                                    color: isStared?  Color(0xFF021096):Color(0xFFFFFFFF),
-                                    fontSize: 12.5,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: isStared? Color(0xFFFFFFFF):Color(0xFF021096),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2,
-                                      horizontal: 6),
-                                ),
-                              ),
-                            ),
-                          ]
-                      ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      onPressed: (){
-                        widget.selectedFilterIds.clear();
-                        widget.filterSettings.forEach((key, value) {
-                          if(value){
-                            widget.selectedFilterIds.add(key.id);
-                          }
-                        });
-                        // print("selectedFilterIds:$selectedFilterIds");
-                        widget.refetch!();
-                      },
-                      child: Text('Apply')),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ]
       ),

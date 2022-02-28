@@ -1,13 +1,17 @@
+import 'package:client/screens/userInit/dropDown.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+typedef void StringCallback (String val);
+
 class Search extends StatefulWidget {
   String search = "";
+  final StringCallback callback;
   final Future<QueryResult?> Function()? refetch;
   final GlobalKey<ScaffoldState> ScaffoldKey;
   final String page;
   final Widget widget;
-  Search({required this.search, required this.refetch, required this.ScaffoldKey,required this.page,required this.widget});
+  Search({required this.search, required this.refetch, required this.ScaffoldKey,required this.page,required this.widget,required this.callback});
 
   @override
   _SearchState createState() => _SearchState();
@@ -34,7 +38,7 @@ class _SearchState extends State<Search> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50.0),
                       border: Border.all(
-                          color: Color(0xFF5451FD),
+                          color: Colors.grey,
                           width: 1,
                         )
                   ),
@@ -42,7 +46,7 @@ class _SearchState extends State<Search> {
                     padding: EdgeInsets.fromLTRB(15,0,15,10),
                     child: TextFormField(
                       controller: searchController,
-                      cursorColor: Color(0xFF5451FD),
+                      cursorColor: Colors.grey,
                       decoration: InputDecoration(
                         border: InputBorder.none
                       ),
@@ -58,28 +62,32 @@ class _SearchState extends State<Search> {
             ),
 
           IconButton(onPressed: (){
-            setState(() {
-              display = !display;
-              widget.search=searchController.text;
-              // print("search String $search");
-            });
-            if(!display){
-              widget.refetch!();
-            }
-          }, icon: Icon(Icons.search_outlined),color: Color(0xFF5451FD),
+            widget.callback(searchController.text);
+              // widget.refetch!();
+          },
+            icon: Icon(Icons.search_outlined),
+            color: Color(0xFF42454D),
           ),
-
           if (widget.page != 'Queries')
           Padding(
           padding: const EdgeInsets.fromLTRB(0,0,0,0),
           child: IconButton(
           onPressed: () {
             // widget.ScaffoldKey.currentState?.openEndDrawer();
-            showModalBottomSheet(context: context, builder: (BuildContext context) {
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
               return widget.widget;
-            }   );
+                },
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(10)
+                  ),
+                ),
+            );
           },
-          icon: Icon(Icons.filter_alt_outlined),color: Color(0xFF5451FD),),
+          icon: Icon(Icons.filter_alt_outlined),
+            color: Color(0xFF42454D),),
           ),
         ],
       ),

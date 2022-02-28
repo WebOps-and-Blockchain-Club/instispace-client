@@ -10,7 +10,7 @@ import '../screens/home/Announcements/home.dart';
 
 Widget AnnouncementsCards(
     BuildContext context,
-    List<String> images,
+    // List<String>? images,
     String role,
     String userId,
     Future<QueryResult?> Function()? refetchAnnouncements,
@@ -20,7 +20,9 @@ Widget AnnouncementsCards(
 
   String delete = AnnouncementMutations().deleteAnnouncement;
   return Card(
-    color: Color(0xFFDEDDFF),
+    // color: Color(0xFFDEDDFF),
+    color: Color(0xFFFFFFFF),
+    elevation: 2.0,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0)),
     child: Column(
@@ -36,29 +38,29 @@ Widget AnnouncementsCards(
                 fontWeight: FontWeight.w500),
           ),
         ),
-        if (images[0] != "")
-          ClipRect(
-            child: SizedBox(
-              width: 400.0,
-              child: CarouselSlider(
-                items: images
-                    .map((item) => Container(
-                  child: Center(
-                    child: Image.network(
-                      item,
-                      fit: BoxFit.cover,
-                      width: 400,
-                    ),
-                  ),
-                ))
-                    .toList(),
-                options: CarouselOptions(
-                  enableInfiniteScroll: false,
-                ),
-              ),
-            ),
-          ),
-        if (images[0] == "")
+        // if (images![0] != '')
+        //   ClipRect(
+        //     child: SizedBox(
+        //       width: 400.0,
+        //       child: CarouselSlider(
+        //         items: images
+        //             .map((item) => Container(
+        //           child: Center(
+        //             child: Image.network(
+        //               item,
+        //               fit: BoxFit.cover,
+        //               width: 400,
+        //             ),
+        //           ),
+        //         ))
+        //             .toList(),
+        //         options: CarouselOptions(
+        //           enableInfiniteScroll: false,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // if (images![0] == "")
           DescriptionTextWidget(text: announcement.description),
         if(page == 'announcementsSection')
         if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
