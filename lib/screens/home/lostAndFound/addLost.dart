@@ -23,7 +23,7 @@ class _AddLostState extends State<AddLost> {
 
   ///Variables
   var imageResult ;
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now();
   List<dynamic> byteData=[];
   List multipartfile=[];
   List fileNames=[];
@@ -170,7 +170,7 @@ class _AddLostState extends State<AddLost> {
                         dateLabelText: 'Date',
                         timeLabelText: "Hour",
                         onChanged: (val) => {
-                          dateTime= dateTimeString(val),
+                          dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
                         },
                         validator: (val) {
                           return null;
@@ -431,7 +431,7 @@ class _AddLostState extends State<AddLost> {
                                           "itemInput": {
                                             "name": nameController.text,
                                             "location":locationController.text,
-                                            "time":dateTime,
+                                            "time":"$dateTime",
                                             "category": "LOST",
                                             "contact":contactController.text,
                                           },

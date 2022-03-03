@@ -24,7 +24,7 @@ class _AddFoundState extends State<AddFound> {
 
   ///Variables
   var imageResult ;
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now();
   List<dynamic> byteData=[];
   List multipartfile=[];
   List fileNames=[];
@@ -175,7 +175,9 @@ class _AddFoundState extends State<AddFound> {
                       dateLabelText: 'Date',
                       timeLabelText: "Hour",
                       onChanged: (val) => {
-                        dateTime= dateTimeString(val),
+                        // dateTime= dateTimeString(val),
+                        dateTime = DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
+
                       },
                       validator: (val) {
                         return null;
@@ -364,7 +366,7 @@ class _AddFoundState extends State<AddFound> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        //Discard Button
+                        ///Discard Button
                         ElevatedButton(
                             onPressed: (){
                               Navigator.pop(context);
@@ -420,7 +422,8 @@ class _AddFoundState extends State<AddFound> {
                                 QueryResult? result,
                                 ){
                               if (result!.hasException){
-                                return Text(result.exception.toString());
+                                // return Text(result.exception.toString());
+                                print(result.exception.toString());
                               }
                               if(result.isLoading){
                                 return Center(
@@ -436,7 +439,7 @@ class _AddFoundState extends State<AddFound> {
                                         "itemInput": {
                                           "name": nameController.text,
                                           "location":locationController.text,
-                                          "time":dateTime,
+                                          "time":"$dateTime",
                                           "category": "FOUND",
                                           "contact":contactController.text,
                                         },
