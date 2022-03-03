@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:client/graphQL/notification.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,147 +15,204 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   @override
-  void initState() async {
+  void initState(){
     super.initState();
-      _sharedPreference();
+    _sharedPreference();
   }
 
-  void _sharedPreference()async{
+  void _sharedPreference() async{
+    print('sharedpreference called');
     prefs = await SharedPreferences.getInstance();
-    if(prefs?.getBool('isSwitchedNetops')==true){
-      isSwitchedNetops = true;
-    }
-    if(prefs?.getBool('isSwitchedLnF')==true){
-      isSwitchedLnF = true;
-    }
-    if(prefs?.getBool('isSwitchedQueries')==true){
-      isSwitchedQueries = true;
-    }
-    if(prefs?.getBool('isSwitchedEvents')==true){
-      isSwitchedEvents = true;
-    }
+    setState(() {
+      if(prefs?.getString("notifyNetop")!=null){
+        dropdownValueNetops = prefs?.getString("notifyNetop");
+      }
+      print("dropDownValueNetops: $dropdownValueNetops");
+      if(prefs?.getString("notifyEvent")!=null){
+        dropdownValueEvents = prefs?.getString("notifyEvent");
+      }
+      print("dropDownValueEvents : $dropdownValueEvents");
+      if(prefs?.getBool('isSwitchedLnF') == true){
+        isSwitchedLnF = true;
+        print("isSwitchedLnF:$isSwitchedLnF");
+      }
+      if(prefs?.getBool('isSwitchedQueries')== false){
+        isSwitchedQueries = false;
+        print("isSwitchedQueries:$isSwitchedQueries");
+      }
+    });
   }
 
+  String changeNotificationPreference = notificationQuery().changeNotificationPreference;
 
   SharedPreferences? prefs;
   List<String> notificationPref=[];
-  bool isSwitchedNetops = false;
   bool isSwitchedLnF = false;
-  bool isSwitchedEvents = false;
-  bool isSwitchedQueries = false;
+  bool isSwitchedQueries = true;
+  String? dropdownValueNetops = "Followed Tags";
+  String? dropdownValueEvents = "Followed Tags";
+  Map<String,String> notificationPrefs={
+    "All":"FORALL",
+    "Followed Tags":"FOLLOWED_TAGS",
+    "None":"NONE",
+  };
   @override
   Widget build(BuildContext context) {
-
-    print("isSwitchedNetops:$isSwitchedNetops");
     return Scaffold(
         appBar: AppBar(
           title: const Text("Notification setting"),
         ),
         body: Column(
           children: [
-            ListTile(
-              leading: const Text('Netops'),
-              trailing: Switch(
-                value: isSwitchedNetops,
-                onChanged: (value) async {
-                  setState(() {
-                    isSwitchedNetops = value;
-                    print(isSwitchedNetops);
-                    if(isSwitchedNetops){
-                      notificationPref.add('Netops');
-                    }
-                    else{
-                      notificationPref.remove('Netops');
-                    }
-                    print("notificationPrefs:$notificationPref");
-                  });
-                  prefs = await SharedPreferences.getInstance();
-                  prefs?.setStringList('notificationPref', notificationPref );
-                  prefs?.setBool('isSwitchedNetops', isSwitchedNetops);
-                  var preference =prefs?.getStringList('notificationPref');
-                  print("preference: $preference");
-                },
-                activeTrackColor: Colors.lightGreenAccent,
-                activeColor: Colors.green,
-              ),
+            //netop
+            Mutation(
+            options: MutationOptions(
+              document: gql(changeNotificationPreference),
+              onCompleted: (result){
+                print("NetopPrefChange result:$result");
+              }
             ),
-            ListTile(
-              leading: const Text('Lost and Found'),
-              trailing: Switch(
-                value: isSwitchedLnF,
-                onChanged: (value) async {
-                  setState(() {
-                    isSwitchedLnF = value;
-                    print(isSwitchedLnF);
-                    if(isSwitchedLnF){
-                      notificationPref.add('LnF');
-                    }
-                    else{
-                      notificationPref.remove('LnF');
-                    }
-                    print("notificationPrefs:$notificationPref");
-                  });
-                  prefs = await SharedPreferences.getInstance();
-                  prefs?.setStringList('notificationPref', notificationPref );
-                  prefs?.setBool('isSwitchedLnF', isSwitchedLnF);
-                  var preference =prefs?.getStringList('notificationPref');
-                  print("preference: $preference");
-                },
-                activeTrackColor: Colors.lightGreenAccent,
-                activeColor: Colors.green,
-              ),
+              builder: (RunMutation runMutation,
+                  QueryResult? result){
+                if (result!.hasException){
+                  print(result.exception.toString());
+                }
+                return ListTile(
+                    leading: const Text('Netops'),
+                    trailing: DropdownButton<String>(
+                      value: dropdownValueNetops,
+                      onChanged: (String? newValue){
+                        setState(() {
+                          dropdownValueNetops = newValue!;
+                          prefs?.setString("notifyNetop", dropdownValueNetops!);
+                          print("notifyNetop:${prefs?.getString("notifyNetop")}");
+                        });
+                        runMutation({
+                          "notifyNetop":notificationPrefs[dropdownValueNetops],
+                          "toggleNotifyMyQuery":isSwitchedQueries,
+                          "toggleNotifyFound":isSwitchedLnF,
+                        });
+                      },
+                      items: notificationPrefs.keys
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )
+                );
+              },
+        ),
+            //events
+            Mutation(
+                options: MutationOptions(
+                  document: gql(changeNotificationPreference),
+                  onCompleted: (result){
+                    print("EventPrefChange result:$result");
+                  }
+                ),
+                builder: (RunMutation runMutation,
+                    QueryResult? result,){
+                  if (result!.hasException){
+                    print(result.exception.toString());
+                  }
+                  return ListTile(
+                      leading: const Text('Events'),
+                      trailing: DropdownButton<String>(
+                        value: dropdownValueEvents,
+                        onChanged: (String? newValue){
+                          setState(() {
+                            dropdownValueEvents = newValue!;
+                            prefs?.setString("notifyEvent", dropdownValueEvents!);
+                            print("notifyEvent:${prefs?.getString("notifyEvent")}");
+                          });
+                          print("EventPref");
+                          runMutation({
+                            "notifyEvent":notificationPrefs[dropdownValueEvents],
+                            "toggleNotifyMyQuery":isSwitchedQueries,
+                            "toggleNotifyFound":isSwitchedLnF,
+                          });
+                        },
+                        items: notificationPrefs.keys
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      )
+                  );
+                }
             ),
-            ListTile(
-              leading: const Text('Events'),
-              trailing: Switch(
-                value: isSwitchedEvents,
-                onChanged: (value) async {
-                  setState(() {
-                    isSwitchedEvents = value;
-                    print(isSwitchedEvents);
-                    if(isSwitchedEvents){
-                      notificationPref.add('Events');
-                    }
-                    else{
-                      notificationPref.remove('Events');
-                    }
-                    print("notificationPrefs:$notificationPref");
-                  });
-                  prefs = await SharedPreferences.getInstance();
-                  prefs?.setStringList('notificationPref', notificationPref );
-                  prefs?.setBool('isSwitchedEvents', isSwitchedEvents);
-                  var preference =prefs?.getStringList('notificationPref');
-                  print("preference: $preference");
-                },
-                activeTrackColor: Colors.lightGreenAccent,
-                activeColor: Colors.green,
-              ),
+            //LnF
+            Mutation(
+                options: MutationOptions(
+                  document: gql(changeNotificationPreference),
+                  onCompleted: (result){
+                    print("LnfPref:$result");
+                  }
+                ),
+                builder: (RunMutation runMutation,
+                    QueryResult? result){
+                  if (result!.hasException){
+                    print(result.exception.toString());
+                  }
+                  return ListTile(
+                    leading: const Text('Found'),
+
+                    trailing: Switch(
+                      value: isSwitchedLnF,
+                      onChanged: (value)  {
+                        setState(() {
+                          isSwitchedLnF = value;
+                          print(isSwitchedLnF);
+                        });
+                        prefs?.setBool('isSwitchedLnF', isSwitchedLnF);
+                        runMutation({
+                          "toggleNotifyFound":isSwitchedLnF,
+                          "toggleNotifyMyQuery":isSwitchedQueries
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  );
+                }
             ),
-            ListTile(
-              leading:const Text('Queries'),
-              trailing: Switch(
-                value: isSwitchedQueries,
-                onChanged: (value) async {
-                  setState(() {
-                    isSwitchedQueries = value;
-                    print(isSwitchedQueries);
-                    if(isSwitchedQueries){
-                      notificationPref.add('Queries');
+            //Query
+            Mutation(
+                options: MutationOptions(
+                  document: gql(changeNotificationPreference),
+                    onCompleted: (result){
+                      print("QueriesPref:$result");
                     }
-                    else{
-                      notificationPref.remove('Queries');
-                    }
-                    print("notificationPrefs:$notificationPref");
-                  });
-                  prefs = await SharedPreferences.getInstance();
-                  prefs?.setStringList('notificationPref', notificationPref );
-                  prefs?.setBool('isSwitchedQueries', isSwitchedQueries);
-                  var preference =prefs?.getStringList('notificationPref');
-                  print("preference: $preference");
-                },
-                activeTrackColor: Colors.lightGreenAccent,
-                activeColor: Colors.green,
-              ),
+                ),
+                builder: (RunMutation runMutation,
+                    QueryResult? result){
+                  if (result!.hasException){
+                    print(result.exception.toString());
+                  }
+                  return ListTile(
+                    leading:const Text('Queries'),
+                    trailing: Switch(
+                      value: isSwitchedQueries,
+                      onChanged: (value){
+                        setState(() {
+                          isSwitchedQueries = value;
+                          print("isSwitchedQueries:$isSwitchedQueries");
+                        });
+                        prefs?.setBool('isSwitchedQueries', isSwitchedQueries);
+                        runMutation({
+                          "toggleNotifyMyQuery":isSwitchedQueries,
+                          "toggleNotifyFound":isSwitchedLnF,
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  );
+                }
             ),
           ],
         )

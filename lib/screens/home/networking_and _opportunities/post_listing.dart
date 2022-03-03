@@ -96,9 +96,9 @@ class _Post_ListingState extends State<Post_Listing> {
                 },
               ),
               builder: (QueryResult result, {fetchMore, refetch}) {
-                print("search kar re: $search");
-                print("Query running");
-                print("isStarred:$isStarred");
+                // print("search kar re: $search");
+                // print("Query running");
+                // print("isStarred:$isStarred");
                 // print("tags filter:${selectedFilterIds}");
                 if (result.hasException) {
                   print(result.exception.toString());
@@ -208,9 +208,6 @@ class _Post_ListingState extends State<Post_Listing> {
                       total > posts.length) {
                     await fetchMore!(opts);
                     scrollController.jumpTo(triggerFetchMoreSize);
-                    skip = skip + 10;
-
-                    print("skip:$skip");
                   }
                 });
 

@@ -170,7 +170,8 @@ class _HomePageState extends State<HomePage> {
                             child: ListView.separated(
                                 itemBuilder: (context, index) => NewCardSkeleton(),
                                 separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                                itemCount: 5)
+                                itemCount: 5
+                            )
                         ),
                       ),
                     );

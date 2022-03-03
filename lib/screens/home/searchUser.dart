@@ -62,7 +62,7 @@ class _searchUserState extends State<searchUser> {
                             : "",
                         name: data[i]["name"] != null ? data[i]["name"] : "",
                       ));
-                };
+                }
                 // print(data);
                 FetchMoreOptions opts = FetchMoreOptions(
                     variables: {"take": take, "lastUserId":users.last.id ,"search": search},

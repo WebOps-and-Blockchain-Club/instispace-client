@@ -94,6 +94,7 @@ class _SignUpState extends State<SignUp> {
                             padding:
                                 const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             child: TextFormField(
+                              controller: nameController,
                                 decoration: InputDecoration(
                                     hintText: 'Enter Your Name',
                                     border: InputBorder.none),

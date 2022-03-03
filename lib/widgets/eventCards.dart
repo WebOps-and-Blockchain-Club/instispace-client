@@ -288,7 +288,7 @@ String timeDifference = difference(postCreated);
                             launch('${events.linkToAction}');
                           },
                           child: Text(
-                            events.linkName!,
+                            events.linkName,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,

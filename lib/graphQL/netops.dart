@@ -40,8 +40,8 @@ class netopsQuery {
 }
 """;
   String createNetop = """
-  mutation(\$newEventData: createNetopsInput!, \$image: Upload, \$attachments: [Upload!]){
-  createNetop(NewEventData: \$newEventData, Image: \$image, Attachments: \$attachments)
+  mutation(\$newNetopData: createNetopsInput!, \$image: Upload, \$attachments: [Upload!]){
+  createNetop(NewNetopData: \$newNetopData, Image: \$image, Attachments: \$attachments)
 }
 """;
   String toggleLike = """

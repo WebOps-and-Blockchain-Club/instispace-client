@@ -1,5 +1,4 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/wrapper.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -16,6 +15,8 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   playSound: true,
   enableVibration: true,
 );
+
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
  FlutterLocalNotificationsPlugin();

@@ -1,3 +1,4 @@
+import 'package:client/graphQL/auth.dart';
 import 'package:client/main.dart';
 import 'package:client/models/post.dart';
 import 'package:client/models/tag.dart';
@@ -43,6 +44,7 @@ class mainHome extends StatefulWidget {
 class _mainHomeState extends State<mainHome> {
   late AuthService _auth;
   int _selectedIndex = 2;
+  String logOut = authQuery().logOut;
   static const List<Widget> _widgetOptions = <Widget>[
     LNFListing(),
     QueryHome(),
@@ -66,6 +68,7 @@ class _mainHomeState extends State<mainHome> {
       // _storeMe = Provider.of<StoreMe>(context,listen: false);
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("notification:${message.notification}");
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
@@ -81,6 +84,12 @@ class _mainHomeState extends State<mainHome> {
                 color: Colors.blue,
                 playSound: true,
                 icon: '@mipmap/ic_launcher',
+              ),
+              iOS: const IOSNotificationDetails(
+                sound: 'default.wav',
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
               ),
             ));
       }
@@ -106,9 +115,14 @@ class _mainHomeState extends State<mainHome> {
       }
     });
   }
-
+  late String fcmToken;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
+    _firebaseMessaging.getToken().then((token) {
+      fcmToken = token!;
+      print("fcmtoken:$token");
+    });
     //User UI
     return Scaffold(
       appBar: AppBar(
@@ -254,12 +268,31 @@ class _mainHomeState extends State<mainHome> {
                         builder: (BuildContext context) => FeedBack()));
                   },
                 ),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  horizontalTitleGap: 0,
-                  title: const Text("Logout"),
-                  onTap: () {
-                    _auth.clearAuth();
+                Mutation(
+                  options: MutationOptions(
+                      document: gql(logOut),
+                      onCompleted: (result){
+                        print("logout result:$result");
+                        if(result["logout"] == true){
+                          _auth.clearAuth();
+                        }
+                      }
+                  ),
+                  builder: (RunMutation runMutation,
+                      QueryResult? result){
+                    if (result!.hasException){
+                      print(result.exception.toString());
+                    }
+                    return ListTile(
+                      leading: const Icon(Icons.logout),
+                      horizontalTitleGap: 0,
+                      title: const Text("Logout"),
+                      onTap: () {
+                        runMutation({
+                          "fcmToken":fcmToken,
+                        });
+                      },
+                    );
                   },
                 ),
               ],

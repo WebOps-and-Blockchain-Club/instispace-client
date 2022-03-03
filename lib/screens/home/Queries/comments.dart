@@ -45,7 +45,7 @@ class _queryCommentsState extends State<queryComments> {
           List<Comment> comments =  [];
           var data=result.data!["getMyQuery"]["comments"];
           for(var i=0;i<data.length;i++){
-            comments.add(Comment(id: data[i]["id"], name: data[i]["createdBy"]["name"], message: data[i]["content"]
+            comments.add(Comment(id: data[i]["id"], name: (data[i]["createdBy"]["name"]==null)?"":data[i]["createdBy"]["name"], message: data[i]["content"]
             ));
           }
 

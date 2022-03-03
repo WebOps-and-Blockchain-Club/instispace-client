@@ -1,12 +1,17 @@
 class authQuery{
-  String login = """mutation(\$loginInputs: LoginInput!,\$fcmToken: String!){
-  login( LoginInputs: \$loginInputs fcmToken: \$fcmToken)
+  String login = """mutation(\$loginInputs: LoginInput!,\$fcmToken:String!){
+  login( LoginInputs: \$loginInputs,fcmToken:\$fcmToken)
    {
     role
     token
     isNewUser
   }
 }""";
+  String logOut="""
+  mutation(\$fcmToken: String!){
+  logout(fcmToken: \$fcmToken)
+}
+  """;
 String getHostels ="""query{
   getHostels {
     name

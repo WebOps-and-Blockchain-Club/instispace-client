@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/netops.dart';
 import 'package:client/widgets/formTexts.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
@@ -32,11 +35,12 @@ class _AddPostState extends State<AddPost> {
   var dateTime=DateTime.now().add(const Duration(days: 7));
   var key;
   var byteDataImage;
+  var compressedByteData;
   var multipartfileImage;
   List byteDataAttachment=[];
   List multipartfileAttachment=[];
   List AttachmentNames = ['Please select attachments'];
-  PlatformFile? file=null;
+  PlatformFile? file;
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -174,8 +178,7 @@ class _AddPostState extends State<AddPost> {
                                         selectedImage = file!.name;
                                         // print("selectedImage:$selectedImage");
                                         // print("file:$file");
-                                        byteDataImage= file!.bytes;
-                                        print("byteData:$byteDataImage");
+                                        byteDataImage = file!.bytes!;
                                         multipartfileImage=MultipartFile.fromBytes(
                                           'photo',
                                           byteDataImage,
@@ -479,7 +482,7 @@ class _AddPostState extends State<AddPost> {
                                       };
                                       print("selectedTagIds:$selectedIds");
                                       await runMutation({
-                                        "newEventData":{
+                                        "newNetopData":{
                                           "content":descriptionController.text,
                                           "title":titleController.text,
                                           "tags":selectedIds,
@@ -524,6 +527,19 @@ class _AddPostState extends State<AddPost> {
       },
     );
   }
+}
+
+Future<Uint8List> compressList(Uint8List list) async {
+  var result = await FlutterImageCompress.compressWithList(
+    list,
+    minHeight: 1920,
+    minWidth: 1080,
+    quality: 96,
+    rotate: 135,
+  );
+  print("list.length:${list.length}");
+  print("result.length:${result.length}");
+  return result;
 }
 
 

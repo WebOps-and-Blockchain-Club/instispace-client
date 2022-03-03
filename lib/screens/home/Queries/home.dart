@@ -63,7 +63,7 @@ class _QueryHomeState extends State<QueryHome> {
         posts.clear();
         for(var i=0;i<data.length;i++){
           createdAt = DateTime.parse(data[i]["createdAt"]);
-          posts.add(queryClass(id: data[i]["id"], title: data[i]["title"], likeCount: data[i]["likeCount"], content: data[i]["content"], createdByName: data[i]["createdBy"]["name"], createdByRoll: data[i]["createdBy"]["roll"], photo:data[i]["photo"]!=null?data[i]["photo"]:"",isLiked: data[i]["isLiked"],createdById: data[i]["createdBy"]["id"], ));
+          posts.add(queryClass(id: data[i]["id"], title: data[i]["title"], likeCount: data[i]["likeCount"], content: data[i]["content"], createdByName: (data[i]["createdBy"]["name"]==null)?"":data[i]["createdBy"]["name"], createdByRoll: data[i]["createdBy"]["roll"], photo:data[i]["photo"]!=null?data[i]["photo"]:"",isLiked: data[i]["isLiked"],createdById: data[i]["createdBy"]["id"], ));
         }
         FetchMoreOptions opts =FetchMoreOptions(
             variables: {"take":take,"lastEventId": posts.last.id,"search":search,"orderByLikes":orderByLikes},
