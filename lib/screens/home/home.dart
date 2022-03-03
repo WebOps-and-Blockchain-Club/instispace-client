@@ -1,33 +1,23 @@
-import 'package:bottom_drawer/bottom_drawer.dart';
-import 'package:client/models/post.dart';
+import 'package:client/models/netopsClass.dart';
 import 'package:client/models/tag.dart';
-import 'package:client/screens/Events/home.dart';
-import 'package:client/screens/Events/post.dart';
+import 'package:client/models/eventsClass.dart';
 import 'package:client/screens/Login/createAmenity.dart';
 import 'package:client/screens/Login/createHostelContacts.dart';
-import 'package:client/screens/Login/createhostel.dart';
-import 'package:client/screens/home/Announcements/Announcement.dart';
-import 'package:client/screens/home/Announcements/home.dart';
-import 'package:client/screens/home/Hostel_Section/home.dart';
-import 'package:client/screens/home/Queries/home.dart';
-import 'package:client/screens/home/feedback_type_pages/about_us.dart';
-import 'package:client/screens/home/feedback_type_pages/contact_us.dart';
-import 'package:client/screens/home/feedback_type_pages/feedback.dart';
-import 'package:client/screens/home/homeCards.dart';
+import 'package:client/screens/Login/createHostel.dart';
+import 'package:client/models/announcementsClass.dart';
 import 'package:client/screens/home/searchUser.dart';
-import 'package:client/screens/home/userpage.dart';
-import 'package:client/widgets/iconButtons.dart';
+import 'package:client/widgets/eventCard.dart';
 import 'package:client/widgets/text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
-import 'package:client/widgets/loading screens.dart';
+import 'package:client/widgets/loadingScreens.dart';
 import 'package:client/models/commentclass.dart';
-import 'package:client/screens/home/networking_and _opportunities/post_listing.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../../widgets/NetOpCard.dart';
+import '../../widgets/announcementCard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -38,19 +28,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+  ///GraphQL
   late AuthService _auth;
   String getMe = homeQuery().getMe;
   String getMeHome = homeQuery().getMeHome;
 
+  ///Variables
   var result;
   late String userName;
   late String userRole;
+  late String userid;
   bool isAll = true;
   bool isAnnouncements = false;
   bool isEvents = false;
   bool isNetops = false;
   Map all = {};
 
+  ///Controllers
+  late TextEditingController reportController;
+  late ScrollController scrollController;
+
+  ///Keys
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -60,6 +60,8 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);
     });
+    scrollController = ScrollController();
+    reportController = TextEditingController();
   }
 
   @override
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         ),
         builder: (QueryResult result, {fetchMore, refetch}) {
           if (result.hasException) {
-            print(result.exception.toString());
+            return Text(result.exception.toString());
           }
           if (result.isLoading) {
             return Scaffold(
@@ -78,21 +80,18 @@ class _HomePageState extends State<HomePage> {
                 child: LoadingAnimationWidget.staggeredDotsWave(
                     color: Colors.black,
                     size: 100),
-                // Expanded(
-                //     child: ListView.separated(
-                //         itemBuilder: (context, index) => NewCardSkeleton(),
-                //         separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                //         itemCount: 5)
-                // ),
               ),
             );
           }
           userRole = result.data!["getMe"]["role"];
+          userid = result.data!["getMe"]["id"];
+
+          ///Conditional Scaffold, one for Admin side and other for User side
 
           if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
             return Scaffold(
               appBar: AppBar(
-                title: Text("Hey ${userRole}"),
+                title: Text("Hey $userRole"),
                 backgroundColor: const Color(0xFF5451FD),
                 actions: [
                   IconButton(
@@ -155,411 +154,945 @@ class _HomePageState extends State<HomePage> {
             );
           }
           else {
+            userName = result.data!["getMe"]["name"];
             return Query(
                 options: QueryOptions(
                   document: gql(getMeHome),
                 ),
                 builder: (QueryResult result, {fetchMore, refetch}) {
                   if (result.hasException) {
-                    print(result.exception.toString());
+                    return Text(result.exception.toString());
                   }
+
+                  ///Loading screen
                   if (result.isLoading) {
                     return Scaffold(
                       body: Center(
                         child: Expanded(
                             child: ListView.separated(
-                                itemBuilder: (context, index) => NewCardSkeleton(),
-                                separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                                itemBuilder: (context, index) =>
+                                    const NewCardSkeleton(),
+                                separatorBuilder: (context,
+                                    index) => const SizedBox(height: 6,),
                                 itemCount: 5)
                         ),
                       ),
                     );
                   }
-                  all.clear();
-                  for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-                    all.putIfAbsent(Announcement(
-                        title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-                        hostelIds: [],
-                        description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-                        endTime: '',
-                        id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-                        images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-                        createdByUserId: ''
-                    ),
-                            () => "announcement");
-                  }
-                  for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
-                    List<Tag> tags = [];
-                    for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
-                      // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                      tags.add(
-                        Tag(
-                          Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-                          category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-                          id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
+                  var data = result.data!["getMe"]["getHome"];
+
+                  ///If all announcements, events and netops are empty
+                  if (data["announcements"].isEmpty &&
+                      data ["events"].isEmpty && data["netops"].isEmpty) {
+                    return Scaffold(
+                      body: Center(
+                        child: Column(
+                          children: [
+                            PageTitle('Welcome ${userName
+                            .split(" ")
+                            .first}!!', context),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0,250,0,0),
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'No Posts Yet !!',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  )),
+                            ),
+                          ],
                         ),
-                      );
-                    }
-
-                    List<String> imageUrls=[];
-                    if(result.data!['getMe']['getHome']['events'][i]["photo"]!=null && result.data!['getMe']['getHome']['events'][i]["photo"]!="")
-                    {imageUrls=result.data!['getMe']['getHome']['events'][i]["photo"].split(" AND ");}
-
-                    all.putIfAbsent(Post(
-                      title: result.data!["getMe"]["getHome"]["events"][i]["title"],
-                      tags: tags,
-                      id: result.data!["getMe"]["getHome"]["events"][i]["id"],
-                      createdById: result.data!['getMe']['getHome']['events'][i]['createdBy']['id'],
-                      // createdByName: result.data!['getMe']['getHome']['events'][i]['createdBy']['name'],
-                      createdByName: '',
-                      likeCount: result.data!['getMe']['getHome']['events'][i]['likeCount'],
-                      imgUrl: imageUrls,
-                      linkName: result.data!['getMe']['getHome']['events'][i]['linkName'],
-                      description: result.data!['getMe']['getHome']['events'][i]['content'],
-                      linkToAction: result.data!['getMe']['getHome']['events'][i]['linkToAction'],
-                      time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-                      location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                      isLiked: result.data!["getMe"]["getHome"]["events"][i]["isLiked"],
-                      isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
-                    ),
-                          () => "event",
+                      ),
                     );
                   }
-                  if(isNetops) {
+                  else {
                     all.clear();
-                  }
-                  for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
-                    List<Tag> tags = [];
-                    List<Comment> comments = [];
-                    for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
-                      // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                      tags.add(
-                        Tag(
-                          Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
-                          category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
-                          id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
-                        ),
-                      );
+                    for (var i = 0; i < data["announcements"].length; i++) {
+                      all.putIfAbsent(Announcement(
+                        title: data["announcements"][i]["title"],
+                        hostelIds: [],
+                        description: data["announcements"][i]["description"],
+                        endTime: data["announcements"][i]["endTime"],
+                        id: data["announcements"][i]["id"],
+                        images: data["announcements"][i]["images"],
+                        createdByUserId: data["announcements"][i]["user"]["id"],
+                      ),
+                              () => "announcement");
                     }
-                    for(var j=0;j<result.data!['getMe']['getHome']['netops'][i]["comments"].length;j++){
-                      // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
-                      comments.add(
-                          Comment(
-                            message: result.data!['getMe']['getHome']['netops'][i]["comments"][j]["content"],
-                            id: result.data!['getMe']['getHome']['netops'][i]["comments"][j]["id"],
-                            name: "Name",
-                            //ToDO comment name
-                            // netopList[i]["comments"][j]["createdBy"]["name"]
-                          )
-                      );
-                    }
-                    all.putIfAbsent(NetOpPost(
-                      title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
-                      tags: tags,
-                      id: result.data!["getMe"]["getHome"]["netops"][i]["id"],
-                      createdByName: '',
-                      comments: comments,
-                      like_counter: result.data!["getMe"]["getHome"]["netops"][i]["likeCount"],
-                      endTime: result.data!['getMe']['getHome']['netops'][i]['endTime'],
-                      attachment: result.data!["getMe"]["getHome"]["netops"][i]["attachments"],
-                      imgUrl: result.data!["getMe"]["getHome"]["netops"][i]["photo"],
-                      linkToAction: result.data!["getMe"]["getHome"]["netops"][i]["linkToAction"],
-                      linkName: result.data!["getMe"]["getHome"]["netops"][i]["linkName"],
-                      description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
-                      isLiked: result.data!['getMe']['getHome']['netops'][i]['isLiked'],
-                      isStarred: result.data!['getMe']['getHome']['netops'][i]['isStared'],
-                    ),
-                            ()=>"netop");
-                  }
-                  if(isEvents) {
-                    all.clear();
-                    for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
+                    for (var i = 0; i < data["events"].length; i++) {
                       List<Tag> tags = [];
-                      for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
+                      for (var k = 0; k <
+                          data["events"][i]["tags"].length; k++) {
                         // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
                         tags.add(
                           Tag(
-                            Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-                            category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-                            id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
+                            Tag_name: data["events"][i]["tags"][k]["title"],
+                            category: data["events"][i]["tags"][k]["category"],
+                            id: data["events"][i]["tags"][k]["id"],
                           ),
                         );
                       }
 
-                      List<String> imageUrls=[];
-                      if(result.data!['getMe']['getHome']['events'][i]["photo"]!=null && result.data!['getMe']['getHome']['events'][i]["photo"]!="")
-                      {imageUrls=result.data!['getMe']['getHome']['events'][i]["photo"].split(" AND ");}
+                      List<String> imageUrls = [];
+                      if (data['events'][i]["photo"] != null && result
+                          .data!['getMe']['getHome']['events'][i]["photo"] !=
+                          "") {
+                        imageUrls = data['events'][i]["photo"].split(" AND ");
+                      }
 
-                      all.putIfAbsent(Post(
-                        title: result.data!["getMe"]["getHome"]["events"][i]["title"],
+                      all.putIfAbsent(eventsPost(
+                        title: data["events"][i]["title"],
                         tags: tags,
-                        id: result.data!["getMe"]["getHome"]["events"][i]["id"],
-                        createdById: result.data!['getMe']['getHome']['events'][i]['createdBy']['id'],
+                        id: data["events"][i]["id"],
+                        createdById: result
+                            .data!['getMe']['getHome']['events'][i]['createdBy']['id'],
                         // createdByName: result.data!['getMe']['getHome']['events'][i]['createdBy']['name'],
                         createdByName: '',
-                        likeCount: result.data!['getMe']['getHome']['events'][i]['likeCount'],
+                        likeCount: data['events'][i]['likeCount'],
                         imgUrl: imageUrls,
-                        linkName: result.data!['getMe']['getHome']['events'][i]['linkName'],
-                        description: result.data!['getMe']['getHome']['events'][i]['content'],
-                        linkToAction: result.data!['getMe']['getHome']['events'][i]['linkToAction'],
-                        time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-                        location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                        isLiked: result.data!["getMe"]["getHome"]["events"][i]["isLiked"],
-                        isStarred: result.data!["getMe"]["getHome"]["events"][i]["isStared"],
+                        linkName: data['events'][i]['linkName'],
+                        description: data['events'][i]['content'],
+                        linkToAction: data['events'][i]['linkToAction'],
+                        time: data["events"][i]["time"],
+                        location: data["events"][i]["location"],
+                        isLiked: data["events"][i]["isLiked"],
+                        isStarred: data["events"][i]["isStared"],
+                        createdAt: DateTime.parse(
+                            data["events"][i]["createdAt"]),
                       ),
                             () => "event",
                       );
                     }
-                  }
-                  if (isAnnouncements) {
-                    all.clear();
-                    for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-                      all.putIfAbsent(Announcement(
-                          title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-                          hostelIds: [],
-                          description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-                          endTime: '',
-                          id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-                          images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-                          createdByUserId: ''
+
+                    for (var i = 0; i <
+                        result.data!["getMe"]["getHome"]["netops"]
+                            .length; i++) {
+                      List<Tag> tags = [];
+                      List<Comment> comments = [];
+                      for (var k = 0; k <
+                          result.data!["getMe"]["getHome"]["netops"][i]["tags"]
+                              .length; k++) {
+                        // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                        tags.add(
+                          Tag(
+                            Tag_name: result
+                                .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
+                            category: result
+                                .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
+                            id: result
+                                .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
+                          ),
+                        );
+                      }
+                      for (var j = 0; j < result
+                          .data!['getMe']['getHome']['netops'][i]["comments"]
+                          .length; j++) {
+                        // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
+                        comments.add(
+                            Comment(
+                              message: result
+                                  .data!['getMe']['getHome']['netops'][i]["comments"][j]["content"],
+                              id: result
+                                  .data!['getMe']['getHome']['netops'][i]["comments"][j]["id"],
+                              name: "Name",
+                              //ToDO comment name
+                              // netopList[i]["comments"][j]["createdBy"]["name"]
+                            )
+                        );
+                      }
+                      all.putIfAbsent(NetOpPost(
+                        title: result
+                            .data!["getMe"]["getHome"]["netops"][i]["title"],
+                        tags: tags,
+                        id: result.data!["getMe"]["getHome"]["netops"][i]["id"],
+                        createdByName: '',
+                        comments: comments,
+                        likeCount: result
+                            .data!["getMe"]["getHome"]["netops"][i]["likeCount"],
+                        endTime: result
+                            .data!['getMe']['getHome']['netops'][i]['endTime'],
+                        attachment: result
+                            .data!["getMe"]["getHome"]["netops"][i]["attachments"],
+                        imgUrl: result
+                            .data!["getMe"]["getHome"]["netops"][i]["photo"],
+                        linkToAction: result
+                            .data!["getMe"]["getHome"]["netops"][i]["linkToAction"],
+                        linkName: result
+                            .data!["getMe"]["getHome"]["netops"][i]["linkName"],
+                        description: result
+                            .data!["getMe"]["getHome"]["netops"][i]["content"],
+                        isLiked: data['netops'][i]['isLiked'],
+                        isStarred: data['netops'][i]['isStared'],
+                        createdAt: DateTime.parse(
+                            data["netops"][i]["createdAt"]),
+                        createdById: data["netops"][i]["createdBy"]["id"],
                       ),
-                              () => "announcement");
+                              () => "netop");
                     }
-                  }
-                  if( isAnnouncements == true || isEvents == true || isNetops == true ) {
-                    isAll = false;
-                  }
-                  userName = result.data!["getMe"]["name"];
 
-                  //User UI
-                  return Scaffold(
-                    key: _scaffoldKey,
-                    // appBar: AppBar(
-                    //   title: Text(
-                    //     'Welcome ${userName.split(" ").first} !!',
-                    //     style: const TextStyle(
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.white
-                    //     ),
-                    //   ),
-                    //   elevation: 0.0,
-                    //   backgroundColor: Color(0xFF5451FD),
-                    backgroundColor: Color(0xFFDFDFDF),
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.vertical(
-                    //       bottom: Radius.circular(15.0),
-                    //     )
-                    //   ),
-                    // ),
-                    body: ListView(
-                      children: [
-                        PageTitle('Welcome ${userName.split(" ").first}!!', context),
-                        Column(
-                        children: [
-                          //Selectors
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height*0.07,
-                            width: MediaQuery.of(context).size.width*0.9,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0.0, 15, 5, 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  //Selected
-                                  Row(
-                                    children: [
-                                      if(isAll)
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isAnnouncements = false;
-                                                isEvents = false;
-                                                isNetops = false;
-                                                isAll = true;
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              primary: isAll? Colors.white:Color(0xFF42454D),
-                                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                              minimumSize: Size(50, 35),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20.0)
-                                              ),
-                                            ),
-                                            child: Text("All",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  // color: isAll? Colors.white:Color(0xFF42454D),
-                                                  color: isAll? Color(0xFF42454D):Colors.white,
-                                                  fontSize: 15
-                                              ),
-                                            ),
+
+                    if (isNetops) {
+                      all.clear();
+
+                      ///If only netops is empty and netops filter is applied
+                      if(data["netops"].isEmpty) {
+                        return Scaffold(
+                          backgroundColor: Color(0xFFDFDFDF),
+                          body: Column(
+                            children: [
+                              PageTitle('Welcome ${userName
+                                  .split(" ")
+                                  .first}!!}', context),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(15,15,10,15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets
+                                          .fromLTRB(
+                                          0.0, 0.0, 6.0, 0.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isNetops = !isNetops;
+                                            isAnnouncements = false;
+                                            isEvents = false;
+                                            isAll = !isAll;
+                                          });
+                                        },
+                                        style: ElevatedButton
+                                            .styleFrom(
+                                          primary: isNetops ? Colors
+                                              .white : Color(
+                                              0xFF42454D),
+                                          padding: const EdgeInsets
+                                              .symmetric(vertical: 4,
+                                              horizontal: 8),
+                                          minimumSize: Size(50, 35),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .circular(20.0)
                                           ),
                                         ),
-
-                                      //Announcements Selected
-                                      if(isAnnouncements)
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isAnnouncements = !isAnnouncements;
-                                                isEvents = false;
-                                                isNetops = false;
-                                                isAll = !isAll;
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: isAnnouncements? Colors.white:Color(0xFF42454D),
-                                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                                minimumSize: Size(50, 35),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(20.0)
-                                                ),
-                                            ),
-                                            child: Text("Announcements",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isAnnouncements? Color(0xFF42454D):Colors.white,
-                                                  fontSize: 15
-                                              ),
-                                            ),
+                                        child: Text("netops",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight
+                                                  .bold,
+                                              color: isNetops ? Color(
+                                                  0xFF42454D) : Colors
+                                                  .white,
+                                              fontSize: 15
                                           ),
                                         ),
-
-                                      //Events Selected
-
-                                      if(isEvents)
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isEvents = !isEvents;
-                                                isAnnouncements =  false;
-                                                isNetops = false;
-                                                isAll = !isAll;
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: isEvents? Colors.white:Color(0xFF42454D),
-                                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                                minimumSize: Size(50, 35),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(20.0)
-                                                ),
-                                            ),
-                                            child: Text("Events",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isEvents? Color(0xFF42454D):Colors.white,
-                                                  fontSize: 15
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-
-                                      //Netop Selected
-
-                                      if(isNetops)
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isNetops = !isNetops;
-                                                isEvents = false;
-                                                isAnnouncements = false;
-                                                isAll = !isAll;
-                                              });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                primary: isNetops? Colors.white:Color(0xFF42454D),
-                                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                                minimumSize: Size(50, 35),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(20.0)
-                                                ),
-                                            ),
-                                            child: Text("Netops",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isNetops? Color(0xFF42454D):Colors.white,
-                                                  fontSize: 15
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,0,0,8),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        showModalBottomSheet(
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          showModalBottomSheet(
                                             context: context,
-                                            builder: (BuildContext context) {
+                                            builder: (
+                                                BuildContext context) {
                                               return homeFilters();
                                             },
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .vertical(
+                                                  top: Radius.circular(10)
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.filter_alt_outlined,
+                                          color: Color(0xFF42454D),),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0,250,0,0),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'No netops yet !!',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      else{
+                        for (var i = 0; i <
+                            result.data!["getMe"]["getHome"]["netops"]
+                                .length; i++) {
+                          List<Tag> tags = [];
+                          List<Comment> comments = [];
+                          for (var k = 0; k <
+                              result.data!["getMe"]["getHome"]["netops"][i]["tags"]
+                                  .length; k++) {
+                            // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                            tags.add(
+                              Tag(
+                                Tag_name: result
+                                    .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
+                                category: result
+                                    .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
+                                id: result
+                                    .data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
+                              ),
+                            );
+                          }
+                          for (var j = 0; j < result
+                              .data!['getMe']['getHome']['netops'][i]["comments"]
+                              .length; j++) {
+                            // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
+                            comments.add(
+                                Comment(
+                                  message: result
+                                      .data!['getMe']['getHome']['netops'][i]["comments"][j]["content"],
+                                  id: result
+                                      .data!['getMe']['getHome']['netops'][i]["comments"][j]["id"],
+                                  name: "Name",
+                                  //ToDO comment name
+                                  // netopList[i]["comments"][j]["createdBy"]["name"]
+                                )
+                            );
+                          }
+                          all.putIfAbsent(NetOpPost(
+                            title: result
+                                .data!["getMe"]["getHome"]["netops"][i]["title"],
+                            tags: tags,
+                            id: result.data!["getMe"]["getHome"]["netops"][i]["id"],
+                            createdByName: '',
+                            comments: comments,
+                            likeCount: result
+                                .data!["getMe"]["getHome"]["netops"][i]["likeCount"],
+                            endTime: result
+                                .data!['getMe']['getHome']['netops'][i]['endTime'],
+                            attachment: result
+                                .data!["getMe"]["getHome"]["netops"][i]["attachments"],
+                            imgUrl: result
+                                .data!["getMe"]["getHome"]["netops"][i]["photo"],
+                            linkToAction: result
+                                .data!["getMe"]["getHome"]["netops"][i]["linkToAction"],
+                            linkName: result
+                                .data!["getMe"]["getHome"]["netops"][i]["linkName"],
+                            description: result
+                                .data!["getMe"]["getHome"]["netops"][i]["content"],
+                            isLiked: data['netops'][i]['isLiked'],
+                            isStarred: data['netops'][i]['isStared'],
+                            createdAt: DateTime.parse(
+                                data["netops"][i]["createdAt"]),
+                            createdById: data["netops"][i]["createdBy"]["id"],
+                          ),
+                                  () => "netop");
+                        }
+                      }
+
+                    }
+                    if (isEvents) {
+                      all.clear();
+
+                      ///If only events is empty and events filter is applied
+                      if(data["events"].isEmpty) {
+                        return Scaffold(
+                          backgroundColor: Color(0xFFDFDFDF),
+                          body: Column(
+                            children: [
+                              PageTitle('Welcome ${userName
+                                  .split(" ")
+                                  .first}!!}', context),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(15,15,10,15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets
+                                          .fromLTRB(
+                                          0.0, 0.0, 6.0, 0.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isEvents = !isEvents;
+                                            isAnnouncements = false;
+                                            isNetops = false;
+                                            isAll = !isAll;
+                                          });
+                                        },
+                                        style: ElevatedButton
+                                            .styleFrom(
+                                          primary: isEvents ? Colors
+                                              .white : Color(
+                                              0xFF42454D),
+                                          padding: const EdgeInsets
+                                              .symmetric(vertical: 4,
+                                              horizontal: 8),
+                                          minimumSize: Size(50, 35),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(10)
+                                              borderRadius: BorderRadius
+                                                  .circular(20.0)
+                                          ),
+                                        ),
+                                        child: Text("Events",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight
+                                                  .bold,
+                                              color: isEvents ? Color(
+                                                  0xFF42454D) : Colors
+                                                  .white,
+                                              fontSize: 15
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 0, 8),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            builder: (
+                                                BuildContext context) {
+                                              return homeFilters();
+                                            },
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius
+                                                  .vertical(
+                                                  top: Radius.circular(10)
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.filter_alt_outlined,
+                                          color: Color(0xFF42454D),),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0,250,0,0),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'No events yet !!',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      else {
+                        for (var i = 0; i <
+                            result.data!["getMe"]["getHome"]["events"]
+                                .length; i++) {
+                          List<Tag> tags = [];
+                          for (var k = 0; k < result
+                              .data!["getMe"]["getHome"]["events"][i]["tags"]
+                              .length; k++) {
+                            // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
+                            tags.add(
+                              Tag(
+                                Tag_name: result
+                                    .data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
+                                category: result
+                                    .data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
+                                id: result
+                                    .data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
+                              ),
+                            );
+                          }
+
+                          List<String> imageUrls = [];
+                          if (result
+                              .data!['getMe']['getHome']['events'][i]["photo"] !=
+                              null && result
+                              .data!['getMe']['getHome']['events'][i]["photo"] !=
+                              "") {
+                            imageUrls = result
+                                .data!['getMe']['getHome']['events'][i]["photo"]
+                                .split(" AND ");
+                          }
+
+                          all.putIfAbsent(eventsPost(
+                            title: result
+                                .data!["getMe"]["getHome"]["events"][i]["title"],
+                            tags: tags,
+                            id: result
+                                .data!["getMe"]["getHome"]["events"][i]["id"],
+                            createdById: result
+                                .data!['getMe']['getHome']['events'][i]['createdBy']['id'],
+                            // createdByName: result.data!['getMe']['getHome']['events'][i]['createdBy']['name'],
+                            createdByName: '',
+                            likeCount: result
+                                .data!['getMe']['getHome']['events'][i]['likeCount'],
+                            imgUrl: imageUrls,
+                            linkName: result
+                                .data!['getMe']['getHome']['events'][i]['linkName'],
+                            description: result
+                                .data!['getMe']['getHome']['events'][i]['content'],
+                            linkToAction: result
+                                .data!['getMe']['getHome']['events'][i]['linkToAction'],
+                            time: result
+                                .data!["getMe"]["getHome"]["events"][i]["time"],
+                            location: result
+                                .data!["getMe"]["getHome"]["events"][i]["location"],
+                            isLiked: result
+                                .data!["getMe"]["getHome"]["events"][i]["isLiked"],
+                            isStarred: result
+                                .data!["getMe"]["getHome"]["events"][i]["isStared"],
+                            createdAt: DateTime.parse(
+                                data["events"][i]["createdAt"]),
+                          ),
+                                () => "event",
+                          );
+                        }
+                      }
+                    }
+                    if (isAnnouncements) {
+
+                      all.clear();
+
+
+                      ///If only announcements is empty and ammouncements filter is applied
+                      if(data["announcements"].isEmpty)
+                        {
+                          return Scaffold(
+                            backgroundColor: Color(0xFFDFDFDF),
+                            body: Column(
+                              children: [
+                                PageTitle('Welcome ${userName
+                                    .split(" ")
+                                    .first}!!}', context),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(15,15,10,15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets
+                                            .fromLTRB(
+                                            0.0, 0.0, 6.0, 0.0),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isAnnouncements = !isAnnouncements;
+                                              isEvents = false;
+                                              isNetops = false;
+                                              isAll = !isAll;
+                                            });
+                                          },
+                                          style: ElevatedButton
+                                              .styleFrom(
+                                            primary: isAnnouncements ? Colors
+                                                .white : Color(
+                                                0xFF42454D),
+                                            padding: const EdgeInsets
+                                                .symmetric(vertical: 4,
+                                                horizontal: 8),
+                                            minimumSize: Size(50, 35),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius
+                                                    .circular(20.0)
                                             ),
                                           ),
-                                        );
-                                      },
-                                      icon: Icon(Icons.filter_alt_outlined,color: Color(0xFF42454D),),
+                                          child: Text("Announcements",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight
+                                                    .bold,
+                                                color: isAnnouncements ? Color(
+                                                    0xFF42454D) : Colors
+                                                    .white,
+                                                fontSize: 15
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 8),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              builder: (
+                                                  BuildContext context) {
+                                                return homeFilters();
+                                              },
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius
+                                                    .vertical(
+                                                    top: Radius.circular(10)
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.filter_alt_outlined,
+                                            color: Color(0xFF42454D),),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,250,0,0),
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'No announcements yet !!',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w600
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      else {
+                        for (var i = 0; i <
+                            result.data!["getMe"]["getHome"]["announcements"]
+                                .length; i++) {
+                          all.putIfAbsent(Announcement(
+                              title: result
+                                  .data!["getMe"]["getHome"]["announcements"][i]["title"],
+                              hostelIds: [],
+                              description: result
+                                  .data!["getMe"]["getHome"]["announcements"][i]["description"],
+                              endTime: '',
+                              id: result
+                                  .data!["getMe"]["getHome"]["announcements"][i]["id"],
+                              images: result
+                                  .data!["getMe"]["getHome"]["announcements"][i]["images"],
+                              createdByUserId: ''
+                          ),
+                                  () => "announcement");
+                        }
+                      }
+                    }
+                    if (isAnnouncements == true || isEvents == true ||
+                        isNetops == true) {
+                      isAll = false;
+                    }
+
+
+                    return Scaffold(
+                      key: _scaffoldKey,
+                      backgroundColor: Color(0xFFDFDFDF),
+                      body: ListView(
+                          children: [
+                            PageTitle('Welcome ${userName
+                                .split(" ")
+                                .first}!!', context),
+                            Column(
+                              children: [
+                               ///Filters
+                                SizedBox(
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.07,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.9,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        0.0, 15, 5, 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        //Selected
+                                        Row(
+                                          children: [
+
+                                            ///If "all" filter is applied
+                                            if(isAll)
+                                              Padding(
+                                                padding: const EdgeInsets
+                                                    .fromLTRB(
+                                                    0.0, 0.0, 6.0, 0.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isAnnouncements = false;
+                                                      isEvents = false;
+                                                      isNetops = false;
+                                                      isAll = true;
+                                                    });
+                                                  },
+                                                  style: ElevatedButton
+                                                      .styleFrom(
+                                                    primary: isAll ? Colors
+                                                        .white : Color(
+                                                        0xFF42454D),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 4,
+                                                        horizontal: 8),
+                                                    minimumSize: Size(50, 35),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius
+                                                            .circular(20.0)
+                                                    ),
+                                                  ),
+                                                  child: Text("All",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        // color: isAll? Colors.white:Color(0xFF42454D),
+                                                        color: isAll ? Color(
+                                                            0xFF42454D) : Colors
+                                                            .white,
+                                                        fontSize: 15
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                            ///If "Announcements" is applied
+                                            if(isAnnouncements)
+                                              Padding(
+                                                padding: const EdgeInsets
+                                                    .fromLTRB(
+                                                    0.0, 0.0, 6.0, 0.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isAnnouncements =
+                                                      !isAnnouncements;
+                                                      isEvents = false;
+                                                      isNetops = false;
+                                                      isAll = !isAll;
+                                                    });
+                                                  },
+                                                  style: ElevatedButton
+                                                      .styleFrom(
+                                                    primary: isAnnouncements
+                                                        ? Colors.white
+                                                        : Color(0xFF42454D),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 4,
+                                                        horizontal: 8),
+                                                    minimumSize: Size(50, 35),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius
+                                                            .circular(20.0)
+                                                    ),
+                                                  ),
+                                                  child: Text("Announcements",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        color: isAnnouncements
+                                                            ? Color(0xFF42454D)
+                                                            : Colors.white,
+                                                        fontSize: 15
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                            ///If "Events" is applied
+
+                                            if(isEvents)
+                                              Padding(
+                                                padding: const EdgeInsets
+                                                    .fromLTRB(
+                                                    0.0, 0.0, 6.0, 0.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isEvents = !isEvents;
+                                                      isAnnouncements = false;
+                                                      isNetops = false;
+                                                      isAll = !isAll;
+                                                    });
+                                                  },
+                                                  style: ElevatedButton
+                                                      .styleFrom(
+                                                    primary: isEvents ? Colors
+                                                        .white : Color(
+                                                        0xFF42454D),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 4,
+                                                        horizontal: 8),
+                                                    minimumSize: Size(50, 35),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius
+                                                            .circular(20.0)
+                                                    ),
+                                                  ),
+                                                  child: Text("events",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        color: isEvents ? Color(
+                                                            0xFF42454D) : Colors
+                                                            .white,
+                                                        fontSize: 15
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                            ///If "Netops" is applied
+                                            if(isNetops)
+                                              Padding(
+                                                padding: const EdgeInsets
+                                                    .fromLTRB(
+                                                    0.0, 0.0, 6.0, 0.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isNetops = !isNetops;
+                                                      isEvents = false;
+                                                      isAnnouncements = false;
+                                                      isAll = !isAll;
+                                                    });
+                                                  },
+                                                  style: ElevatedButton
+                                                      .styleFrom(
+                                                    primary: isNetops ? Colors
+                                                        .white : Color(
+                                                        0xFF42454D),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 4,
+                                                        horizontal: 8),
+                                                    minimumSize: Size(50, 35),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius
+                                                            .circular(20.0)
+                                                    ),
+                                                  ),
+                                                  child: Text("Netops",
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        color: isNetops ? Color(
+                                                            0xFF42454D) : Colors
+                                                            .white,
+                                                        fontSize: 15
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+
+                                        ///Filter button to open bottomSheet
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 8),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (
+                                                    BuildContext context) {
+                                                  return homeFilters();
+                                                },
+                                                shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius
+                                                      .vertical(
+                                                      top: Radius.circular(10)
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.filter_alt_outlined,
+                                              color: Color(0xFF42454D),),
+                                          ),
+                                        ),
+
+                                      ],
                                     ),
                                   ),
+                                ),
 
-                                ],
-                              ),
+                                ///Listing of posts
+                                RefreshIndicator(
+                                  color: const Color(0xFF2B2E35),
+                                  onRefresh: () {
+                                    return refetch!();
+                                  },
+                                  child: ListView(
+                                      shrinkWrap: true,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              12, 5, 12, 5),
+                                          child: Column(
+                                            children: all.keys.map((e) =>
+                                                cardFunction(all[e], e, refetch,
+                                                    userRole, userid)
+                                            ).toList(),
+                                          ),
+                                        )
+                                      ]
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-
-                          //Feed
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height*0.8,
-                            child: ListView(
-                                children :[
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
-                                    child: Column(
-                                      children: all.keys.map((e) => cardFunction(all[e],e,refetch)
-                                      ).toList(),
-                                    ),
-                                  )
-                                ]
-                            ),
-                          ),
-                        ],
+                          ]
                       ),
-                    ]
-                    ),
 
-                  );
+                    );
+                  }
                 }
             );
           }
         }
     );
   }
-  Widget cardFunction (String category, post, Future<QueryResult?> Function()? refetch){
+
+
+  ///Function to call category wise cards
+  Widget cardFunction (String category, post, Future<QueryResult?> Function()? refetch,userRole,userid){
     if(category == "event"){
-      return EventsHomeCard(events: post,refetchPosts: refetch,);
+      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid, post.createdById);
     }
     else if(category == "netop"){
-      return NetOpHomeCard(netops: post, refetchPosts: refetch,);
+      return NetopsCard(context, refetch, post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, userid, post.createdById, reportController, post,'homePage');
     }
     else if(category == "announcement"){
-      return AnnouncementHomeCard(announcements: post);
+      // return AnnouncementHomeCard(announcements: post);
+      return AnnouncementsCards(context,userRole,userid,refetch,post);
     }
     return Container();
   }
 
+  ///Widget of Bottom Sheet
   Widget homeFilters () {
     return ListView(
       children: [
@@ -598,11 +1131,12 @@ class _HomePageState extends State<HomePage> {
                           isNetops = false;
                           isAll = true;
                         });
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: isAll? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                        primary: isAll? const Color(0xFF42454D):const Color(0xFFDFDFDF),
                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        minimumSize: Size(50, 35),
+                        minimumSize: const Size(50, 35),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)
                         ),
@@ -610,7 +1144,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text("All",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: isAll? Colors.white:Color(0xFF42454D),
+                            color: isAll? Colors.white:const Color(0xFF42454D),
                             fontSize: 15
                         ),
                       ),
@@ -627,19 +1161,20 @@ class _HomePageState extends State<HomePage> {
                             isNetops = false;
                             isAll = !isAll;
                           });
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isEvents? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                          primary: isEvents? const Color(0xFF42454D):const Color(0xFFDFDFDF),
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: Size(50, 35),
+                          minimumSize: const Size(50, 35),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0)
                           ),
                         ),
-                        child: Text("Events",
+                        child: Text("events",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: isEvents? Colors.white:Color(0xFF42454D),
+                              color: isEvents? Colors.white:const Color(0xFF42454D),
                               fontSize: 15
                           ),
                         ),
@@ -657,19 +1192,20 @@ class _HomePageState extends State<HomePage> {
                             isAnnouncements = false;
                             isAll = !isAll;
                           });
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isNetops? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                          primary: isNetops? const Color(0xFF42454D):const Color(0xFFDFDFDF),
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: Size(50, 35),
+                          minimumSize: const Size(50, 35),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0)
                           ),
                         ),
-                        child: Text("Netops",
+                        child: Text("netops",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: isNetops? Colors.white:Color(0xFF42454D),
+                              color: isNetops? Colors.white:const Color(0xFF42454D),
                               fontSize: 15
                           ),
                         ),
@@ -687,11 +1223,12 @@ class _HomePageState extends State<HomePage> {
                             isNetops = false;
                             isAll = !isAll;
                           });
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isAnnouncements? const Color(0xFF42454D):Color(0xFFDFDFDF),
+                          primary: isAnnouncements? const Color(0xFF42454D):const Color(0xFFDFDFDF),
                           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: Size(50, 35),
+                          minimumSize: const Size(50, 35),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0)
                           ),
@@ -699,7 +1236,7 @@ class _HomePageState extends State<HomePage> {
                         child: Text("Announcements",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: isAnnouncements? Colors.white:Color(0xFF42454D),
+                              color: isAnnouncements? Colors.white:const Color(0xFF42454D),
                               fontSize: 15
                           ),
                         ),
@@ -716,152 +1253,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// class homeFilters extends StatefulWidget {
-//
-//   bool isAll;
-//   bool isAnnouncements;
-//   bool isEvents;
-//   bool isNetops;
-//   homeFilters({required this.isAll,required this.isAnnouncements,required this.isNetops, required this.isEvents});
-//   @override
-//   _homeFiltersState createState() => _homeFiltersState();
-// }
-//
-// class _homeFiltersState extends State<homeFilters> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       height: 150,
-//       child: ListView(
-//             children: [Column(
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       setState(() {
-//                         widget.isAnnouncements = false;
-//                         widget.isEvents = false;
-//                         widget.isNetops = false;
-//                         widget.isAll = true;
-//                       });
-//                     },
-//                     style: ElevatedButton.styleFrom(
-//                       primary: widget.isAll? const Color(0xFF6B7AFF):Colors.white,
-//                       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//                       minimumSize: Size(50, 35),
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(20.0)
-//                       ),
-//                       side: BorderSide(color: Color(0xFF6B7AFF)),
-//                     ),
-//                     child: Text("All",
-//                       style: TextStyle(
-//                           fontWeight: FontWeight.bold,
-//                           color: widget.isAll? Colors.white:Color(0xFF6B7AFF),
-//                           fontSize: 15
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//
-//                 //Announcements Selected
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       setState(() {
-//                         widget.isAnnouncements = !widget.isAnnouncements;
-//                         widget.isEvents = false;
-//                         widget.isNetops = false;
-//                         widget.isAll = !widget.isAll;
-//                       });
-//                     },
-//                     style: ElevatedButton.styleFrom(
-//                         primary: widget.isAnnouncements? const Color(0xFF6B7AFF):Colors.white,
-//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//                         minimumSize: Size(50, 35),
-//                         shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(20.0)
-//                         ),
-//                         side: BorderSide(color: Color(0xFF6B7AFF))
-//                     ),
-//                     child: Text("Announcements",
-//                       style: TextStyle(
-//                           fontWeight: FontWeight.bold,
-//                           color: widget.isAnnouncements? Colors.white:Color(0xFF6B7AFF),
-//                           fontSize: 15
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//
-//                 //Events Selected
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       setState(() {
-//                         widget.isEvents = !widget.isEvents;
-//                         widget.isAnnouncements =  false;
-//                         widget.isNetops = false;
-//                         widget.isAll = !widget.isAll;
-//                       });
-//                     },
-//                     style: ElevatedButton.styleFrom(
-//                         primary: widget.isEvents? const Color(0xFF6B7AFF):Colors.white,
-//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//                         minimumSize: Size(50, 35),
-//                         shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(20.0)
-//                         ),
-//                         side: BorderSide(color: Color(0xFF6B7AFF))
-//                     ),
-//                     child: Text("Events",
-//                       style: TextStyle(
-//                           fontWeight: FontWeight.bold,
-//                           color: widget.isEvents? Colors.white:Color(0xFF6B7AFF),
-//                           fontSize: 15
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//
-//                 //Netop Selected
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0.0,0.0,6.0,0.0),
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       setState(() {
-//                         widget.isNetops = !widget.isNetops;
-//                         widget.isEvents = false;
-//                         widget.isAnnouncements = false;
-//                         widget.isAll = !widget.isAll;
-//                       });
-//                     },
-//                     style: ElevatedButton.styleFrom(
-//                         primary: widget.isNetops? const Color(0xFF6B7AFF):Colors.white,
-//                         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//                         minimumSize: Size(50, 35),
-//                         shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(20.0)
-//                         ),
-//                         side: BorderSide(color: Color(0xFF6B7AFF))
-//                     ),
-//                     child: Text("Netops",
-//                       style: TextStyle(
-//                           fontWeight: FontWeight.bold,
-//                           color: widget.isNetops? Colors.white:Color(0xFF6B7AFF),
-//                           fontSize: 15
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             ]
-//         ),
-//     );
-//   }
-// }

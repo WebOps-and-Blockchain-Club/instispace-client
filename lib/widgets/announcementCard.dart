@@ -1,26 +1,23 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:client/graphQL/announcement_mutations.dart';
-import 'package:client/screens/home/Announcements/Announcement.dart';
+import 'package:client/graphQL/announcements.dart';
+import 'package:client/models/announcementsClass.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
-import '../screens/home/Announcements/edit_announcements.dart';
-import '../screens/home/Announcements/expand_description.dart';
-import '../screens/home/Announcements/home.dart';
+import '../screens/home/HostelSection/Announcements/editAnnouncements.dart';
+import 'expandDescription.dart';
+import '../screens/home/HostelSection/Announcements/announcements.dart';
 
 import 'package:client/widgets/marquee.dart';
 
 Widget AnnouncementsCards(
     BuildContext context,
-    List<String>? images,
     String role,
     String userId,
     Future<QueryResult?> Function()? refetchAnnouncements,
     Announcement announcement,
-    String page
     ) {
 
-  String delete = AnnouncementMutations().deleteAnnouncement;
+  ///GraphQL
+  String delete = AnnouncementQM().deleteAnnouncement;
 
   return Card(
     shape: RoundedRectangleBorder(
@@ -34,9 +31,10 @@ Widget AnnouncementsCards(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        ///Title Container
         Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFF42454D),
+          decoration: const BoxDecoration(
+            color: Color(0xFF42454D),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8.5),
                 topRight: Radius.circular(8.5)),
@@ -45,7 +43,7 @@ Widget AnnouncementsCards(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              //Title
+              ///Title
               Padding(
                 //Conditional Padding
                   padding: (userId==announcement.createdByUserId)
@@ -55,7 +53,8 @@ Widget AnnouncementsCards(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: MarqueeWidget(
                       direction: Axis.horizontal,
-                      child: Text(announcement.title,
+                      child: Text(
+                        capitalize(announcement.title),
                         style: TextStyle(
                           //Conditional Font Size
                           fontWeight: (userId==announcement.createdByUserId)
@@ -96,17 +95,21 @@ Widget AnnouncementsCards(
         //     ),
         //   ),
 
+
+        ///Description
           Padding(
             padding: const EdgeInsets.all(15),
             child: DescriptionTextWidget(text: announcement.description,),
           ),
 
-        if(page == 'announcementsSection')
+
+        ///Edit Button, delete button
         if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 1),
             child: Row(
               children: [
+                ///Edit Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xFF42454D),
@@ -138,7 +141,8 @@ Widget AnnouncementsCards(
                     TextStyle(color: Colors.white, fontSize: 12.0),
                   ),
                 ),
-                if (page == 'announcementsSection')
+
+                  ///Delete Button
                   if(role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
                 Mutation(
                     options: MutationOptions(
@@ -190,3 +194,6 @@ Widget AnnouncementsCards(
     ),
   );
 }
+
+///To capitalize the first letter of Title
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

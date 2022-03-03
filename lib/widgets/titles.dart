@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Called in cards as titles
 Widget SubHeading (String title) {
   return Text(
     title,

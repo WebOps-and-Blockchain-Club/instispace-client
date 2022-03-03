@@ -1,31 +1,17 @@
-import 'package:client/models/post.dart';
-import 'package:client/models/tag.dart';
-import 'package:client/screens/Events/home.dart';
-import 'package:client/screens/Events/post.dart';
-import 'package:client/screens/Login/createAmenity.dart';
-import 'package:client/screens/Login/createHostelContacts.dart';
-import 'package:client/screens/Login/createhostel.dart';
-import 'package:client/screens/home/Announcements/Announcement.dart';
-import 'package:client/screens/home/Announcements/home.dart';
-import 'package:client/screens/home/Queries/home.dart';
-import 'package:client/screens/home/homeCards.dart';
+import 'package:client/screens/home/Events/events.dart';
+import 'package:client/screens/home/Queries/query.dart';
 import 'package:client/screens/home/searchUser.dart';
-import 'package:client/screens/home/userpage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:client/screens/home/userPage.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
-import 'Hostel_Section/home.dart';
-import 'feedback_type_pages/about_us.dart';
-import 'feedback_type_pages/contact_us.dart';
-import 'feedback_type_pages/feedback.dart';
+import 'HostelSection/hostel.dart';
+import 'feedbackTypePages/about_us.dart';
+import 'feedbackTypePages/contact_us.dart';
+import 'feedbackTypePages/feedback.dart';
 import 'home.dart';
-import 'package:bottom_drawer/bottom_drawer.dart';
-import 'hostel_profile.dart';
-import 'lost and found/home.dart';
-import 'networking_and _opportunities/post_listing.dart';
-import 'package:client/graphQL/home.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'lostAndFound/LF.dart';
+import 'Netops/netops.dart';
 
 class mainHome extends StatefulWidget {
   const mainHome({Key? key}) : super(key: key);
@@ -36,8 +22,12 @@ class mainHome extends StatefulWidget {
 }
 
 class _mainHomeState extends State<mainHome> {
+
+  ///Variables
   late AuthService _auth;
   int _selectedIndex = 2;
+
+  /// For Bottom Navigation Bar
   static const List<Widget> _widgetOptions = <Widget>[
     LNFListing(),
     QueryHome(),
@@ -46,6 +36,7 @@ class _mainHomeState extends State<mainHome> {
     Post_Listing(),
   ];
 
+  ///To set the value of index on which page the user is
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -65,10 +56,11 @@ class _mainHomeState extends State<mainHome> {
   Widget build(BuildContext context) {
             //User UI
             return Scaffold(
+
               appBar: AppBar(
                 backgroundColor: const Color(0xFF2B2E35),
                 titleSpacing: 0,
-                // backgroundColor: Colors.white,
+                ///AppName and logo
                 title: Row(
                   children: const [
                     CircleAvatar(
@@ -82,15 +74,12 @@ class _mainHomeState extends State<mainHome> {
                   ],
                 ),
                 actions: [
-                  // IconButton(onPressed: (){
-                  //   Navigator.of(context).push(MaterialPageRoute(
-                  //       builder: (BuildContext context) => const searchUser()));
-                  // },
-                  //     icon: const Icon(Icons.search_outlined,color: Colors.white,)),
+                  ///Notifications Button
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.notifications,color: Colors.white,)
                   ),
+                  ///Hostel Section Button
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -102,9 +91,12 @@ class _mainHomeState extends State<mainHome> {
                 ],
                 elevation: 0.0,
               ),
+
               body: Center(
                 child: _widgetOptions.elementAt(_selectedIndex),
               ),
+
+              ///SideBar (Hamburger)
               drawer: Drawer(
                 child: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
@@ -114,6 +106,8 @@ class _mainHomeState extends State<mainHome> {
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
+
+                            /// AppName and logo
                             child: Row(
                               children: const [
                                 CircleAvatar(
@@ -133,6 +127,8 @@ class _mainHomeState extends State<mainHome> {
                             ),
                           ),
                         ),
+
+                        ///My Profile Button
                         ListTile(
                           leading: const Icon(Icons.account_circle_outlined),
                           horizontalTitleGap: 0,
@@ -142,6 +138,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => UserPage()));
                           },
                         ),
+
+                        ///Update Profile Button
                         ListTile(
                           leading: const Icon(Icons.vpn_key_sharp),
                           horizontalTitleGap: 0,
@@ -151,6 +149,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => UserPage()));
                           },
                         ),
+
+                        ///My Hostel Button
                         ListTile(
                           leading: const Icon(Icons.account_balance),
                           horizontalTitleGap: 0,
@@ -160,6 +160,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => HostelHome()));
                           },
                         ),
+
+                        ///Search User Button
                         ListTile(
                           leading: const Icon(Icons.search_outlined),
                           horizontalTitleGap: 0,
@@ -169,6 +171,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => const searchUser()));
                           },
                         ),
+
+                        ///About us Page Button
                         ListTile(
                           leading: const Icon(Icons.alternate_email),
                           horizontalTitleGap: 0,
@@ -178,6 +182,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => AboutUs()));
                           },
                         ),
+
+                        ///Contact Us Page Button
                         ListTile(
                           leading: const Icon(Icons.contact_page_outlined),
                           horizontalTitleGap: 0,
@@ -187,6 +193,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => ContactUs()));
                           },
                         ),
+
+                        ///Feedback Page Button
                         ListTile(
                           leading: const Icon(Icons.feedback_outlined),
                           horizontalTitleGap: 0,
@@ -196,6 +204,8 @@ class _mainHomeState extends State<mainHome> {
                                 builder: (BuildContext context) => FeedBack()));
                           },
                         ),
+
+                        ///Logout Button
                         ListTile(
                           leading: const Icon(Icons.logout),
                           horizontalTitleGap: 0,
@@ -209,6 +219,8 @@ class _mainHomeState extends State<mainHome> {
                   },
                 ),
               ),
+
+              ///Bottom Navigation Bar
               bottomNavigationBar: BottomNavigationBar(
                       type: BottomNavigationBarType.fixed,
                       unselectedItemColor: Colors.grey,
@@ -229,7 +241,7 @@ class _mainHomeState extends State<mainHome> {
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.query_stats_rounded),
-                          label: 'Queries',
+                          label: 'queries',
                           backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(
@@ -239,7 +251,7 @@ class _mainHomeState extends State<mainHome> {
                         ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.event),
-                          label: 'Events',
+                          label: 'events',
                           backgroundColor: Color(0xFF2B2E35),
                         ),
                         BottomNavigationBarItem(

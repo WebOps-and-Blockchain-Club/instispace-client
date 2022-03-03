@@ -1,9 +1,8 @@
-import 'package:client/screens/home/Announcements/edit_announcements.dart';
 import 'package:flutter/material.dart';
-
 import '../models/tag.dart';
-import '../screens/tagPage.dart';
+import 'tagPage.dart';
 
+///Called wherever Tag Buttons are used
 Widget TagButtons (Tag tag,BuildContext context) {
   return ElevatedButton(
     onPressed: () => {
@@ -11,7 +10,7 @@ Widget TagButtons (Tag tag,BuildContext context) {
           builder: (BuildContext context) => TagPage(tagId: tag.id,tagName: tag.Tag_name,)))
     },
     child: Padding(
-      padding: EdgeInsets.fromLTRB(8,2,8,2),
+      padding: const EdgeInsets.fromLTRB(8,2,8,2),
       child: Text(
       tag.Tag_name,
       style: const TextStyle(
@@ -30,7 +29,7 @@ Widget TagButtons (Tag tag,BuildContext context) {
       padding: const EdgeInsets.symmetric(
           vertical: 2,
           horizontal: 6),
-      minimumSize: Size(35, 30)
+      minimumSize: const Size(35, 30)
     ),
   );
 }

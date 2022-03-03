@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:client/screens/userInit/signUp.dart';
-import 'package:client/screens/userInit/updatepass.dart';
+import 'package:client/screens/userInit/updatePass.dart';
 
 class userInit extends StatefulWidget {
   final AuthService auth;
