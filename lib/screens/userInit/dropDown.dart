@@ -21,7 +21,7 @@ class _dropDownState extends State<dropDown> {
       width: 400.0,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.blue[200],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(30.0),
         ),
         child: Padding(
@@ -30,7 +30,7 @@ class _dropDownState extends State<dropDown> {
             underline: Container(
               height: 0.0,
             ),
-            dropdownColor: Colors.blue[200],
+            dropdownColor: Colors.white,
             hint: Text("Select Hostel"),
             value: widget.dropDownValue,
             onChanged: (String? newValue) {
