@@ -37,6 +37,10 @@ class _EditPostState extends State<EditPost> {
   Map<String,String>tagList={};
   String? selectedImage = "Please select an image";
   String emptyTagsError = '';
+  String emptyTitleErr = '';
+  String emptyDescErr = '';
+  String emptyUrlNameErr = '';
+  String emptyUrlErr = '';
   bool showAdditional = false;
   var key;
   var imageResult;
@@ -127,13 +131,17 @@ class _EditPostState extends State<EditPost> {
 
                                   validator: (value){
                                     if (value == null || value.isEmpty) {
-                                      return 'Item Name cannot be empty';
+                                      setState(() {
+                                        emptyTitleErr = "Title can't be empty";
+                                      });
                                     }
                                     return null;
                                   },
                                 ),
                               ),
                             ),
+
+                            errorMessages(emptyTitleErr),
 
                             ///Description
                             const SizedBox(
@@ -158,13 +166,17 @@ class _EditPostState extends State<EditPost> {
                                   keyboardType: TextInputType.multiline,
                                   validator: (value){
                                     if (value == null || value.isEmpty) {
-                                      return 'Item Name cannot be empty';
+                                      setState(() {
+                                        emptyDescErr = "Description can't be empty";
+                                      });
                                     }
                                     return null;
                                   },
                                 ),
                               ),
                             ),
+
+                            errorMessages(emptyDescErr),
 
                             ///End Time
                             const SizedBox(
@@ -365,13 +377,17 @@ class _EditPostState extends State<EditPost> {
                                        keyboardType: TextInputType.multiline,
                                        validator: (val) {
                                          if(val!.isEmpty && urlController.text.isNotEmpty) {
-                                           return "Please provide button name too if you are giving link";
+                                           setState(() {
+                                             emptyUrlNameErr = "Please provide button name too if you are giving link";
+                                           });
                                          }
                                          return null;
                                        },
                                      ),
                                    ),
                                  ),
+
+                                 errorMessages(emptyUrlNameErr),
 
                                  ///Link Field
                                  const Padding(
@@ -403,17 +419,23 @@ class _EditPostState extends State<EditPost> {
                                        keyboardType: TextInputType.multiline,
                                        validator: (val) {
                                          if(val!.isEmpty && urlNameController.text.isNotEmpty) {
-                                           return 'Please provide link too if you are giving button name';
+                                           setState(() {
+                                             emptyUrlErr = 'Please provide link too if you are giving button name';
+                                           });
                                          }
                                          if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
                                          {
-                                           return 'Please provide a valid link';
+                                           setState(() {
+                                             emptyUrlErr = 'Please provide a valid link';
+                                           });
                                          }
                                          return null;
                                        },
                                      ),
                                    ),
                                  ),
+
+                                 errorMessages(emptyUrlErr),
 
                                  ///Image Selector
                                  const SizedBox(

@@ -76,6 +76,7 @@ class _TagPageState extends State<TagPage> {
       }
 
       String userId = result.data!["getMe"]["id"];
+      String userRole = result.data!["getMe"]["role"];
       var data = result.data!["getTag"];
 
 
@@ -210,7 +211,7 @@ class _TagPageState extends State<TagPage> {
                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                             child: Column(
                               children: all.keys.map((e) =>
-                                  cardFunction(all[e], e, refetch, userId)
+                                  cardFunction(all[e], e, refetch, userId,userRole)
                               ).toList(),
                             ),
                           ),
@@ -233,9 +234,9 @@ class _TagPageState extends State<TagPage> {
   }
 
   ///widget to call different category if cards
-  Widget cardFunction (String category, post, refetch, String userid){
+  Widget cardFunction (String category, post, refetch, String userid,userRole){
     if(category == "event"){
-      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid, post.createdById);
+      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid,userRole, post.createdById);
     }
     else if(category == "netop"){
       return NetopsCard(context, refetch, post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, userid, post.createdById, reportController, post,'NetopsSection');

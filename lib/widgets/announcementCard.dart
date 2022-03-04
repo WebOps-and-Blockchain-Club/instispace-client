@@ -54,6 +54,7 @@ Widget AnnouncementsCards(
                     child: MarqueeWidget(
                       direction: Axis.horizontal,
                       child: Text(
+                        // capitalize(announcement.title),
                         capitalize(announcement.title),
                         style: TextStyle(
                           //Conditional Font Size
@@ -195,5 +196,10 @@ Widget AnnouncementsCards(
   );
 }
 
-///To capitalize the first letter of Title
-String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+String capitalize(String s) {
+  if(s!="") {
+    return s[0].toUpperCase() + s.substring(1);
+  } else{
+    return s;
+  }
+}

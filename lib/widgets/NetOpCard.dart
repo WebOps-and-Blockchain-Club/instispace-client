@@ -665,4 +665,10 @@ String difference (DateTime postCreated) {
 }
 
 ///function to capitalize the first letter of the Title
-String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+String capitalize(String s) {
+  if(s!="") {
+    return s[0].toUpperCase() + s.substring(1);
+  } else{
+    return s;
+  }
+}

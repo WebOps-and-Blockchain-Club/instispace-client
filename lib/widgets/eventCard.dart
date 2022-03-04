@@ -23,6 +23,7 @@ Widget EventsCard (
     List<Tag> tags,
     eventsPost events,
     String userId,
+    String userRole,
     String createdId,
     ) {
 
@@ -134,7 +135,7 @@ String timeDifference = difference(postCreated);
                         children: [
 
                           ///Edit Button
-                          if(userId==createdId)
+                          if(userId==createdId || userRole == "ADMIN" || userRole == "HAS" || userRole == "SECRETORY")
                             IconButton(
                               onPressed: (){
                                 Navigator.of(context).push(
@@ -149,7 +150,7 @@ String timeDifference = difference(postCreated);
                             ),
 
                           ///Delete Button
-                          if(userId==createdId)
+                          if(userId==createdId || userRole == "ADMIN" || userRole == "HAS" || userRole == "SECRETORY")
                             Mutation(
                                 options: MutationOptions(
                                     document: gql(delete)
@@ -432,4 +433,10 @@ String timeDifference = difference(postCreated);
 }
 
 ///Function to capitalize first letter of Title
-String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+String capitalize(String s) {
+  if(s!="") {
+    return s[0].toUpperCase() + s.substring(1);
+  } else{
+    return s;
+  }
+}

@@ -30,6 +30,10 @@ class _AddPostState extends State<AddPost> {
   List<String>selectedTags=[];
   List<String>selectedIds=[];
   String emptyTagsError = '';
+  String emptyTitleErr = '';
+  String emptyDescErr = '';
+  String emptyUrlNameErr = '';
+  String emptyUrlErr = '';
   var dateTime=DateTime.now().add(const Duration(days: 7));
   var key;
   var byteDataImage;
@@ -120,13 +124,17 @@ class _AddPostState extends State<AddPost> {
 
                                 validator: (value){
                                   if (value == null || value.isEmpty) {
-                                    return 'Item Name cannot be empty';
+                                    setState(() {
+                                      emptyTitleErr = "Title can't be empty";
+                                    });
                                   }
                                   return null;
                                 },
                               ),
                             ),
                           ),
+
+                          errorMessages(emptyTitleErr),
 
                           ///Description field
                           const SizedBox(
@@ -151,13 +159,17 @@ class _AddPostState extends State<AddPost> {
                                 keyboardType: TextInputType.multiline,
                                 validator: (value){
                                   if (value == null || value.isEmpty) {
-                                    return 'Item Name cannot be empty';
+                                   setState(() {
+                                     emptyDescErr = "Description can't be empty";
+                                   });
                                   }
                                   return null;
                                 },
                               ),
                             ),
                           ),
+
+                          errorMessages(emptyDescErr),
 
                           ///End Time field
                           const SizedBox(
@@ -194,7 +206,6 @@ class _AddPostState extends State<AddPost> {
                               timeLabelText: "Hour",
                               onChanged: (val) => {
                                 dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
-                                print("datetimr:$dateTime+05:30"),
                               },
                               validator: (val) {
                                 print(val);
@@ -295,11 +306,12 @@ class _AddPostState extends State<AddPost> {
                             },
                           ),
 
-                          ///Call to Action Link
+
                           if(showAdditional)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              ///Call to Action Link
                               Row(
                                 children: [
                                   FormText('Call To Action Link'),
@@ -345,13 +357,17 @@ class _AddPostState extends State<AddPost> {
                                     keyboardType: TextInputType.multiline,
                                     validator: (val) {
                                       if(val!.isEmpty && urlController.text.isNotEmpty) {
-                                        return "Please provide button name too if you are giving link";
+                                        setState(() {
+                                          emptyUrlNameErr = "Please provide button name too if you are giving link";
+                                        });
                                       }
                                       return null;
                                     },
                                   ),
                                 ),
                               ),
+
+                              errorMessages(emptyUrlNameErr),
 
                               ///Link Field
                               const Padding(
@@ -383,17 +399,23 @@ class _AddPostState extends State<AddPost> {
                                     keyboardType: TextInputType.url,
                                     validator: (val) {
                                       if(val!.isEmpty && urlNameController.text.isNotEmpty) {
-                                        return 'Please provide link too if you are giving button name';
+                                        setState(() {
+                                          emptyUrlErr = 'Please provide link too if you are giving button name';
+                                        });
                                       }
                                       if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
                                       {
-                                        return 'Please provide a valid link';
+                                        setState(() {
+                                          emptyUrlErr = 'Please provide a valid link';
+                                        });
                                       }
                                       return null;
                                     },
                                   ),
                                 ),
                               ),
+
+                              errorMessages(emptyUrlErr),
 
                               ///Image Selector
                               const SizedBox(
@@ -632,32 +654,36 @@ class _AddPostState extends State<AddPost> {
                               return ElevatedButton(
                                   onPressed: ()async{
                                     if (_formKey.currentState!.validate()) {
-                                      for (var i = 0; i <
-                                          selectedTags.length; i++) {
-                                        key = tagList.keys.firstWhere((k) =>
-                                        tagList[k] == selectedTags[i]);
-                                        selectedIds.add(key);
-                                      }
-                                      if (selectedIds.isEmpty) {
-                                        setState(() {
-                                          emptyTagsError =
-                                          "Please Select at least one Tag";
-                                        });
-                                      }
-                                      else {
-                                        await runMutation({
-                                          "newEventData": {
-                                            "content": descriptionController
-                                                .text,
-                                            "title": titleController.text,
-                                            "tags": selectedIds,
-                                            "endTime": "$dateTime",
-                                            "linkName": urlNameController.text,
-                                            "linkToAction": urlController.text,
-                                          },
-                                          "image": multipartfileImage,
-                                          "attachments": multipartfileAttachment,
-                                        });
+                                      if (titleController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
+                                        for (var i = 0; i <
+                                            selectedTags.length; i++) {
+                                          key = tagList.keys.firstWhere((k) =>
+                                          tagList[k] == selectedTags[i]);
+                                          selectedIds.add(key);
+                                        }
+                                        if (selectedIds.isEmpty) {
+                                          setState(() {
+                                            emptyTagsError =
+                                            "Please Select at least one Tag";
+                                          });
+                                        }
+                                        else {
+                                          await runMutation({
+                                            "newEventData": {
+                                              "content": descriptionController
+                                                  .text,
+                                              "title": titleController.text,
+                                              "tags": selectedIds,
+                                              "endTime": "$dateTime",
+                                              "linkName": urlNameController
+                                                  .text,
+                                              "linkToAction": urlController
+                                                  .text,
+                                            },
+                                            "image": multipartfileImage,
+                                            "attachments": multipartfileAttachment,
+                                          });
+                                        }
                                       }
                                     }
                                   },
