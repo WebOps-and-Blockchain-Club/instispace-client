@@ -7,6 +7,7 @@ import 'package:client/screens/Events/post.dart';
 import 'package:client/screens/Login/createAmenity.dart';
 import 'package:client/screens/Login/createHostelContacts.dart';
 import 'package:client/screens/Login/createhostel.dart';
+import 'package:client/screens/home/Admin/report.dart';
 import 'package:client/screens/home/Announcements/Announcement.dart';
 import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/screens/home/Queries/home.dart';
@@ -266,6 +267,15 @@ class _mainHomeState extends State<mainHome> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => FeedBack()));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.account_circle_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("Reported"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Reported()));
                   },
                 ),
                 Mutation(

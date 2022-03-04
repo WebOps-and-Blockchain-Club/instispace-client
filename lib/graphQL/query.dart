@@ -85,4 +85,10 @@ class Queries{
   editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData, Image: \$image)
 }
   """;
+
+  String deleteQuery = """
+  mutation(\$queryId: String!){
+  deleteMyQuery(MyQueryId: \$queryId)
+}
+  """;
 }

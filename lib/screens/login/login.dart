@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/graphQL/auth.dart';
 import 'package:client/services/Auth.dart';
-import 'package:firebase_app_installations/firebase_app_installations.dart';
 import 'package:provider/provider.dart';
 
 class LogIn extends StatefulWidget {
@@ -33,10 +32,6 @@ class _LogInState extends State<LogIn> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
-    FirebaseInstallations.instance.getId().then((token){
-    var deviceId = token;
-    print("deviceID: $deviceId");
-    });
     _firebaseMessaging.getToken().then((token) {
       fcmToken = token!;
       print("fcmtoken:$token");
