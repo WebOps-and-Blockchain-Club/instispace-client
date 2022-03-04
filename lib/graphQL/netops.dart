@@ -1,6 +1,6 @@
 class netopsQuery {
-  String getNetops =
-      """query(\$take: Float!, \$lastNetopId: String!, \$filteringCondition: fileringConditions, \$orderByLikes: Boolean, \$search: String){
+  String getNetops = """
+  query(\$take: Float!, \$lastNetopId: String!, \$filteringCondition: fileringConditions, \$orderByLikes: Boolean, \$search: String){
   getNetops(take: \$take, LastNetopId: \$lastNetopId, FileringCondition: \$filteringCondition, OrderByLikes: \$orderByLikes, search:\$search) {
     netopList {
       id,
@@ -10,10 +10,12 @@ class netopsQuery {
         id
         createdBy {
          name
+         id
         }
       }
       createdBy {
         id
+        name
       }
       linkName
       linkToAction
@@ -22,6 +24,7 @@ class netopsQuery {
       isStared
       isHidden
       endTime
+      createdAt
       tags {
         category,
         title,
@@ -33,7 +36,12 @@ class netopsQuery {
     }
     total
   }
-}""";
+  getMe {
+    id
+    name
+  }
+}
+""";
   String createComment = """
   mutation(\$content: String!, \$netopId: String!){
   createCommentNetop(content: \$content, NetopId: \$netopId)
@@ -93,7 +101,7 @@ mutation(\$netopId: String!){
   mutation EditNetop(\$editNetopsData: editNetopsInput!, \$netopId: String!, \$attachments: [Upload!], \$image: Upload) {
   editNetop(EditNetopsData: \$editNetopsData, NetopId: \$netopId, Attachments: \$attachments, Image: \$image)
 }
-  """;
+""";
   String reportNetop = """
  mutation(\$description: String!, \$netopId: String!){
   reportNetop(description: \$description, NetopId: \$netopId)

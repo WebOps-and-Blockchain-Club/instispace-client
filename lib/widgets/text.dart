@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Widget of Main heading in all pages
 Widget PageTitle(String text, BuildContext context) {
   return Container(
     decoration: const BoxDecoration(

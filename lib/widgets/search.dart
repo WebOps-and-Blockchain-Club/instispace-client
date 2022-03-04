@@ -5,6 +5,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 typedef void StringCallback (String val);
 
 class Search extends StatefulWidget {
+
+  ///variables
   String search = "";
   final StringCallback callback;
   final Future<QueryResult?> Function()? refetch;
@@ -19,8 +21,12 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
 
-  TextEditingController searchController = TextEditingController();
+  ///Variables
   bool display = false;
+
+  ///Controller
+  TextEditingController searchController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,46 +35,47 @@ class _SearchState extends State<Search> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+
+          ///Search bar
             Expanded(
               flex: 12,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0,0,0,0),
-                child: Container(
+                child: SizedBox(
                   height: 35,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      border: Border.all(
-                          color: Colors.grey,
-                          width: 1,
-                        )
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(15,0,15,10),
-                    child: TextFormField(
-                      controller: searchController,
-                      cursorColor: Colors.grey,
-                      decoration: InputDecoration(
-                        border: InputBorder.none
+                  child: TextFormField(
+                    controller: searchController,
+                    cursorColor: Colors.grey,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100.0),
                       ),
-                      // onChanged: (String value){
-                      //   if(value.length>=3){
-                      //
-                      //   }
-                      // },
+
+                      hintText: 'Search',
                     ),
+                    keyboardType: TextInputType.multiline,
+                    // onChanged: (String value){
+                    //   if(value.length>=3){
+                    //
+                    //   }
+                    // },
                   ),
                 ),
               ),
             ),
 
+
+          ///Search button
           IconButton(onPressed: (){
             widget.callback(searchController.text);
-              // widget.refetch!();
           },
-            icon: Icon(Icons.search_outlined),
-            color: Color(0xFF42454D),
+            icon: const Icon(Icons.search_outlined),
+            color: const Color(0xFF42454D),
           ),
-          if (widget.page != 'Queries')
+
+          ///Filter button
+          if (widget.page != 'queries')
           Padding(
           padding: const EdgeInsets.fromLTRB(0,0,0,0),
           child: IconButton(
@@ -86,8 +93,8 @@ class _SearchState extends State<Search> {
                 ),
             );
           },
-          icon: Icon(Icons.filter_alt_outlined),
-            color: Color(0xFF42454D),),
+          icon: const Icon(Icons.filter_alt_outlined),
+            color: const Color(0xFF42454D),),
           ),
         ],
       ),

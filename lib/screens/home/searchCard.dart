@@ -2,9 +2,11 @@ import 'package:client/graphQL/home.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/models/user.dart';
 import 'package:client/widgets/titles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
+
+///Search User Card
 
 class searchCard extends StatefulWidget {
   final User user;
@@ -27,13 +29,15 @@ class _searchCardState extends State<searchCard> {
         padding: const EdgeInsets.fromLTRB(0,0,0,10),
         child: Card(
           elevation: 3,
-          color: Color(0xFFFFFFFF),
+          color: const Color(0xFFFFFFFF),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12,10,0,10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ///Name
                 SubHeading(user.name),
+                ///Roll no.
                 Text(user.roll),
               ],
             ),
@@ -53,12 +57,17 @@ class singleUser extends StatefulWidget {
 }
 
 class _singleUserState extends State<singleUser> {
+
+  ///GraphQL
   String getUser=homeQuery().getUser;
+
   @override
   Widget build(BuildContext context) {
     User user = widget.user;
     return Scaffold(
+
       appBar: AppBar(),
+
       body: SafeArea(
         child: Query(
           options: QueryOptions(
@@ -69,7 +78,7 @@ class _singleUserState extends State<singleUser> {
           ),
           builder:(QueryResult result, {fetchMore, refetch}){
             if (result.hasException) {
-              print(result.exception.toString());
+              return Text(result.exception.toString());
             }
             if (result.isLoading) {
               return Center(
@@ -91,9 +100,13 @@ class _singleUserState extends State<singleUser> {
             }
             return Column(
               children: [
+                ///Roll no.
                 Text(user.roll),
+                ///Name
                 Text(user.name),
+                ///Hostel Name
                 Text(user.hostelName),
+                ///Tags followed by User
                 Wrap(
                   children: interests.map((e) => Text(e.Tag_name)).toList()
                 )

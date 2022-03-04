@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/graphQL/auth.dart';
@@ -67,7 +66,6 @@ class _LogInState extends State<LogIn> {
                               'https://i.pinimg.com/736x/71/b3/e4/71b3e4159892bb319292ab3b76900930.jpg')),
                     ),
                   ),
-
                   //Form Column
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),

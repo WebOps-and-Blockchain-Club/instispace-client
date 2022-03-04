@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MarqueeWidget extends StatefulWidget {
+
+  ///Variables
   final Widget child;
   final Axis direction;
   final Duration animationDuration, backDuration, pauseDuration;
@@ -19,8 +21,11 @@ class MarqueeWidget extends StatefulWidget {
 }
 
 class _MarqueeWidgetState extends State<MarqueeWidget> {
+
+  ///Controller
   late ScrollController scrollController;
 
+  ///initState function
   @override
   void initState() {
     scrollController = ScrollController(initialScrollOffset: 50.0);
@@ -28,6 +33,7 @@ class _MarqueeWidgetState extends State<MarqueeWidget> {
     super.initState();
   }
 
+  ///dispose function
   @override
   void dispose() {
     scrollController.dispose();

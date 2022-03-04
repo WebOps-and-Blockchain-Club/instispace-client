@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+///Widget for Texts in forms above TextFormFields
 Widget FormText (String formText) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+    padding: const EdgeInsets.fromLTRB(15, 5, 7, 0),
     child: Row(
       children: [
         Text(formText,

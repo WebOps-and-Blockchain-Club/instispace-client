@@ -13,6 +13,7 @@ query{
         isStared
         linkName
         endTime
+        createdAt
         linkToAction
         comments {
           content
@@ -58,10 +59,21 @@ query{
         }
       }
       announcements {
-        title
-        images
-        description
         id
+        title
+        description
+        images
+        createdAt
+        endTime
+        isHidden
+        user {
+          id
+          name
+        }
+        hostels {
+          id
+          name
+        }
       }
     }
     interest {
@@ -103,6 +115,10 @@ query{
         name
         description
         id
+        hostel{
+        id
+        name
+        }
       }
       contacts {
         type
@@ -234,6 +250,10 @@ query GetTag(\$tag: String!) {
         name
       }
     }
+  }
+  getMe {
+    id
+    name
   }
 }
 """;
