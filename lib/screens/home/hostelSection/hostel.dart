@@ -2,7 +2,7 @@ import 'package:client/graphQL/home.dart';
 import 'package:client/screens/home/HostelSection/Announcements/announcements.dart';
 import 'package:client/screens/home/HostelSection/contacts.dart';
 import 'package:flutter/material.dart';
-import 'package:client/screens/home/HostelSection/amenities.dart';
+import 'package:client/screens/home/HostelSection/Amenities/amenities.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class HostelHome extends StatefulWidget {

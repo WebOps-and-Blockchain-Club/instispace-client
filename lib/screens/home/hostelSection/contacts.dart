@@ -3,7 +3,7 @@ import 'package:client/widgets/headings.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../../../graphQL/hostelProfile.dart';
+import '../../../models/hostelProfile.dart';
 import 'contactAndAmenitiesCard.dart';
 import 'package:client/widgets/loadingScreens.dart';
 

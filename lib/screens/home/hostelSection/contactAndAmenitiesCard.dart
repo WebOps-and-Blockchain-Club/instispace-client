@@ -1,6 +1,6 @@
-import 'package:client/graphQL/hostelProfile.dart';
+import 'package:client/models/hostelProfile.dart';
 import 'package:flutter/material.dart';
-import '../../../graphQL/hostelProfile.dart';
+import '../../../models/hostelProfile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -27,21 +27,20 @@ class _HostelAmenityState extends State<HostelAmenity> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0)),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///Name
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
-              child: Center(
-                child: Row(
-                  children: [
-                    Text(widget.amenities.name,
-                      style: const TextStyle(
-                        fontSize: 16.5,
-                        fontWeight: FontWeight.bold,
-                      ),
+              child: Row(
+                children: [
+                  Text(widget.amenities.name,
+                    style: const TextStyle(
+                      fontSize: 16.5,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-                  ],
-                ),
+                ],
               ),
             ),
 
@@ -59,6 +58,7 @@ class _HostelAmenityState extends State<HostelAmenity> {
                 ],
               ),
             ),
+            Row(),
           ],
         ),
       ),
