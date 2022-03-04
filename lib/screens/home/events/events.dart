@@ -260,7 +260,7 @@ class _HomeState extends State<EventsHome> {
                           child: ListView(
                             shrinkWrap: true,
                             children: posts
-                            .map((post) => EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid, post.createdById))
+                            .map((post) => EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid,userRole, post.createdById))
                             .toList(),
                     ),
                         ),
@@ -282,7 +282,7 @@ class _HomeState extends State<EventsHome> {
 
   ///Widget for the floating action button
   Widget? _getFAB(Future<QueryResult?> Function()? refetch) {
-    if(userRole=="ADMIN"){
+    if(userRole=="ADMIN" || userRole == 'HAS' || userRole == 'SECRETORY' || userRole == 'HOSTEL_SEC' || userRole == 'LEADS' || userRole == 'MODERATOR'){
       return FloatingActionButton(onPressed: () {
         Navigator.of(context).push(
             MaterialPageRoute(

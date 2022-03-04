@@ -37,6 +37,11 @@ class _AddPostEventsState extends State<AddPostEvents> {
   FilePickerResult? Result;
   PlatformFile? file;
   String emptyTagsError = '';
+  String emptyTitleErr = '';
+  String emptyDescErr = '';
+  String emptyLocationErr = '';
+  String emptyFormLinkErr = '';
+  String emptyButtonNameErr = '';
   bool showAdditional = false;
   var key;
   var dateTime=DateTime.now().add(const Duration(days: 7));
@@ -98,11 +103,12 @@ class _AddPostEventsState extends State<AddPostEvents> {
                   fontWeight: FontWeight.bold
                 ),
               ),
+              elevation: 0,
               backgroundColor: const Color(0xFF2B2E35),
             ),
 
-
             backgroundColor: const Color(0xFFDFDFDF),
+
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0,10,10,0),
@@ -125,26 +131,112 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                     padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
                                     child: SizedBox(
                                       height: 35,
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                          contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                                        child: TextFormField(
+                                          decoration: InputDecoration(
+                                            contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
+                                            border: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Colors.grey),
+                                              borderRadius: BorderRadius.circular(100.0),
+                                            ),
+                                            hintText: 'Enter Title',
                                           ),
-
-                                          hintText: 'Enter title',
+                                          controller: myControllerTitle,
+                                          validator: (val) {
+                                            if(val == null || val.isEmpty) {
+                                              setState(() {
+                                              emptyTitleErr = "Title can't be empty";
+                                            });
+                                            }
+                                            return null;
+                                          },
                                         ),
-                                        controller: myControllerTitle,
-                                        validator: (val) {
-                                          if (val == null || val.isEmpty) {
-                                            return "This field can't be empty";
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                   ),
 
+                                  errorMessages(emptyTitleErr),
+
+
+                                  ///Select Image Button
+                                  FormText('Please Select Images'),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                                    child: SizedBox(
+                                      width: 250.0,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: const Color(0xFF42454D),
+                                              elevation: 0.0,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                          ),
+                                          onPressed: () async
+                                          {
+                                            Result =
+                                            await FilePicker.platform.pickFiles(
+                                              type: FileType.image,
+                                              allowMultiple: true,
+                                              withData: true,
+                                            );
+                                            if (Result != null) {
+                                              setState(() {
+                                                fileNames.clear();
+                                                for (var i=0;i<Result!.files.length;i++){
+                                                  fileNames.add(Result!.files[i].name);
+                                                  byteData.add(Result!.files[i].bytes);
+                                                  multipartfile.add(MultipartFile.fromBytes(
+                                                    'photo',
+                                                    byteData[i],
+                                                    filename: fileNames[i],
+                                                    contentType: MediaType("image","png"),
+                                                  ));
+                                                }
+                                              });
+                                            }
+                                          },
+
+                                          ///Name of selected images
+                                          child: Text(
+                                            selectedImage,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
+                                      ),
+                                    ),
+                                  ),
+
+                                  ///Selected Images
+                                  if(Result!=null)
+                                    Wrap(
+                                      children: Result!.files.map((e) => InkWell(
+                                        onLongPress: (){
+                                          setState(() {
+                                            multipartfile.remove(
+                                                MultipartFile.fromBytes(
+                                                  'photo',
+                                                  e.bytes as List<int>,
+                                                  filename: e.name,
+                                                  contentType: MediaType("image","png"),
+                                                )
+                                            );
+                                            byteData.remove(e.bytes);
+                                            fileNames.remove(e.name);
+                                            Result!.files.remove(e);
+                                          });
+                                        },
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: Image.memory(
+                                            e.bytes!,
+                                          ),
+                                        ),
+                                      )).toList(),
+                                    ),
 
                                   ///Description Field
                                   FormText('Description'),
@@ -164,7 +256,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                         controller: myControllerDescription,
                                         validator: (val) {
                                           if (val == null || val.isEmpty) {
-                                            return "This field can't be empty";
+                                            setState(() {
+                                              emptyDescErr = "Description can't be empty";
+                                            });
                                           }
                                           return null;
                                         },
@@ -173,6 +267,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                       ),
                                     ),
                                   ),
+
+                                  errorMessages(emptyDescErr),
 
                                   ///Location Field
                                   FormText('Location'),
@@ -192,13 +288,17 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                         controller: myControllerLocation,
                                         validator: (val) {
                                           if (val == null || val.isEmpty) {
-                                            return "This field can't be empty";
+                                            setState(() {
+                                              emptyLocationErr = "Location can't be empty";
+                                            });
                                           }
                                           return null;
                                         },
                                       ),
                                     ),
                                   ),
+
+                                  errorMessages(emptyLocationErr),
 
                                   ///Date-Time Field
                                   FormText('Date and Time of Event'),
@@ -316,127 +416,111 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      ///CTA Button Name
-                                      FormText('CTA Button Name'),
+                                      ///Call to Action Link
+                                      Row(
+                                        children: [
+                                          FormText('Call To Action Link'),
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0,10,15,0),
+                                            child: Text(
+                                              '(if any)',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      ///Button name
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(24,7,15,0),
+                                        child: Text(
+                                          'Button name',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400
+                                          ),
+                                        ),
+                                      ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(12,5,15,5),
+                                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                                         child: SizedBox(
-                                          height: 35,
+                                          height: 35.0,
                                           child: TextFormField(
+                                            controller: formNameController,
+                                            decoration: InputDecoration(
+                                              contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(100.0),
+                                              ),
+                                              hintText: 'Enter a name',
+                                            ),
+                                            keyboardType: TextInputType.multiline,
+                                            validator: (val) {
+                                              if(val!.isEmpty && myControllerFormLink.text.isNotEmpty) {
+                                                setState(() {
+                                                  emptyButtonNameErr = "Please provide button name too if you are giving link";
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+
+                                      errorMessages(emptyButtonNameErr),
+
+                                      ///Link Field
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(24,7,15,0),
+                                        child: Text(
+                                          'Link',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                        child: SizedBox(
+                                          height: 35.0,
+                                          child: TextFormField(
+                                            controller: myControllerFormLink,
+
                                             decoration: InputDecoration(
                                               contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                               border: OutlineInputBorder(
                                                 borderRadius: BorderRadius.circular(100.0),
                                               ),
 
-                                              hintText: 'Enter a name',
+                                              hintText: 'Enter URL',
                                             ),
-                                            keyboardType: TextInputType.multiline,
-                                            controller: formNameController,
-                                          ),
-                                        ),
-                                      ),
-
-                                      ///CTA Link Field
-                                      FormText('CTA Link'),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(12,5,15,5),
-                                        child: SizedBox(
-                                          height: 35,
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                                contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                                border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(100.0),
-                                                ),
-
-                                                hintText: 'Enter CTA Link'
-                                            ),
-                                            controller: myControllerFormLink,
-                                            keyboardType: TextInputType.multiline,
-                                          ),
-                                        ),
-                                      ),
-
-
-                                      ///Select Image Button
-                                      FormText('Please Select Images'),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                        child: SizedBox(
-                                          width: 250.0,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary: const Color(0xFF42454D),
-                                                  elevation: 0.0,
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
-                                              ),
-                                              onPressed: () async
+                                            keyboardType: TextInputType.url,
+                                            validator: (val) {
+                                              if(val!.isEmpty && formNameController.text.isNotEmpty) {
+                                                setState(() {
+                                                  emptyFormLinkErr = 'Please provide link too if you are giving button name';
+                                                });
+                                              }
+                                              if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
                                               {
-                                                Result =
-                                                await FilePicker.platform.pickFiles(
-                                                  type: FileType.image,
-                                                  allowMultiple: true,
-                                                  withData: true,
-                                                );
-                                                if (Result != null) {
-                                                  setState(() {
-                                                    fileNames.clear();
-                                                    for (var i=0;i<Result!.files.length;i++){
-                                                      fileNames.add(Result!.files[i].name);
-                                                      byteData.add(Result!.files[i].bytes);
-                                                      multipartfile.add(MultipartFile.fromBytes(
-                                                        'photo',
-                                                        byteData[i],
-                                                        filename: fileNames[i],
-                                                        contentType: MediaType("image","png"),
-                                                      ));
-                                                    }
-                                                  });
-                                                }
-                                              },
-
-                                              ///Name of selected images
-                                              child: Text(
-                                                selectedImage,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              )
+                                               setState(() {
+                                                 emptyFormLinkErr = 'Please enter a valid link';
+                                               });
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                       ),
 
-                                      ///Selected Images
-                                      if(Result!=null)
-                                        Wrap(
-                                          children: Result!.files.map((e) => InkWell(
-                                            onLongPress: (){
-                                              setState(() {
-                                                multipartfile.remove(
-                                                    MultipartFile.fromBytes(
-                                                      'photo',
-                                                      e.bytes as List<int>,
-                                                      filename: e.name,
-                                                      contentType: MediaType("image","png"),
-                                                    )
-                                                );
-                                                byteData.remove(e.bytes);
-                                                fileNames.remove(e.name);
-                                                Result!.files.remove(e);
-                                              });
-                                            },
-                                            child: SizedBox(
-                                              width: 50,
-                                              height: 50,
-                                              child: Image.memory(
-                                                e.bytes!,
-                                              ),
-                                            ),
-                                          )).toList(),
-                                        ),
+                                      errorMessages(emptyFormLinkErr),
                                     ],
                                   )
                                 ],
@@ -516,42 +600,48 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                           return ElevatedButton(
                                             onPressed: ()async{
                                               if (_formKey.currentState!.validate()) {
-                                                for (var i = 0; i <
-                                                    selectedTags.length; i++) {
-                                                  key =
-                                                      tagList.keys.firstWhere((
-                                                          k) =>
-                                                      tagList[k] ==
-                                                          selectedTags[i]);
-                                                  selectedIds.add(key);
-                                                };
-                                                if (selectedIds.isEmpty) {
-                                                  emptyTagsError =
-                                                  "Please select at least one tag";
+
+                                                if(myControllerTitle.text.isNotEmpty && myControllerDescription.text.isNotEmpty && myControllerLocation.text.isNotEmpty) {
+                                                  for (var i = 0; i <
+                                                      selectedTags
+                                                          .length; i++) {
+                                                    key =
+                                                        tagList.keys
+                                                            .firstWhere((k) =>
+                                                        tagList[k] ==
+                                                            selectedTags[i]);
+                                                    selectedIds.add(key);
+                                                  }
+                                                  if (selectedIds.isEmpty) {
+                                                    setState(() {
+                                                      emptyTagsError =
+                                                      "Please select at least one tag";
+                                                    });
+                                                  }
+                                                  else {
+                                                    await runMutation({
+                                                      "newEventData": {
+                                                        "content": myControllerDescription
+                                                            .text,
+                                                        "title": myControllerTitle
+                                                            .text,
+                                                        "tagIds": selectedIds,
+                                                        "time": "$dateTime",
+                                                        "linkName": formNameController
+                                                            .text,
+                                                        "linkToAction": myControllerFormLink
+                                                            .text,
+                                                        "location": myControllerLocation
+                                                            .text,
+                                                      },
+                                                      "image": multipartfile
+                                                          .isEmpty
+                                                          ? null
+                                                          : multipartfile,
+                                                    });
+                                                  }
                                                 }
-                                                else {
-                                                  await runMutation({
-                                                    "newEventData": {
-                                                      "content": myControllerDescription
-                                                          .text,
-                                                      "title": myControllerTitle
-                                                          .text,
-                                                      "tagIds": selectedIds,
-                                                      "time": "$dateTime",
-                                                      "linkName": formNameController
-                                                          .text,
-                                                      "linkToAction": myControllerFormLink
-                                                          .text,
-                                                      "location": myControllerLocation
-                                                          .text,
-                                                    },
-                                                    "image": multipartfile
-                                                        .isEmpty
-                                                        ? null
-                                                        : multipartfile,
-                                                  });
                                                 }
-                                              }
                                             },
                                             style: ElevatedButton.styleFrom(
                                               primary: const Color(0xFF2B2E35),
