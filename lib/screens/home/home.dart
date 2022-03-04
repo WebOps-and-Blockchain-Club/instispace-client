@@ -1,11 +1,7 @@
 import 'package:client/models/netopsClass.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/models/eventsClass.dart';
-import 'package:client/screens/Login/createAmenity.dart';
-import 'package:client/screens/Login/createHostelContacts.dart';
-import 'package:client/screens/Login/createHostel.dart';
 import 'package:client/models/announcementsClass.dart';
-import 'package:client/screens/home/searchUser.dart';
 import 'package:client/widgets/eventCard.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -88,73 +84,78 @@ class _HomePageState extends State<HomePage> {
 
           ///Conditional Scaffold, one for Admin side and other for User side
 
-          if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Hey $userRole"),
-                backgroundColor: const Color(0xFF5451FD),
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        _auth.clearAuth();
-                      },
-                      icon: const Icon(Icons.logout)),
-                  IconButton(
-                      onPressed: (){
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => const searchUser()));
-                      },
-                      icon: const Icon(Icons.search_outlined)),
-                ],
-              ),
-              body: ListView(
-                  children: [Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 500,
-                        child: Column(
-                          children: [
-                            const Text(
-                              "HOMEPAGE !!!",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => CreateHostel()
-                                  ));
-                                },
-                                child: const Text("Create New Hostel")),
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => const CreateHostelAmenity()
-                                  ));
-                                },
-                                child: const Text("Create Hostel Amenity")),
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => const CreateHostelContact()
-                                  ));
-                                },
-                                child: const Text("Create Hostel Contact"))
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  ]
-              ),
-            );
-          }
-          else {
+          // if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
+          //   return Scaffold(
+          //     appBar: AppBar(
+          //       title: Text("Hey $userRole"),
+          //       backgroundColor: const Color(0xFF5451FD),
+          //       actions: [
+          //         IconButton(
+          //             onPressed: () {
+          //               _auth.clearAuth();
+          //             },
+          //             icon: const Icon(Icons.logout)),
+          //         IconButton(
+          //             onPressed: (){
+          //               Navigator.of(context).push(MaterialPageRoute(
+          //                   builder: (BuildContext context) => const searchUser()));
+          //             },
+          //             icon: const Icon(Icons.search_outlined)),
+          //       ],
+          //     ),
+          //     body: ListView(
+          //         children: [Column(
+          //           crossAxisAlignment: CrossAxisAlignment.center,
+          //           children: [
+          //             Container(
+          //               height: 500,
+          //               child: Column(
+          //                 children: [
+          //                   const Text(
+          //                     "HOMEPAGE !!!",
+          //                     style: TextStyle(
+          //                       fontWeight: FontWeight.bold,
+          //                       color: Colors.black,
+          //                       fontSize: 20,
+          //                     ),
+          //                   ),
+          //                   ElevatedButton(
+          //                       onPressed: () {
+          //                         Navigator.of(context).push(MaterialPageRoute(
+          //                             builder: (BuildContext context) => CreateHostel()
+          //                         ));
+          //                       },
+          //                       child: const Text("Create New Hostel")),
+          //                   ElevatedButton(
+          //                       onPressed: () {
+          //                         Navigator.of(context).push(MaterialPageRoute(
+          //                             builder: (BuildContext context) => const CreateHostelAmenity()
+          //                         ));
+          //                       },
+          //                       child: const Text("Create Hostel Amenity")),
+          //                   ElevatedButton(
+          //                       onPressed: () {
+          //                         Navigator.of(context).push(MaterialPageRoute(
+          //                             builder: (BuildContext context) => const CreateHostelContact()
+          //                         ));
+          //                       },
+          //                       child: const Text("Create Hostel Contact"))
+          //                 ],
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //         ]
+          //     ),
+          //   );
+          // }
+          // else {
+          if(userRole != 'ADMIN') {
             userName = result.data!["getMe"]["name"];
+          }
+          else{
+            userName = "$userRole";
+          }
             return Query(
                 options: QueryOptions(
                   document: gql(getMeHome),
@@ -1071,7 +1072,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 }
             );
-          }
+          // }
         }
     );
   }
@@ -1080,7 +1081,7 @@ class _HomePageState extends State<HomePage> {
   ///Function to call category wise cards
   Widget cardFunction (String category, post, Future<QueryResult?> Function()? refetch,userRole,userid){
     if(category == "event"){
-      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid, post.createdById);
+      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid,userRole, post.createdById);
     }
     else if(category == "netop"){
       return NetopsCard(context, refetch, post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, userid, post.createdById, reportController, post,'homePage');
