@@ -7,12 +7,33 @@ class authQuery{
     isNewUser
   }
 }""";
-String getHostels ="""query{
+String getHostels ="""
+query{
   getHostels {
-    name
     id
+    name
+    contacts {
+      id
+      name
+      type
+      contact
+      hostel {
+        name
+        id
+      }
+    }
+    amenities {
+      id
+      name
+      description
+      hostel {
+        id
+        name
+      }
+    }
   }
-}""";
+}
+""";
 String getTags ="""
 query{
   getTags {

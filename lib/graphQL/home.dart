@@ -115,6 +115,10 @@ query{
         name
         description
         id
+        hostel{
+        id
+        name
+        }
       }
       contacts {
         type
