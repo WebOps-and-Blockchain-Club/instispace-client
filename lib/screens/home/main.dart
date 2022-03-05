@@ -1,17 +1,7 @@
-import 'package:client/models/post.dart';
-import 'package:client/models/tag.dart';
-import 'package:client/screens/Events/home.dart';
-import 'package:client/screens/Events/post.dart';
-import 'package:client/screens/Login/createAmenity.dart';
-import 'package:client/screens/Login/createHostelContacts.dart';
-import 'package:client/screens/Login/createhostel.dart';
-import 'package:client/screens/home/Announcements/Announcement.dart';
-import 'package:client/screens/home/Announcements/home.dart';
 import 'package:client/screens/home/Queries/home.dart';
-import 'package:client/screens/home/homeCards.dart';
+import 'package:client/screens/Events/home.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:provider/provider.dart';
@@ -20,12 +10,22 @@ import 'feedback_type_pages/about_us.dart';
 import 'feedback_type_pages/contact_us.dart';
 import 'feedback_type_pages/feedback.dart';
 import 'home.dart';
-import 'package:bottom_drawer/bottom_drawer.dart';
-import 'hostel_profile.dart';
 import 'lost and found/home.dart';
 import 'networking_and _opportunities/post_listing.dart';
-import 'package:client/graphQL/home.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+// import 'package:bottom_drawer/bottom_drawer.dart';
+// import 'hostel_profile.dart';
+// import 'package:client/models/post.dart';
+// import 'package:client/models/tag.dart';
+// import 'package:client/screens/Events/post.dart';
+// import 'package:client/screens/Login/createAmenity.dart';
+// import 'package:client/screens/Login/createHostelContacts.dart';
+// import 'package:client/screens/Login/createhostel.dart';
+// import 'package:client/screens/home/Announcements/Announcement.dart';
+// import 'package:client/screens/home/Announcements/home.dart';
+// import 'package:client/screens/home/homeCards.dart';
+// import 'package:client/graphQL/home.dart';
+// import 'package:graphql_flutter/graphql_flutter.dart';
+// import 'package:flutter/cupertino.dart';
 
 class mainHome extends StatefulWidget {
   const mainHome({Key? key}) : super(key: key);
@@ -139,25 +139,25 @@ class _mainHomeState extends State<mainHome> {
                           title: const Text("My Profile"),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => UserPage()));
+                                builder: (BuildContext context) => const UserPage()));
                           },
                         ),
-                        ListTile(
-                          leading: const Icon(Icons.vpn_key_sharp),
-                          horizontalTitleGap: 0,
-                          title: const Text("Update Password"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => UserPage()));
-                          },
-                        ),
+                        // ListTile(
+                        //   leading: const Icon(Icons.vpn_key_sharp),
+                        //   horizontalTitleGap: 0,
+                        //   title: const Text("Update Password"),
+                        //   onTap: () {
+                        //     Navigator.of(context).push(MaterialPageRoute(
+                        //         builder: (BuildContext context) => UserPage()));
+                        //   },
+                        // ),
                         ListTile(
                           leading: const Icon(Icons.account_balance),
                           horizontalTitleGap: 0,
                           title: const Text("My Hostel"),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => HostelHome()));
+                                builder: (BuildContext context) => const HostelHome()));
                           },
                         ),
                         ListTile(
@@ -175,7 +175,7 @@ class _mainHomeState extends State<mainHome> {
                           title: const Text("About Us"),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => AboutUs()));
+                                builder: (BuildContext context) => const AboutUs()));
                           },
                         ),
                         ListTile(
@@ -184,7 +184,7 @@ class _mainHomeState extends State<mainHome> {
                           title: const Text("Contact Us"),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => ContactUs()));
+                                builder: (BuildContext context) => const ContactUs()));
                           },
                         ),
                         ListTile(
@@ -193,16 +193,110 @@ class _mainHomeState extends State<mainHome> {
                           title: const Text("Feedback"),
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => FeedBack()));
+                                builder: (BuildContext context) => const FeedBack()));
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.logout),
                           horizontalTitleGap: 0,
-                          title: const Text("Logout"),
-                          onTap: () {
-                            _auth.clearAuth();
-                          },
+                          title: const Text("Log Out"),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (_) => Dialog(
+                              child: SizedBox(
+                                height: 191,
+                                // height: MediaQuery.of(context).size.height * 0.3,
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(10, 30, 10, 15),
+                                      child: Text('Do you really want to log out?',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+
+                                    //Buttons
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+                                      child: Center(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            //Yes
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: const Color(0xFF42454D),
+                                                    elevation: 0.0,
+                                                  minimumSize: const Size(70,20),
+                                                  shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                ),
+                                                onPressed: () async {
+                                                  _auth.clearAuth();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                                  child: Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                )
+                                            ),
+
+                                            //No
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: const Color(0xFF42454D),
+                                                    elevation: 0.0,
+                                                    minimumSize: const Size(70,20),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(15.0)
+                                                    ),
+                                                ),
+                                                onPressed: () async {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                                  child: Text(
+                                                    'No',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.bold
+                                                    ),
+                                                  ),
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    // TextButton(
+                                    //   child: const Text('Yes'),
+                                    //   onPressed: () {
+                                    //     _auth.clearAuth();
+                                    //     },
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // {
+                          //   _auth.clearAuth();
+                          // },
                         ),
                       ],
                     );

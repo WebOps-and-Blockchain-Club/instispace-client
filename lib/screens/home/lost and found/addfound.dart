@@ -1,5 +1,3 @@
-
-
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
-
 
 class AddFound extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;

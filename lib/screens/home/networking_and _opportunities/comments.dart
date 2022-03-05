@@ -27,12 +27,12 @@ class _CommentsState extends State<Comments> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Comments',
+        title: const Text('Comments',
           style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold
           ),),
-        backgroundColor:Color(0xFF5451FD),
+        backgroundColor:const Color(0xFF42454D),
       ),
 
       body: Query(
@@ -73,7 +73,7 @@ class _CommentsState extends State<Comments> {
                       children : comments.map((comment) => Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: Card(
-                          color: Color(0xFFDEDDFF),
+                          color: const Color(0xFF42454D),
                           child: Column(
                             children: [
                               Padding(
@@ -86,7 +86,7 @@ class _CommentsState extends State<Comments> {
                                       child: Container(
                                         height:30.0,
                                         width: 30.0,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.blue,
                                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                                         ),
@@ -98,7 +98,7 @@ class _CommentsState extends State<Comments> {
                                       padding: const EdgeInsets.fromLTRB(5, 6, 10, 0),
                                       child: Text(
                                         comment.name,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 20.0,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -115,7 +115,7 @@ class _CommentsState extends State<Comments> {
                                   children: [
                                     Text(
                                       comment.message,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.w300,
                                       ),
@@ -141,11 +141,11 @@ class _CommentsState extends State<Comments> {
                       child: Container(
                         height: 35.0,
                         width: 35.0,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
-                        child: CircleAvatar(
+                        child: const CircleAvatar(
                           radius: 30.0,
                           backgroundImage: NetworkImage('https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
                         ),
@@ -194,10 +194,10 @@ class _CommentsState extends State<Comments> {
                         if(result.isLoading){
                           return Scaffold(
                             appBar:AppBar(
-                              title: Text('Comments'),
-                              backgroundColor:Color(0xFFE6CCA9),
+                              title: const Text('Comments'),
+                              backgroundColor:const Color(0xFDFDFDF),
                             ),
-                            body: Center(
+                            body: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
@@ -212,7 +212,7 @@ class _CommentsState extends State<Comments> {
                                 }
                             );
                           },
-                          icon: Icon(Icons.send),
+                          icon: const Icon(Icons.send),
                           iconSize: 24,
                         );
                       },

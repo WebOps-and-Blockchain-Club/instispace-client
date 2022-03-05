@@ -222,7 +222,7 @@ class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF7F7F7),
+      backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
       child: ListView(
         children: [
@@ -260,8 +260,8 @@ class _LogInState extends State<LogIn> {
                   child: Column(
                     children: [
                       Row(
-                        children: [
-                          const Text(
+                        children: const [
+                          Text(
                             'UserID*',
                             style: TextStyle(
                                 color: Color(0xFF222222),
@@ -301,8 +301,8 @@ class _LogInState extends State<LogIn> {
                       ),
 
                       Row(
-                        children: [
-                          const Text(
+                        children: const [
+                          Text(
                             'Password*',
                             style: TextStyle(
                                 color: Color(0xFF222222),
@@ -331,7 +331,7 @@ class _LogInState extends State<LogIn> {
                               child: TextFormField(
                                 controller: passwordController,
                                 cursorColor: Colors.black,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: 'Enter your password',
                                     border: InputBorder.none
                                 ),
@@ -372,10 +372,10 @@ class _LogInState extends State<LogIn> {
                                 );
                               }
                               return SizedBox(
-                                width: 100.0,
+                                width: 120.0,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFF42454D),
+                                      primary: const Color(0xFF42454D),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                                   ),
                                   onPressed: () {
@@ -388,12 +388,14 @@ class _LogInState extends State<LogIn> {
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Log In',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
+                                    child: Center(
+                                      child: Text(
+                                        'Log In',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ),
                                   // style: ElevatedButton.styleFrom(
