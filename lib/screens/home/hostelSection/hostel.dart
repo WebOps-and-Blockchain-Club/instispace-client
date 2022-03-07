@@ -1,6 +1,6 @@
 import 'package:client/graphQL/home.dart';
-import 'package:client/screens/home/HostelSection/Announcements/announcements.dart';
-import 'package:client/screens/home/HostelSection/contacts.dart';
+import 'package:client/screens/home/HostelSection/announcements/announcements.dart';
+import 'package:client/screens/home/HostelSection/contacts/contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:client/screens/home/HostelSection/Amenities/amenities.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -102,12 +102,12 @@ class _HostelHomeState extends State<HostelHome> {
             //L&F Button
             BottomNavigationBarItem(
               icon: Icon(Icons.category),
-              label: 'Amenities',
+              label: 'amenities',
               backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.announcement),
-              label: 'Announcements',
+              label: 'announcements',
               backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(

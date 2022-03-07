@@ -1,42 +1,42 @@
 import 'package:client/graphQL/hostel.dart';
 import 'package:client/models/hostelProfile.dart';
-import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../../graphQL/auth.dart';
+import '../../../../graphQL/home.dart';
 import '../../../../models/formErrormsgs.dart';
 import '../../../../widgets/formTexts.dart';
 import '../../../userInit/dropDown.dart';
 
-class UpdateAmenity extends StatefulWidget {
 
-  final Amenities amenities;
+class UpdateContact extends StatefulWidget {
+
+  final Contacts contacts;
   final Refetch<Object?>? refetch;
-  UpdateAmenity({required this.amenities,required this.refetch});
+  UpdateContact({required this.refetch, required this.contacts});
+
   @override
-  _UpdateAmenityState createState() => _UpdateAmenityState();
+  _UpdateContactState createState() => _UpdateContactState();
 }
 
-class _UpdateAmenityState extends State<UpdateAmenity> {
+class _UpdateContactState extends State<UpdateContact> {
 
-  ///GraphQL
   String getHostels = authQuery().getHostels;
-  String updateAmenity = hostelQM().updateAmenity;
+  String updateContact = hostelQM().updateContact;
 
-  ///Variables
   Map <String, String> Hostels = {};
   late String _DropDownValue;
   set DropDownValue(String value) => setState(() => _DropDownValue = value);
-  String emptyNameErr = '';
-  String emptyDescErr = '';
-
-  ///Key
   final _formkey = GlobalKey<FormState>();
+  String emptyTypeErr = "";
+  String emptyNameErr = "";
+  String emptyContactErr = "";
 
-  ///Controllers
   TextEditingController nameController = TextEditingController();
-  TextEditingController descController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
+  TextEditingController contactController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +55,19 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
               ),
             );
           }
-
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
             Hostels.putIfAbsent(result.data!["getHostels"][i]["name"], () => result.data!["getHostels"][i]["id"]);
           }
 
-          _DropDownValue = widget.amenities.hostel;
-          nameController.text = widget.amenities.name;
-          descController.text = widget.amenities.description;
+          _DropDownValue = widget.contacts.hostel;
+          nameController.text = widget.contacts.name;
+          typeController.text = widget.contacts.type;
+          contactController.text = widget.contacts.contact;
 
           return Scaffold(
             appBar: AppBar(
               title: const Text(
-                "Update Hostel Amenity",
+                "Create Hostel Contact",
                 style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 20,
@@ -86,9 +86,77 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  FormText("Select Hostel"),
+                  SizedBox(height: 10.0),
+                  dropDown(
+                      Hostels: Hostels.keys.toList(),
+                      dropDownValue: _DropDownValue,
+                      callback: (val) => _DropDownValue = val),
+                  FormText("Post"),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                    child: SizedBox(
+                      height: 35,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                            hintText: 'Enter the post of the person',
+                          ),
+                          controller: typeController,
+                          validator: (val) {
+                            if(val == null || val.isEmpty) {
+                              setState(() {
+                                emptyTypeErr = "Post can't be empty";
+                              });
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
 
-                  ///Amenity Name
-                  FormText('Amenity Name'),
+                  errorMessages(emptyTypeErr),
+
+                  FormText('Name'),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                    child: SizedBox(
+                      height: 35,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                            hintText: 'Enter name',
+                          ),
+                          controller: nameController,
+                          validator: (val) {
+                            if(val == null || val.isEmpty) {
+                              setState(() {
+                                emptyNameErr = "Name can't be empty";
+                              });
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  errorMessages(emptyNameErr),
+
+                  FormText('Contact'),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
                     child: SizedBox(
@@ -104,11 +172,11 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
                             ),
                             hintText: 'Enter Amenity name',
                           ),
-                          controller: nameController,
+                          controller: contactController,
                           validator: (val) {
                             if(val == null || val.isEmpty) {
                               setState(() {
-                                emptyNameErr = "Amenity name can't be empty";
+                                emptyContactErr = "Contact can't be empty";
                               });
                             }
                             return null;
@@ -118,76 +186,15 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
                     ),
                   ),
 
-                  ///error in Amenity name
-                  errorMessages(emptyNameErr),
+                  errorMessages(emptyContactErr),
 
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 30.0),
 
-                  ///Amenity Description
-                  FormText('Amenity Description'),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                    child: SizedBox(
-                      height: 35,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0,0,0,0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(100.0),
-                            ),
-                            hintText: 'Enter Amenity Description',
-                          ),
-                          controller: descController,
-                          validator: (val) {
-                            if(val == null || val.isEmpty) {
-                              setState(() {
-                                emptyDescErr = "Amenity description can't be empty";
-                              });
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  ///error in description
-                  errorMessages(emptyDescErr),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  ///Hostels dropdown
-                  FormText("Select Hostel"),
-                  const SizedBox(height: 15.0),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: dropDown(
-                        Hostels: Hostels.keys.toList(),
-                        dropDownValue: _DropDownValue,
-                        callback: (val) => _DropDownValue = val),
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-
-                  ///discard and submit button row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ///Discard Button
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFF2B2E35),
                           shape: RoundedRectangleBorder(
@@ -207,30 +214,28 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
                           ),
                         ),
                       ),
-
-                      ///Submit Button
                       Mutation(
                           options: MutationOptions(
-                            document: gql(updateAmenity),
+                            document: gql(updateContact),
                             onCompleted: (resultData) {
-                              print(resultData["updateAmenity"]);
-                              if(resultData["updateAmenity"]){
+                              if(resultData["updateHostelContact"]){
                                 widget.refetch!();
+                                Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Amenity updated')),
+                                  const SnackBar(content: Text('Contact edited')),
                                 );
                               }
                               else{
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Amenity updating failed')),
+                                  const SnackBar(content: Text('Contact not edited')),
                                 );
                               }
                             },
-                              onError: (dynamic error){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Post updating failed,server error')),
-                                );
-                              }
+                            onError: (dynamic error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Contact not edited, server error')),
+                              );
+                            }
                           ),
                           builder: (
                               RunMutation runMutation,
@@ -239,49 +244,45 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
                             if (result!.hasException) {
                               print(result.exception.toString());
                             }
-
-                              if(result.isLoading){
-                                return Center(
-                                    child: LoadingAnimationWidget.threeRotatingDots(
-                                      color: Color(0xFF2B2E35),
-                                      size: 20,
-                                    ));
-                              }
-                            return Center(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formkey.currentState!.validate()) {
-                                    if (nameController.text.isNotEmpty &&
-                                        descController.text.isNotEmpty) {
-                                      var key = Hostels.keys.firstWhere((k) =>
-                                      k == _DropDownValue);
-                                      runMutation({
-                                        'updateAmenityInput': {
-                                          "name": nameController.text,
-                                          "description": descController.text,
-                                        },
-                                        'amenityId': widget.amenities.id,
-                                      });
-                                      Navigator.pop(context);
-                                    }
+                            if(result.isLoading){
+                              return Center(
+                                  child: LoadingAnimationWidget.threeRotatingDots(
+                                    color: const Color(0xFF2B2E35),
+                                    size: 20,
+                                  ));
+                            }
+                            return ElevatedButton(
+                              onPressed: () {
+                                if (_formkey.currentState!.validate()) {
+                                  if(nameController.text.isNotEmpty && contactController.text.isNotEmpty && typeController.text.isNotEmpty) {
+                                    var key = Hostels.keys.firstWhere((
+                                        k) => k == _DropDownValue);
+                                    runMutation({
+                                      'updateContactInput': {
+                                        "name": nameController.text,
+                                        "type": typeController.text,
+                                        "contact": contactController.text
+                                      },
+                                      'contactId': widget.contacts.id,
+                                    });
                                   }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: const Color(0xFF2B2E35),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(24)
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  minimumSize: const Size(80, 35),
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: const Color(0xFF2B2E35),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24)
                                 ),
-                                child: const Padding(
-                                  padding: EdgeInsets.fromLTRB(15,5,15,5),
-                                  child: Text('Submit',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                minimumSize: const Size(80, 35),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                child: Text('Edit',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -294,6 +295,7 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
               ),
             ),
           );
-        });
+        }
+    );
   }
 }
