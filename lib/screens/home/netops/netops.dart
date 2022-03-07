@@ -1,6 +1,6 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/models/commentclass.dart';
-import 'package:client/screens/home/Netops/addNetops.dart';
+import 'package:client/screens/home/netops/addNetops.dart';
 import 'package:client/widgets/filters.dart';
 import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';

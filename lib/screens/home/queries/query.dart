@@ -1,6 +1,6 @@
 import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
-import 'package:client/screens/home/Queries/queryCard.dart';
+import 'package:client/screens/home/queries/queryCard.dart';
 import 'package:client/widgets/filters.dart';
 import 'package:client/widgets/search.dart';
 import 'package:client/widgets/text.dart';

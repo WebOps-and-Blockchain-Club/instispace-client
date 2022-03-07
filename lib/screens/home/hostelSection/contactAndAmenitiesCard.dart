@@ -1,6 +1,6 @@
 import 'package:client/graphQL/hostel.dart';
 import 'package:client/models/hostelProfile.dart';
-import 'package:client/screens/home/hostelSection/Amenities/updateAmenity.dart';
+import 'package:client/screens/home/hostelSection/amenities/updateAmenity.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../models/hostelProfile.dart';

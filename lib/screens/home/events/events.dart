@@ -1,7 +1,7 @@
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/models/tag.dart';
-import 'package:client/screens/home/Events/addEvent.dart';
+import 'package:client/screens/home/events/addEvent.dart';
 import 'package:client/widgets/eventCard.dart';
 import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';

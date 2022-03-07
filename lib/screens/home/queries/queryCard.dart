@@ -1,7 +1,7 @@
 import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
 import 'package:client/widgets/expandDescription.dart';
-import 'package:client/screens/home/Queries/editQuery.dart';
+import 'package:client/screens/home/queries/editQuery.dart';
 import 'package:client/widgets/NetOpCard.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

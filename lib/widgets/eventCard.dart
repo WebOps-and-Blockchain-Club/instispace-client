@@ -11,7 +11,7 @@ import 'package:client/models/tag.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:client/widgets/marquee.dart';
-import '../screens/home/Events/editEvent.dart';
+import '../screens/home/events/editEvent.dart';
 import '../models/eventsClass.dart';
 import 'addToCal.dart';
 

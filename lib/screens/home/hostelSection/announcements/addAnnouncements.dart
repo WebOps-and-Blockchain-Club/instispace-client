@@ -1,6 +1,6 @@
 import 'package:client/graphQL/announcements.dart';
 import 'package:client/graphQL/auth.dart';
-import 'package:client/screens/home/HostelSection/Announcements/announcements.dart';
+import 'package:client/screens/home/hostelSection/announcements/announcements.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

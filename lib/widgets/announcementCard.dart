@@ -3,9 +3,9 @@ import 'package:client/models/announcementsClass.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../screens/home/HostelSection/Announcements/editAnnouncements.dart';
+import '../screens/home/hostelSection/announcements/editAnnouncements.dart';
 import 'expandDescription.dart';
-import '../screens/home/HostelSection/Announcements/announcements.dart';
+import '../screens/home/hostelSection/announcements/announcements.dart';
 
 import 'package:client/widgets/marquee.dart';
 

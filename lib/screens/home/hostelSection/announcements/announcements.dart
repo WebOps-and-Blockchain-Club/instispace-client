@@ -2,7 +2,7 @@ import 'package:client/graphQL/announcements.dart';
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/home.dart';
 import 'package:flutter/material.dart';
-import 'package:client/screens/home/HostelSection/Announcements/addAnnouncements.dart';
+import 'package:client/screens/home/hostelSection/announcements/addAnnouncements.dart';
 import 'package:client/models/announcementsClass.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/widgets/announcementCard.dart';
