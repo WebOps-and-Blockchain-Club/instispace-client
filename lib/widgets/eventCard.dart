@@ -298,7 +298,7 @@ String timeDifference = difference(postCreated);
                             launch('${events.linkToAction}');
                           },
                           child: Text(
-                            events.linkName!,
+                            events.linkName,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -323,7 +323,7 @@ String timeDifference = difference(postCreated);
                     children: tags.map((tag) =>
                         SizedBox(
                           child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 2, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                               child: TagButtons(tag, context)
                           ),
                         ))

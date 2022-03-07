@@ -423,7 +423,7 @@ class _EditPostState extends State<EditPost> {
                                              emptyUrlErr = 'Please provide link too if you are giving button name';
                                            });
                                          }
-                                         if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                         if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
                                          {
                                            setState(() {
                                              emptyUrlErr = 'Please provide a valid link';

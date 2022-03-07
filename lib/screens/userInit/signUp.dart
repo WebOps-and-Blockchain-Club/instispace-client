@@ -36,7 +36,7 @@ class _SignUpState extends State<SignUp> {
             return Text(result.exception.toString());
           }
           if (result.isLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -50,7 +50,7 @@ class _SignUpState extends State<SignUp> {
           // print(Hostels);
           return Scaffold(
             appBar: AppBar(
-              title: Text(
+              title: const Text(
                 "SignUp Journey",
                 style: TextStyle(
                     color: Colors.white,
@@ -61,107 +61,91 @@ class _SignUpState extends State<SignUp> {
               backgroundColor: Colors.deepPurpleAccent,
               automaticallyImplyLeading: true,
             ),
-            body: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                Colors.deepPurpleAccent,
-                Colors.blue,
-                Colors.lightBlueAccent,
-                Colors.lightBlueAccent,
-                Colors.blueAccent
-              ], stops: [
-                0.1,
-                0.3,
-                0.4,
-                0.6,
-                0.9
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Form(
-                  key: _formkey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 450.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30.0),
-                              color: Colors.blue[200]),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                            child: TextFormField(
-                                decoration: InputDecoration(
-                                    hintText: 'Enter Your Name',
-                                    border: InputBorder.none),
-                                cursorColor: Colors.blue[700],
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "This field can't be empty";
-                                  }
-                                }),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      dropDown(
-                          Hostels: Hostels,
-                          dropDownValue: _DropDownValue,
-                          callback: (val) => _DropDownValue = val),
-                      SizedBox(height: 10.0),
-                      SizedBox(
-                        width: 450.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30.0),
-                              color: Colors.blue[200]),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                            child: TextFormField(
+            body: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formkey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 450.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            color: Colors.blue[200]),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                          child: TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: 'Enter Your Name',
+                                  border: InputBorder.none),
                               cursorColor: Colors.blue[700],
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Enter Phone Number'),
-                            ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "This field can't be empty";
+                                }
+                              }),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    dropDown(
+                        Hostels: Hostels,
+                        dropDownValue: _DropDownValue,
+                        callback: (val) => _DropDownValue = val),
+                    const SizedBox(height: 10.0),
+                    SizedBox(
+                      width: 450.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            color: Colors.blue[200]),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                          child: TextFormField(
+                            cursorColor: Colors.blue[700],
+                            decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Enter Phone Number'),
                           ),
                         ),
                       ),
-                      SizedBox(height: 30.0),
-                      Center(
-                          child: SizedBox(
-                        width: 400.0,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.blue[700],
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0))),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => InterestPage(
-                                      auth: widget.auth,
-                                      name: nameController.text,
-                                      phoneNumber: PhoneNumberController.text,
-                                      hostelName: _DropDownValue,
-                                    )));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Fill Interests',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w600),
-                            ),
+                    ),
+                    const SizedBox(height: 30.0),
+                    Center(
+                        child: SizedBox(
+                      width: 400.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue[700],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0))),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => InterestPage(
+                                    auth: widget.auth,
+                                    name: nameController.text,
+                                    phoneNumber: PhoneNumberController.text,
+                                    hostelName: _DropDownValue,
+                                  )));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Fill Interests',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
-                      )),
-                    ],
-                  ),
+                      ),
+                    )),
+                  ],
                 ),
               ),
             ),
