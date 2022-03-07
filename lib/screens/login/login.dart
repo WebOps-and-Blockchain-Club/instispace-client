@@ -34,6 +34,7 @@ class _LogInState extends State<LogIn> {
   String emptyPasswordErr = "";
   String emptyUsernameErr = "";
   String invalidLogin = "";
+  String userName = "";
   bool valid = false;
   String login=authQuery().login;
   late String fcmToken;
@@ -262,10 +263,18 @@ class _LogInState extends State<LogIn> {
                                             });
                                           }
                                           if (usernameController.text.isNotEmpty && passwordController.text.isNotEmpty && valid) {
+
+                                            if(isValidRoll(usernameController.text.toUpperCase())
+                                            ) {
+                                              userName = usernameController.text.toUpperCase();
+                                            }
+                                            else{
+                                              userName = usernameController.text;
+                                            }
                                             runMutation({
                                               'fcmToken':fcmToken,
                                               'loginInputs' :{
-                                                "roll": usernameController.text.toUpperCase(),
+                                                "roll": userName,
                                                 "pass": passwordController.text,
                                               }
                                             });
@@ -294,49 +303,6 @@ class _LogInState extends State<LogIn> {
                                   )
                                 ],
                               );
-                              // return Padding(
-                              //   padding: const EdgeInsets.fromLTRB(0,25,0,0),
-                              //   child: ElevatedButton(
-                              //     onPressed: () {
-                              //       if (_formKey.currentState!.validate()) {
-                              //         if (isValidEmail(usernameController.text) || isValidRoll(usernameController.text.toUpperCase())) {
-                              //           setState(() {
-                              //             valid = true;
-                              //             emptyUsernameErr = "";
-                              //             emptyPasswordErr = "";
-                              //           });
-                              //         }
-                              //         if (usernameController.text.isNotEmpty && passwordController.text.isNotEmpty && valid) {
-                              //
-                              //           runMutation({
-                              //             'loginInputs' :{
-                              //               "roll": usernameController.text.toUpperCase(),
-                              //               "pass": passwordController.text,
-                              //             }
-                              //           });
-                              //         }
-                              //       }
-                              //     },
-                              //     style: ElevatedButton.styleFrom(
-                              //       primary: const Color(0xFF2B2E35),
-                              //       shape: RoundedRectangleBorder(
-                              //           borderRadius: BorderRadius.circular(24)
-                              //       ),
-                              //       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              //       minimumSize: const Size(80, 35),
-                              //     ),
-                              //     child: const Padding(
-                              //       padding: EdgeInsets.fromLTRB(15,5,15,5),
-                              //       child: Text('Login',
-                              //         style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontSize: 16,
-                              //           fontWeight: FontWeight.bold,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // );
                             },
                           ),
                         ),
