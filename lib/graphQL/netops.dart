@@ -36,10 +36,6 @@ class netopsQuery {
     }
     total
   }
-  getMe {
-    id
-    name
-  }
 }
 """;
   String createComment = """
@@ -48,8 +44,8 @@ class netopsQuery {
 }
 """;
   String createNetop = """
-  mutation(\$newNetopData: createNetopsInput!, \$image: Upload, \$attachments: [Upload!]){
-  createNetop(NewNetopData: \$newNetopData, Image: \$image, Attachments: \$attachments)
+  mutation(\$newNetopData: createNetopsInput!, \$attachments: [Upload!], \$image: [Upload!]){
+  createNetop(NewNetopData: \$newNetopData, Attachments: \$attachments, Image: \$image)
 }
 """;
   String toggleLike = """
@@ -75,9 +71,6 @@ mutation(\$netopId: String!){
       id
     }
   },
-  getMe {
-    id
-  }
 }
   """;
   String toggleStar = """
@@ -85,13 +78,7 @@ mutation(\$netopId: String!){
   toggleStar(NetopId: \$netopId)
 }
   """;
-  String getMe = """
-  query{
-  getMe {
-    id
-  }
-}
-  """;
+
   String deleteNetop = """
   mutation(\$netopId: String!){
   deleteNetop(NetopId: \$netopId)

@@ -1,3 +1,4 @@
+
 import 'package:client/graphQL/auth.dart';
 import 'package:client/graphQL/netops.dart';
 import 'package:client/models/formErrormsgs.dart';
@@ -11,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:client/models/searchDelegate.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AddPost extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
   AddPost({required this.refetchPosts});
@@ -24,7 +27,6 @@ class _AddPostState extends State<AddPost> {
   String createNetop = netopsQuery().createNetop;
 
   ///Variables
-  String selectedImage = "Please select images";
   String getTags =authQuery().getTags;
   Map<String,String>tagList={};
   List<String>selectedTags=[];
@@ -36,26 +38,59 @@ class _AddPostState extends State<AddPost> {
   String emptyUrlErr = '';
   var dateTime=DateTime.now().add(const Duration(days: 7));
   var key;
-  var byteDataImage;
-  var multipartfileImage;
+  List byteDataImage = [];
+  List multipartfileImage = [];
+  List fileNames = [];
   bool showAdditional = false;
   List byteDataAttachment=[];
   List multipartfileAttachment=[];
   List AttachmentNames = ['Please select attachments'];
+  FilePickerResult? Result;
   PlatformFile? file=null;
 
   ///Controllers
   TextEditingController descriptionController =TextEditingController();
   TextEditingController titleController =TextEditingController();
-  TextEditingController endTimeController =TextEditingController();
   TextEditingController urlController= TextEditingController();
   TextEditingController urlNameController= TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _sharedPreference();
+  }
+
+  void _sharedPreference() async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if(prefs?.getString("titleControllerNetop")!=null){
+        titleController.text = prefs!.getString("titleControllerNetop")!;
+      }
+      if(prefs?.getString("descriptionControllerNetop")!=null){
+        descriptionController.text = prefs!.getString("descriptionControllerNetop")!;
+      }
+      if(prefs?.getString("urlControllerNetop")!=null){
+        urlController.text = prefs!.getString("urlControllerNetop")!;
+      }
+      if(prefs?.getString("urlNameControllerNetop")!=null){
+        urlNameController.text = prefs!.getString("urlNameControllerNetop")!;
+      }
+      if(prefs?.getStringList('addNetopTags') != null ){
+        var _interests = prefs!.getStringList('addNetopTags')!;
+        for(var i=0;i<_interests.length;i++){
+          selectedTags.add(_interests[i]);
+        }
+      }
+      showAdditional = (urlNameController.text.isNotEmpty || urlController.text.isNotEmpty);
+    });
+  }
+  SharedPreferences? prefs;
   ///Keys
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    String selectedImage = fileNames.isEmpty? "Please select image(s)": fileNames.toString();
     return Query(
       options: QueryOptions(
         document: gql(getTags),
@@ -136,6 +171,7 @@ class _AddPostState extends State<AddPost> {
 
                           errorMessages(emptyTitleErr),
 
+
                           ///Description field
                           const SizedBox(
                             height: 10,
@@ -198,7 +234,7 @@ class _AddPostState extends State<AddPost> {
                             child: DateTimePicker(
                               type: DateTimePickerType.dateTimeSeparate,
                               dateMask: 'd MMM, yyyy',
-                              initialValue: DateTime.now().toString(),
+                              initialValue: DateTime.now().add(const Duration(days: 7)).toString(),
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                               icon: const Icon(Icons.event),
@@ -233,8 +269,9 @@ class _AddPostState extends State<AddPost> {
                                     );
                                     setState(() {
                                       if(finalResult!=''){
-                                        if(!selectedTags.contains(finalResult))
+                                        if(!selectedTags.contains(finalResult)) {
                                           selectedTags.add(finalResult);
+                                        }
                                       }
                                     });
                                     print("finalResult:$finalResult");
@@ -403,7 +440,7 @@ class _AddPostState extends State<AddPost> {
                                           emptyUrlErr = 'Please provide link too if you are giving button name';
                                         });
                                       }
-                                      if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                      if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
                                       {
                                         setState(() {
                                           emptyUrlErr = 'Please provide a valid link';
@@ -449,23 +486,25 @@ class _AddPostState extends State<AddPost> {
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
                                       ),
                                       onPressed: () async {
-                                        final FilePickerResult? result =
+                                        Result =
                                         await FilePicker.platform.pickFiles(
                                           type: FileType.image,
-                                          allowMultiple: false,
+                                          allowMultiple: true,
                                           withData: true,
                                         );
-                                        if (result != null) {
-                                          file = result.files.first;
+                                        if (Result != null) {
                                           setState(() {
-                                            selectedImage = file!.name;
-                                            byteDataImage= file!.bytes;
-                                            multipartfileImage=MultipartFile.fromBytes(
-                                              'photo',
-                                              byteDataImage,
-                                              filename: selectedImage,
-                                              contentType: MediaType("image","png"),
-                                            );
+                                            fileNames.clear();
+                                            for (var i=0;i<Result!.files.length;i++){
+                                              fileNames.add(Result!.files[i].name);
+                                              byteDataImage.add(Result!.files[i].bytes);
+                                              multipartfileImage.add(MultipartFile.fromBytes(
+                                                'photo',
+                                                byteDataImage[i],
+                                                filename: fileNames[i],
+                                                contentType: MediaType("image","png"),
+                                              ));
+                                            }
                                           });
                                         }
                                       },
@@ -485,26 +524,38 @@ class _AddPostState extends State<AddPost> {
                               ),
 
                               ///Selected Images
-                              if(file!=null)
-                                InkWell(
-                                  onLongPress: (){
-                                    setState(() {
-                                      file=null;
-                                      multipartfileImage=null;
-                                      byteDataImage=null;
-                                      selectedImage = "Please select an image";
-                                    });
-                                  },
-                                  child:
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.memory(
-                                      file!.bytes!,
+                              if(Result!=null)
+                                Wrap(
+                                  children: Result!.files.map((e) => InkWell(
+                                    onLongPress: (){
+                                      setState(() {
+                                        multipartfileImage.remove(
+                                            MultipartFile.fromBytes(
+                                              'photo',
+                                              e.bytes as List<int>,
+                                              filename: e.name,
+                                              contentType: MediaType("image","png"),
+                                            )
+                                        );
+                                        byteDataImage.remove(e.bytes);
+                                        fileNames.remove(e.name);
+                                        Result!.files.remove(e);
+                                      });
+                                    },
+                                    child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Image.memory(
+                                        e.bytes!,
+                                      ),
                                     ),
-                                  ),
+                                  )).toList(),
                                 ),
-
+                              if(Result!=null)
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text("long press to delete"),
+                                ),
 
                               ///Attachment Selector
                               const SizedBox(
@@ -583,16 +634,26 @@ class _AddPostState extends State<AddPost> {
 
                   const Spacer(),
 
-                  ///Discard Button
+
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        //Delete Button
+                        ///Discard Button
                         ElevatedButton(
                             onPressed: ()=>{
-                              Navigator.pop(context)
+                              titleController.clear(),
+                              descriptionController.clear(),
+                              urlController.clear(),
+                              urlNameController.clear(),
+                              selectedTags.clear(),
+                              prefs!.remove("titleControllerNetop"),
+                              prefs!.remove("descriptionControllerNetop"),
+                              prefs!.remove("urlControllerNetop"),
+                              prefs!.remove("urlNameControllerNetop"),
+                              prefs!.remove("addNetopTags"),
+                              Navigator.pop(context),
                             },
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(15,5,15,5),
@@ -601,7 +662,8 @@ class _AddPostState extends State<AddPost> {
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                ),),
+                                ),
+                              ),
                             ),
                             style: ElevatedButton.styleFrom(
                               primary: const Color(0xFF2B2E35),
@@ -612,13 +674,46 @@ class _AddPostState extends State<AddPost> {
                               )
                             ),
                         ),
-
+                        ///Save Button
+                        ElevatedButton(
+                          onPressed: ()=>{
+                            prefs!.setString("titleControllerNetop", titleController.text),
+                            prefs!.setString("descriptionControllerNetop",descriptionController.text),
+                            prefs!.setString("urlControllerNetop",urlController.text),
+                            prefs!.setString("urlNameControllerNetop",urlNameController.text),
+                            prefs!.setStringList("addNetopTags", selectedTags),
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(15,5,15,5),
+                            child: Text('Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              primary: const Color(0xFF2B2E35),
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: const Size(80, 35),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24)
+                              )
+                          ),
+                        ),
                         ///Submit Button
                         Mutation(
                             options: MutationOptions(
                               document: gql(createNetop),
                               onCompleted: (dynamic resultData){
+                                print("netop resultData : $resultData");
                                 if(resultData["createNetop"]==true){
+                                  prefs!.remove("titleControllerNetop");
+                                  prefs!.remove("descriptionControllerNetop");
+                                  prefs!.remove("urlControllerNetop");
+                                  prefs!.remove("urlNameControllerNetop");
+                                  prefs!.remove("addNetopTags");
+
                                   Navigator.pop(context);
                                   widget.refetchPosts!();
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -652,7 +747,7 @@ class _AddPostState extends State<AddPost> {
                                     ));
                               }
                               return ElevatedButton(
-                                  onPressed: ()async{
+                                  onPressed: (){
                                     if (_formKey.currentState!.validate()) {
                                       if (titleController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
                                         for (var i = 0; i <
@@ -668,19 +763,19 @@ class _AddPostState extends State<AddPost> {
                                           });
                                         }
                                         else {
-                                          await runMutation({
-                                            "newEventData": {
-                                              "content": descriptionController
-                                                  .text,
+                                           runMutation({
+                                            "newNetopData": {
+                                              "content": descriptionController.text,
                                               "title": titleController.text,
                                               "tags": selectedIds,
                                               "endTime": "$dateTime",
-                                              "linkName": urlNameController
-                                                  .text,
-                                              "linkToAction": urlController
-                                                  .text,
+                                              "linkName": urlNameController.text,
+                                              "linkToAction": urlController.text,
                                             },
-                                            "image": multipartfileImage,
+                                            "image": multipartfileImage
+                                               .isEmpty
+                                           ? null
+                                               : multipartfileImage,
                                             "attachments": multipartfileAttachment,
                                           });
                                         }

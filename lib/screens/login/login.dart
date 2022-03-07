@@ -187,13 +187,8 @@ class _LogInState extends State<LogIn> {
                                             borderRadius:
                                                 BorderRadius.circular(30.0))),
                                     onPressed: () {
-                                      FirebaseMessaging.instance
-                                          .getToken()
-                                          .then((token) {
-                                        print("token login:$token");
-                                      });
                                       runMutation({
-                                        'fcmToken': fcmToken,
+                                      'fcmToken':fcmToken,
                                         'loginInputs': {
                                           "roll": usernameController.text,
                                           "pass": passwordController.text,

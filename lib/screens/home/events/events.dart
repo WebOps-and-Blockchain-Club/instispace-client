@@ -4,9 +4,9 @@ import 'package:client/models/tag.dart';
 import 'package:client/screens/home/Events/addEvent.dart';
 import 'package:client/widgets/eventCard.dart';
 import 'package:client/widgets/search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../widgets/text.dart';
 import 'package:client/widgets/filters.dart';
 import 'package:client/widgets/text.dart';
@@ -23,6 +23,22 @@ class EventsHome extends StatefulWidget {
 
 class _HomeState extends State<EventsHome> {
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _sharedPreference();
+  }
+
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs!.getString('role')!;
+      userid = prefs!.getString('id')!;
+    });
+  }
+
   ///GraphQL
   String getEvents = eventsQuery().getEvents;
   String getTags = authQuery().getTags;
@@ -38,8 +54,8 @@ class _HomeState extends State<EventsHome> {
   bool display = false;
   late int total;
   List<eventsPost> posts =[];
-  late String userRole;
-  late String userid;
+  String userRole ="";
+  String userid = "";
   String search = "";
 
 
@@ -118,8 +134,6 @@ class _HomeState extends State<EventsHome> {
                 }
               }
 
-              userRole=result.data!["getMe"]["role"];
-
               ///Screen if there is no Event
               if (result.data!["getEvents"]["list"] == null || result.data!["getEvents"]["list"].isEmpty){
                 return Scaffold(
@@ -151,8 +165,6 @@ class _HomeState extends State<EventsHome> {
               else{
               var data=result.data!["getEvents"];
               var eventList= data["list"];
-              userid = result.data!["getMe"]["id"];
-
 
               posts.clear();
               for(var i=0;i<result.data!["getEvents"]["list"].length;i++){

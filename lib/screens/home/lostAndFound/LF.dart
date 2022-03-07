@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/tag.dart';
 import '../../../widgets/filters.dart';
 import '../../../widgets/loadingScreens.dart';
@@ -27,7 +28,7 @@ class _LNFListingState extends State<LNFListing> {
 
   ///Variables
   List<LnF> Posts = [];
-  late String userId;
+  String userId="";
   bool lostFilterValue = true;
   bool foundFilterValue = true;
   List<String> itemFilter = [];
@@ -43,6 +44,20 @@ class _LNFListingState extends State<LNFListing> {
 
   ///Keys
   var ScaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _sharedPreference();
+  }
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs!.getString('id')!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +143,41 @@ class _LNFListingState extends State<LNFListing> {
                   ],
                 ),
               ),
+              floatingActionButton: SpeedDial(
+                useRotationAnimation: true,
+                buttonSize: Size(56, 56),
+                animatedIcon: AnimatedIcons.menu_arrow,
+                backgroundColor: const Color(0xFFFF0000),
+                overlayColor: const Color(0x00FFFFFF),
+                animationSpeed: 300,
+                renderOverlay: false,
+                children: [
+
+                  ///To add lost
+                  SpeedDialChild(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                AddLost(
+                                  refetchPosts: refetch,
+                                )));
+                      },
+                      child: const Icon(Icons.search),
+                      label: 'Lost something?'),
+
+                  ///To add found
+                  SpeedDialChild(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                AddFound(
+                                  refetchPosts: refetch,
+                                )));
+                      },
+                      child: const Icon(Icons.lightbulb_outline),
+                      label: "Found something?"),
+                ],
+              ),
             );
           }
           else {
@@ -156,7 +206,7 @@ class _LNFListingState extends State<LNFListing> {
               ));
             }
             total = result.data!["getItems"]["total"];
-            userId = result.data!["getMe"]["id"];
+
             FetchMoreOptions opts = FetchMoreOptions(
                 variables: {
                   "take": take,
@@ -187,47 +237,6 @@ class _LNFListingState extends State<LNFListing> {
             return Scaffold(
 
                 backgroundColor: const Color(0xFFDFDFDF),
-
-                // endDrawer: Drawer(
-                //   child: StatefulBuilder(
-                //     builder: (BuildContext context, StateSetter stateState) {
-                //       return SafeArea(
-                //           child: ListView(
-                //             primary: false,
-                //             children: [
-                //               Column(
-                //                 children: [
-                //                   Text("Filter"),
-                //                   CheckboxListTile(
-                //                       title: Text('Lost'),
-                //                       value: lostFilterValue,
-                //                       onChanged: (bool? value) {
-                //                         setState(() {
-                //                           lostFilterValue = value!;
-                //                         });
-                //                       }),
-                //                   CheckboxListTile(
-                //                       title: Text('Found'),
-                //                       value: foundFilterValue,
-                //                       onChanged: (bool? value) {
-                //                         setState(() {
-                //                           foundFilterValue = value!;
-                //                         });
-                //                       }),
-                //                   ElevatedButton(
-                //                     onPressed: () {
-                //                       refetch!();
-                //                     },
-                //                     child: Text('Apply'),
-                //                   )
-                //                 ],
-                //               )
-                //             ],
-                //           ));
-                //     },
-                //   ),
-                // ),
-
                 ///Adding lost or Found
                 floatingActionButton: SpeedDial(
                   useRotationAnimation: true,

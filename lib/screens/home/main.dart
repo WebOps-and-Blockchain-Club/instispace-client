@@ -3,7 +3,6 @@ import 'package:client/main.dart';
 import 'package:client/screens/home/Admin/report.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userpage.dart';
-import 'package:client/services/notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
@@ -14,7 +13,6 @@ import 'package:client/screens/home/Queries/query.dart';
 import 'package:client/screens/login/createHostel.dart';
 import 'package:client/screens/login/createSuperUsers.dart';
 import 'package:client/screens/login/createTag.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import '../login/updateRole.dart';
 import 'HostelSection/hostel.dart';
@@ -25,6 +23,7 @@ import 'home.dart';
 import 'lostAndFound/LF.dart';
 import 'Netops/netops.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class mainHome extends StatefulWidget {
   const mainHome({Key? key}) : super(key: key);
@@ -59,14 +58,11 @@ class _mainHomeState extends State<mainHome> {
       _selectedIndex = index;
     });
   }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);
-      // _storeMe = Provider.of<StoreMe>(context,listen: false);
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("notification:${message.notification}");
@@ -115,349 +111,340 @@ class _mainHomeState extends State<mainHome> {
             });
       }
     });
+    _sharedPreference();
   }
 
+  void _sharedPreference ()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs!.getString('role')!;
+      print("userRole : $userRole");
+    });
+  }
+  SharedPreferences? prefs;
+
   late String fcmToken;
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
     _firebaseMessaging.getToken().then((token) {
       fcmToken = token!;
       print("fcmtoken:$token");
     });
-    return Query(
-        options: QueryOptions(
-          document: gql(getMe),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF2B2E35),
+        titleSpacing: 0,
+
+        ///AppName and logo
+        title: Row(
+          children: const [
+            CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+            Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+              child: Text(
+                "InstiSpace",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            return Text(result.exception.toString());
-          }
-          if (result.isLoading) {
-            return Scaffold(
-              body: Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.black, size: 100),
-              ),
-            );
-          }
+        actions: [
+          ///Notifications Button
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.notifications,
+                color: Colors.white,
+              )),
 
-          userRole = result.data!["getMe"]["role"];
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: const Color(0xFF2B2E35),
-              titleSpacing: 0,
-
-              ///AppName and logo
-              title: Row(
-                children: const [
-                  CircleAvatar(
-                      radius: 18,
-                      backgroundImage: NetworkImage(
-                          'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
-                    child: Text(
-                      "InstiSpace",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                ///Notifications Button
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
-                    )),
-
-                ///Hostel Section Button
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => const HostelHome()));
-                  },
-                  icon: const Icon(
-                    Icons.account_balance,
-                    color: Colors.white,
-                  ),
-                  iconSize: 22.0,
-                )
-              ],
-              elevation: 0.0,
+          ///Hostel Section Button
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => const HostelHome()));
+            },
+            icon: const Icon(
+              Icons.account_balance,
+              color: Colors.white,
             ),
+            iconSize: 22.0,
+          )
+        ],
+        elevation: 0.0,
+      ),
 
-            body: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
 
-            ///SideBar (Hamburger)
-            drawer: Drawer(
-              child: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  return ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
+      ///SideBar (Hamburger)
+      drawer: Drawer(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
 
-                          /// AppName and logo
-                          child: Row(
-                            children: const [
-                              CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(
-                                      'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
-                                child: Text(
-                                  "InstiSpace",
-                                  style: TextStyle(
-                                      fontSize: 22.0,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black),
-                                ),
-                              ),
-                            ],
+                    /// AppName and logo
+                    child: Row(
+                      children: const [
+                        CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                                'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+                          child: Text(
+                            "InstiSpace",
+                            style: TextStyle(
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
                           ),
                         ),
-                      ),
-
-                      ///My Profile Button
-                      ListTile(
-                        leading: const Icon(Icons.account_circle_outlined),
-                        horizontalTitleGap: 0,
-                        title: const Text("My Profile"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => UserPage()));
-                        },
-                      ),
-
-                      ///Update Profile Button
-                      ListTile(
-                        leading: const Icon(Icons.edit),
-                        horizontalTitleGap: 0,
-                        title: const Text("Edit Profile"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => UserPage()));
-                        },
-                      ),
-
-                      ///My Hostel Button
-                      if (userRole == 'USER')
-                        ListTile(
-                          leading: const Icon(Icons.account_balance),
-                          horizontalTitleGap: 0,
-                          title: const Text("My Hostel"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    HostelHome()));
-                          },
-                        ),
-
-                      ///Search User Button
-                      ListTile(
-                        leading: const Icon(Icons.search_outlined),
-                        horizontalTitleGap: 0,
-                        title: const Text("Search User"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const searchUser()));
-                        },
-                      ),
-
-                      ///Create Hostel
-                      if (userRole == 'ADMIN' || userRole == 'HAS')
-                        ListTile(
-                          leading: const Icon(Icons.account_balance_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Create Hostel"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CreateHostel()));
-                          },
-                        ),
-
-                      ///Create Tag
-                      if (userRole == 'ADMIN' ||
-                          userRole == "HAS" ||
-                          userRole == "SECRETORY")
-                        ListTile(
-                          leading: const Icon(Icons.add_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text('Create Tag'),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CreateTag()));
-                          },
-                        ),
-
-                      ///Create Account
-                      if (userRole == "ADMIN" ||
-                          userRole == "HAS" ||
-                          userRole == "SECRETORY")
-                        ListTile(
-                          leading: const Icon(Icons.addchart_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text('Create Accounts'),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CreateSuperUsers()));
-                          },
-                        ),
-
-                      ///Update Role
-                      if (userRole == "ADMIN" ||
-                          userRole == "HAS" ||
-                          userRole == "SECRETORY" ||
-                          userRole == "HOSTEL_SEC" ||
-                          userRole == "LEADS")
-                        ListTile(
-                          leading: const Icon(Icons.upgrade),
-                          horizontalTitleGap: 0,
-                          title: const Text('Update Role'),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    UpdateRole()));
-                          },
-                        ),
-
-                      ///About us Page Button
-                      if (userRole == "USER")
-                        ListTile(
-                          leading: const Icon(Icons.alternate_email),
-                          horizontalTitleGap: 0,
-                          title: const Text("About Us"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => AboutUs()));
-                          },
-                        ),
-
-                      ///Contact Us Page Button
-                      if (userRole == "USER")
-                        ListTile(
-                          leading: const Icon(Icons.contact_page_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Contact Us"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ContactUs()));
-                          },
-                        ),
-
-                      ///Feedback Page Button
-                      if (userRole == "USER")
-                        ListTile(
-                          leading: const Icon(Icons.feedback_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Feedback"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => FeedBack()));
-                          },
-                        ),
-
-                      ///reported list
-                      if (userRole == "ADMIN")
-                        ListTile(
-                          leading: const Icon(Icons.account_circle_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Reported"),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => Reported()));
-                          },
-                        ),
-
-                      /// Logout Button
-                      Mutation(
-                        options: MutationOptions(
-                            document: gql(logOut),
-                            onCompleted: (result) {
-                              print("logout result:$result");
-                              if (result["logout"] == true) {
-                                _auth.clearAuth();
-                              }
-                            }),
-                        builder:
-                            (RunMutation runMutation, QueryResult? result) {
-                          if (result!.hasException) {
-                            print(result.exception.toString());
-                          }
-                          return ListTile(
-                            leading: const Icon(Icons.logout),
-                            horizontalTitleGap: 0,
-                            title: const Text("Logout"),
-                            onTap: () {
-                              runMutation({
-                                "fcmToken": fcmToken,
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-
-            ///Bottom Navigation Bar
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              unselectedItemColor: Colors.grey,
-              selectedItemColor: const Color(0xFFFFFFFF),
-              backgroundColor: const Color(0xFF2B2E35),
-              currentIndex: _selectedIndex,
-              iconSize: 24,
-              unselectedFontSize: 12,
-              selectedFontSize: 13,
-              items: const <BottomNavigationBarItem>[
-                //L&F Button
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.local_grocery_store),
-                  label: 'L&F',
-                  backgroundColor: Color(0xFF2B2E35),
+                      ],
+                    ),
+                  ),
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.query_stats_rounded),
-                  label: 'queries',
-                  backgroundColor: Color(0xFF2B2E35),
+
+                ///My Profile Button
+                ListTile(
+                  leading: const Icon(Icons.account_circle_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("My Profile"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => UserPage()));
+                  },
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                  backgroundColor: Color(0xFF2B2E35),
+
+                ///Update Profile Button
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  horizontalTitleGap: 0,
+                  title: const Text("Edit Profile"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => UserPage()));
+                  },
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.event),
-                  label: 'events',
-                  backgroundColor: Color(0xFF2B2E35),
+
+                ///My Hostel Button
+                if (userRole == 'USER')
+                  ListTile(
+                    leading: const Icon(Icons.account_balance),
+                    horizontalTitleGap: 0,
+                    title: const Text("My Hostel"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              HostelHome()));
+                    },
+                  ),
+
+                ///Search User Button
+                ListTile(
+                  leading: const Icon(Icons.search_outlined),
+                  horizontalTitleGap: 0,
+                  title: const Text("Search User"),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        const searchUser()));
+                  },
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.connect_without_contact_sharp),
-                  label: 'Net Ops',
-                  backgroundColor: Color(0xFF2B2E35),
+
+                ///Create Hostel
+                if (userRole == 'ADMIN' || userRole == 'HAS')
+                  ListTile(
+                    leading: const Icon(Icons.account_balance_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text("Create Hostel"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CreateHostel()));
+                    },
+                  ),
+
+                ///Create Tag
+                if (userRole == 'ADMIN' ||
+                    userRole == "HAS" ||
+                    userRole == "SECRETORY")
+                  ListTile(
+                    leading: const Icon(Icons.add_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text('Create Tag'),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CreateTag()));
+                    },
+                  ),
+
+                ///Create Account
+                if (userRole == "ADMIN" ||
+                    userRole == "HAS" ||
+                    userRole == "SECRETORY")
+                  ListTile(
+                    leading: const Icon(Icons.addchart_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text('Create Accounts'),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CreateSuperUsers()));
+                    },
+                  ),
+
+                ///Update Role
+                if (userRole == "ADMIN" ||
+                    userRole == "HAS" ||
+                    userRole == "SECRETORY" ||
+                    userRole == "HOSTEL_SEC" ||
+                    userRole == "LEADS")
+                  ListTile(
+                    leading: const Icon(Icons.upgrade),
+                    horizontalTitleGap: 0,
+                    title: const Text('Update Role'),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              UpdateRole()));
+                    },
+                  ),
+
+                ///About us Page Button
+                if (userRole == "USER")
+                  ListTile(
+                    leading: const Icon(Icons.alternate_email),
+                    horizontalTitleGap: 0,
+                    title: const Text("About Us"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => AboutUs()));
+                    },
+                  ),
+
+                ///Contact Us Page Button
+                if (userRole == "USER")
+                  ListTile(
+                    leading: const Icon(Icons.contact_page_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text("Contact Us"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ContactUs()));
+                    },
+                  ),
+
+                ///Feedback Page Button
+                if (userRole == "USER")
+                  ListTile(
+                    leading: const Icon(Icons.feedback_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text("Feedback"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => FeedBack()));
+                    },
+                  ),
+
+                ///reported list
+                if (userRole == "ADMIN")
+                  ListTile(
+                    leading: const Icon(Icons.account_circle_outlined),
+                    horizontalTitleGap: 0,
+                    title: const Text("Reported"),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => Reported()));
+                    },
+                  ),
+
+                /// Logout Button
+                Mutation(
+                  options: MutationOptions(
+                      document: gql(logOut),
+                      onCompleted: (result) {
+                        print("logout result:$result");
+                        if (result["logout"] == true) {
+                          _auth.clearAuth();
+                        }
+                      }),
+                  builder:
+                      (RunMutation runMutation, QueryResult? result) {
+                    if (result!.hasException) {
+                      print(result.exception.toString());
+                    }
+                    return ListTile(
+                      leading: const Icon(Icons.logout),
+                      horizontalTitleGap: 0,
+                      title: const Text("Logout"),
+                      onTap: () {
+                        runMutation({
+                          "fcmToken": fcmToken,
+                        });
+                      },
+                    );
+                  },
                 ),
               ],
-              showUnselectedLabels: true,
-              elevation: 0.0,
-              onTap: _onItemTapped,
-            ),
-          );
-        });
+            );
+          },
+        ),
+      ),
+
+      ///Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: const Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFF2B2E35),
+        currentIndex: _selectedIndex,
+        iconSize: 24,
+        unselectedFontSize: 12,
+        selectedFontSize: 13,
+        items: const <BottomNavigationBarItem>[
+          //L&F Button
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_grocery_store),
+            label: 'L&F',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.query_stats_rounded),
+            label: 'queries',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'events',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.connect_without_contact_sharp),
+            label: 'Net Ops',
+            backgroundColor: Color(0xFF2B2E35),
+          ),
+        ],
+        showUnselectedLabels: true,
+        elevation: 0.0,
+        onTap: _onItemTapped,
+      ),
+    );
   }
 }

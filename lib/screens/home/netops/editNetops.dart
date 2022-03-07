@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:client/models/searchDelegate.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../models/tag.dart';
 import '../../../widgets/formTexts.dart';
 class EditPost extends StatefulWidget {
   final NetOpPost post;
@@ -57,6 +58,7 @@ class _EditPostState extends State<EditPost> {
 
     ///Retrieving data of initial netops post
     var post=widget.post;
+    List<Tag> usertagList = post.tags;
     var dateTime=post.endTime;
     titleController.text=post.title;
     descriptionController.text=post.description;
@@ -83,10 +85,12 @@ class _EditPostState extends State<EditPost> {
         for (var i = 0; i < result.data!["getTags"].length; i++) {
           tagList.putIfAbsent(result.data!["getTags"][i]["id"].toString(),()=>result.data!["getTags"][i]["title"]);
         }
-
+        selectedTags.clear();
+        for(var i=0 ; i<usertagList.length ; i++){
+          selectedTags.add(usertagList[i].Tag_name);
+        }
         return Scaffold(
           resizeToAvoidBottomInset: true,
-
           appBar: AppBar(
             title: const Text('Edit Post',
               style: TextStyle(
@@ -423,7 +427,7 @@ class _EditPostState extends State<EditPost> {
                                              emptyUrlErr = 'Please provide link too if you are giving button name';
                                            });
                                          }
-                                         if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                         if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
                                          {
                                            setState(() {
                                              emptyUrlErr = 'Please provide a valid link';

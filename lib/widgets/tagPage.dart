@@ -1,6 +1,7 @@
 import 'package:client/graphQL/home.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/netopsClass.dart';
 import '../models/tag.dart';
@@ -27,13 +28,29 @@ class _TagPageState extends State<TagPage> {
   Map all = {};
   String search = '';
   bool isStarred = false;
+  late String userId;
+  late String userRole;
 
   ///Keys
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   ///Controllers
   TextEditingController reportController =TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _sharedPreference();
+  }
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+     userId = prefs!.getString('id')!;
+     userRole = prefs!.getString('role')!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +92,7 @@ class _TagPageState extends State<TagPage> {
         );
       }
 
-      String userId = result.data!["getMe"]["id"];
-      String userRole = result.data!["getMe"]["role"];
       var data = result.data!["getTag"];
-
 
       ///When empty
       if (result.data!["getTag"]["events"] == null ||
@@ -138,7 +152,6 @@ class _TagPageState extends State<TagPage> {
             isLiked: data["events"][i]["isLiked"],
             isStarred: data["events"][i]["isStared"],
             createdAt: DateTime.parse(data["events"][i]["createdAt"]),
-            // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
           ),
                 () => "event",
           );

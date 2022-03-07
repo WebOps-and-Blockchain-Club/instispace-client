@@ -1,14 +1,13 @@
 import 'package:client/graphQL/netops.dart';
 import 'package:client/graphQL/report.dart';
-import 'package:client/models/post.dart';
 import 'package:client/models/reportNetopPost.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import '../../../widgets/expandDescription.dart';
 import '../../../widgets/marquee.dart';
 import '../../../widgets/tagButtons.dart';
-import '../Announcements/expand_description.dart';
+
 
 class NetopReportCard extends StatefulWidget {
   final NetOpReportPost post;

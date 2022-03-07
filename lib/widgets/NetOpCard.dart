@@ -7,12 +7,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../screens/home/Netops/netopsComments.dart';
 import '../screens/home/Netops/editNetops.dart';
-
 import 'package:client/widgets/marquee.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'addToCal.dart';
+import 'package:share_plus/share_plus.dart';
 
 Widget NetopsCard (
 
@@ -319,9 +323,33 @@ Widget NetopsCard (
                 width: MediaQuery.of(context).size.width*0.1,
                 child: Center(
                   child: IconButton(
-                    onPressed: () =>
-                    {
-                      print('shared')
+                    onPressed: ()
+                   async {
+                     // bool isLoading =true;
+                      // if(post.imgUrl != null){
+                        // var res;
+                        // final uri = Uri.parse(post.imgUrl!);
+                        // await http.get(uri).then((value) {
+                        //   if(isLoading){
+                        //      CircularProgressIndicator();
+                        //   }
+                        //   res = value;
+                        // }).whenComplete((){
+                        //   isLoading = false;
+                        // });
+                        // print("http over");
+                        // final bytes = res.bodyBytes;
+                        // print("bytes : $bytes");
+                        // final temp = await getTemporaryDirectory();
+                        // print("temp over");
+                        // final path = '${temp.path}/image.jpg';
+                        // File(path).writeAsBytesSync(bytes);
+                        // await Share.shareFiles([path],text: "${post.title} \n${post.description}");
+                      // }
+                      // else{
+                        await Share.share("${post.title} \n${post.description}");
+                      // }
+                      print('shared');
                     },
                     icon: const Icon(Icons.share),
                     iconSize: 20,
@@ -345,6 +373,9 @@ Widget NetopsCard (
                   child: IconButton(
                     onPressed: () =>
                     {
+                    Add2Calendar.addEvent2Cal(
+                    buildEvent(title: post.title, startDate: DateTime.now(), description: post.description, endDate: DateTime.parse(post.endTime), location: ""),
+                    ),
                       print('remainder added')
                     },
                     icon: const Icon(Icons.access_alarm),
@@ -393,6 +424,12 @@ Widget NetopsCard (
                                   "netopId": post.id
                                 });
                                 isLiked = !isLiked;
+                                if(isLiked){
+                                  like_counter = like_counter+1;
+                                }
+                                else{
+                                  like_counter = like_counter-1;
+                                }
                                 // print('is liked: ${isLiked}');
                               },
                               icon: const Icon(Icons.thumb_up),

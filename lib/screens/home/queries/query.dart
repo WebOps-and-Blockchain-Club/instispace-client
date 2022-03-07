@@ -96,6 +96,16 @@ class _QueryHomeState extends State<QueryHome> {
                 ],
               ),
             ),
+            ///Floating Action Button to add Query
+            floatingActionButton: FloatingActionButton(onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          AddQuery(refetchQuery: refetch,)));
+            },
+              child: const Icon(Icons.add),
+              backgroundColor: const Color(0xFFFF0000),
+            ),
           );
         }
         else {

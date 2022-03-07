@@ -1,5 +1,5 @@
-class eventsQuery{
-  String getEvents="""
+class eventsQuery {
+  String getEvents = """
   query(\$getEventsTake: Float!, \$lastEventId: String!, \$orderByLikes: Boolean, \$filteringCondition: fileringConditions,\$search: String){
   getEvents(take: \$getEventsTake, lastEventId: \$lastEventId, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition, search: \$search) {
   list {
@@ -28,10 +28,6 @@ class eventsQuery{
     }
     total
   }
-  getMe {
-    id
-    role
-  } 
 }
 """;
   String toggleLike = """
@@ -39,7 +35,7 @@ class eventsQuery{
   toggleLikeEvent(EventId: \$eventId)
 }
   """;
-  String toggleStar="""
+  String toggleStar = """
   mutation(\$eventId: String!){
   toggleStarEvent(EventId: \$eventId)
 }
@@ -74,9 +70,6 @@ getEvent(EventId: \$eventId) {
           name
         }
 },
-getMe {
-    id
-  }
 }
   """;
   String createEvent = """
@@ -84,7 +77,7 @@ getMe {
   createEvent(NewEventData: \$newEventData, Image: \$image)
 }
   """;
-  String editEvent="""
+  String editEvent = """
   mutation(\$editEventData: editEventInput!, \$eventId: String!, \$image: [Upload!]){
   editEvent(EditEventData: \$editEventData, EventId: \$eventId, Image: \$image)
 }

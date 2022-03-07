@@ -12,6 +12,7 @@ import 'package:client/models/searchDelegate.dart';
 import 'package:intl/intl.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPostEvents extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
@@ -51,7 +52,6 @@ class _AddPostEventsState extends State<AddPostEvents> {
   final myControllerTitle = TextEditingController();
   final myControllerLocation = TextEditingController();
   final myControllerDescription = TextEditingController();
-  final myControllerImgUrl = TextEditingController();
   final myControllerFormLink = TextEditingController();
   final formNameController = TextEditingController();
 
@@ -67,11 +67,42 @@ class _AddPostEventsState extends State<AddPostEvents> {
     myControllerTitle.dispose();
     myControllerLocation.dispose();
     myControllerDescription.dispose();
-    myControllerImgUrl.dispose();
     myControllerFormLink.dispose();
     formNameController.dispose();
     super.dispose();
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _sharedPreference();
+  }
+  void _sharedPreference() async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if(prefs?.getString("titleControllerEvent")!=null){
+        myControllerTitle.text = prefs!.getString("titleControllerEvent")!;
+      }
+      if(prefs?.getString("descriptionControllerEvent")!=null){
+        myControllerDescription.text = prefs!.getString("descriptionControllerEvent")!;
+      }
+      if(prefs?.getString("formLinkControllerEvent")!=null){
+        myControllerFormLink.text = prefs!.getString("formLinkControllerEvent")!;
+      }
+      if(prefs?.getString("formNameControllerEvent")!=null){
+        formNameController.text = prefs!.getString("formNameControllerEvent")!;
+      }
+      if(prefs?.getStringList('addEventTags') != null ){
+        var _interests = prefs!.getStringList('addEventTags')!;
+        for(var i=0;i<_interests.length;i++){
+          selectedTags.add(_interests[i]);
+        }
+      }
+      showAdditional = (formNameController.text.isNotEmpty || myControllerFormLink.text.isNotEmpty);
+    });
+  }
+  SharedPreferences? prefs;
+
 
   @override
   Widget build(BuildContext context) {
@@ -508,7 +539,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                   emptyFormLinkErr = 'Please provide link too if you are giving button name';
                                                 });
                                               }
-                                              if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                              if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
                                               {
                                                setState(() {
                                                  emptyFormLinkErr = 'Please enter a valid link';
@@ -535,8 +566,18 @@ class _AddPostEventsState extends State<AddPostEvents> {
 
                                     ///Discard Button
                                     ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
+                                      onPressed: () =>{
+                                        myControllerTitle.clear(),
+                                        myControllerDescription.clear(),
+                                        myControllerFormLink.clear(),
+                                        formNameController.clear(),
+                                        selectedTags.clear(),
+                                        prefs!.remove("titleControllerEvent"),
+                                        prefs!.remove("descriptionControllerEvent"),
+                                        prefs!.remove("formLinkControllerEvent"),
+                                        prefs!.remove("formNameControllerEvent"),
+                                        prefs!.remove("addEventTags"),
+                                        Navigator.pop(context),
                                       },
                                       child: const Padding(
                                         padding: EdgeInsets.fromLTRB(15,5,15,5),
@@ -558,7 +599,33 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                         minimumSize: const Size(80, 35),
                                       ),
                                     ),
-
+                                    ///Save Button
+                                    ElevatedButton(
+                                      onPressed: ()=>{
+                                        prefs!.setString("titleControllerEvent", myControllerTitle.text),
+                                        prefs!.setString("descriptionControllerNetop",myControllerDescription.text),
+                                        prefs!.setString("formLinkControllerEvent",myControllerFormLink.text),
+                                        prefs!.setString("formNameControllerEvent",formNameController.text),
+                                        prefs!.setStringList("addEventTags", selectedTags),
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                        child: Text('Save',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                          primary: const Color(0xFF2B2E35),
+                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                          minimumSize: const Size(80, 35),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(24)
+                                          )
+                                      ),
+                                    ),
                                     ///Submit Button
                                     Mutation(
                                         options: MutationOptions(

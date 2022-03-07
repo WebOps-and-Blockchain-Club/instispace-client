@@ -5,12 +5,15 @@ import 'package:client/widgets/filters.dart';
 import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/netopsClass.dart';
 import '../../../widgets/text.dart';
 import 'package:client/widgets/loadingScreens.dart';
 import '../../../models/tag.dart';
 import 'package:client/graphQL/netops.dart';
 import 'package:client/widgets/NetOpCard.dart';
+import 'package:http/http.dart' as http;
+
 
 class Post_Listing extends StatefulWidget {
   const Post_Listing({Key? key}) : super(key: key);
@@ -36,6 +39,7 @@ class _Post_ListingState extends State<Post_Listing> {
   List<String>selectedFilterIds=[];
   late int total;
   int take=10;
+  var bytes;
 
   ///Controllers
   ScrollController scrollController =ScrollController();
@@ -44,7 +48,21 @@ class _Post_ListingState extends State<Post_Listing> {
 
   ///Keys
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String userId="";
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _sharedPreference();
+  }
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs!.getString('id')!;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -135,6 +153,15 @@ class _Post_ListingState extends State<Post_Listing> {
                         ],
                       ),
                     ),
+                    floatingActionButton: FloatingActionButton(onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AddPost(refetchPosts: refetch,)));
+                    },
+                      child: const Icon(Icons.add),
+                      backgroundColor: const Color(0xFFFF0000),
+                    ),
                   );
                 }
                 else {
@@ -186,7 +213,6 @@ class _Post_ListingState extends State<Post_Listing> {
                     );
                   }
                   total = data["total"];
-                  String userId = result.data!["getMe"]["id"];
                   FetchMoreOptions opts = FetchMoreOptions(
                       variables: {
                         "take": take,
@@ -237,54 +263,53 @@ class _Post_ListingState extends State<Post_Listing> {
                     ),
 
                     ///Page
-                    body: ListView(
-                        children: [
-                          Column(
-                            children: [
-                              ///Heading
-                              PageTitle('Netops', context),
+                    body: RefreshIndicator(
+                      onRefresh: () {
+                        return refetch!();
+                      },
+                      child: ListView(
+                          children: [
+                            Column(
+                              children: [
+                                ///Heading
+                                PageTitle('Netops', context),
 
-                              ///Search bar and filter button
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.06,
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  child: Search(
-                                    search: search,
-                                    refetch: refetch,
-                                    ScaffoldKey: _scaffoldKey,
-                                    page: 'netops',
-                                    callback: (String val) {
-                                      setState(() {
-                                        search = val;
-                                      }
-                                      );
-                                      },
-                                    widget: Filters(
-                                      mostLikeValues: mostlikesvalue,
-                                      isStarred: isStarred,
-                                      selectedFilterIds: selectedFilterIds,
-                                      filterSettings: filterSettings,
+                                ///Search bar and filter button
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.06,
+                                    width: MediaQuery.of(context).size.width * 1,
+                                    child: Search(
+                                      search: search,
                                       refetch: refetch,
+                                      ScaffoldKey: _scaffoldKey,
                                       page: 'netops',
-                                      callback: (bool val) {
+                                      callback: (String val) {
                                         setState(() {
-                                          isStarred = val;
-                                        });
+                                          search = val;
+                                        }
+                                        );
                                         },
+                                      widget: Filters(
+                                        mostLikeValues: mostlikesvalue,
+                                        isStarred: isStarred,
+                                        selectedFilterIds: selectedFilterIds,
+                                        filterSettings: filterSettings,
+                                        refetch: refetch,
+                                        page: 'netops',
+                                        callback: (bool val) {
+                                          setState(() {
+                                            isStarred = val;
+                                          });
+                                          },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              ///Listing of netops cards
-                              RefreshIndicator(
-                                color: const Color(0xFF2B2E35),
-                                onRefresh: () {
-                                  return refetch!();
-                                  },
-                                child: ListView(
+                                ///Listing of netops cards
+                                ListView(
                                     controller: scrollController,
                                     shrinkWrap: true,
                                     children: [
@@ -311,22 +336,25 @@ class _Post_ListingState extends State<Post_Listing> {
                                       ),
                                     ]
                                 ),
-                              ),
-                              if(result.isLoading)
-                                const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.lightBlueAccent,)
-                                ),
-                            ],
-                          ),
-                        ]
+                                if(result.isLoading)
+                                  const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.lightBlueAccent,)
+                                  ),
+                              ],
+                            ),
+                          ]
+                      ),
                     ),
                   );
                 }
+
               }
           );
         }
     );
-  }
 
+  }
 }
+
+

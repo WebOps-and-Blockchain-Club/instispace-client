@@ -6,6 +6,7 @@ import 'package:client/widgets/NetOpCard.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/widgets/marquee.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'queryComments.dart';
 class QueryCard extends StatefulWidget {
@@ -24,8 +25,21 @@ class _QueryCardState extends State<QueryCard> {
   String getQuery = Queries().getMyQuery;
 
   ///Variables
-  late String userId;
+  String userId = "";
   late String differenceTime;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _sharedPreference();
+  }
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs!.getString("id")!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +67,6 @@ class _QueryCardState extends State<QueryCard> {
         }
         int likeCount = result.data!["getMyQuery"]["likeCount"];
         bool isLiked = result.data!["getMyQuery"]["isLiked"];
-        userId = result.data!["getMe"]["id"];
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(0,0,0,10),

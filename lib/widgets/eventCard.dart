@@ -1,3 +1,4 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/widgets/expandDescription.dart';
@@ -12,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:client/widgets/marquee.dart';
 import '../screens/home/Events/editEvent.dart';
 import '../models/eventsClass.dart';
+import 'addToCal.dart';
 
 Widget EventsCard (
     BuildContext context,
@@ -417,7 +419,9 @@ String timeDifference = difference(postCreated);
                         IconButton(
                           onPressed: () =>
                           {
-                            print('remainder added')
+                            Add2Calendar.addEvent2Cal(
+                              buildEvent(title: events.title, startDate: DateTime.parse(events.time), description: events.description, endDate: DateTime.parse(events.time).add(const Duration(hours: 1)), location: events.location),
+                            ),
                           },
                           icon: const Icon(Icons.access_alarm),
                           iconSize: 20,

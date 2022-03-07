@@ -1,10 +1,10 @@
-class LnFQuery{
-  String createItem="""
+class LnFQuery {
+  String createItem = """
   mutation(\$itemInput: ItemInput!, \$images: [Upload!]){
     createItem(ItemInput: \$itemInput, Images: \$images)
   }
   """;
-  String getItems="""
+  String getItems = """
    query(\$take: Float!, \$lastItemId: String!, \$itemsFilter: [Category!]!, \$search: String){
   getItems(take: \$take, LastItemId: \$lastItemId, ItemsFilter: \$itemsFilter, search: \$search) {
     total
@@ -24,17 +24,14 @@ class LnFQuery{
       }
     }
   }
-  getMe {
-    id
-  }
 }
   """;
-  String editItem="""
+  String editItem = """
   mutation(\$editItemInput: EditItemInput!, \$itemId: String!, \$editItemsImages: [Upload!]){
   editItems(EditItemInput: \$editItemInput, ItemId: \$itemId, Images:\$editItemsImages)
 }
   """;
-  String resolveItem="""
+  String resolveItem = """
   mutation(\$resolveItemItemId: String!){
   resolveItem(ItemId: \$resolveItemItemId)
 }

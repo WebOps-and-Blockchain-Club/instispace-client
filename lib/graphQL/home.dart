@@ -1,4 +1,4 @@
-class homeQuery{
+class homeQuery {
   String getMeHome = """
 query{
   getMe {
@@ -147,7 +147,6 @@ query{
 }
   """;
 
-
   String createTag = """
   mutation(\$tagInput: TagInput!){
     createTag(TagInput: \$tagInput)
@@ -163,7 +162,7 @@ query{
   toggleStarEvent(EventId: \$eventId)
   }
   """;
-  String searchUser="""
+  String searchUser = """
 query(\$take: Float!, \$lastUserId: String!, \$search: String){
   searchUser(take: \$take, LastUserId: \$lastUserId, search: \$search) {
     usersList {
@@ -179,7 +178,7 @@ query(\$take: Float!, \$lastUserId: String!, \$search: String){
   }
 }
   """;
-  String getUser="""
+  String getUser = """
   query(\$getUserInput: GetUserInput!){
   getUser(GetUserInput: \$getUserInput) {
     interest {
@@ -250,10 +249,6 @@ query GetTag(\$tag: String!) {
         name
       }
     }
-  }
-  getMe {
-    id
-    name
   }
 }
 """;

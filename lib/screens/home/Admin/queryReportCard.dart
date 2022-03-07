@@ -3,10 +3,9 @@ import 'package:client/graphQL/report.dart';
 import 'package:client/models/reportQuerypost.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
-import '../../../models/query.dart';
+import '../../../widgets/expandDescription.dart';
 import '../../../widgets/marquee.dart';
-import '../Announcements/expand_description.dart';
+
 
 class QueryReportCard extends StatefulWidget {
   final queryReportClass post;

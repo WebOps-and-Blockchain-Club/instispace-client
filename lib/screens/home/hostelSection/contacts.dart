@@ -1,5 +1,4 @@
 import 'package:client/graphQL/home.dart';
-import 'package:client/widgets/headings.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -26,7 +25,6 @@ class _HostelcontactsState extends State<Hostelcontacts> {
 
   ///Controllers
   ScrollController scrollController = ScrollController(initialScrollOffset: 0.0);
-
 
   @override
   Widget build(BuildContext context) {
