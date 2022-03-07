@@ -10,4 +10,45 @@ class hostelQM{
   deleteAmenity(AmenityId: \$amenityId)
 }
 """;
+
+  String getContact = """
+query(\$hostelId: String!){
+  getContact(HostelId: \$hostelId) {
+    type
+    name
+    id
+    contact
+    hostel {
+      name
+      id
+    }
+  }
+}
+  """;
+
+  String getAmenities = """
+query(\$hostelId: String!){
+  getAmenities(HostelId: \$hostelId) {
+    id
+    name
+    description
+    hostel {
+      name
+      id
+    }
+  }
+}
+  """;
+
+  String deleteContact = """
+mutation(\$contactId: String!){
+  deleteHostelContact(ContactId: \$contactId)
+}
+  """;
+
+  String updateContact = """
+  mutation(\$updateContactInput: EditContactInput!, \$contactId: String!){
+  updateHostelContact(UpdateContactInput: \$updateContactInput, ContactId: \$contactId)
+}
+  """;
 }

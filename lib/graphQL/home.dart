@@ -124,6 +124,7 @@ query{
         type
         name
         contact
+        id
       }
     }
   }
