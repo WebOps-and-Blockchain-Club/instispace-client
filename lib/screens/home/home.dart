@@ -214,14 +214,21 @@ class _HomePageState extends State<HomePage> {
                   else {
                     all.clear();
                     for (var i = 0; i < data["announcements"].length; i++) {
+                      List<String> hostelIds = [];
+                      List<String> hostelNames = [];
+                      for(var j = 0; j < data["announcements"][i]['hostels'].length; j++) {
+                        hostelIds.add(data["announcements"][i]["hostels"][j]["id"]);
+                        hostelNames.add(data["announcements"][i]["hostels"][j]["name"]);
+                      }
                       all.putIfAbsent(Announcement(
                         title: data["announcements"][i]["title"],
-                        hostelIds: [],
+                        hostelIds: hostelIds,
                         description: data["announcements"][i]["description"],
                         endTime: data["announcements"][i]["endTime"],
                         id: data["announcements"][i]["id"],
                         images: data["announcements"][i]["images"],
                         createdByUserId: data["announcements"][i]["user"]["id"],
+                        hostelNames: hostelNames,
                       ),
                               () => "announcement");
                     }
@@ -722,7 +729,7 @@ class _HomePageState extends State<HomePage> {
                                                     .circular(20.0)
                                             ),
                                           ),
-                                          child: Text("Announcements",
+                                          child: Text("announcements",
                                             style: TextStyle(
                                                 fontWeight: FontWeight
                                                     .bold,
@@ -783,10 +790,16 @@ class _HomePageState extends State<HomePage> {
                         for (var i = 0; i <
                             result.data!["getMe"]["getHome"]["announcements"]
                                 .length; i++) {
+                          List<String> hostelIds = [];
+                          List<String> hostelNames = [];
+                          for(var j = 0; j < data["announcements"][i]['hostels'].length; j++) {
+                            hostelIds.add(data["announcements"][i]["hostels"][j]["id"]);
+                            hostelNames.add(data["announcements"][i]["hostels"][j]["name"]);
+                          }
                           all.putIfAbsent(Announcement(
                               title: result
                                   .data!["getMe"]["getHome"]["announcements"][i]["title"],
-                              hostelIds: [],
+                              hostelIds: hostelIds,
                               description: result
                                   .data!["getMe"]["getHome"]["announcements"][i]["description"],
                               endTime: '',
@@ -794,7 +807,8 @@ class _HomePageState extends State<HomePage> {
                                   .data!["getMe"]["getHome"]["announcements"][i]["id"],
                               images: result
                                   .data!["getMe"]["getHome"]["announcements"][i]["images"],
-                              createdByUserId: ''
+                              createdByUserId: '',
+                            hostelNames: hostelNames
                           ),
                                   () => "announcement");
                         }
@@ -910,7 +924,7 @@ class _HomePageState extends State<HomePage> {
                                                             .circular(20.0)
                                                     ),
                                                   ),
-                                                  child: Text("Announcements",
+                                                  child: Text("announcements",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight
                                                             .bold,
@@ -1088,7 +1102,7 @@ class _HomePageState extends State<HomePage> {
     }
     else if(category == "announcement"){
       // return AnnouncementHomeCard(announcements: post);
-      return AnnouncementsCards(context,userRole,userid,refetch,post);
+      return AnnouncementsCards(context,userRole,userid,refetch,post,null);
     }
     return Container();
   }
@@ -1234,7 +1248,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(20.0)
                           ),
                         ),
-                        child: Text("Announcements",
+                        child: Text("announcements",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: isAnnouncements? Colors.white:const Color(0xFF42454D),
