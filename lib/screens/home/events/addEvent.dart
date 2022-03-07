@@ -508,7 +508,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                   emptyFormLinkErr = 'Please provide link too if you are giving button name';
                                                 });
                                               }
-                                              if (val!.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                              if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
                                               {
                                                setState(() {
                                                  emptyFormLinkErr = 'Please enter a valid link';
