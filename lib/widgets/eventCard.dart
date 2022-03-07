@@ -325,7 +325,7 @@ String timeDifference = difference(postCreated);
                     children: tags.map((tag) =>
                         SizedBox(
                           child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 2, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                               child: TagButtons(tag, context)
                           ),
                         ))

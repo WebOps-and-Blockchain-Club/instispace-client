@@ -2,6 +2,7 @@ import 'package:client/graphQL/announcements.dart';
 import 'package:client/models/announcementsClass.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../screens/home/HostelSection/Announcements/editAnnouncements.dart';
 import 'expandDescription.dart';
 import '../screens/home/HostelSection/Announcements/announcements.dart';
@@ -14,6 +15,7 @@ Widget AnnouncementsCards(
     String userId,
     Future<QueryResult?> Function()? refetchAnnouncements,
     Announcement announcement,
+    int? hostelNumber
     ) {
 
   ///GraphQL
@@ -40,38 +42,109 @@ Widget AnnouncementsCards(
                 topRight: Radius.circular(8.5)),
           ),
           // color: const Color(0xFF42454D),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ///Title
-              Padding(
-                //Conditional Padding
-                  padding: (userId==announcement.createdByUserId)
-                      ? const EdgeInsets.fromLTRB(18, 0, 0, 0)
-                      : const EdgeInsets.fromLTRB(18, 10, 0, 10),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: MarqueeWidget(
-                      direction: Axis.horizontal,
-                      child: Text(
-                        // capitalize(announcement.title),
-                        capitalize(announcement.title),
-                        style: TextStyle(
-                          //Conditional Font Size
-                          fontWeight: (userId==announcement.createdByUserId)
-                              ? FontWeight.w700
-                              : FontWeight.bold,
-                          //Conditional Font Size
-                          fontSize: (userId==announcement.createdByUserId)
-                              ? 18
-                              : 18,
-                          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15,0,0,0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ///Title
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0,0,0,0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: MarqueeWidget(
+                        direction: Axis.horizontal,
+                        child: Text(
+                          capitalize(announcement.title),
+                          style: TextStyle(
+                            //Conditional Font Size
+                            fontWeight: (userId==announcement.createdByUserId)
+                                ? FontWeight.w700
+                                : FontWeight.bold,
+                            //Conditional Font Size
+                            fontSize: (userId==announcement.createdByUserId)
+                                ? 18
+                                : 18,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-              ),
-            ],
+                    )
+                ),
+                ///Edit Button, delete button
+                if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
+                  Row(
+                    children: [
+                      ///Edit Button
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EditAnnouncements(
+                                      announcement: Announcement(
+                                        title: announcement.title,
+                                        description:
+                                        announcement.description,
+                                        endTime: announcement.endTime,
+                                        id: announcement.id,
+                                        images: announcement.images,
+                                        createdByUserId:
+                                        announcement.createdByUserId,
+                                        hostelIds:
+                                        announcement.hostelIds,
+                                        hostelNames: announcement.hostelNames,
+                                      ),
+                                      refetchAnnouncement: refetchAnnouncements,
+                                    )));
+                          },
+                          icon: const Icon(Icons.edit_outlined),
+                          color: Colors.white,
+                          iconSize: 20,
+                        ),
+
+                      ///Delete Button
+                        Mutation(
+                            options: MutationOptions(
+                                document: gql(delete)
+                            ),
+                            builder:(
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ){
+                              if (result!.hasException){
+                                print(result.exception.toString());
+                              }
+                              if(result.isLoading){
+                                return Center(
+                                    child: LoadingAnimationWidget.threeRotatingDots(
+                                      color: Colors.white,
+                                      size: 20,
+                                    ));
+                              }
+                              return IconButton(
+                                onPressed: ()
+                                {
+                                  runMutation({
+                                    'announcementId':
+                                    announcement.id
+                                  });
+                                  Navigator.pop(context);
+                                  refetchAnnouncements!();
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                          const Announcements()));
+                                },
+                                icon: const Icon(Icons.delete_outline),
+                                color: Colors.white,
+                                iconSize: 20,
+                              );
+                            }
+                        ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
 
@@ -99,98 +172,84 @@ Widget AnnouncementsCards(
 
         ///Description
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.fromLTRB(15,10,15,15),
             child: DescriptionTextWidget(text: announcement.description,),
           ),
 
-
-        ///Edit Button, delete button
-        if (role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
+        if(role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
+        if (announcement.hostelNames.length == hostelNumber)
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 5, 10, 1),
-            child: Row(
-              children: [
-                ///Edit Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color(0xFF42454D),
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    minimumSize: const Size(40,24),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            EditAnnouncements(
-                              announcement: Announcement(
-                                title: announcement.title,
-                                description:
-                                announcement.description,
-                                endTime: announcement.endTime,
-                                id: announcement.id,
-                                images: announcement.images,
-                                createdByUserId:
-                                    announcement.createdByUserId,
-                                hostelIds:
-                                announcement.hostelIds,
-                              ),
-                              refetchAnnouncement: refetchAnnouncements,
-                            )));
-                  },
-                  child: const Text(
-                    "Edit",
-                    style:
-                    TextStyle(color: Colors.white, fontSize: 12.0),
+            padding: const EdgeInsets.fromLTRB(15,0,15,15),
+            child: Wrap(
+              children: [ElevatedButton(
+                onPressed: () => {},
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(8,2,8,2),
+                  child: Text(
+                    "All hostels",
+                    style: TextStyle(
+                      color: Color(0xFF2B2E35),
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-
-                  ///Delete Button
-                  if(role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
-                Mutation(
-                    options: MutationOptions(
-                      document: gql(delete),
+                style: ElevatedButton.styleFrom(
+                    primary: const Color(0xFFDFDFDF),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
                     ),
-                    builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                        ) {
-                      if (result!.hasException) {
-                        print(result.exception.toString());
-                      }
-                      if (result.isLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF42454D),
-                          ),
-                        );
-                      }
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFF42454D),
-                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          minimumSize: const Size(40,24),
-                        ),
-                        onPressed: () {
-                          runMutation({
-                            'announcementId':
-                           announcement.id
-                          });
-                          Navigator.pop(context);
-                          refetchAnnouncements!();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const Announcements()));
-                        },
-                        child: const Text(
-                          "Delete",
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 12.0),
-                        ),
-                      );
-                    }),
-              ],
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 6),
+                    minimumSize: const Size(35, 30)
+                ),
+              ),
+              ]
             ),
           ),
+
+        ///Hostel Names
+        if(role == "ADMIN" || role == "HAS" || userId == announcement.createdByUserId)
+        if(announcement.hostelNames.length != hostelNumber)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(15,0,15,15),
+          child: Wrap(
+            children: announcement.hostelNames.map((hostelName) =>
+                SizedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 5, 5),
+                    child: ElevatedButton(
+                      onPressed: () => {},
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8,2,8,2),
+                        child: Text(
+                          hostelName,
+                          style: const TextStyle(
+                            color: Color(0xFF2B2E35),
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFFDFDFDF),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)
+                          ),
+                          // side: BorderSide(color: Color(0xFF2B2E35)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 6),
+                          minimumSize: const Size(35, 30)
+                      ),
+                    ),
+                  ),
+                )
+            )
+                .toList(),
+          ),
+        ),
       ],
     ),
   );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget errorMessages(String errMessage) {
   if (errMessage != "") {
     return Container(
-      margin: EdgeInsets.only(left: 20, top: 7),
+      margin: const EdgeInsets.only(left: 20, top:2),
       alignment: Alignment.topLeft,
       child: Text(
         errMessage,
