@@ -6,7 +6,7 @@ import 'package:client/services/Auth.dart';
 final _auth=AuthService();
 // final token = _auth.token;
 HttpLink httpLink = HttpLink(
-    'https://insti-app.herokuapp.com/graphql',
+    'https://instispace.iitm.ac.in/api/graphql',
 );
 final AuthLink authLink = AuthLink(
   getToken: () async  {
