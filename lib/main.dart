@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
           // This is the theme of application.
 
           primarySwatch: Colors.green,
-          primaryColor: Colors.amber
+          primaryColor: Colors.amber,
+          // colorScheme: ColorScheme.light().copyWith(secondary: const Color(0xFF2B2E35)),
         ),
         home: Wrapper(),
       ),
