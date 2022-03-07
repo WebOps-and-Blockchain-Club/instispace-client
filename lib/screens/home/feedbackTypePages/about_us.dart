@@ -18,8 +18,9 @@ class _AboutUsState extends State<AboutUs> {
               color: Colors.white,
               fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color(0xFF5451FD),
+        backgroundColor: const Color(0xFF2B2E35),
       ),
+      backgroundColor: const Color(0xFFDFDFDF),
     );
   }
 }

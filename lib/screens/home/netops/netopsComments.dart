@@ -156,11 +156,11 @@ class _CommentsState extends State<Comments> {
                       child: Container(
                         height: 35.0,
                         width: 35.0,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
-                        child: CircleAvatar(
+                        child: const CircleAvatar(
                           radius: 30.0,
                           backgroundImage: NetworkImage('https://images.unsplash.com/photo-1638975983437-2f5fea7540da?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80'),
                         ),
@@ -209,10 +209,10 @@ class _CommentsState extends State<Comments> {
                         if(result.isLoading){
                           return Scaffold(
                             appBar:AppBar(
-                              title: Text('Comments'),
-                              backgroundColor:Color(0xFFE6CCA9),
+                              title: const Text('Comments'),
+                              backgroundColor:const Color(0xFDFDFDF),
                             ),
-                            body: Center(
+                            body: const Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
@@ -227,7 +227,7 @@ class _CommentsState extends State<Comments> {
                                 }
                             );
                           },
-                          icon: Icon(Icons.send),
+                          icon: const Icon(Icons.send),
                           iconSize: 24,
                         );
                       },

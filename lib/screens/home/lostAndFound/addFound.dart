@@ -9,7 +9,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-
 class AddFound extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
   AddFound({required this.refetchPosts});

@@ -47,7 +47,7 @@ class _LogInState extends State<LogIn> {
     });
 
     return Scaffold(
-      backgroundColor: Color(0xFFF7F7F7),
+      backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
       child: ListView(
         children: [
