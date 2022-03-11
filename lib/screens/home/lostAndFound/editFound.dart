@@ -26,7 +26,7 @@ class _EditFoundState extends State<EditFound> {
   String editItem = LnFQuery().editItem;
 
   ///Variables
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now();
   List byteData=[];
   List multipartfile=[];
   List fileNames=[];
@@ -180,7 +180,7 @@ class _EditFoundState extends State<EditFound> {
                     dateLabelText: 'Date',
                     timeLabelText: "Hour",
                     onChanged: (val) => {
-                      dateTime= dateTimeString(val),
+                      dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
                     },
                     validator: (val) {
                       print(val);
@@ -474,17 +474,6 @@ class _EditFoundState extends State<EditFound> {
         ],
       )
     );
-  }
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-
-    return dateTimeFormat.format(localDateTime);
   }
 }
 

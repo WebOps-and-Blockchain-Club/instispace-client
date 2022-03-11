@@ -299,13 +299,7 @@ class _AddFoundState extends State<AddFound> {
                                 for (var i=0;i<result!.files.length;i++){
                                   fileNames.add(result!.files[i].name);
                                   byteData.add(result!.files[i].bytes);
-                                  List extention= result!.files[i].name.split(".");
-                                  multipartfile.add(MultipartFile.fromBytes(
-                                    'photo',
-                                    byteData[i],
-                                    filename: fileNames[i],
-                                    contentType: MediaType("image",extention.last),
-                                  ));
+                                  print("byteData in picker: ${byteData.length}");
                                 }
                               });
                             }
@@ -332,15 +326,8 @@ class _AddFoundState extends State<AddFound> {
                       children: result!.files.map((e) => InkWell(
                         onLongPress: (){
                           setState(() {
-                            multipartfile.remove(
-                                MultipartFile.fromBytes(
-                                  'photo',
-                                  e.bytes as List<int>,
-                                  filename: e.name,
-                                  contentType: MediaType("image","png"),
-                                )
-                            );
                             byteData.remove(e.bytes);
+                            print("byteData : ${byteData.length}");
                             fileNames.remove(e.name);
                             result!.files.remove(e);
                           });
@@ -434,6 +421,14 @@ class _AddFoundState extends State<AddFound> {
                               return ElevatedButton(
                                   onPressed: ()async{
                                     if (_formKey.currentState!.validate()){
+                                      for(var i=0;i<byteData.length;i++) {
+                                        multipartfile.add(MultipartFile.fromBytes(
+                                        'photo',
+                                        byteData[i],
+                                        filename: fileNames[i],
+                                        contentType: MediaType("image",fileNames[i].split(".").last),
+                                      ));
+                                      }
                                       await runMutation({
                                         "itemInput": {
                                           "name": nameController.text,

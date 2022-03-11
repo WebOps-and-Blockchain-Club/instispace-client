@@ -34,11 +34,12 @@ class _AddLostState extends State<AddLost> {
   TextEditingController locationController =TextEditingController();
   TextEditingController contactController =TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     String selectedImage = fileNames.isEmpty? "Please select images": fileNames.toString();
     initializeDateFormatting('az');
-    final _formKey = GlobalKey<FormState>();
 
     //UI
     return Scaffold(
@@ -293,13 +294,6 @@ class _AddLostState extends State<AddLost> {
                                   for (var i=0;i<result!.files.length;i++){
                                     fileNames.add(result!.files[i].name);
                                     byteData.add(result!.files[i].bytes);
-                                    List extention= result!.files[i].name.split(".");
-                                    multipartfile.add(MultipartFile.fromBytes(
-                                      'photo',
-                                      byteData[i],
-                                      filename: fileNames[i],
-                                      contentType: MediaType("image",extention.last),
-                                    ));
                                   }
                                 });
                               }
@@ -326,14 +320,6 @@ class _AddLostState extends State<AddLost> {
                         children: result!.files.map((e) => InkWell(
                           onLongPress: (){
                             setState(() {
-                              multipartfile.remove(
-                                  MultipartFile.fromBytes(
-                                    'photo',
-                                    e.bytes as List<int>,
-                                    filename: e.name,
-                                    contentType: MediaType("image",e.name.split(".").last),
-                                  )
-                              );
                               byteData.remove(e.bytes);
                               fileNames.remove(e.name);
                               result!.files.remove(e);
@@ -427,6 +413,14 @@ class _AddLostState extends State<AddLost> {
                                       print("result:$multipartfile");
                                       // print("contact:${contactController.text}");
                                       if (_formKey.currentState!.validate()){
+                                        for(var i=0;i<byteData.length;i++) {
+                                          multipartfile.add(MultipartFile.fromBytes(
+                                            'photo',
+                                            byteData[i],
+                                            filename: fileNames[i],
+                                            contentType: MediaType("image",fileNames[i].split(".").last),
+                                          ));
+                                        }
                                         await runMutation({
                                           "itemInput": {
                                             "name": nameController.text,
@@ -467,18 +461,6 @@ class _AddLostState extends State<AddLost> {
         ],
       )
     );
-  }
-
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-
-    return dateTimeFormat.format(localDateTime);
   }
 }
 

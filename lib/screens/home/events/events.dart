@@ -62,6 +62,7 @@ class _HomeState extends State<EventsHome> {
   ///Controllers
   TextEditingController searchController = TextEditingController();
   ScrollController scrollController =ScrollController();
+  ScrollController scrollController1 =ScrollController();
 
 
   ///Keys
@@ -184,8 +185,7 @@ class _HomeState extends State<EventsHome> {
                 {imageUrls=eventList[i]["photo"].split(" AND ");}
                 posts.add(eventsPost(
                   createdById: eventList[i]["createdBy"]["id"],
-                  // createdByName: eventList[i]["name"],
-                  createdByName: '',
+                  createdByName: eventList[i]["createdBy"]["name"],
                   linkName: eventList[i]["linkName"],
                   location: eventList[i]["location"],
                   title: eventList[i]["title"],
@@ -231,57 +231,58 @@ class _HomeState extends State<EventsHome> {
                 backgroundColor: const Color(0xFFF7F7F7),
                 floatingActionButton: _getFAB(refetch),
                 body: SafeArea(
-                  child: ListView(
-                    controller: scrollController,
-                    children: [
+                  child: RefreshIndicator(
+                    onRefresh: () {
+                      return refetch!();
+                    },
+                    color: const Color(0xFF2B2E35),
+                    child: ListView(
+                      controller: scrollController,
+                      children: [
 
-                      ///Heading
-                      PageTitle('Events',context),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height*0.06,
-                        width: MediaQuery.of(context).size.width*0.9,
+                        ///Heading
+                        PageTitle('Events',context),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height*0.06,
+                          width: MediaQuery.of(context).size.width*0.9,
 
-                        ///Calling search bar + filter button
-                        child: Search(
-                            search: search,
-                            refetch: refetch,
-                            ScaffoldKey: ScaffoldKey,
-                            page: 'events',
-                            widget: Filters(refetch: refetch,
-                              mostLikeValues: mostlikesvalue,
-                              isStarred: isStarred,
-                              filterSettings: filterSettings,
-                              selectedFilterIds: selectedFilterIds,
-                              page: 'events', callback: (bool val) { setState(() {
-                                isStarred= val;
+                          ///Calling search bar + filter button
+                          child: Search(
+                              search: search,
+                              refetch: refetch,
+                              ScaffoldKey: ScaffoldKey,
+                              page: 'events',
+                              widget: Filters(refetch: refetch,
+                                mostLikeValues: mostlikesvalue,
+                                isStarred: isStarred,
+                                filterSettings: filterSettings,
+                                selectedFilterIds: selectedFilterIds,
+                                page: 'events', callback: (bool val) { setState(() {
+                                  isStarred= val;
+                                });},
+                              ), callback: (val) {setState(() {
+                            search = val;
                               });},
-                            ), callback: (val) {setState(() {
-                          search = val;
-                            });},
+                          ),
                         ),
-                      ),
 
-                      ///Listing all the events
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: RefreshIndicator(
-                          onRefresh: () {
-                            return refetch!();
-                          },
-                          color: const Color(0xFF2B2E35),
+                        ///Listing all the events
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: ListView(
+                            controller: scrollController1,
                             shrinkWrap: true,
                             children: posts
-                            .map((post) => EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid,userRole, post.createdById))
+                            .map((post) => EventsCard(post: post, refetch:refetch, userRole: userRole, userId: userid,))
                             .toList(),
-                    ),
-                        ),
                       ),
-                      if(result.isLoading)
-                        const Center(
-                            child: CircularProgressIndicator(color: Colors.yellow,)
                         ),
-                    ],
+                        if(result.isLoading)
+                          const Center(
+                              child: CircularProgressIndicator(color: Colors.yellow,)
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -301,7 +302,7 @@ class _HomeState extends State<EventsHome> {
                 builder: (BuildContext context)=> AddPostEvents(refetchPosts: refetch,)));
       },
         child: const Icon(Icons.add),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.red,
       );
     }
     else {

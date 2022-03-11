@@ -40,6 +40,7 @@ class _LNFListingState extends State<LNFListing> {
 
   ///Controllers
   TextEditingController searchController = TextEditingController();
+  ScrollController scrollController1 = ScrollController();
   ScrollController scrollController = ScrollController();
 
   ///Keys
@@ -202,6 +203,7 @@ class _LNFListingState extends State<LNFListing> {
                 time: data[i]["time"],
                 contact: contact,
                 createdId: data[i]["user"]["id"],
+                createdName: data[i]["user"]["name"],
                 imageUrl: imageUrls,
               ));
             }
@@ -275,77 +277,73 @@ class _LNFListingState extends State<LNFListing> {
                 ),
 
                 body: SafeArea(
-                  child: ListView(children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ///Heading
-                        PageTitle("Lost & Found", context),
+                  child: RefreshIndicator(
+                    color: const Color(0xFF2B2E35),
+                    onRefresh: () {
+                      return refetch!();
+                    },
+                    child: ListView(
+                      controller: scrollController,
+                        children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ///Heading
+                          PageTitle("Lost & Found", context),
 
-                        ///Search bar and filter button
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                          child: Search(
-                              search: search,
-                              refetch: refetch,
-                              ScaffoldKey: ScaffoldKey,
-                              page: 'L&F',
-                              callback: (val) {
-                                setState(() {
-                                  search = val;
-                                });
-                              },
-                              widget: Filters(isStarred: false,
-                                filterSettings: filterSettings,
-                                selectedFilterIds: [],
-                                mostLikeValues: false,
+                          ///Search bar and filter button
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                            child: Search(
+                                search: search,
                                 refetch: refetch,
+                                ScaffoldKey: ScaffoldKey,
                                 page: 'L&F',
-                                callback: (val) {},)),
-                        ),
+                                callback: (val) {
+                                  setState(() {
+                                    search = val;
+                                  });
+                                },
+                                widget: Filters(isStarred: false,
+                                  filterSettings: filterSettings,
+                                  selectedFilterIds: [],
+                                  mostLikeValues: false,
+                                  refetch: refetch,
+                                  page: 'L&F',
+                                  callback: (val) {},)),
+                          ),
 
-                        ///Listing of lost and found cards
-                        SizedBox(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.68,
-                          width: 400,
-                          child: RefreshIndicator(
-                            color: const Color(0xFF2B2E35),
-                            onRefresh: () {
-                              return refetch!();
-                            },
-                            child: ListView(
-                              controller: scrollController,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      12, 5, 12, 0),
-                                  child: Column(
-                                    children: Posts.map((post) =>
-                                        LFCard(
-                                          refetchPosts: refetch,
-                                          userId: userId,
-                                          post: post,
-                                        )).toList(),
+                          ///Listing of lost and found cards
+                          ListView(
+                            shrinkWrap: true,
+                            controller: scrollController1,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    12, 5, 12, 0),
+                                child: Column(
+                                  children: Posts.map((post) =>
+                                      LFCard(
+                                        refetchPosts: refetch,
+                                        userId: userId,
+                                        post: post,
+                                      )).toList(),
+                                ),
+                              ),
+                              if (result.isLoading)
+                                Center(
+                                  child: LoadingAnimationWidget
+                                      .staggeredDotsWave(
+                                      color: Colors.black54,
+                                      size: 30
                                   ),
                                 ),
-                                if (result.isLoading)
-                                  Center(
-                                    child: LoadingAnimationWidget
-                                        .staggeredDotsWave(
-                                        color: Colors.black54,
-                                        size: 30
-                                    ),
-                                  ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ]),
+                        ],
+                      ),
+                    ]),
+                  ),
                 ));
           }
         });

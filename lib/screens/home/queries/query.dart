@@ -34,6 +34,7 @@ class _QueryHomeState extends State<QueryHome> {
   ///Controllers
   TextEditingController searchController = TextEditingController();
   ScrollController scrollController =ScrollController();
+  ScrollController scrollController1 =ScrollController();
 
   ///Keys
   var ScaffoldKey = GlobalKey<ScaffoldState>();
@@ -113,6 +114,9 @@ class _QueryHomeState extends State<QueryHome> {
           total = result.data!["getMyQuerys"]["total"];
           posts.clear();
           for (var i = 0; i < data.length; i++) {
+            List<String> imageUrls=[];
+            if(data[i]["photo"]!=null && data[i]["photo"]!="")
+            {imageUrls=data[i]["photo"].split(" AND ");}
             createdAt = DateTime.parse(data[i]["createdAt"]);
             posts.add(queryClass(id: data[i]["id"],
               title: data[i]["title"],
@@ -120,7 +124,7 @@ class _QueryHomeState extends State<QueryHome> {
               content: data[i]["content"],
               createdByName: data[i]["createdBy"]["name"],
               createdByRoll: data[i]["createdBy"]["roll"],
-              photo: data[i]["photo"] != null ? data[i]["photo"] : "",
+              imgUrl: imageUrls,
               isLiked: data[i]["isLiked"],
               createdById: data[i]["createdBy"]["id"],));
           }
@@ -170,67 +174,74 @@ class _QueryHomeState extends State<QueryHome> {
             backgroundColor: const Color(0xFFDFDFDF),
 
             body: SafeArea(
-                child: ListView(
-                    children: [ Column(
-                        children: [
-                          /// Heading
-                          PageTitle('Queries', context),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ///Search bar and filter button
-                              Search(
-                                  search: search,
-                                  refetch: refetch,
-                                  ScaffoldKey: ScaffoldKey,
-                                  page: 'queries',
-                                  widget: Filters(filterSettings: const {},
+                child: RefreshIndicator(
+                  onRefresh: () {
+                    return refetch!();
+                  },
+                  color: const Color(0xFF2B2E35),
+                  child: ListView(
+                    controller: scrollController,
+                      children: [ Column(
+                          children: [
+                            /// Heading
+                            PageTitle('Queries', context),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ///Search bar and filter button
+                                Search(
+                                    search: search,
                                     refetch: refetch,
-                                    selectedFilterIds: const [],
-                                    isStarred: false,
-                                    mostLikeValues: false,
+                                    ScaffoldKey: ScaffoldKey,
                                     page: 'queries',
-                                    callback: (bool val) {},
-                                  ),
-                                  callback: (val) =>
-                                      setState(() {
-                                        search = val;
-                                      })
-                              ),
+                                    widget: Filters(filterSettings: const {},
+                                      refetch: refetch,
+                                      selectedFilterIds: const [],
+                                      isStarred: false,
+                                      mostLikeValues: false,
+                                      page: 'queries',
+                                      callback: (bool val) {},
+                                    ),
+                                    callback: (val) =>
+                                        setState(() {
+                                          search = val;
+                                        })
+                                ),
 
-                              ///Listing queries
-                              SizedBox(
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.70,
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.550,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      10, 8, 10, 10),
-                                  child: RefreshIndicator(
-                                    color: const Color(0xFF2B2E35),
-                                    onRefresh: () {
-                                      return refetch!();
-                                    },
-                                    child: ListView(
-                                      controller: scrollController,
-                                      children: posts.map((e) => QueryCard(
-                                        post: e,
-                                        refetchQuery: refetch,
-                                        postCreated: createdAt,)).toList(),
+                                ///Listing queries
+                                SizedBox(
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.70,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.550,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10, 8, 10, 10),
+                                    child: RefreshIndicator(
+                                      color: const Color(0xFF2B2E35),
+                                      onRefresh: () {
+                                        return refetch!();
+                                      },
+                                      child: ListView(
+                                        controller: scrollController1,
+                                        children: posts.map((e) => QueryCard(
+                                          post: e,
+                                          refetchQuery: refetch,
+                                          postCreated: createdAt,)).toList(),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          )
-                        ]
-                    ),
-                    ]
+                              ],
+                            )
+                          ]
+                      ),
+                      ]
+                  ),
                 )
             ),
           );

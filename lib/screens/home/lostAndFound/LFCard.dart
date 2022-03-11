@@ -176,7 +176,7 @@ class LFCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("At ${post.location} & ${time}",
+                      Text("At ${post.location} on ${time}",
                       style: const TextStyle(
                         fontSize: 16.5,
                         fontWeight: FontWeight.bold,
@@ -195,7 +195,7 @@ class LFCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                         child: Text(
-                          '$category by Anshul Mehta',
+                          '$category by ${post.createdName}',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,

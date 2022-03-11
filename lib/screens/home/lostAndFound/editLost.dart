@@ -26,7 +26,7 @@ class _EditLostState extends State<EditLost> {
   String editItem = LnFQuery().editItem;
 
   ///Variables
-  var dateTime=DateTime.now().toString();
+  var dateTime=DateTime.now();
   List byteData=[];
   List multipartfile=[];
   List fileNames=[];
@@ -182,7 +182,7 @@ class _EditLostState extends State<EditLost> {
                       dateLabelText: 'Date',
                       timeLabelText: "Hour",
                       onChanged: (val) => {
-                        dateTime= dateTimeString(val),
+                        dateTime= DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
                       },
                       validator: (val) {
                         print(val);
@@ -439,7 +439,7 @@ class _EditLostState extends State<EditLost> {
                                       "itemInput": {
                                         "name": nameController.text,
                                         "location":locationController.text,
-                                        "time":dateTime,
+                                        "time":"$dateTime",
                                         "category": "LOST",
                                         "contact":contactController.text,
                                       },
@@ -475,16 +475,6 @@ class _EditLostState extends State<EditLost> {
         ],
       ),
     );
-  }
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-    return dateTimeFormat.format(localDateTime);
   }
 }
 

@@ -1,14 +1,12 @@
 import 'package:client/models/tag.dart';
-import 'package:client/models/commentclass.dart';
 
 class NetOpPost {
   String title;
   String description;
-  String? imgUrl;
+  List<String> imgUrl;
   String? linkToAction;
   int likeCount;
   List<Tag> tags;
-  List<Comment> comments;
   String endTime;
   String id;
   String? attachment;
@@ -25,7 +23,6 @@ class NetOpPost {
   required this.likeCount,
   required this.linkToAction,
   required this.tags,
-    required this.comments,
     required this.endTime,
     required this.createdByName,
     required this.id,

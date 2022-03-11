@@ -1,7 +1,7 @@
 class queryClass{
   String id;
   String title;
-  String photo;
+  List<String> imgUrl;
   String content;
   int likeCount;
   String createdByName;
@@ -9,5 +9,5 @@ class queryClass{
   bool isLiked;
   String createdById;
 
-  queryClass({required this.id,required this.title,required this.likeCount,required this.content, required this.createdByName, required this.createdByRoll,required this.photo,required this.isLiked, required this.createdById});
+  queryClass({required this.id,required this.title,required this.likeCount,required this.content, required this.createdByName, required this.createdByRoll,required this.imgUrl,required this.isLiked, required this.createdById});
 }

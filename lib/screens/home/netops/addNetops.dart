@@ -46,7 +46,6 @@ class _AddPostState extends State<AddPost> {
   List multipartfileAttachment=[];
   List AttachmentNames = ['Please select attachments'];
   FilePickerResult? Result;
-  PlatformFile? file=null;
 
   ///Controllers
   TextEditingController descriptionController =TextEditingController();
@@ -183,15 +182,14 @@ class _AddPostState extends State<AddPost> {
                               height: 35.0,
                               child: TextFormField(
                                 controller: descriptionController,
-
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(100.0),
                                   ),
-
                                   hintText: 'Enter description',
                                 ),
+                                maxLines: null,
                                 keyboardType: TextInputType.multiline,
                                 validator: (value){
                                   if (value == null || value.isEmpty) {

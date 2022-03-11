@@ -4,19 +4,18 @@ ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
-MERGED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-46:12
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-15:12
-MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-17:12
-MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-28:12
-MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-14:12
-MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-9:12
-MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-19:12
-MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-11:12
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:2:1-46:12
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:2:1-15:12
+MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:2:1-17:12
+MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\release\AndroidManifest.xml:2:1-7:12
+MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:2:1-28:12
+MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:2:1-14:12
+MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\release\AndroidManifest.xml:2:1-7:12
+MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\release\AndroidManifest.xml:2:1-9:12
+MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\release\AndroidManifest.xml:2:1-7:12
+MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:2:1-19:12
+MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\release\AndroidManifest.xml:2:1-7:12
+MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\release\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\04a46e553de0f1e2bf559f52aa9ab6ce\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\30853bb5176608249f59a2a5c94c091d\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:17:1-33:12
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:17:1-58:12
@@ -59,29 +58,27 @@ MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\91823\.gradle\ca
 MERGED from [androidx.print:print:1.0.0] C:\Users\91823\.gradle\caches\transforms-3\2ea78b0a8b75c116122b13508ba67599\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.2.3] C:\Users\91823\.gradle\caches\transforms-3\069c358c175b1287920cf4796f760d10\transformed\jetified-threetenabp-1.2.3\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\91823\.gradle\caches\transforms-3\38726b32f8b271c46ce4b9b21d552635\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:17:1-24:12
-INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
+INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
+INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
 	package
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:2:5-33
 		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
-		INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
-		INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:1-50:12
-		INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:1:11-69
 uses-permission#android.permission.INTERNET
 ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:3:6-67
-MERGED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:3:6-67
-MERGED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:3:6-67
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-67
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-67
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:7:5-67
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:7:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\91823\.gradle\caches\transforms-3\4a22d2eeaea500b754a377733423ff84\transformed\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:26:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\91823\.gradle\caches\transforms-3\4a22d2eeaea500b754a377733423ff84\transformed\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:26:5-67
 MERGED from [com.google.firebase:firebase-installations:17.0.0] C:\Users\91823\.gradle\caches\transforms-3\e23ffb982554d048f8f4c0ca1c75f67b\transformed\jetified-firebase-installations-17.0.0\AndroidManifest.xml:11:5-67
@@ -100,16 +97,16 @@ ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:5:6-73
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:5:23-70
 application
 ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:6:5-43:19
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-44:19
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-44:19
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-13:19
-MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:12:5-26:19
-MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:12:5-26:19
-MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-12:19
-MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-12:19
-MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-17:19
-MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-17:19
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:11:5-44:19
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:11:5-44:19
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:7:5-13:19
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:7:5-13:19
+MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:12:5-26:19
+MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:12:5-26:19
+MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:7:5-12:19
+MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:7:5-12:19
+MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:7:5-17:19
+MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:7:5-17:19
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\30853bb5176608249f59a2a5c94c091d\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:24:5-31:19
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\30853bb5176608249f59a2a5c94c091d\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:24:5-31:19
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:27:5-56:19
@@ -190,8 +187,8 @@ ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:40:9-42
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:41:13-44
 queries
 ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:44:5-49:15
-MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-15:15
-MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-15:15
+MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:9:5-15:15
+MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:9:5-15:15
 intent#action:name:android.intent.action.INSERT+data:mimeType:vnd.android.cursor.item/event
 ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:45:9-48:18
 action#android.intent.action.INSERT
@@ -206,30 +203,30 @@ uses-sdk
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\debug\AndroidManifest.xml:6:5-9:55
-MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\debug\AndroidManifest.xml:6:5-9:55
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] D:\webops\instiSpace\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] D:\webops\instiSpace\build\path_provider_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] D:\webops\instiSpace\build\shared_preferences_android\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:add_2_calendar] D:\webops\instiSpace\build\add_2_calendar\intermediates\library_manifest\release\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\release\AndroidManifest.xml:6:5-9:55
+MERGED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\release\AndroidManifest.xml:6:5-9:55
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\04a46e553de0f1e2bf559f52aa9ab6ce\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:19:5-21:41
 MERGED from [androidx.window:window-java:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\04a46e553de0f1e2bf559f52aa9ab6ce\transformed\jetified-window-java-1.0.0-beta04\AndroidManifest.xml:19:5-21:41
 MERGED from [androidx.window:window:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\30853bb5176608249f59a2a5c94c091d\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:20:5-22:41
@@ -314,28 +311,30 @@ MERGED from [com.jakewharton.threetenabp:threetenabp:1.2.3] C:\Users\91823\.grad
 MERGED from [com.jakewharton.threetenabp:threetenabp:1.2.3] C:\Users\91823\.gradle\caches\transforms-3\069c358c175b1287920cf4796f760d10\transformed\jetified-threetenabp-1.2.3\AndroidManifest.xml:5:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\91823\.gradle\caches\transforms-3\38726b32f8b271c46ce4b9b21d552635\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] C:\Users\91823\.gradle\caches\transforms-3\38726b32f8b271c46ce4b9b21d552635\transformed\jetified-annotation-experimental-1.1.0\AndroidManifest.xml:20:5-22:41
-INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
-INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
+INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 	tools:overrideLibrary
-		ADDED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\debug\AndroidManifest.xml:9:9-52
+		ADDED from [:flutter_image_compress] D:\webops\instiSpace\build\flutter_image_compress\intermediates\library_manifest\release\AndroidManifest.xml:9:9-52
 	android:targetSdkVersion
 		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
-		INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
-		INJECTED from D:\webops\instiSpace\android\app\src\debug\AndroidManifest.xml
+		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.WAKE_LOCK
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-68
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:8:5-68
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:23:5-68
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:23:5-68
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.0.0] C:\Users\91823\.gradle\caches\transforms-3\804c6494788c74a156572e32f80c1545\transformed\jetified-play-services-cloud-messaging-17.0.0\AndroidManifest.xml:9:5-68
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.0.0] C:\Users\91823\.gradle\caches\transforms-3\804c6494788c74a156572e32f80c1545\transformed\jetified-play-services-cloud-messaging-17.0.0\AndroidManifest.xml:9:5-68
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-65
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:8:22-65
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-79
-MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-79
-MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-79
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:9:5-79
+MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\release\AndroidManifest.xml:7:5-79
+MERGED from [:connectivity_plus] D:\webops\instiSpace\build\connectivity_plus\intermediates\library_manifest\release\AndroidManifest.xml:7:5-79
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:22:5-79
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:22:5-79
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.0.0] C:\Users\91823\.gradle\caches\transforms-3\4a22d2eeaea500b754a377733423ff84\transformed\jetified-transport-backend-cct-3.0.0\AndroidManifest.xml:25:5-79
@@ -347,45 +346,45 @@ MERGED from [com.google.android.gms:play-services-cloud-messaging:17.0.0] C:\Use
 MERGED from [com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\91823\.gradle\caches\transforms-3\d5f1b84cb76f9c8cb34f3edcfefb96e1\transformed\jetified-transport-runtime-3.0.0\AndroidManifest.xml:22:5-79
 MERGED from [com.google.android.datatransport:transport-runtime:3.0.0] C:\Users\91823\.gradle\caches\transforms-3\d5f1b84cb76f9c8cb34f3edcfefb96e1\transformed\jetified-transport-runtime-3.0.0\AndroidManifest.xml:22:5-79
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:9:22-76
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:9:22-76
 service#io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:12:9-15:72
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:12:9-15:72
 	android:exported
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-37
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:14:13-37
 	android:permission
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:15:13-69
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:15:13-69
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-107
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:13:13-107
 service#io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:16:9-22:19
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:16:9-22:19
 	android:exported
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:18:13-37
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:18:13-37
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:17:13-97
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:17:13-97
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:19:13-21:29
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:19:13-21:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:17-78
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:20:17-78
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:20:25-75
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:20:25-75
 receiver#io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:24:9-31:20
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:24:9-31:20
 	android:exported
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:26:13-36
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:26:13-36
 	android:permission
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:27:13-73
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:27:13-73
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:25:13-98
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:25:13-98
 intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:28:13-30:29
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:28:13-30:29
 action#com.google.android.c2dm.intent.RECEIVE
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:17-81
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:29:17-81
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:29:25-78
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:29:25-78
 service#com.google.firebase.components.ComponentDiscoveryService
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:33:9-37:19
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
-MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-12:19
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:33:9-37:19
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:8:9-12:19
+MERGED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:8:9-12:19
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:49:9-55:19
 MERGED from [com.google.firebase:firebase-messaging:23.0.0] C:\Users\91823\.gradle\caches\transforms-3\0c9852180b8d2a301284b28ed97ab0fc\transformed\jetified-firebase-messaging-23.0.0\AndroidManifest.xml:49:9-55:19
 MERGED from [com.google.firebase:firebase-datatransport:18.0.0] C:\Users\91823\.gradle\caches\transforms-3\7e8477106e04af143016351b8c39187f\transformed\jetified-firebase-datatransport-18.0.0\AndroidManifest.xml:25:9-31:19
@@ -401,109 +400,109 @@ MERGED from [com.google.firebase:firebase-common:20.0.0] C:\Users\91823\.gradle\
 	android:directBootAware
 		ADDED from [com.google.firebase:firebase-common:20.0.0] C:\Users\91823\.gradle\caches\transforms-3\4be0471b9896bd1a1c4ffbbc2458000c\transformed\jetified-firebase-common-20.0.0\AndroidManifest.xml:35:13-43
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:33:18-89
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:33:18-89
 meta-data#com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:34:13-36:85
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:34:13-36:85
 	android:value
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:36:17-82
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:36:17-82
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:35:17-128
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:35:17-128
 provider#io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider
-ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:39:9-43:38
+ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:39:9-43:38
 	android:authorities
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:41:13-88
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:41:13-88
 	android:exported
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:42:13-37
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:42:13-37
 	android:initOrder
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:43:13-35
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:43:13-35
 	android:name
-		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\debug\AndroidManifest.xml:40:13-102
+		ADDED from [:firebase_messaging] D:\webops\instiSpace\build\firebase_messaging\intermediates\library_manifest\release\AndroidManifest.xml:40:13-102
 meta-data#com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar
-ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-11:85
+ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:9:13-11:85
 	android:value
-		ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:11:17-82
+		ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:11:17-82
 	android:name
-		ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\debug\AndroidManifest.xml:10:17-124
+		ADDED from [:firebase_core] D:\webops\instiSpace\build\firebase_core\intermediates\library_manifest\release\AndroidManifest.xml:10:17-124
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-80
+ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:7:5-80
 	android:name
-		ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-77
+		ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:7:22-77
 intent#action:name:android.intent.action.GET_CONTENT+data:mimeType:*/*
-ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:9-14:18
+ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:10:9-14:18
 action#android.intent.action.GET_CONTENT
-ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-72
+ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:11:13-72
 	android:name
-		ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:21-69
+		ADDED from [:file_picker] D:\webops\instiSpace\build\file_picker\intermediates\library_manifest\release\AndroidManifest.xml:11:21-69
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-81
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:7:5-81
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-78
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:7:22-78
 uses-permission#android.permission.VIBRATE
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-66
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:8:5-66
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-63
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:8:22-63
 uses-permission#android.permission.USE_FULL_SCREEN_INTENT
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-81
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:9:5-81
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:9:22-78
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:9:22-78
 uses-permission#android.permission.SCHEDULE_EXACT_ALARM
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:10:5-79
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:10:5-79
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:10:22-76
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:10:22-76
 receiver#com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:13:9-15:40
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:13:9-15:40
 	android:exported
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:15:13-37
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:15:13-37
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-97
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:14:13-97
 receiver#com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:16:9-25:20
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:16:9-25:20
 	android:exported
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:18:13-37
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:18:13-37
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:17:13-101
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:17:13-101
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED+action:name:android.intent.action.QUICKBOOT_POWERON+action:name:com.htc.intent.action.QUICKBOOT_POWERON
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:19:13-24:29
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:19:13-24:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:20:17-79
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:20:17-79
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:20:25-76
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:20:25-76
 action#android.intent.action.MY_PACKAGE_REPLACED
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:21:17-84
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:21:17-84
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:21:25-81
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:21:25-81
 action#android.intent.action.QUICKBOOT_POWERON
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:22:17-82
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:22:17-82
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:22:25-79
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:22:25-79
 action#com.htc.intent.action.QUICKBOOT_POWERON
-ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:23:17-82
+ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:23:17-82
 	android:name
-		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\debug\AndroidManifest.xml:23:25-79
+		ADDED from [:flutter_local_notifications] D:\webops\instiSpace\build\flutter_local_notifications\intermediates\library_manifest\release\AndroidManifest.xml:23:25-79
 activity#io.flutter.plugins.urllauncher.WebViewActivity
-ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
+ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:8:9-11:74
 	android:exported
-		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
+		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:10:13-37
 	android:theme
-		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
+		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:11:13-71
 	android:name
-		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
+		ADDED from [:url_launcher_android] D:\webops\instiSpace\build\url_launcher_android\intermediates\library_manifest\release\AndroidManifest.xml:9:13-74
 provider#dev.fluttercommunity.plus.share.ShareFileProvider
-ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
+ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:8:9-16:20
 	android:grantUriPermissions
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:12:13-47
 	android:authorities
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-74
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:10:13-74
 	android:exported
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:11:13-37
 	android:name
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-77
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:9:13-77
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:68
+ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:13:13-15:68
 	android:resource
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-65
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:15:17-65
 	android:name
-		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+		ADDED from [:share_plus] D:\webops\instiSpace\build\share_plus\intermediates\library_manifest\release\AndroidManifest.xml:14:17-67
 uses-library#androidx.window.extensions
 ADDED from [androidx.window:window:1.0.0-beta04] C:\Users\91823\.gradle\caches\transforms-3\30853bb5176608249f59a2a5c94c091d\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
 	android:required

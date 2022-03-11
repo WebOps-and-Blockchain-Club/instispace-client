@@ -21,9 +21,6 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
 
-  ///GraphQL
-  String getMe = homeQuery().getMe;
-
   ///Variables
   String name = "";
   String hostel = "";
@@ -39,6 +36,7 @@ class _UserPageState extends State<UserPage> {
   void _sharedPreference()async{
     prefs = await SharedPreferences.getInstance();
     setState(() {
+      print("prefs in user page : $prefs");
       name = prefs!.getString('name')!;
       hostel = prefs!.getString('hostelName')!;
       roll = prefs!.getString("roll")!;
