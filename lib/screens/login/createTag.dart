@@ -146,34 +146,36 @@ class _CreateTagState extends State<CreateTag> {
                             size: 20,
                           ));
                     }
-                    return ElevatedButton(
-                      onPressed: () {
-                        if (_formkey.currentState!.validate()) {
-                          if (tagNameController.text.isNotEmpty && tagCategoryController.text.isNotEmpty) {
-                            runMutation({
-                              'tagInput': {
-                                "title": tagNameController.text,
-                                "category": tagCategoryController.text,
-                              }
-                            });
+                    return Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formkey.currentState!.validate()) {
+                            if (tagNameController.text.isNotEmpty && tagCategoryController.text.isNotEmpty) {
+                              runMutation({
+                                'tagInput': {
+                                  "title": tagNameController.text,
+                                  "category": tagCategoryController.text,
+                                }
+                              });
+                            }
                           }
-                        }
-                        },
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color(0xFF2B2E35),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24)
+                          },
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFF2B2E35),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: const Size(80, 35),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        minimumSize: const Size(80, 35),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.fromLTRB(15,5,15,5),
-                        child: Text('Submit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        child: const Padding(
+                          padding: EdgeInsets.fromLTRB(15,5,15,5),
+                          child: Text('Submit',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),

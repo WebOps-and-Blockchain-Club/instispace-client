@@ -1,23 +1,20 @@
-import 'package:client/screens/userInit/interest.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:client/screens/home/updateProfile/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:client/services/Auth.dart';
-import 'package:client/graphQL/auth.dart';
-import 'package:client/screens/userInit/dropDown.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../graphQL/auth.dart';
+import '../../../models/formErrormsgs.dart';
+import '../../../widgets/formTexts.dart';
+import '../../userInit/dropDown.dart';
 
-import '../../models/formErrormsgs.dart';
-import '../../widgets/formTexts.dart';
-
-class SignUp extends StatefulWidget {
-  final AuthService auth;
-  SignUp({required this.auth});
+class BasicInfo extends StatefulWidget {
+  const BasicInfo({Key? key}) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _BasicInfoState createState() => _BasicInfoState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _BasicInfoState extends State<BasicInfo> {
 
   ///GraphQL
   String getHostels = authQuery().getHostels;
@@ -33,9 +30,37 @@ class _SignUpState extends State<SignUp> {
   String emptyContactErr = "";
   String emptyHostelErr = '';
   bool validPhone = false;
+  String userName ="";
+  String hostelName ='';
+  String mobile = '';
+
+
+  @override
+  void initstate(){
+    super.initState();
+    _sharedPreference();
+  }
+
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    print("prefs home : $prefs");
+    setState(() {
+      userName = prefs!.getString('name')!;
+      hostelName = prefs!.getString('hostelName')!;
+      if(prefs!.getString('mobile') != null) {
+        mobile = prefs!.getString('mobile')!;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    nameController.text = userName;
+    print("Username : $userName");
+    print("textCOntroller : ${nameController.text}");
+
     return Query(
         options: QueryOptions(
           document: gql(getHostels),
@@ -60,7 +85,7 @@ class _SignUpState extends State<SignUp> {
           return Scaffold(
             appBar: AppBar(
               title: const Text(
-                "Sign Up",
+                "Edit Profile",
                 style: TextStyle(
                     color: Color(0xFFFFFFFF),
                     fontSize: 20,
@@ -159,63 +184,62 @@ class _SignUpState extends State<SignUp> {
 
                     const SizedBox(height: 30.0),
                     Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formkey.currentState!.validate()) {
-                              if(PhoneNumberController.text.isNotEmpty && isValidNumber("+91${PhoneNumberController.text}")) {
-                                setState(() {
-                                  validPhone = true;
-                                });
-                              }
-                              if(PhoneNumberController.text.isEmpty) {
-                                setState(() {
-                                  validPhone = true;
-                                });
-                              }
-                              if(_DropDownValue == "Select Hostel") {
-                                setState(() {
-                                  emptyHostelErr = "Please select your hostel";
-                                });
-                              }
-                              if(nameController.text.isNotEmpty) {
-                                setState(() {
-                                  emptyNameErr = "";
-                                });
-                              }
-                              if (nameController.text.isNotEmpty && _DropDownValue != "Select Hostel" && validPhone) {
-                                setState(() {
-                                  emptyNameErr = "";
-                                  emptyContactErr = "";
-                                });
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => InterestPage(
-                                      auth: widget.auth,
-                                      name: nameController.text,
-                                      phoneNumber: PhoneNumberController.text,
-                                      hostelName: _DropDownValue,
-                                    )));
-                              }
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formkey.currentState!.validate()) {
+                            if(PhoneNumberController.text.isNotEmpty && isValidNumber("+91${PhoneNumberController.text}")) {
+                              setState(() {
+                                validPhone = true;
+                              });
                             }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: const Color(0xFF2B2E35),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24)
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                            minimumSize: const Size(80, 35),
+                            if(PhoneNumberController.text.isEmpty) {
+                              setState(() {
+                                validPhone = true;
+                              });
+                            }
+                            if(_DropDownValue == "Select Hostel") {
+                              setState(() {
+                                emptyHostelErr = "Please select your hostel";
+                              });
+                            }
+                            if(nameController.text.isNotEmpty) {
+                              setState(() {
+                                emptyNameErr = "";
+                              });
+                            }
+                            if (nameController.text.isNotEmpty && _DropDownValue != "Select Hostel" && validPhone) {
+                              setState(() {
+                                emptyNameErr = "";
+                                emptyContactErr = "";
+                              });
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => EditInterests(
+                                    name: nameController.text,
+                                    phoneNumber: PhoneNumberController.text,
+                                    hostelName: _DropDownValue,
+                                  )));
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFF2B2E35),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.fromLTRB(15,5,15,5),
-                            child: Text('Select Interests',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          minimumSize: const Size(80, 35),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.fromLTRB(15,5,15,5),
+                          child: Text('Select Interests',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
+                      ),
                     ),
                   ],
                 ),
@@ -224,7 +248,6 @@ class _SignUpState extends State<SignUp> {
           );
         });
   }
-
   bool isValidNumber (String number) {
     return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(number);
   }

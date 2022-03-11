@@ -1,3 +1,6 @@
+import 'package:client/models/formErrormsgs.dart';
+import 'package:client/widgets/formTexts.dart';
+import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 
 import 'package:client/services/Auth.dart';
@@ -5,6 +8,7 @@ import 'package:client/screens/userInit/interestWrap.dart';
 import 'package:client/graphQL/auth.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/models/tag.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class InterestPage extends StatefulWidget {
   final AuthService auth;
@@ -30,36 +34,41 @@ class _InterestPageState extends State<InterestPage> {
   Map<String, List<Tag>> interest = {};
   Map<String, List<Tag>>? selectedInterest = {};
   List selected = [];
+  String interestsErr = "";
+
   @override
   Widget build(BuildContext context) {
+    print(widget.hostelName);
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Interests Page',
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),
-        ),
-        elevation: 0.0,
-        backgroundColor: Colors.deepPurpleAccent,
-      ),
-      // body: Query(
-      //     options: QueryOptions(
-      //       document: gql(getTags),
-      //     ),
-      body: Query(
+          appBar: AppBar(
+            title: const Text(
+              "Interests Page",
+              style: TextStyle(
+                  color: Color(0xFFFFFFFF),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
+            elevation: 0,
+            backgroundColor: const Color(0xFF2B2E35),
+          ),
+
+          backgroundColor: const Color(0xFFDFDFDF),
+
+          body: Query(
           options: QueryOptions(
             document: gql(getTags),
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             interest.clear();
-            selectedInterest!.clear();
-            selected.clear();
+            // selectedInterest!.clear();
+            // selected.clear();
             if (result.hasException) {
               return Text(result.exception.toString());
             }
             if (result.isLoading) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
@@ -71,66 +80,94 @@ class _InterestPageState extends State<InterestPage> {
                   category: result.data!["getTags"][i]["category"].toString(),
                   id: result.data!["getTags"][i]["id"].toString()));
             }
-            // print(result.data!["getTags"].length);
-            // print(result.data);
-            // print(interest);
-            return Column(
+            return ListView(
               children: [
-                Text("Please choose your interests"),
-                SizedBox(height: 15.0),
-                SizedBox(
-                    height: 400,
-                    width: 400,
-                    child: ListView(children: [
-                      interestWrap(
-                          selectedInterest: selectedInterest,
-                          interest: interest)
-                    ])),
-                Mutation(
-                    options: MutationOptions(
-                        document: gql(updateUser),
-                        onCompleted: (dynamic resultData) {}),
-                    builder: (
-                      RunMutation runMutation,
-                      QueryResult? result,
-                    ) {
-                      if (result!.hasException) {
-                        print(result.exception.toString());
-                      }
-                      if (result.isLoading) {
+
+                Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PageTitle("Please Select Interests", context),
+
+                  SizedBox(height: 15.0),
+
+                  interestWrap(
+                      selectedInterest: selectedInterest,
+                      interest: interest),
+
+                  errorMessages(interestsErr),
+
+                  Mutation(
+                      options: MutationOptions(
+                          document: gql(updateUser),
+                          onCompleted: (dynamic resultData) {}),
+                      builder: (
+                        RunMutation runMutation,
+                        QueryResult? result,
+                      ) {
+                        if (result!.hasException) {
+                          print(result.exception.toString());
+                        }
+                        if(result.isLoading){
+                          return Center(
+                              child: LoadingAnimationWidget.threeRotatingDots(
+                                color: const Color(0xFF2B2E35),
+                                size: 20,
+                              ));
+                        }
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                print("selectedInterests2 : $selectedInterest");
+                                selectedInterest!.forEach((key, value) {
+                                  for (var i = 0; i < value.length; i++) {
+                                    selected.add(value[i].id);
+                                  }
+                                });
+                                print("selected : $selected");
+                                if(selected.length < 3) {
+                                  setState(() {
+                                    interestsErr = "Please select at least 3 interests";
+                                  });
+                                }
+                                else {
+                                  runMutation({
+                                    'userInput': {
+                                      'name': widget.name,
+                                      'interest': selected,
+                                      'hostel': widget.hostelName,
+                                    }
+                                  });
+                                  print(
+                                      'name:${widget.name},interest:${selected},hostel:${widget.hostelName}');
+                                  widget.auth.setisNewUser(false);
+                                  Navigator.pop(context);
+                                }
+                              },
+                            style: ElevatedButton.styleFrom(
+                              primary: const Color(0xFF2B2E35),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24)
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                              minimumSize: const Size(80, 35),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(15,5,15,5),
+                              child: Text('Submit',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                         );
-                      }
-                      print(selectedInterest!.values.length);
-                      // print(selectedInterest!.values.length);
-                      // print(result.data);
-                      return ElevatedButton(
-                          onPressed: () {
-                            print("selectedInterests2 : $selectedInterest");
-                            selectedInterest!.forEach((key, value) {
-                              for (var i = 0; i < value.length; i++) {
-                                selected.add(value[i].id);
-                              }
-                            });
-                            print("selected : $selected");
-                            runMutation({
-                              'userInput': {
-                                'name': widget.name,
-                                'interest': selected,
-                                'hostel': widget.hostelName,
-                              }
-                            });
-                            print(
-                                'name:${widget.name},interest:${selected},hostel:${widget.hostelName}');
-                            widget.auth.setisNewUser(false);
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'submit',
-                          ));
-                    })
-              ],
+                      })
+                ],
+              ),
+            ]
             );
             // }
 
