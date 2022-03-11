@@ -3,6 +3,7 @@ import 'package:client/models/hostelProfile.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../graphQL/auth.dart';
 import '../../../../graphQL/home.dart';
@@ -33,10 +34,30 @@ class _UpdateContactState extends State<UpdateContact> {
   String emptyTypeErr = "";
   String emptyNameErr = "";
   String emptyContactErr = "";
+  String userRole = '';
+  String hostelName = '';
 
   TextEditingController nameController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController contactController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _sharedPreference();
+  }
+
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    print("prefs home : $prefs");
+    setState(() {
+      userRole = prefs!.getString('userRole')!;
+      if(userRole == "HOSTEL_SEC") {
+        hostelName = prefs!.getString('hostelName')!;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,12 +107,49 @@ class _UpdateContactState extends State<UpdateContact> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FormText("Select Hostel"),
-                  SizedBox(height: 10.0),
-                  dropDown(
-                      Hostels: Hostels.keys.toList(),
-                      dropDownValue: _DropDownValue,
-                      callback: (val) => _DropDownValue = val),
+
+                  // if(userRole != 'HOSTEL_SEC')
+                  // FormText("Select Hostel"),
+                  // SizedBox(height: 10.0),
+                  // if(userRole != 'HOSTEL_SEC')
+                  // dropDown(
+                  //     Hostels: Hostels.keys.toList(),
+                  //     dropDownValue: _DropDownValue,
+                  //     callback: (val) => _DropDownValue = val),
+                  //
+                  // if(userRole == "HOSTEL_SEC")
+                  //   Padding(
+                  //     padding: const EdgeInsets.all(15),
+                  //     child: SizedBox(
+                  //       width: MediaQuery.of(context).size.width*0.7,
+                  //       child: ElevatedButton(
+                  //         onPressed: () {},
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.fromLTRB(8,2,8,2),
+                  //           child: Text(
+                  //             hostelName,
+                  //             style: const TextStyle(
+                  //               color: Color(0xFF2B2E35),
+                  //               fontSize: 1,
+                  //               fontWeight: FontWeight.bold,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         style: ElevatedButton.styleFrom(
+                  //             primary: const Color(0xFFDFDFDF),
+                  //             shape: RoundedRectangleBorder(
+                  //                 borderRadius: BorderRadius.circular(15)
+                  //             ),
+                  //             // side: BorderSide(color: Color(0xFF2B2E35)),
+                  //             padding: const EdgeInsets.symmetric(
+                  //                 vertical: 2,
+                  //                 horizontal: 6),
+                  //             minimumSize: const Size(35, 30)
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+
                   FormText("Post"),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),

@@ -303,24 +303,24 @@ class _HostelcontactsState extends State<Hostelcontacts> {
         );
       }
       if (userRole == "USER") {
-    hostelName = result.data!["getMe"]["hostel"]["name"];
+        hostelName = result.data!["getMe"]["hostel"]["name"];
 
-    if (result.data!["getMe"]["hostel"]["contacts"] != null ||
-    result.data!["getMe"]["hostel"]["contacts"].isNotEmpty) {
-    contacts.clear();
-    for (var i = 0; i <
-    result.data!["getMe"]["hostel"]["contacts"].length; i++) {
-    contacts.add(Contacts(
-    name: result.data!["getMe"]["hostel"]["contacts"][i]["name"],
-    type: result.data!["getMe"]["hostel"]["contacts"][i]["type"],
-    contact: result.data!["getMe"]["hostel"]["contacts"][i]["contact"],
-    id: result.data!["getMe"]["hostel"]["contacts"][i]["id"],
-      hostel: result.data!["getMe"]["hostel"],
-    ),
-    );
-    }
-    }
-    }
+        if (result.data!["getMe"]["hostel"]["contacts"] != null ||
+            result.data!["getMe"]["hostel"]["contacts"].isNotEmpty) {
+          contacts.clear();
+          for (var i = 0; i <
+              result.data!["getMe"]["hostel"]["contacts"].length; i++) {
+            contacts.add(Contacts(
+              name: result.data!["getMe"]["hostel"]["contacts"][i]["name"],
+              type: result.data!["getMe"]["hostel"]["contacts"][i]["type"],
+              contact: result.data!["getMe"]["hostel"]["contacts"][i]["contact"],
+              id: result.data!["getMe"]["hostel"]["contacts"][i]["id"],
+              hostel: result.data!["getMe"]["hostel"],
+            ),
+            );
+          }
+        }
+      }
         return Scaffold(
           backgroundColor: const Color(0xFFDFDFDF),
           body: RefreshIndicator(
@@ -418,6 +418,7 @@ class _HostelcontactsState extends State<Hostelcontacts> {
               ],
             ),
           ),
+          floatingActionButton: _getFAB(refetch),
         );
       }
     );

@@ -75,7 +75,6 @@ class _HostelAmenitiesState extends State<HostelAmenities> {
 
       userRole = result.data!["getMe"]["role"];
 
-      if(userRole == "USER") {
         hostelName = result.data!["getMe"]["hostel"]["name"];
 
         ///If no amenities are there
@@ -120,7 +119,6 @@ class _HostelAmenitiesState extends State<HostelAmenities> {
             ));
           }
         }
-      }
 
       if(userRole == "ADMIN" || userRole == "HAS"){
         return Query(
@@ -360,6 +358,7 @@ class _HostelAmenitiesState extends State<HostelAmenities> {
                 ],
               ),
             ),
+            floatingActionButton: _getFAB(refetch),
           );
     });
   }

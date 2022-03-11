@@ -13,7 +13,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:client/models/formErrormsgs.dart';
 import 'package:client/models/hostelclass.dart';
-
 import '../../../../widgets/formTexts.dart';
 
 class AddAnnouncements extends StatefulWidget {
@@ -68,6 +67,7 @@ class _AddAnnouncementsState extends State<AddAnnouncements> {
     descriptionController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
