@@ -36,6 +36,7 @@ class _LogInState extends State<LogIn> {
   String invalidLogin = "";
   String userName = "";
   bool valid = false;
+  bool passwordVisible = true;
   String login=authQuery().login;
   late String fcmToken;
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -96,7 +97,7 @@ class _LogInState extends State<LogIn> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 15, 20, 5),
                         child: SizedBox(
-                          height: 35,
+                          height: 45,
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,0,0),
                             child: TextFormField(
@@ -106,9 +107,14 @@ class _LogInState extends State<LogIn> {
                                   borderSide: const BorderSide(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(100.0),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: Color(0xFF2B2E35)),
+                                  borderRadius: BorderRadius.circular(100.0)
+                                ),
                                 hintText: 'Enter your Username',
                               ),
                               controller: usernameController,
+                              cursorColor: Color(0xFF2B2E35),
                               validator: (val) {
                                 if(val == null || val.isEmpty) {
                                   setState(() {
@@ -137,18 +143,39 @@ class _LogInState extends State<LogIn> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 15, 20, 5),
                         child: SizedBox(
-                          height: 35,
+                          height: 45,
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0,0,0,0),
                             child: TextFormField(
+                              obscureText: passwordVisible,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
                                 border: OutlineInputBorder(
                                   borderSide: const BorderSide(color: Colors.grey),
                                   borderRadius: BorderRadius.circular(100.0),
                                 ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Color(0xFF2B2E35)),
+                                    borderRadius: BorderRadius.circular(100.0)
+                                ),
                                 hintText: 'Enter your password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    // Based on passwordVisible state choose the icon
+                                    passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Color(0xFF2B2E35),
+                                  ),
+                                  onPressed: () {
+                                    // Update the state i.e. toogle the state of passwordVisible variable
+                                    setState(() {
+                                      passwordVisible = !passwordVisible;
+                                    });
+                                  },
+                                ),
                               ),
+                              cursorColor: Color(0xFF2B2E35),
                               controller: passwordController,
                               validator: (val) {
                                 if(val == null || val.isEmpty) {
@@ -190,57 +217,6 @@ class _LogInState extends State<LogIn> {
                                 RunMutation runMutation,
                                 QueryResult? result,
                                 ) {
-
-                              // if(result!.hasException) {
-                              //   Column(
-                              //     children: [
-                              //       const Text("Invalid Login",style: TextStyle(color: Colors.red),),
-                              //       Padding(
-                              //         padding: const EdgeInsets.fromLTRB(0,25,0,0,),
-                              //         child: ElevatedButton(
-                              //           onPressed: () {
-                              //             if (_formKey.currentState!.validate()) {
-                              //               if (isValidEmail(usernameController.text) || isValidRoll(usernameController.text.toUpperCase())) {
-                              //                 setState(() {
-                              //                   valid = true;
-                              //                   emptyUsernameErr = "";
-                              //                   emptyPasswordErr = "";
-                              //                 });
-                              //               }
-                              //               if (usernameController.text.isNotEmpty && passwordController.text.isNotEmpty && valid) {
-                              //                 runMutation({
-                              //                   'loginInputs' :{
-                              //                     "roll": usernameController.text,
-                              //                     "pass": passwordController.text,
-                              //                   }
-                              //                 });
-                              //               }
-                              //             }
-                              //           },
-                              //           style: ElevatedButton.styleFrom(
-                              //             primary: const Color(0xFF2B2E35),
-                              //             shape: RoundedRectangleBorder(
-                              //                 borderRadius: BorderRadius.circular(24)
-                              //             ),
-                              //             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                              //             minimumSize: const Size(80, 35),
-                              //           ),
-                              //           child: const Padding(
-                              //             padding: EdgeInsets.fromLTRB(15,5,15,5),
-                              //             child: Text('Login',
-                              //               style: TextStyle(
-                              //                 color: Colors.white,
-                              //                 fontSize: 16,
-                              //                 fontWeight: FontWeight.bold,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //         ),
-                              //       )
-                              //     ],
-                              //   );
-                              // }
-                              // }
                               if(result!.isLoading){
                                 return const Center(
                                   child: CircularProgressIndicator(color: Color(0xFF2B2E35),),
