@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:client/graphQL/notification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -58,6 +59,15 @@ class _NotificationsState extends State<Notifications> {
   };
   @override
   Widget build(BuildContext context) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // if (message.notification != null) {
+        message.data.keys.map((key){
+          print("key : $key");
+          print("value : ${message.data[key]}");
+        }).toList();
+        // print('Message data: ${message.data}');
+      // }
+    });
     return Scaffold(
         appBar: AppBar(
           title: const Text("Notification setting"),

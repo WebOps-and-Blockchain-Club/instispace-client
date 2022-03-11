@@ -1,5 +1,4 @@
 import 'package:client/graphQL/auth.dart';
-import 'package:client/models/commentclass.dart';
 import 'package:client/screens/home/netops/addNetops.dart';
 import 'package:client/widgets/filters.dart';
 import 'package:client/widgets/search.dart';
@@ -38,11 +37,12 @@ class _Post_ListingState extends State<Post_Listing> {
   Map<Tag,bool> filterSettings={};
   List<String>selectedFilterIds=[];
   late int total;
-  int take=10;
+  int take= 10;
   var bytes;
 
   ///Controllers
   ScrollController scrollController =ScrollController();
+  ScrollController scrollController1 =ScrollController();
   TextEditingController reportController =TextEditingController();
   TextEditingController searchController = TextEditingController();
 
@@ -72,7 +72,7 @@ class _Post_ListingState extends State<Post_Listing> {
         builder:(QueryResult result, {fetchMore, refetch}){
           filterSettings.clear();
           if (result.hasException) {
-            return Text(result.exception.toString());
+             print(result.exception.toString());
           }
           if(result.isLoading){
             return Scaffold(
@@ -131,26 +131,32 @@ class _Post_ListingState extends State<Post_Listing> {
 
                 if (result.data!["getNetops"]["netopList"] == null || result.data!["getNetops"]["netopList"].isEmpty){
                   return Scaffold(
-                    body: Center(
-                      child: Column(
-                        children: [
-                          PageTitle('Netops', context),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0,250,0,0),
-                            child: Container(
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  'No Netops Yet !!',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w600
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )
+                    body: RefreshIndicator(
+                      color: const Color(0xFF2B2E35),
+                      onRefresh: () {
+                        return refetch!();
+                      },
+                      child: Center(
+                        child: Column(
+                          children: [
+                            PageTitle('Netops', context),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0,250,0,0),
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    'No Netops Yet !!',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w600
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  )
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     floatingActionButton: FloatingActionButton(onPressed: () {
@@ -169,20 +175,7 @@ class _Post_ListingState extends State<Post_Listing> {
                   var netopList = data["netopList"];
                   posts.clear();
                   for (var i = 0; i < result.data!["getNetops"]["netopList"].length; i++) {
-                    List<Comment> comments = [];
                     List<Tag> tags = [];
-                    for (var j = 0; j < netopList[i]["comments"].length; j++) {
-                      // print("message: ${netopList[i]["comments"][j]["content"]}, id: ${netopList[i]["comments"][j]["id"]}");
-                      comments.add(
-                          Comment(
-                            message: netopList[i]["comments"][j]["content"],
-                            id: netopList[i]["comments"][j]["id"],
-                            name: "Name",
-                            //ToDO comment name
-                            // netopList[i]["comments"][j]["createdBy"]["name"]
-                          )
-                      );
-                    }
                     for (var k = 0; k < netopList[i]["tags"].length; k++) {
                       tags.add(
                         Tag(
@@ -192,9 +185,11 @@ class _Post_ListingState extends State<Post_Listing> {
                         ),
                       );
                     }
+                    List<String> imageUrls=[];
+                    if(netopList[i]["photo"]!=null && netopList[i]["photo"]!="")
+                    {imageUrls=netopList[i]["photo"].split(" AND ");}
                     posts.add(NetOpPost(
                       title: netopList[i]["title"],
-                      comments: comments,
                       description: netopList[i]["content"],
                       likeCount: netopList[i]["likeCount"],
                       tags: tags,
@@ -202,7 +197,7 @@ class _Post_ListingState extends State<Post_Listing> {
                       createdByName: '',
                       linkToAction: netopList[i]["linkToAction"],
                       linkName: netopList[i]["linkName"],
-                      imgUrl: netopList[i]["photo"],
+                      imgUrl: imageUrls,
                       attachment: netopList[i]["attachments"],
                       id: netopList[i]["id"],
                       isLiked: netopList[i]['isLiked'],
@@ -231,16 +226,17 @@ class _Post_ListingState extends State<Post_Listing> {
                           ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
                         ];
                         fetchMoreResultData['getNetops']['netopList'] = repos;
+                        print("fetchMore triggered");
                         return fetchMoreResultData;
                       }
                       );
-                  scrollController.addListener(() async {
+                  scrollController1.addListener(() async {
                     var triggerFetchMoreSize =
-                        0.99 * scrollController.position.maxScrollExtent;
-                    if (scrollController.position.pixels >
+                        0.99 * scrollController1.position.maxScrollExtent;
+                    if (scrollController1.position.pixels >
                         triggerFetchMoreSize && total > posts.length) {
                       await fetchMore!(opts);
-                      scrollController.jumpTo(triggerFetchMoreSize);
+                      scrollController1.jumpTo(triggerFetchMoreSize);
                     }
                   }
                   );
@@ -268,6 +264,7 @@ class _Post_ListingState extends State<Post_Listing> {
                         return refetch!();
                       },
                       child: ListView(
+                        controller: scrollController1,
                           children: [
                             Column(
                               children: [
@@ -319,18 +316,11 @@ class _Post_ListingState extends State<Post_Listing> {
                                           children: posts
                                               .map((post) =>
                                               NetopsCard(
-                                                  context,
-                                                  refetch,
-                                                  post.isStarred,
-                                                  post.isLiked,
-                                                  post.likeCount,
-                                                  post.createdAt,
-                                                  post.tags,
-                                                  userId,
-                                                  post.createdById,
-                                                  reportController,
-                                                  post,
-                                                  'NetopsSection'))
+                                                  refetch:refetch,
+                                                  userId: userId,
+                                                  reportController: reportController,
+                                                  post :post,
+                                                  page: 'NetopsSection',))
                                               .toList(),
                                         ),
                                       ),

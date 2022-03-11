@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/query.dart';
 import 'package:client/models/query.dart';
 import 'package:client/widgets/expandDescription.dart';
@@ -107,11 +108,25 @@ class _QueryCardState extends State<QueryCard> {
                   ),
                 ),
 
-                ///Image
-                if(post.photo!='')
+                ///Images
+                if (post.imgUrl.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                    child: Image.network(post.photo),
+                    padding: const EdgeInsets.fromLTRB(15,10,15,0),
+                    child: CarouselSlider(
+                      items: post.imgUrl.map((item) => Container(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(5,0,5,0),
+                          child: Center(
+                            child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                          ),
+                        ),
+                      )
+                      ).toList(),
+                      options: CarouselOptions(
+                          enableInfiniteScroll: true,
+                          autoPlay: true
+                      ),
+                    ),
                   ),
 
                 ///Description
@@ -126,7 +141,7 @@ class _QueryCardState extends State<QueryCard> {
                 ///Creator
                 Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Text('Created by Anshul Mehta, $differenceTime',
+                  child: Text('Created by ${post.createdByName}, $differenceTime',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 13,

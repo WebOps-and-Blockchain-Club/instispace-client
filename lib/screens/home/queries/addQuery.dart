@@ -19,10 +19,11 @@ class _AddQueryState extends State<AddQuery> {
   String createQuery = Queries().createQuery;
 
   ///Variables
-  var byteDataImage;
-  var multipartfileImage;
+  List byteDataImage = [];
+  List multipartfileImage = [];
+  List fileNames = [];
   String selectedImage = "Please select images";
-  PlatformFile? file=null;
+  FilePickerResult? Result;
 
   ///Controllers
   TextEditingController titleController = TextEditingController();
@@ -30,7 +31,7 @@ class _AddQueryState extends State<AddQuery> {
 
   @override
   Widget build(BuildContext context) {
-
+    String selectedImage = fileNames.isEmpty? "Please select image(s)": fileNames.toString();
     return Scaffold(
 
       appBar: AppBar(
@@ -156,25 +157,25 @@ class _AddQueryState extends State<AddQuery> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                             ),
                             onPressed: () async {
-                              final FilePickerResult? result =
+                              Result =
                               await FilePicker.platform.pickFiles(
                                 type: FileType.image,
-                                allowMultiple: false,
+                                allowMultiple: true,
                                 withData: true,
                               );
-                              if (result != null) {
-                                file = result.files.first;
+                              if (Result != null) {
                                 setState(() {
-                                  selectedImage = file!.name;
-                                  // print("selectedImage:$selectedImage");
-                                  // print("file:$file");
-                                  byteDataImage= file!.bytes;
-                                  multipartfileImage=MultipartFile.fromBytes(
-                                    'photo',
-                                    byteDataImage,
-                                    filename: selectedImage,
-                                    contentType: MediaType("image","png"),
-                                  );
+                                  fileNames.clear();
+                                  for (var i=0;i<Result!.files.length;i++){
+                                    fileNames.add(Result!.files[i].name);
+                                    byteDataImage.add(Result!.files[i].bytes);
+                                    multipartfileImage.add(MultipartFile.fromBytes(
+                                      'photo',
+                                      byteDataImage[i],
+                                      filename: fileNames[i],
+                                      contentType: MediaType("image","png"),
+                                    ));
+                                  }
                                 });
                               }
                             },
@@ -194,24 +195,37 @@ class _AddQueryState extends State<AddQuery> {
                     ),
 
                     ///Selected Images
-                    if(file!=null)
-                      InkWell(
-                        onLongPress: (){
-                          setState(() {
-                            file=null;
-                            multipartfileImage=null;
-                            byteDataImage=null;
-                            selectedImage = "Please select an image";
-                          });
-                        },
-                        child:
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.memory(
-                            file!.bytes!,
+                    if(Result!=null)
+                      Wrap(
+                        children: Result!.files.map((e) => InkWell(
+                          onLongPress: (){
+                            setState(() {
+                              multipartfileImage.remove(
+                                  MultipartFile.fromBytes(
+                                    'photo',
+                                    e.bytes as List<int>,
+                                    filename: e.name,
+                                    contentType: MediaType("image","png"),
+                                  )
+                              );
+                              byteDataImage.remove(e.bytes);
+                              fileNames.remove(e.name);
+                              Result!.files.remove(e);
+                            });
+                          },
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.memory(
+                              e.bytes!,
+                            ),
                           ),
-                        ),
+                        )).toList(),
+                      ),
+                    if(Result!=null)
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("long press to delete"),
                       ),
 
                     ///Buttons Row
@@ -290,7 +304,7 @@ class _AddQueryState extends State<AddQuery> {
                                           "title": titleController.text,
                                           "content": descriptionController.text,
                                           },
-                                          "image": multipartfileImage,
+                                          "images": multipartfileImage,
                                           // "attachments": multipartfileAttachment,
                                           });
                                         },

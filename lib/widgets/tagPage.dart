@@ -174,7 +174,6 @@ class _TagPageState extends State<TagPage> {
             tags: tags,
             id: result.data!["getTag"]["netops"][i]["id"],
             createdByName: '',
-            comments: [],
             likeCount: data["netops"][i]["likeCount"],
             endTime: data['netops'][i]['endTime'],
             attachment: data['netops'][i]['attachments'],
@@ -249,10 +248,10 @@ class _TagPageState extends State<TagPage> {
   ///widget to call different category if cards
   Widget cardFunction (String category, post, refetch, String userid,userRole){
     if(category == "event"){
-      return EventsCard(context, refetch,post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, post, userid,userRole, post.createdById);
+      return EventsCard(refetch:refetch, post: post, userId: userid, userRole: userRole,);
     }
     else if(category == "netop"){
-      return NetopsCard(context, refetch, post.isStarred,post.isLiked,post.likeCount,post.createdAt, post.tags, userid, post.createdById, reportController, post,'NetopsSection');
+      return NetopsCard(post: post, refetch: refetch, reportController: reportController, page: 'NetopsSection', userId: userid,);
     }
     return Container();
   }

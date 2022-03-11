@@ -39,8 +39,8 @@ class netopsQuery {
 }
 """;
   String createComment = """
-  mutation(\$content: String!, \$netopId: String!){
-  createCommentNetop(content: \$content, NetopId: \$netopId)
+  mutation(\$content: String!, \$netopId: String!, \$images: [Upload!]){
+  createCommentNetop(content: \$content, NetopId: \$netopId, Images: \$images)
 }
 """;
   String createNetop = """
@@ -61,6 +61,7 @@ mutation(\$netopId: String!){
     isLiked
     createdAt
     comments {
+      images
       content
       id
       createdBy {
@@ -73,6 +74,21 @@ mutation(\$netopId: String!){
   },
 }
   """;
+  String getComments ="""
+  query(\$getNetopNetopId: String!){
+  getNetop(NetopId: \$getNetopNetopId){
+    comments {
+      images
+      content
+      id
+      createdBy {
+        name
+      }
+    }
+  },
+}
+  """;
+
   String toggleStar = """
   mutation(\$netopId: String!){
   toggleStar(NetopId: \$netopId)

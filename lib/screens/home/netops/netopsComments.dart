@@ -1,8 +1,11 @@
 import 'package:client/graphQL/netops.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart';
 import '../../../models/netopsClass.dart';
 import 'package:client/models/commentclass.dart';
+import 'package:http_parser/http_parser.dart';
 
 class Comments extends StatefulWidget {
   final NetOpPost post;
@@ -15,7 +18,7 @@ class Comments extends StatefulWidget {
 class _CommentsState extends State<Comments> {
 
   ///GraphQL
-  String getNetop= netopsQuery().getNetop;
+  String getComments= netopsQuery().getComments;
 
   ///Controllers
   TextEditingController commentController = TextEditingController();
@@ -26,6 +29,11 @@ class _CommentsState extends State<Comments> {
     commentController.dispose();
     super.dispose();
   }
+  ///variables
+  FilePickerResult? Result;
+  List byteDataImage = [];
+  List multipartfileImage = [];
+  List fileNames = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +55,7 @@ class _CommentsState extends State<Comments> {
 
       body: Query(
         options:QueryOptions(
-          document: gql(getNetop),
+          document: gql(getComments),
           variables: {"getNetopNetopId":widget.post.id}
         ),
         builder: (QueryResult result, {fetchMore, refetch}){
@@ -57,11 +65,14 @@ class _CommentsState extends State<Comments> {
             return Text(result.exception.toString());
           }
           for(var j=0;j<result.data!["getNetop"]["comments"].length;j++){
+            List<String> imageUrls=[];
+            if(result.data!["getNetop"]["comments"][j]["images"]!=null && result.data!["getNetop"]["comments"][j]["images"]!="")
+            {imageUrls=result.data!["getNetop"]["comments"][j]["images"].split(" AND ");}
             comments.add(
                 Comment(
                   message: result.data!["getNetop"]["comments"][j]["content"],
                   id: result.data!["getNetop"]["comments"][j]["id"],
-                  name: "Name",
+                  name: result.data!["getNetop"]["comments"][j]["createdBy"]["name"], imgUrl: imageUrls,
                 )
             );
           }
@@ -69,14 +80,9 @@ class _CommentsState extends State<Comments> {
           return ListView(
             children: [
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.73,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.8,
+                height: Result != null
+                    ? MediaQuery.of(context).size.height * 0.65
+                    : MediaQuery.of(context).size.height * 0.75,
                 child: RefreshIndicator(
                   onRefresh: () {
                     return refetch!();
@@ -87,7 +93,7 @@ class _CommentsState extends State<Comments> {
                         children : comments.map((comment) => Padding(
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           child: Card(
-                            color: Color(0xFFDEDDFF),
+                            color: const Color(0xFFDEDDFF),
                             child: Column(
                               children: [
                                 Padding(
@@ -100,7 +106,7 @@ class _CommentsState extends State<Comments> {
                                         child: Container(
                                           height:30.0,
                                           width: 30.0,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: Colors.blue,
                                             borderRadius: BorderRadius.all(Radius.circular(50.0)),
                                           ),
@@ -112,7 +118,7 @@ class _CommentsState extends State<Comments> {
                                         padding: const EdgeInsets.fromLTRB(5, 6, 10, 0),
                                         child: Text(
                                           comment.name,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -129,7 +135,7 @@ class _CommentsState extends State<Comments> {
                                     children: [
                                       Text(
                                         comment.message,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.w300,
                                         ),
@@ -146,7 +152,35 @@ class _CommentsState extends State<Comments> {
                   ),
                 ),
               ),
-
+              ///Selected Images
+              if (Result != null)
+                Wrap(
+                  children: Result!.files
+                      .map((e) => InkWell(
+                    onLongPress: () {
+                      setState(() {
+                        multipartfileImage
+                            .remove(MultipartFile.fromBytes(
+                          'photo',
+                          e.bytes as List<int>,
+                          filename: e.name,
+                          contentType: MediaType("image", "png"),
+                        ));
+                        byteDataImage.remove(e.bytes);
+                        fileNames.remove(e.name);
+                        Result!.files.remove(e);
+                      });
+                    },
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.memory(
+                        e.bytes!,
+                      ),
+                    ),
+                  ))
+                      .toList(),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 10, 10),
                 child: Row(
@@ -154,8 +188,8 @@ class _CommentsState extends State<Comments> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 5.0, 12.0, 0.0),
                       child: Container(
-                        height: 35.0,
-                        width: 35.0,
+                        height: 30.0,
+                        width: 30.0,
                         decoration: const BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -172,7 +206,7 @@ class _CommentsState extends State<Comments> {
                         width: MediaQuery
                             .of(context)
                             .size
-                            .width * 0.64,
+                            .width * 0.5,
                         child: TextFormField(
                           controller: commentController,
                           decoration: const InputDecoration(
@@ -182,7 +216,31 @@ class _CommentsState extends State<Comments> {
                         ),
                       ),
                     ),
-
+                    IconButton(
+                        onPressed: () async {
+                          Result = await FilePicker.platform.pickFiles(
+                            type: FileType.image,
+                            allowMultiple: true,
+                            withData: true,
+                          );
+                          if (Result != null) {
+                            setState(() {
+                              fileNames.clear();
+                              for (var i = 0; i < Result!.files.length; i++) {
+                                fileNames.add(Result!.files[i].name);
+                                byteDataImage.add(Result!.files[i].bytes);
+                                multipartfileImage
+                                    .add(MultipartFile.fromBytes(
+                                  'photo',
+                                  byteDataImage[i],
+                                  filename: fileNames[i],
+                                  contentType: MediaType("image", "png"),
+                                ));
+                              }
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.image_outlined)),
                     Mutation(
                       options: MutationOptions(
                           document: gql(createComments),
@@ -191,6 +249,7 @@ class _CommentsState extends State<Comments> {
                             if(resultData["createCommentNetop"]){
                               refetch!();
                               commentController.clear();
+                              Result = null;
                             }
                             else{
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -224,6 +283,7 @@ class _CommentsState extends State<Comments> {
                                 {
                                   "content":commentController.text,
                                   "netopId":widget.post.id,
+                                  "images":multipartfileImage,
                                 }
                             );
                           },

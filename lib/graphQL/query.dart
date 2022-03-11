@@ -33,8 +33,8 @@ class Queries{
 }
   """;
   String createQuery="""
-  mutation(\$createQuerysInput: createQuerysInput!, \$image: Upload){
-  createMyQuery(createQuerysInput: \$createQuerysInput, Image: \$image)
+  mutation(\$createQuerysInput: createQuerysInput!, \$images: [Upload!]){
+  createMyQuery(createQuerysInput: \$createQuerysInput, Images: \$images)
 }
   """;
   String toggleLike="""
@@ -46,6 +46,7 @@ class Queries{
   query(\$id: String!){
   getMyQuery(MyQueryId: \$id) {
     comments{
+    images
       createdBy {
         name
       }
@@ -56,8 +57,8 @@ class Queries{
 }
   """;
   String createComment ="""
-  mutation(\$content: String!, \$id: String!){
-  createCommentQuery(content: \$content, MyQueryId: \$id)
+  mutation(\$content: String!, \$id: String!, \$images: [Upload!]){
+  createCommentQuery(content: \$content, MyQueryId: \$id, Images: \$images)
 }
   """;
   String searchQuery ="""

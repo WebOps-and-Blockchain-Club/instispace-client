@@ -3,6 +3,7 @@ import 'package:client/main.dart';
 import 'package:client/screens/home/Admin/report.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/userPage.dart';
+import 'package:client/services/notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
@@ -155,7 +156,10 @@ class _mainHomeState extends State<mainHome> {
         actions: [
           ///Notifications Button
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const Notifications()));
+              },
               icon: const Icon(
                 Icons.notifications,
                 color: Colors.white,
@@ -374,9 +378,11 @@ class _mainHomeState extends State<mainHome> {
                 Mutation(
                   options: MutationOptions(
                       document: gql(logOut),
-                      onCompleted: (result) {
+                      onCompleted: (result) async{
                         print("logout result:$result");
                         if (result["logout"] == true) {
+                          await prefs?.clear();
+                          print("pref Cleared , prefs :$prefs");
                           _auth.clearAuth();
                         }
                       }),

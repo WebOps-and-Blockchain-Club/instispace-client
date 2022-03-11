@@ -9,6 +9,7 @@ class LnF{
   String time;
   List <String>imageUrl;
   String createdId;
+  String createdName;
   // List<Image> images;
-  LnF({required this.category,required this.what,required this.id,required this.contact,required this.time,required this.location,required this.createdId,required this.imageUrl});
+  LnF({required this.category,required this.what,required this.id,required this.contact,required this.time,required this.location,required this.createdId,required this.imageUrl, required this.createdName});
 }
