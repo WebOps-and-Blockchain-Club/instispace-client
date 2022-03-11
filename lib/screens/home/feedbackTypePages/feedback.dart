@@ -1,5 +1,9 @@
+import 'package:client/graphQL/feedback.dart';
+import 'package:client/models/formErrormsgs.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class FeedBack extends StatefulWidget {
   const FeedBack({Key? key}) : super(key: key);
@@ -9,6 +13,10 @@ class FeedBack extends StatefulWidget {
 }
 
 class _FeedBackState extends State<FeedBack> {
+
+  ///GraphQL
+  String addFeedback = FeedBackMutation().addFeedback;
+
   //rating
   bool rating = false;
   bool rat_is1 = false;
@@ -16,6 +24,7 @@ class _FeedBackState extends State<FeedBack> {
   bool rat_is3 = false;
   bool rat_is4 = false;
   bool rat_is5 = false;
+  int ratingNumber = 0;
 
   //recommend
   bool reco = false;
@@ -24,6 +33,7 @@ class _FeedBackState extends State<FeedBack> {
   bool rec_is3 = false;
   bool rec_is4 = false;
   bool rec_is5 = false;
+  int recoNumber = 0;
 
   //easy
   bool easy = false;
@@ -32,6 +42,17 @@ class _FeedBackState extends State<FeedBack> {
   bool eas_is3 = false;
   bool eas_is4 = false;
   bool eas_is5 = false;
+  int easyNumber = 0;
+
+  String emptyRatingErr = "";
+  String emptyRecoErr = "";
+  String emptyEasErr = "";
+
+
+  ///Controllers
+  TextEditingController likeController = TextEditingController();
+  TextEditingController notLikeController = TextEditingController();
+  TextEditingController suggestionsController = TextEditingController();
 
 
   @override
@@ -89,6 +110,7 @@ class _FeedBackState extends State<FeedBack> {
                               rat_is3 = false;
                               rat_is4 = false;
                               rat_is5 = false;
+                              ratingNumber = 1;
                             });
                           },
                           icon: (rat_is1 || rat_is2 || rat_is3 || rat_is4 || rat_is5)
@@ -105,6 +127,7 @@ class _FeedBackState extends State<FeedBack> {
                               rat_is3 = false;
                               rat_is4 = false;
                               rat_is5 = false;
+                              ratingNumber = 2;
                             });
                           },
                           icon: (rat_is2)
@@ -121,6 +144,7 @@ class _FeedBackState extends State<FeedBack> {
                               rat_is3 = true;
                               rat_is4 = false;
                               rat_is5 = false;
+                              ratingNumber = 3;
                             });
                           },
                           icon: (rat_is3)
@@ -137,6 +161,7 @@ class _FeedBackState extends State<FeedBack> {
                               rat_is3 = true;
                               rat_is4 = true;
                               rat_is5 = false;
+                              ratingNumber = 4;
                             });
                           },
                           icon: (rat_is4)
@@ -153,6 +178,7 @@ class _FeedBackState extends State<FeedBack> {
                               rat_is3 = true;
                               rat_is4 = true;
                               rat_is5 = true;
+                              ratingNumber = 5;
                             });
                           },
                           icon: (rat_is5)
@@ -162,6 +188,8 @@ class _FeedBackState extends State<FeedBack> {
                       ],
                     ),
                   ),
+
+                  errorMessages(emptyRatingErr),
 
                   //Easy Question
                   Padding(
@@ -195,6 +223,7 @@ class _FeedBackState extends State<FeedBack> {
                               eas_is3 = false;
                               eas_is4 = false;
                               eas_is5 = false;
+                              easyNumber = 1;
                             });
                           },
                           icon: (eas_is1)
@@ -212,6 +241,7 @@ class _FeedBackState extends State<FeedBack> {
                               eas_is3 = false;
                               eas_is4 = false;
                               eas_is5 = false;
+                              easyNumber = 2;
                             });
                           },
                           icon: (eas_is2)
@@ -229,6 +259,7 @@ class _FeedBackState extends State<FeedBack> {
                               eas_is3 = true;
                               eas_is4 = false;
                               eas_is5 = false;
+                              easyNumber = 3;
                             });
                           },
                           icon: (eas_is3)
@@ -246,6 +277,7 @@ class _FeedBackState extends State<FeedBack> {
                               eas_is3 = true;
                               eas_is4 = true;
                               eas_is5 = false;
+                              easyNumber = 4;
                             });
                           },
                           icon: (eas_is4)
@@ -263,6 +295,7 @@ class _FeedBackState extends State<FeedBack> {
                               eas_is3 = true;
                               eas_is4 = true;
                               eas_is5 = true;
+                              easyNumber = 5;
                             });
                           },
                           icon: (eas_is5)
@@ -272,6 +305,8 @@ class _FeedBackState extends State<FeedBack> {
                       ],
                     ),
                   ),
+
+                  errorMessages(emptyEasErr),
 
                   //Recommend Question
                   Padding(
@@ -305,6 +340,7 @@ class _FeedBackState extends State<FeedBack> {
                               rec_is3 = false;
                               rec_is4 = false;
                               rec_is5 = false;
+                              recoNumber = 1;
                             });
                           },
                           icon: (rec_is1)
@@ -322,6 +358,7 @@ class _FeedBackState extends State<FeedBack> {
                               rec_is3 = false;
                               rec_is4 = false;
                               rec_is5 = false;
+                              recoNumber = 2;
                             });
                           },
                           icon: (rec_is2)
@@ -339,6 +376,7 @@ class _FeedBackState extends State<FeedBack> {
                               rec_is3 = true;
                               rec_is4 = false;
                               rec_is5 = false;
+                              recoNumber = 3;
                             });
                           },
                           icon: (rec_is3)
@@ -356,6 +394,7 @@ class _FeedBackState extends State<FeedBack> {
                               rec_is3 = true;
                               rec_is4 = true;
                               rec_is5 = false;
+                              recoNumber = 4;
                             });
                           },
                           icon: (rec_is4)
@@ -374,6 +413,7 @@ class _FeedBackState extends State<FeedBack> {
                                 rec_is3 = true;
                                 rec_is4 = true;
                                 rec_is5 = true;
+                                recoNumber = 5;
                               });
                             });
                           },
@@ -384,6 +424,8 @@ class _FeedBackState extends State<FeedBack> {
                       ],
                     ),
                   ),
+
+                  errorMessages(emptyRecoErr),
                   
                   //Expander
                   Padding(
@@ -426,8 +468,7 @@ class _FeedBackState extends State<FeedBack> {
                               child: SizedBox(
                                 height: 35.0,
                                 child: TextFormField(
-                                  // controller: nameController,
-
+                                  controller: likeController,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                                     border: OutlineInputBorder(
@@ -436,13 +477,6 @@ class _FeedBackState extends State<FeedBack> {
 
                                     hintText: 'Enter text',
                                   ),
-
-                                  validator: (value){
-                                    if (value == null || value.isEmpty) {
-                                      return 'Item Name cannot be empty';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ),
                             ),
@@ -469,7 +503,7 @@ class _FeedBackState extends State<FeedBack> {
                               child: SizedBox(
                                 height: 35.0,
                                 child: TextFormField(
-                                  // controller: locationController,
+                                  controller: notLikeController,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
                                     border: OutlineInputBorder(
@@ -477,12 +511,6 @@ class _FeedBackState extends State<FeedBack> {
                                     ),
                                     hintText: 'Enter text',
                                   ),
-                                  validator: (value){
-                                    if (value == null || value.isEmpty) {
-                                      return 'Location cannot be empty';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ),
                             ),
@@ -509,7 +537,7 @@ class _FeedBackState extends State<FeedBack> {
                               child: SizedBox(
                                 height: 35.0,
                                 child: TextFormField(
-                                  // controller: contactController,
+                                  controller: suggestionsController,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
                                     border: OutlineInputBorder(
@@ -533,22 +561,81 @@ class _FeedBackState extends State<FeedBack> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         //Submit Button
-                        ElevatedButton(
-                          onPressed: (){
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Submit",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                        Mutation(
+                            options: MutationOptions(
+                                document: gql(addFeedback),
+                                onCompleted: (dynamic resultData) {
+                                  if(resultData["addFeedback"]){
+                                    Navigator.pushNamed(context, '/');
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Feedback Submitted Successfully')),
+                                    );
+                                  }
+                                }
                             ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: const Color(0xFF42454D),
-                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                            minimumSize: const Size(80, 35),
-                          ),
+                            builder: (
+                                RunMutation runMutation,
+                                QueryResult? result,
+                                ) {
+                              if (result!.hasException) {
+                                print(result.exception.toString());
+                              }
+                              if (result.isLoading) {
+                                return Center(
+                                    child: LoadingAnimationWidget.threeRotatingDots(
+                                      color: const Color(0xFF2B2E35),
+                                      size: 20,
+                                    ));
+                              }
+                              return Center(
+                                child: ElevatedButton(
+                                  onPressed: (){
+                                    if (!rat_is1) {
+                                      setState(() {
+                                        emptyRatingErr = "Feedback can't be empty";
+                                      });
+                                    }else{emptyRatingErr = "";}
+                                    if(!rec_is1){
+                                      setState(() {
+                                        emptyRecoErr = "Feedback can't be empty";
+                                      });
+                                    }else{emptyRecoErr = "";}
+                                    if(!eas_is1) {
+                                      setState(() {
+                                        emptyEasErr = "Feedback can't be empty";
+                                      });
+                                    }else{emptyEasErr = "";}
+                                    if(rat_is1 && rec_is1 && eas_is1) {
+                                      runMutation ({
+                                        "addFeedback": {
+                                          "rating1": ratingNumber,
+                                          "rating2": easyNumber,
+                                          "rating3": recoNumber,
+                                          "ans1": likeController.text,
+                                          "ans2": notLikeController.text,
+                                          "ans3": suggestionsController.text
+                                        }
+                                      });
+                                    }
+                                  },
+                                  child: const Text("Submit",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xFF42454D),
+                                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                    minimumSize: const Size(80, 35),
+                                  ),
+                                ),
+                              );
+                            }
                         ),
 
                         //Post Button
