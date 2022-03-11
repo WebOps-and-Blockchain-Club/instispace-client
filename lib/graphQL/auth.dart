@@ -48,7 +48,9 @@ query{
   String updateUser = """mutation(\$userInput: UserInput!){
   updateUser(UserInput: \$userInput)
 }""";
-  String updatePassword = """mutation(\$newPass: NewPass!){
-  updatePassword(NewPass: \$newPass)
-}""";
+  String updatePassword = """
+  mutation(\$updateSuperUserInput: UpdateSuperUserInput!){
+  updateSuperUser(UpdateSuperUserInput: \$updateSuperUserInput)
+}
+""";
 }

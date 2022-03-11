@@ -153,10 +153,10 @@ query{
     createTag(TagInput: \$tagInput)
   }
   """;
-  String createSuperUser = """
-  mutation(\$createAccountInput: CreateAccountInput!) {
-    createAccount(CreateAccountInput: \$createAccountInput)
-  }
+  String createAccount = """
+  mutation(\$createAccountInput: CreateAccountInput!, \$hostelId: String){
+  createAccount(CreateAccountInput: \$createAccountInput, HostelId: \$hostelId)
+}
   """;
   String toggelStarEvent = """
   mutation(\$eventId: String!){
