@@ -1,36 +1,79 @@
-class homeQuery{
+class homeQuery {
   String getMeHome = """
 query{
   getMe {
     getHome {
       netops {
-        title
         id
+        title
         content
+        photo
+        attachments
+        likeCount
         isStared
+        linkName
+        endTime
+        createdAt
+        linkToAction
+        comments {
+          content
+          id
+          createdBy {
+            id
+            name
+          }
+        }
         tags {
+          id
           title
           category
+        }
+        isLiked
+        isStared
+        createdBy {
           id
+          name
         }
       }
       events {
-        title
         id
-        isStared
-        tags {
-          title
-          category
-          id
-        }
+        createdAt
+        title
+        content
+        photo
         location
         time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdBy {
+          id
+          name
+        }
       }
       announcements {
-        title
-        images
-        description
         id
+        title
+        description
+        images
+        createdAt
+        endTime
+        isHidden
+        user {
+          id
+          name
+        }
+        hostels {
+          id
+          name
+        }
       }
     }
     interest {
@@ -57,6 +100,7 @@ query{
     interest {
       title
       id
+      category
     }
     name
     roll
@@ -71,11 +115,16 @@ query{
         name
         description
         id
+        hostel{
+        id
+        name
+        }
       }
       contacts {
         type
         name
         contact
+        id
       }
     }
   }
@@ -99,25 +148,24 @@ query{
 }
   """;
 
-
   String createTag = """
   mutation(\$tagInput: TagInput!){
     createTag(TagInput: \$tagInput)
   }
   """;
-  String createSuperUser = """
-  mutation(\$createAccountInput: CreateAccountInput!) {
-    createAccount(CreateAccountInput: \$createAccountInput)
-  }
+  String createAccount = """
+  mutation(\$createAccountInput: CreateAccountInput!, \$hostelId: String){
+  createAccount(CreateAccountInput: \$createAccountInput, HostelId: \$hostelId)
+}
   """;
   String toggelStarEvent = """
   mutation(\$eventId: String!){
   toggleStarEvent(EventId: \$eventId)
   }
   """;
-  String searchUser="""
-  query(\$skip: Float!, \$take: Float!, \$search: String!){
-  searchUser(skip: \$skip, take: \$take, search: \$search) {
+  String searchUser = """
+query(\$take: Float!, \$lastUserId: String!, \$search: String){
+  searchUser(take: \$take, LastUserId: \$lastUserId, search: \$search) {
     usersList {
       id
       name
@@ -127,10 +175,11 @@ query{
         name
       }
     }
+    total
   }
 }
   """;
-  String getUser="""
+  String getUser = """
   query(\$getUserInput: GetUserInput!){
   getUser(GetUserInput: \$getUserInput) {
     interest {
@@ -148,27 +197,57 @@ query GetTag(\$tag: String!) {
     title
     category
     netops {
+      id
+      createdAt
       title
       content
+      photo
+      attachments
+      endTime
+      likeCount
       isStared
-      id
+      linkName
+      linkToAction
+      comments {
+        id
+        content
+        createdBy {
+          id
+          name
+        }
+      }
       tags {
         id
         title
         category
       }
+      isLiked
+      createdBy {
+        id
+        name
+      }
     }
     events {
       id
+      createdAt
       title
       content
-      isStared
+      photo
       time
       location
+      likeCount
+      isStared
+      linkName
+      linkToAction
       tags {
         id
         title
         category
+      }
+      isLiked
+      createdBy {
+        id
+        name
       }
     }
   }

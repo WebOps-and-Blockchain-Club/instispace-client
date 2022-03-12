@@ -1,6 +1,7 @@
-class netopsQuery{
-  String getNetops ="""query(\$skip: Float!, \$take: Float!,\$orderByLikes: Boolean,\$filteringCondition: fileringConditions,){
-  getNetops(skip: \$skip, take: \$take, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition) {
+class netopsQuery {
+  String getNetops = """
+  query(\$take: Float!, \$lastNetopId: String!, \$filteringCondition: fileringConditions, \$orderByLikes: Boolean, \$search: String){
+  getNetops(take: \$take, LastNetopId: \$lastNetopId, FileringCondition: \$filteringCondition, OrderByLikes: \$orderByLikes, search:\$search) {
     netopList {
       id,
       content,
@@ -9,16 +10,21 @@ class netopsQuery{
         id
         createdBy {
          name
+         id
         }
       }
       createdBy {
         id
+        name
       }
       linkName
       linkToAction
       title
+      isLiked
+      isStared
       isHidden
       endTime
+      createdAt
       tags {
         category,
         title,
@@ -29,30 +35,33 @@ class netopsQuery{
       attachments
     }
     total
-  },
-}""";
+  }
+}
+""";
   String createComment = """
-  mutation(\$content: String!, \$netopId: String!){
-  createCommentNetop(content: \$content, NetopId: \$netopId)
+  mutation(\$content: String!, \$netopId: String!, \$images: [Upload!]){
+  createCommentNetop(content: \$content, NetopId: \$netopId, Images: \$images)
 }
 """;
-  String createNetop ="""
-  mutation(\$newEventData: createNetopsInput!, \$image: Upload, \$attachments: [Upload!]){
-  createNetop(NewEventData: \$newEventData, Image: \$image, Attachments: \$attachments)
+  String createNetop = """
+  mutation(\$newNetopData: createNetopsInput!, \$attachments: [Upload!], \$image: [Upload!]){
+  createNetop(NewNetopData: \$newNetopData, Attachments: \$attachments, Image: \$image)
 }
 """;
-  String toggleLike ="""
-  mutation(\$netopId: String!){
+  String toggleLike = """
+mutation(\$netopId: String!){
   toggleLikeNetop(NetopId: \$netopId)
 }
   """;
-  String getNetop="""
+  String getNetop = """
   query(\$getNetopNetopId: String!){
   getNetop(NetopId: \$getNetopNetopId){
     likeCount
     isStared
     isLiked
+    createdAt
     comments {
+      images
       content
       id
       createdBy {
@@ -63,36 +72,51 @@ class netopsQuery{
       id
     }
   },
-  getMe {
+}
+  """;
+  String getComments ="""
+  query(\$getNetopNetopId: String!){
+  getNetop(NetopId: \$getNetopNetopId){
+    comments {
+      images
+      content
+      id
+      createdBy {
+        name
+      }
+    }
+  },
+}
+  """;
+
+  String toggleStar = """
+  mutation(\$netopId: String!){
+  toggleStar(NetopId: \$netopId)
+}
+  """;
+
+  String deleteNetop = """
+  mutation(\$netopId: String!){
+  deleteNetop(NetopId: \$netopId)
+}
+  """;
+  String editNetop = """
+  mutation EditNetop(\$editNetopsData: editNetopsInput!, \$netopId: String!, \$attachments: [Upload!], \$image: Upload) {
+  editNetop(EditNetopsData: \$editNetopsData, NetopId: \$netopId, Attachments: \$attachments, Image: \$image)
+}
+""";
+  String reportNetop = """
+ mutation(\$description: String!, \$netopId: String!){
+  reportNetop(description: \$description, NetopId: \$netopId)
+}
+  """;
+  String netopSubscription = """
+  subscription{
+  createNetop2 {
     id
+    title
+    content
   }
-}
-  """;
-  String toggleStar="""
-  mutation(\$toggleStarNetopId: String!){
-  toggleStar(NetopId: \$toggleStarNetopId)
-}
-  """;
-  String getMe="""
-  query{
-  getMe {
-    id
-  }
-}
-  """;
-  String deleteNetop="""
-  mutation(\$deleteNetopNetopId: String!){
-  deleteNetop(NetopId: \$deleteNetopNetopId)
-}
-  """;
-  String editNetop="""
-  mutation(\$editNetopNetopId: String!, \$editNetopsData: editNetopsInput!, \$editNetopAttachments: [Upload!], \$editNetopImage: Upload){
-  editNetop(NetopId: \$editNetopNetopId, EditNetopsData: \$editNetopsData, Attachments: \$editNetopAttachments, Image: \$editNetopImage)
-}
-  """;
-  String reportNetop="""
-  mutation(\$description: String!, \$reportNetopNetopId: String!){
-  reportNetop(description: \$description, NetopId: \$reportNetopNetopId)
 }
   """;
 }

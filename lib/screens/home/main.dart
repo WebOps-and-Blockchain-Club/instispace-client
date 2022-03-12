@@ -1,596 +1,468 @@
-import 'package:client/models/post.dart';
-import 'package:client/models/tag.dart';
-import 'package:client/screens/Events/home.dart';
-import 'package:client/screens/Events/post.dart';
-import 'package:client/screens/Login/createAmenity.dart';
-import 'package:client/screens/Login/createHostelContacts.dart';
-import 'package:client/screens/Login/createhostel.dart';
-import 'package:client/screens/home/Announcements/Announcement.dart';
-import 'package:client/screens/home/Announcements/home.dart';
-import 'package:client/screens/home/Queries/home.dart';
-import 'package:client/screens/home/homeCards.dart';
+import 'package:client/graphQL/auth.dart';
+import 'package:client/main.dart';
+import 'package:client/screens/home/Admin/feedback.dart';
+import 'package:client/screens/home/Admin/report.dart';
 import 'package:client/screens/home/searchUser.dart';
-import 'package:client/screens/home/userpage.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:client/screens/home/updateProfile/basicInfo.dart';
+import 'package:client/screens/home/userPage.dart';
+import 'package:client/services/notification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:client/screens/home/events/events.dart';
+import 'package:client/screens/home/queries/query.dart';
+import 'package:client/screens/home/Admin/createHostel.dart';
+import 'package:client/screens/home/Admin/createSuperUsers.dart';
+import 'package:client/screens/login/createTag.dart';
 import 'package:provider/provider.dart';
-import 'hostel_profile.dart';
-import 'lost and found/home.dart';
-import 'networking_and _opportunities/post_listing.dart';
-import 'package:client/graphQL/home.dart';
+import 'Admin/updateRole.dart';
+import 'package:client/screens/home/hostelSection/hostel.dart';
+import 'feedbackTypePages/about_us.dart';
+import 'feedbackTypePages/contact_us.dart';
+import 'feedbackTypePages/feedback.dart';
+import 'home.dart';
+import 'lostAndFound/LF.dart';
+import 'package:client/screens/home/netops/netops.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:client/graphQL/feedback.dart';
 
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class mainHome extends StatefulWidget {
+  const mainHome({Key? key}) : super(key: key);
   static const routeName = "/home";
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _mainHomeState createState() => _mainHomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _mainHomeState extends State<mainHome> {
+  ///GraphQL
+  String logOut = authQuery().logOut;
+
+  ///Variables
   late AuthService _auth;
-  String getMe = homeQuery().getMe;
-  String getMeHome = homeQuery().getMeHome;
-
-  var result;
-  late String userName;
+  int _selectedIndex = 2;
   late String userRole;
-  bool isAll = true;
-  bool isAnnouncements = false;
-  bool isEvents = false;
-  bool isNetops = false;
-  Map all = {};
 
+  /// For Bottom Navigation Bar
+  static const List<Widget> _widgetOptions = <Widget>[
+    LNFListing(),
+    QueryHome(),
+    HomePage(),
+    EventsHome(),
+    Post_Listing(),
+  ];
 
+  ///To set the value of index on which page the user is
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);
     });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("notification:${message.notification}");
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+              iOS: const IOSNotificationDetails(
+                sound: 'default.wav',
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+              ),
+            ));
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published');
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title!),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(notification.body!)],
+                  ),
+                ),
+              );
+            });
+      }
+    });
+    _sharedPreference();
   }
 
+  void _sharedPreference ()async{
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs!.getString('role')!;
+      print("userRole : $userRole");
+    });
+  }
+  SharedPreferences? prefs;
 
+  late String fcmToken;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   Widget build(BuildContext context) {
-    return Query(
-        options: QueryOptions(
-          document: gql(getMe),
-        ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            print(result.exception.toString());
-          }
-          if (result.isLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue[700],
-              ),
-            );
-          }
-          userRole = result.data!["getMe"]["role"];
+    _firebaseMessaging.getToken().then((token) {
+      fcmToken = token!;
+      print("fcmtoken:$token");
+    });
 
-          if (userRole == "ADMIN" || userRole == "HAS" || userRole == "HOSTEL_SEC") {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text("Hey ${userRole}"),
-                backgroundColor: Colors.deepPurpleAccent,
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        _auth.clearAuth();
-                        },
-                      icon: const Icon(Icons.logout)),
-                  IconButton(
-                      onPressed: (){
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => const searchUser()));
-                        },
-                      icon: const Icon(Icons.search_outlined)),
-                ],
-              ),
-              body: ListView(
-                  children: [Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 500,
-                      child: Column(
-                        children: [
-                          const Text(
-                            "HOMEPAGE !!!",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 20,
-                            ),
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => CreateHostel()
-                                ));
-                              },
-                              child: const Text("Create New Hostel")),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => const CreateHostelAmenity()
-                                ));
-                              },
-                              child: const Text("Create Hostel Amenity")),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => const CreateHostelContact()
-                                ));
-                              },
-                              child: const Text("Create Hostel Contact"))
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => const QueryHome()));
-                        },
-                      iconSize: 30.0,
-                      icon: const Icon(Icons.query_stats_rounded),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => EventsHome()));
-                                },
-                              iconSize: 30.0,
-                              icon: const Icon(Icons.event),
-                            ),
-                            const Text("Events",style: TextStyle(fontSize: 10.0),),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) => Announcements()));
-                                },
-                                iconSize: 30.0,
-                                icon: const Icon(Icons.announcement)
-                            ),
-                            const Text("Announcements", style: TextStyle(fontSize: 10.0),)
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => Post_Listing()));
-                                },
-                                iconSize: 30.0,
-                                icon: const Icon(Icons.connect_without_contact_sharp)
-                            ),
-                            const Text("Networking & Opportunities", style: TextStyle(fontSize: 10.0),)
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => const LNFListing()));
-                              },
-                                iconSize: 30.0,
-                                icon: const Icon(Icons.local_grocery_store_outlined)
-                            ),
-                            const Text("Lost & Found", style: TextStyle(fontSize: 10.0),)
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                  ),
-                  ]
-              ),
-            );
-          }
-          else {
-            return Query(
-            options: QueryOptions(
-            document: gql(getMeHome),
-            ),
-                builder: (QueryResult result, {fetchMore, refetch}) {
-              if (result.hasException) {
-                print(result.exception.toString());
-              }
-              if (result.isLoading) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.blue[700],
-                  ),
-                );
-              }
-              all.clear();
-              for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-                all.putIfAbsent(Announcement(
-                    title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-                    hostelIds: [],
-                    description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-                    endTime: '',
-                    id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-                    images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-                    createdByUserId: ''
-                ),
-                        () => "announcement");
-              }
-              for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
-                List<Tag> tags = [];
-                for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
-                  // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                  tags.add(
-                  Tag(
-                    Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-                    category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-                    id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
-                  ),
-                  );
-                }
-                all.putIfAbsent(Post(
-                title: result.data!["getMe"]["getHome"]["events"][i]["title"],
-                tags: tags,
-                  id: result.data!["getMe"]["getHome"]["events"][i]["id"], createdById: '',
-                  likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
-                  time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-                  location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-            // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                ),
-                      () => "event",
-                );
-              }
-              if(isNetops) {
-                all.clear();
-              }
-              for (var i = 0; i < result.data!["getMe"]["getHome"]["netops"].length; i++) {
-                List<Tag> tags = [];
-                for(var k=0;k < result.data!["getMe"]["getHome"]["netops"][i]["tags"].length;k++){
-          // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                  tags.add(
-                    Tag(
-                      Tag_name: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["title"],
-                      category: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["category"],
-                      id: result.data!["getMe"]["getHome"]["netops"][i]["tags"][k]["id"],
-                    ),
-                  );
-                }
-                all.putIfAbsent(NetOpPost(
-                  title: result.data!["getMe"]["getHome"]["netops"][i]["title"],
-                  tags: tags,
-                  id: result.data!["getMe"]["getHome"]["netops"][i]["id"], comments: [], like_counter: 0, endTime: '', attachment: '', imgUrl: '', linkToAction: '', linkName: '',
-                  description: result.data!["getMe"]["getHome"]["netops"][i]["content"],
-                ),
-                        ()=>"netop");
-              }
-              if(isEvents) {
-                all.clear();
-                for (var i = 0; i < result.data!["getMe"]["getHome"]["events"].length; i++) {
-                  List<Tag> tags = [];
-                  for(var k=0;k < result.data!["getMe"]["getHome"]["events"][i]["tags"].length;k++){
-            // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
-                    tags.add(
-                      Tag(
-                        Tag_name: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["title"],
-                        category: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["category"],
-                        id: result.data!["getMe"]["getHome"]["events"][i]["tags"][k]["id"],
-                      ),
-                    );
-                  }
-                  all.putIfAbsent(Post(
-                    title: result.data!["getMe"]["getHome"]["events"][i]["title"],
-                    tags: tags,
-                    id: result.data!["getMe"]["getHome"]["events"][i]["id"], createdById: '',
-                    likeCount: 0, imgUrl: [], linkName: '', description: '', linkToAction: '',
-                    time: result.data!["getMe"]["getHome"]["events"][i]["time"],
-                    location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-            // location: result.data!["getMe"]["getHome"]["events"][i]["location"],
-                  ),
-                        () => "event",
-                  );
-                }
-              }
-              if (isAnnouncements) {
-                all.clear();
-                for(var i = 0; i < result.data!["getMe"]["getHome"]["announcements"].length; i++){
-                  all.putIfAbsent(Announcement(
-                      title: result.data!["getMe"]["getHome"]["announcements"][i]["title"],
-                      hostelIds: [],
-                      description: result.data!["getMe"]["getHome"]["announcements"][i]["description"],
-                      endTime: '',
-                      id: result.data!["getMe"]["getHome"]["announcements"][i]["id"],
-                      images: result.data!["getMe"]["getHome"]["announcements"][i]["images"],
-                      createdByUserId: ''
-                  ),
-                          () => "announcement");
-                }
-              }
-              if( isAnnouncements == true || isEvents == true || isNetops == true ) {
-                isAll = false;
-              }
-              userName = result.data!["getMe"]["name"];
-              return Scaffold(
-                  appBar: AppBar(
-                    title:
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => UserPage()));
-                              },
-                            icon: const Icon(Icons.account_circle_outlined)
-                        ),
-                        Text("Hey ${userName.split(" ").first} "),
-                      ],
-                    ),
-                    backgroundColor: Colors.deepPurpleAccent,
-                    actions: [
-                      IconButton(onPressed: (){
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => const searchUser()));
-                        },
-                          icon: const Icon(Icons.search_outlined)),
-                      Column(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                _auth.clearAuth();
-                                },
-                              icon: const Icon(Icons.logout)
-                          ),
-                          const Text("Logout", style: TextStyle(fontSize: 10.0),)
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => const HostelProfile()));
-                                },
-                              icon: const Icon(Icons.account_balance)
-                          ),
-                          const Text("My Hostel", style: TextStyle(fontSize: 10.0),)
-                        ],
-                      )
-                    ],
-                  ),
-                  body: ListView(
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0.0,4.0,0.0,4.0),
-                              child: SizedBox(
-                                height: MediaQuery.of(context).size.height*0.05,
-                                width: MediaQuery.of(context).size.width*0.9,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0,0.0,4.0,0.0),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isAnnouncements = false;
-                                              isEvents = false;
-                                              isNetops = false;
-                                              isAll = true;
-                                            });
-                                            },
-                                          style: ElevatedButton.styleFrom(
-                                            primary: isAll? Colors.blue:Color(0xFFDEDDFF),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20.0)
-                                            ),
-                                          ),
-                                          child: const Text("All", style: TextStyle(color: Colors.black),),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0,0.0,4.0,0.0),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isAnnouncements = !isAnnouncements;
-                                              isEvents = false;
-                                              isNetops = false;
-                                              isAll = !isAll;
-                                            });
-                                            },
-                                          style: ElevatedButton.styleFrom(
-                                            primary: isAnnouncements? Colors.blue:Color(0xFFDEDDFF),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20.0)
-                                            ),
-                                          ),
-                                          child: const Text("Announcements",style: TextStyle(color: Colors.black),),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0,0.0,4.0,0.0),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isEvents = !isEvents;
-                                              isAnnouncements =  false;
-                                              isNetops = false;
-                                              isAll = !isAll;
-                                            });
-                                            },
-                                          style: ElevatedButton.styleFrom(
-                                            primary: isEvents? Colors.blue:Color(0xFFDEDDFF),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20.0)
-                                            ),
-                                          ),
-                                          child: const Text("Events",style: TextStyle(color: Colors.black),),
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isNetops = !isNetops;
-                                            isEvents = false;
-                                            isAnnouncements = false;
-                                            isAll = !isAll;
-                                          });
-                                          },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: isNetops? Colors.blue:Color(0xFFDEDDFF),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20.0)
-                                          ),
-                                        ),
-                                        child: const Text("NetOP",style: TextStyle(
-                                            color: Colors.black,
-                                        ),),
-                                      ),
-                                    ],
-                                  ),
-                                  ]
-                                ),
-                              ),
-                            ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height*0.65,
-                  child: ListView(
-                      children :[
-                        Column(
-                          children: all.keys.map((e) => cardFunction(all[e],e)
-                          ).toList(),
-                        )
-                      ]
-                      ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => const QueryHome()));
-                  },
-                  iconSize: 30.0,
-                  icon: const Icon(Icons.query_stats_rounded),
-                ),
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF2B2E35),
+            titleSpacing: 0,
 
-                // Text("Networking & Opportunities"),
-                // SizedBox(
-                //   height: 250,
-                //   child: ListView(
-                //     children : netops
-                //         .map((netops) => NetOpHomeCard(
-                //       netops: netops,
-                //     ))
-                //         .toList(),
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 250,
-                //   child: ListView(
-                //     children : all
-                //         .map((netops) => NetOpHomeCard(
-                //       netops: netops,
-                //     ))
-                //         .toList(),
-                //   ),
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => EventsHome()));
-                          },
-                          iconSize: 30.0,
-                          icon: const Icon(Icons.event),
-                        ),
-                        const Text("Events",style: TextStyle(fontSize: 10.0),),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Announcements()));
-                            },
-                            iconSize: 30.0,
-                            icon: const Icon(Icons.announcement)
-                        ),
-                        const Text("Announcements", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Post_Listing()));
-                            },
-                            iconSize: 30.0,
-                            icon: const Icon(Icons.connect_without_contact_sharp)
-                        ),
-                        const Text("Networking & Opportunities", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => const LNFListing()));
-                            },
-                            iconSize: 30.0,
-                            icon: const Icon(Icons.local_grocery_store_outlined)
-                        ),
-                        const Text("Lost & Found", style: TextStyle(fontSize: 10.0),)
-                      ],
-                    )
-                  ],
-                )
+            ///AppName and logo
+            title: Row(
+              children: const [
+                CircleAvatar(
+                  backgroundColor: const Color(0xFF2B2E35),
+                    radius: 18,
+                    backgroundImage: AssetImage('assets/InstiSpace_logo-white.png')),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+                  child: Text(
+                    "InstiSpace",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ],
             ),
-            ]
-          ));
-    }
-            );
-          }
-    }
-    );
+            actions: [
+              ///Notifications Button
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => const Notifications()));
+                  },
+                  icon: const Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  )),
+
+              ///Hostel Section Button
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => const HostelHome()));
+                },
+                icon: const Icon(
+                  Icons.account_balance,
+                  color: Colors.white,
+                ),
+                iconSize: 22.0,
+              )
+            ],
+            elevation: 0.0,
+          ),
+
+          body: Center(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+
+          ///SideBar (Hamburger)
+          drawer: Drawer(
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
+                        /// AppName and logo
+                        child: Row(
+                          children: const [
+                            CircleAvatar(
+                                radius: 20,
+                                backgroundImage: AssetImage('assets/ic_launcher - Copy.png')),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+                              child: Text(
+                                "InstiSpace",
+                                style: TextStyle(
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    ///My Profile Button
+                    ListTile(
+                      leading: const Icon(Icons.account_circle_outlined),
+                      horizontalTitleGap: 0,
+                      title: const Text("My Profile"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => UserPage()));
+                      },
+                    ),
+
+                    ///Update Profile Button
+                    ListTile(
+                      leading: const Icon(Icons.edit),
+                      horizontalTitleGap: 0,
+                      title: const Text("Edit Profile"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => BasicInfo()));
+                      },
+                    ),
+
+                    ///My Hostel Button
+                    if (userRole == 'USER' || userRole == 'MODERATOR')
+                      ListTile(
+                        leading: const Icon(Icons.account_balance),
+                        horizontalTitleGap: 0,
+                        title: const Text("My Hostel"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  HostelHome()));
+                        },
+                      ),
+
+                    ///Search User Button
+                    ListTile(
+                      leading: const Icon(Icons.search_outlined),
+                      horizontalTitleGap: 0,
+                      title: const Text("Search User"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                            const searchUser()));
+                      },
+                    ),
+
+                    ///Create Hostel
+                    if (userRole == 'ADMIN' || userRole == 'HAS')
+                      ListTile(
+                        leading: const Icon(Icons.account_balance_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text("Create Hostel"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  CreateHostel()));
+                        },
+                      ),
+
+                    ///Create Tag
+                    if (userRole == 'ADMIN' ||
+                        userRole == "HAS" ||
+                        userRole == "SECRETORY")
+                      ListTile(
+                        leading: const Icon(Icons.add_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text('Create Tag'),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  CreateTag()));
+                        },
+                      ),
+
+                    ///Create Account
+                    if (userRole == "ADMIN" ||
+                        userRole == "HAS" ||
+                        userRole == "SECRETORY")
+                      ListTile(
+                        leading: const Icon(Icons.addchart_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text('Create Accounts'),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  CreateSuperUsers()));
+                        },
+                      ),
+
+                    ///Update Role
+                    if (userRole == "ADMIN" ||
+                        userRole == "HAS" ||
+                        userRole == "SECRETORY" ||
+                        userRole == "HOSTEL_SEC" ||
+                        userRole == "LEADS")
+                      ListTile(
+                        leading: const Icon(Icons.upgrade),
+                        horizontalTitleGap: 0,
+                        title: const Text('Update Role'),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  UpdateRole()));
+                        },
+                      ),
+
+                    ///About us Page Button
+                    if (userRole == "USER" || userRole == "MODERATOR")
+                      ListTile(
+                        leading: const Icon(Icons.alternate_email),
+                        horizontalTitleGap: 0,
+                        title: const Text("About Us"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => AboutUs()));
+                        },
+                      ),
+
+                    ///Contact Us Page Button
+                    if (userRole == "USER" || userRole == 'MODERATOR')
+                      ListTile(
+                        leading: const Icon(Icons.contact_page_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text("Contact Us"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ContactUs()));
+                        },
+                      ),
+
+                    ///Feedback Page Button
+                    if (userRole == "USER" || userRole == 'MODERATOR')
+                      ListTile(
+                        leading: const Icon(Icons.feedback_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text("Feedback"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => FeedBack()));
+                        },
+                      ),
+
+                    ///Feedbacks sheet for Admin
+                    if(userRole == "ADMIN" || userRole == 'HAS')
+                      ListTile(
+                        leading: const Icon(Icons.feedback_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text("Feedbacks"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => FeedbackPage()));
+                        },
+                      ),
+
+                    ///reported list
+                    if (userRole == "ADMIN" || userRole == 'HAS')
+                      ListTile(
+                        leading: const Icon(Icons.account_circle_outlined),
+                        horizontalTitleGap: 0,
+                        title: const Text("Reported"),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => Reported()));
+                        },
+                      ),
+
+                    /// Logout Button
+                    Mutation(
+                      options: MutationOptions(
+                          document: gql(logOut),
+                          onCompleted: (result) {
+                            print("logout result:$result");
+                            if (result["logout"] == true) {
+                              // prefs?.clear();
+                              _auth.clearAuth();
+                            }
+                          }),
+                      builder:
+                          (RunMutation runMutation, QueryResult? result) {
+                        if (result!.hasException) {
+                          print(result.exception.toString());
+                        }
+                        return ListTile(
+                          leading: const Icon(Icons.logout),
+                          horizontalTitleGap: 0,
+                          title: const Text("Logout"),
+                          onTap: () {
+                            print("fcmToken logout : $fcmToken");
+                            runMutation({
+                              "fcmToken": fcmToken,
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+
+          ///Bottom Navigation Bar
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: const Color(0xFFFFFFFF),
+            backgroundColor: const Color(0xFF2B2E35),
+            currentIndex: _selectedIndex,
+            iconSize: 24,
+            unselectedFontSize: 12,
+            selectedFontSize: 13,
+            items: const <BottomNavigationBarItem>[
+              //L&F Button
+              BottomNavigationBarItem(
+                icon: Icon(Icons.local_grocery_store),
+                label: 'L&F',
+                backgroundColor: Color(0xFF2B2E35),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.query_stats_rounded),
+                label: 'Queries',
+                backgroundColor: Color(0xFF2B2E35),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+                backgroundColor: Color(0xFF2B2E35),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.event),
+                label: 'Events',
+                backgroundColor: Color(0xFF2B2E35),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.connect_without_contact_sharp),
+                label: 'NetOps',
+                backgroundColor: Color(0xFF2B2E35),
+              ),
+            ],
+            showUnselectedLabels: true,
+            elevation: 0.0,
+            onTap: _onItemTapped,
+          ),
+        );
   }
-  Widget cardFunction (String category, post){
-    if(category == "event"){
-      return EventsHomeCard(events: post);
-    }
-    else if(category == "netop"){
-      return NetOpHomeCard(netops: post);
-    }
-    else if(category == "announcement"){
-      return AnnouncementHomeCard(announcements: post);
-    }
-    return Container();
-  }
-  
 }

@@ -1,19 +1,43 @@
-class authQuery{
-  String login = """mutation(\$loginInputs: LoginInput!){
-  login( LoginInputs: \$loginInputs)
-   {
-    role
+class authQuery {
+  String login = """mutation(\$fcmToken: String!, \$loginInputs: LoginInput!){
+  login(fcmToken: \$fcmToken, LoginInputs: \$loginInputs) {
     token
+    role
     isNewUser
   }
 }""";
-String getHostels ="""query{
+  String logOut = """
+  mutation(\$fcmToken: String!){
+  logout(fcmToken: \$fcmToken)
+}
+  """;
+  String getHostels = """query{
   getHostels {
-    name
     id
+    name
+    contacts {
+      id
+      name
+      type
+      contact
+      hostel {
+        name
+        id
+      }
+    }
+    amenities {
+      id
+      name
+      description
+      hostel {
+        id
+        name
+      }
+    }
   }
-}""";
-String getTags ="""
+}
+""";
+  String getTags = """
 query{
   getTags {
     id
@@ -21,10 +45,12 @@ query{
     category
   }
 }""";
-String updateUser ="""mutation(\$userInput: UserInput!){
+  String updateUser = """mutation(\$userInput: UserInput!){
   updateUser(UserInput: \$userInput)
 }""";
-String updatePassword ="""mutation(\$newPass: NewPass!){
-  updatePassword(NewPass: \$newPass)
-}""";
+  String updatePassword = """
+  mutation(\$updateSuperUserInput: UpdateSuperUserInput!){
+  updateSuperUser(UpdateSuperUserInput: \$updateSuperUserInput)
+}
+""";
 }
