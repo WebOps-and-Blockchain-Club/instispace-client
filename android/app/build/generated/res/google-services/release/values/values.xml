@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">874234126154-bf49pob601gv5ntl4sajm5og8qbre5c1.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">874234126154</string>
+    <string name="google_api_key" translatable="false">AIzaSyBqKNlNemHQ1AH0x6nc0puX1tvWcDF8SkE</string>
+    <string name="google_app_id" translatable="false">1:874234126154:android:85eb26f745550083d5ebb3</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBqKNlNemHQ1AH0x6nc0puX1tvWcDF8SkE</string>
+    <string name="google_storage_bucket" translatable="false">my-hostel-8074c.appspot.com</string>
+    <string name="project_id" translatable="false">my-hostel-8074c</string>
+</resources>

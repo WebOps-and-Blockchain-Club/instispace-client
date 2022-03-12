@@ -143,7 +143,7 @@ MERGED from [com.jakewharton.threetenabp:threetenabp:1.2.3] C:\Users\91823\.grad
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.7.0] C:\Users\91823\.gradle\caches\transforms-3\65f5041e34499771bdb5b98242a44ede\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
 	android:label
-		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:7:9-31
+		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:7:9-35
 	android:icon
 		ADDED from D:\webops\instiSpace\android\app\src\main\AndroidManifest.xml:8:9-43
 activity#com.example.client.MainActivity
