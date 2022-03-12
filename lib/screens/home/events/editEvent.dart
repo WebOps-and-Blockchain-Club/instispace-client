@@ -72,7 +72,7 @@ class _EditPostEventsState extends State<EditPostEvents> {
       myControllerFormLink.text = post.linkToAction!;
     }
     myControllerDescription.text = post.description;
-    formNameController.text = post.linkName;
+    formNameController.text = post.linkName!;
     return Query(
         options: QueryOptions(document: gql(getTags)),
         builder: (QueryResult result, {fetchMore, refetch}) {

@@ -6,7 +6,7 @@ class eventsPost {
   String description;
   List<String> imgUrl;
   String? linkToAction;
-  String linkName;
+  String? linkName;
   String id;
   String createdById;
   String createdByName;

@@ -186,7 +186,7 @@ class _HomeState extends State<EventsHome> {
                 posts.add(eventsPost(
                   createdById: eventList[i]["createdBy"]["id"],
                   createdByName: eventList[i]["createdBy"]["name"],
-                  linkName: eventList[i]["linkName"],
+                  linkName: eventList[i]['linkName'],
                   location: eventList[i]["location"],
                   title: eventList[i]["title"],
                   description: eventList[i]["content"],

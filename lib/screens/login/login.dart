@@ -75,9 +75,9 @@ class _LogInState extends State<LogIn> {
                 padding: const EdgeInsets.fromLTRB(0.0,20.0,0.0,0.0),
                 child: Center(
                   child: SizedBox(
-                      height: 150,
-                      width: 100,
-                      child: Image.network('https://i.pinimg.com/736x/71/b3/e4/71b3e4159892bb319292ab3b76900930.jpg')
+                      height: 250,
+                      width: 200,
+                      child: Image(image: AssetImage('assets/InstiSpace_logo-black.png')),
                   ),
                 ),
               ),

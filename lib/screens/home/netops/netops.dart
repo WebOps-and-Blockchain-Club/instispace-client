@@ -79,7 +79,7 @@ class _Post_ListingState extends State<Post_Listing> {
               body: Center(
                 child: Column(
                   children: [
-                    PageTitle('Netops', context),
+                    PageTitle('Networking & Opportunities', context),
                     Expanded(
                         child: ListView.separated(
                             itemBuilder: (context, index) => const NewCardSkeleton(),
@@ -115,7 +115,7 @@ class _Post_ListingState extends State<Post_Listing> {
                       body: Center(
                         child: Column(
                           children: [
-                            PageTitle('Netops', context),
+                            PageTitle('Networking & Opportunities', context),
                             Expanded(
                                 child: ListView.separated(
                                     itemBuilder: (context, index) => const NewCardSkeleton(),
@@ -139,7 +139,7 @@ class _Post_ListingState extends State<Post_Listing> {
                       child: Center(
                         child: Column(
                           children: [
-                            PageTitle('Netops', context),
+                            PageTitle('Networking & Opportunities', context),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0,250,0,0),
                               child: Container(
@@ -269,7 +269,7 @@ class _Post_ListingState extends State<Post_Listing> {
                             Column(
                               children: [
                                 ///Heading
-                                PageTitle('Netops', context),
+                                PageTitle('Networking & Opportunities', context),
 
                                 ///Search bar and filter button
                                 Padding(

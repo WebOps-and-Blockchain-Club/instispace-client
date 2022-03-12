@@ -41,19 +41,22 @@ class _EditLostState extends State<EditLost> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-
-    ///Retrieved data of initial post
-    String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     var post=widget.post;
     nameController.text=post.what;
     locationController.text=post.location;
     contactController.text=post.contact;
     initializeDateFormatting('az');
+  }
 
+  @override
+  Widget build(BuildContext context) {
 
+    ///Retrieved data of initial post
+    String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
     return Scaffold(
-
       appBar: AppBar(
         title:const Text('Lost Item',
           style: TextStyle(
@@ -436,14 +439,15 @@ class _EditLostState extends State<EditLost> {
                                 onPressed: ()async{
                                   if (_formKey.currentState!.validate()){
                                     await runMutation({
-                                      "itemInput": {
+                                      "itemId":widget.post.id,
+                                      "edititemInput": {
                                         "name": nameController.text,
                                         "location":locationController.text,
                                         "time":"$dateTime",
                                         "category": "LOST",
                                         "contact":contactController.text,
                                       },
-                                      "images": multipartfile.isEmpty ? null : multipartfile,
+                                      "editItemsImages": multipartfile.isEmpty ? null : multipartfile,
                                     });
                                   }
                                 },

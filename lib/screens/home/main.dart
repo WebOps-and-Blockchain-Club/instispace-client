@@ -5,18 +5,17 @@ import 'package:client/screens/home/Admin/report.dart';
 import 'package:client/screens/home/searchUser.dart';
 import 'package:client/screens/home/updateProfile/basicInfo.dart';
 import 'package:client/screens/home/userPage.dart';
+import 'package:client/services/notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/Auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:client/graphQL/home.dart';
 import 'package:client/screens/home/events/events.dart';
 import 'package:client/screens/home/queries/query.dart';
 import 'package:client/screens/home/Admin/createHostel.dart';
 import 'package:client/screens/home/Admin/createSuperUsers.dart';
 import 'package:client/screens/login/createTag.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'Admin/updateRole.dart';
 import 'package:client/screens/home/hostelSection/hostel.dart';
 import 'feedbackTypePages/about_us.dart';
@@ -144,9 +143,9 @@ class _mainHomeState extends State<mainHome> {
             title: Row(
               children: const [
                 CircleAvatar(
+                  backgroundColor: const Color(0xFF2B2E35),
                     radius: 18,
-                    backgroundImage: NetworkImage(
-                        'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+                    backgroundImage: AssetImage('assets/InstiSpace_logo-white.png')),
                 Padding(
                   padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
                   child: Text(
@@ -159,7 +158,10 @@ class _mainHomeState extends State<mainHome> {
             actions: [
               ///Notifications Button
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => const Notifications()));
+                  },
                   icon: const Icon(
                     Icons.notifications,
                     color: Colors.white,
@@ -195,14 +197,12 @@ class _mainHomeState extends State<mainHome> {
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
-
                         /// AppName and logo
                         child: Row(
                           children: const [
                             CircleAvatar(
                                 radius: 20,
-                                backgroundImage: NetworkImage(
-                                    'https://pbs.twimg.com/profile_images/1459179322854367232/Zj38Rken_400x400.jpg')),
+                                backgroundImage: AssetImage('assets/ic_launcher - Copy.png')),
                             Padding(
                               padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
                               child: Text(
@@ -393,6 +393,7 @@ class _mainHomeState extends State<mainHome> {
                           onCompleted: (result) {
                             print("logout result:$result");
                             if (result["logout"] == true) {
+                              // prefs?.clear();
                               _auth.clearAuth();
                             }
                           }),
@@ -406,6 +407,7 @@ class _mainHomeState extends State<mainHome> {
                           horizontalTitleGap: 0,
                           title: const Text("Logout"),
                           onTap: () {
+                            print("fcmToken logout : $fcmToken");
                             runMutation({
                               "fcmToken": fcmToken,
                             });
@@ -438,7 +440,7 @@ class _mainHomeState extends State<mainHome> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.query_stats_rounded),
-                label: 'queries',
+                label: 'Queries',
                 backgroundColor: Color(0xFF2B2E35),
               ),
               BottomNavigationBarItem(
@@ -448,12 +450,12 @@ class _mainHomeState extends State<mainHome> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.event),
-                label: 'events',
+                label: 'Events',
                 backgroundColor: Color(0xFF2B2E35),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.connect_without_contact_sharp),
-                label: 'Net Ops',
+                label: 'NetOps',
                 backgroundColor: Color(0xFF2B2E35),
               ),
             ],

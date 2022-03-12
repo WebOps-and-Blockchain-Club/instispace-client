@@ -110,15 +110,13 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                   child: Column(
                     children: [
-                      PageTitle('Welcome ${userName
-                          .split(" ")
-                          .first}!!', context),
+                      PageTitle('Welcome ${userName.split(" ").first}!', context),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0,250,0,0),
                         child: Container(
                             alignment: Alignment.center,
                             child: const Text(
-                              'No Posts Yet !!',
+                              'No Posts Yet!',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 30,
@@ -179,10 +177,8 @@ class _HomePageState extends State<HomePage> {
                 title: data["events"][i]["title"],
                 tags: tags,
                 id: data["events"][i]["id"],
-                createdById: result
-                    .data!['getMe']['getHome']['events'][i]['createdBy']['id'],
-                // createdByName: result.data!['getMe']['getHome']['events'][i]['createdBy']['name'],
-                createdByName: '',
+                createdById: result.data!['getMe']['getHome']['events'][i]['createdBy']['id'],
+                createdByName: result.data!['getMe']['getHome']['events'][i]['createdBy']['name'],
                 likeCount: data['events'][i]['likeCount'],
                 imgUrl: imageUrls,
                 linkName: data['events'][i]['linkName'],
@@ -270,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         PageTitle('Welcome ${userName
                             .split(" ")
-                            .first}!!', context),
+                            .first}!', context),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15,15,10,15),
                           child: Row(
@@ -434,7 +430,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         PageTitle('Welcome ${userName
                             .split(" ")
-                            .first}!!', context),
+                            .first}!', context),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15,15,10,15),
                           child: Row(
@@ -611,7 +607,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         PageTitle('Welcome ${userName
                             .split(" ")
-                            .first}!!', context),
+                            .first}!', context),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15,15,10,15),
                           child: Row(
@@ -748,7 +744,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       PageTitle('Welcome ${userName
                           .split(" ")
-                          .first}!!', context),
+                          .first}!', context),
                       Column(
                         children: [
                           ///Filters

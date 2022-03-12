@@ -99,6 +99,7 @@ class _EditInterestsState extends State<EditInterests> {
                                   document: gql(updateUser),
                                   onCompleted: (dynamic resultData) {
                                     if(resultData["updateUser"]){
+
                                       Navigator.pushNamed(context, '/');
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(

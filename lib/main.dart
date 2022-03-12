@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           // This is the theme of application.
 
-          primarySwatch: Colors.green,
+          primarySwatch: Colors.red,
           primaryColor: Colors.amber,
           // colorScheme: ColorScheme.light().copyWith(secondary: const Color(0xFF2B2E35)),
         ),

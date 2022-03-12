@@ -297,7 +297,7 @@ class _EventsCardState extends State<EventsCard> {
             ),
 
             /// Call to Action Button
-            if (events.linkName != '' && events.linkToAction != null && events.linkToAction != '')
+            if (events.linkName != null && events.linkToAction != null && events.linkToAction !="")
               Padding(
                 padding: const EdgeInsets.fromLTRB(15,10,15,0),
                 child: Center(
@@ -309,7 +309,7 @@ class _EventsCardState extends State<EventsCard> {
                         launch('${events.linkToAction}');
                       },
                       child: Text(
-                        events.linkName,
+                        events.linkName!,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,

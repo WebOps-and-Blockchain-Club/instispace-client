@@ -302,9 +302,8 @@ class _HostelcontactsState extends State<Hostelcontacts> {
             }
         );
       }
-      if (userRole == "USER") {
+      else{
         hostelName = result.data!["getMe"]["hostel"]["name"];
-
         if (result.data!["getMe"]["hostel"]["contacts"] != null ||
             result.data!["getMe"]["hostel"]["contacts"].isNotEmpty) {
           contacts.clear();
@@ -315,7 +314,7 @@ class _HostelcontactsState extends State<Hostelcontacts> {
               type: result.data!["getMe"]["hostel"]["contacts"][i]["type"],
               contact: result.data!["getMe"]["hostel"]["contacts"][i]["contact"],
               id: result.data!["getMe"]["hostel"]["contacts"][i]["id"],
-              hostel: result.data!["getMe"]["hostel"],
+              hostel: result.data!["getMe"]["hostel"]["name"],
             ),
             );
           }
