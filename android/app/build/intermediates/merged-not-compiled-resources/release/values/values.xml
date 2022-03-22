@@ -101,14 +101,14 @@
     <integer name="google_play_services_version">12451000</integer>
     <integer name="status_bar_notification_info_maxnum">999</integer>
     <string name="common_google_play_services_unknown_issue"><ns1:g id="app_name">%1$s</ns1:g> is having trouble with Google Play services. Please try again.</string>
-    <string name="default_web_client_id" translatable="false">874234126154-bf49pob601gv5ntl4sajm5og8qbre5c1.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">195408738770-4p58ah9ig1ffgi3luv5936jsmmt91gh8.apps.googleusercontent.com</string>
     <string name="fcm_fallback_notification_channel_label">Miscellaneous</string>
-    <string name="gcm_defaultSenderId" translatable="false">874234126154</string>
-    <string name="google_api_key" translatable="false">AIzaSyBqKNlNemHQ1AH0x6nc0puX1tvWcDF8SkE</string>
-    <string name="google_app_id" translatable="false">1:874234126154:android:85eb26f745550083d5ebb3</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBqKNlNemHQ1AH0x6nc0puX1tvWcDF8SkE</string>
-    <string name="google_storage_bucket" translatable="false">my-hostel-8074c.appspot.com</string>
-    <string name="project_id" translatable="false">my-hostel-8074c</string>
+    <string name="gcm_defaultSenderId" translatable="false">195408738770</string>
+    <string name="google_api_key" translatable="false">AIzaSyBfoEIbMyNLHAi1xJj7OzcNjPOExMF94w4</string>
+    <string name="google_app_id" translatable="false">1:195408738770:android:c47cebb55f45c27092f00b</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBfoEIbMyNLHAi1xJj7OzcNjPOExMF94w4</string>
+    <string name="google_storage_bucket" translatable="false">instispace.appspot.com</string>
+    <string name="project_id" translatable="false">instispace</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when

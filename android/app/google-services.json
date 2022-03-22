@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "874234126154",
-    "project_id": "my-hostel-8074c",
-    "storage_bucket": "my-hostel-8074c.appspot.com"
+    "project_number": "195408738770",
+    "project_id": "instispace",
+    "storage_bucket": "instispace.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:874234126154:android:85eb26f745550083d5ebb3",
+        "mobilesdk_app_id": "1:195408738770:android:c47cebb55f45c27092f00b",
         "android_client_info": {
-          "package_name": "com.example.client"
+          "package_name": "com.cfi.instispace"
         }
       },
       "oauth_client": [
         {
-          "client_id": "874234126154-81k5u4q6a9ghp47i7lqcjr1r4ugj39vb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.client",
-            "certificate_hash": "e01969f36cef0122233d04241263778f0c2a66ff"
-          }
-        },
-        {
-          "client_id": "874234126154-bf49pob601gv5ntl4sajm5og8qbre5c1.apps.googleusercontent.com",
+          "client_id": "195408738770-4p58ah9ig1ffgi3luv5936jsmmt91gh8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBqKNlNemHQ1AH0x6nc0puX1tvWcDF8SkE"
+          "current_key": "AIzaSyBfoEIbMyNLHAi1xJj7OzcNjPOExMF94w4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "874234126154-bf49pob601gv5ntl4sajm5og8qbre5c1.apps.googleusercontent.com",
+              "client_id": "195408738770-4p58ah9ig1ffgi3luv5936jsmmt91gh8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
