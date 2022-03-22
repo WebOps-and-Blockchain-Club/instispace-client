@@ -3,6 +3,7 @@ import 'package:client/graphQL/netops.dart';
 import 'package:client/models/netopsClass.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/widgets/expandDescription.dart';
+import 'package:client/widgets/imageView.dart';
 import 'package:client/widgets/tagButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -201,8 +202,13 @@ class _NetopsCardState extends State<NetopsCard> {
                 items: post.imgUrl.map((item) => Container(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                    child: Center(
-                      child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                    child: GestureDetector(
+                      child: Center(
+                        child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                      ),
+                      onTap: () {
+                        openImageView(context, post.imgUrl.indexOf(item), post.imgUrl);
+                      },
                     ),
                   ),
                 )

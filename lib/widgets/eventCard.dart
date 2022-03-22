@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
 import 'package:client/widgets/expandDescription.dart';
 import 'package:client/widgets/NetOpCard.dart';
+import 'package:client/widgets/imageView.dart';
 import 'package:client/widgets/tagButtons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -243,8 +244,13 @@ class _EventsCardState extends State<EventsCard> {
                   items: events.imgUrl.map((item) => Container(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                      child: Center(
-                        child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                      child: GestureDetector(
+                        child: Center(
+                          child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                        ),
+                        onTap: () {
+                          openImageView(context, events.imgUrl.indexOf(item), events.imgUrl);
+                        },
                       ),
                     ),
                   )
