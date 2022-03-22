@@ -4,6 +4,7 @@ import 'package:client/models/query.dart';
 import 'package:client/widgets/expandDescription.dart';
 import 'package:client/screens/home/queries/editQuery.dart';
 import 'package:client/widgets/NetOpCard.dart';
+import 'package:client/widgets/imageView.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/widgets/marquee.dart';
@@ -116,8 +117,13 @@ class _QueryCardState extends State<QueryCard> {
                       items: post.imgUrl.map((item) => Container(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(5,0,5,0),
-                          child: Center(
-                            child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                          child: GestureDetector(
+                            child: Center(
+                              child: Image.network(item,fit: BoxFit.contain,width: 400,),
+                            ),
+                            onTap: () {
+                              openImageView(context, post.imgUrl.indexOf(item), post.imgUrl);
+                            },
                           ),
                         ),
                       )

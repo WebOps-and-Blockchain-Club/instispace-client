@@ -1,6 +1,7 @@
 import 'package:client/graphQL/LnF.dart';
 import 'package:client/models/L&Fclass.dart';
 import 'package:client/screens/home/lostAndFound/editFound.dart';
+import 'package:client/widgets/imageView.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
@@ -152,10 +153,15 @@ class LFCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               child: CarouselSlider(
                 items: post.imageUrl.map((item) => Container(
-                  child: Center(
-                    child: Image.network(item,
-                      fit: BoxFit.contain,
+                  child: GestureDetector(
+                    child: Center(
+                      child: Image.network(item,
+                        fit: BoxFit.contain,
+                      ),
                     ),
+                    onTap: () {
+                      openImageView(context, post.imageUrl.indexOf(item), post.imageUrl);
+                    },
                   ),
                 )
                 ).toList(),
