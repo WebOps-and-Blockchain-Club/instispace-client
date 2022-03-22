@@ -393,7 +393,7 @@ class _mainHomeState extends State<mainHome> {
                           onCompleted: (result) {
                             print("logout result:$result");
                             if (result["logout"] == true) {
-                              // prefs?.clear();
+                              prefs?.clear();
                               _auth.clearAuth();
                             }
                           }),
