@@ -46,6 +46,10 @@ class AuthService extends ChangeNotifier{
     // print('clear auth called');
     notifyListeners();
   }
+  clearMe()async{
+    await _initAuth();
+    prefs!.clear();
+  }
   _loadRole() async{
     await _initAuth();
     _role = (prefs!.getString('role')??null);
@@ -62,6 +66,20 @@ class AuthService extends ChangeNotifier{
     prefs!.setBool('isNewUser', isNewUser);
     _isNewUser=isNewUser;
     notifyListeners();
+  }
+  setMe(String _roll ,String _name ,String _userRole, List<String> interests ,String _id,String _hostelName,String _hostelId,String? _mobile )async{
+    await _initAuth();
+    print("setMe called");
+    prefs!.setString('roll', _roll);
+    prefs!.setString('name', _name);
+    prefs!.setString('role', _userRole);
+    prefs!.setStringList('interests', interests);
+    prefs!.setString("id", _id);
+    prefs!.setString('hostelName', _hostelName);
+    prefs!.setString('hostelId', _hostelId);
+    if(_mobile != null) {
+      prefs!.setString('mobile', _mobile);
+    }
   }
   _loadisNewUser() async{
     await _initAuth();

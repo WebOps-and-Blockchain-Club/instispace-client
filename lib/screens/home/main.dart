@@ -390,11 +390,12 @@ class _mainHomeState extends State<mainHome> {
                     Mutation(
                       options: MutationOptions(
                           document: gql(logOut),
-                          onCompleted: (result) {
+                          onCompleted: (result) async{
                             print("logout result:$result");
                             if (result["logout"] == true) {
-                              prefs?.clear();
-                              _auth.clearAuth();
+                              await _auth.clearMe();
+                               _auth.clearAuth();
+                               print("pref Cleared , prefs :${prefs!.getString('name')}");
                             }
                           }),
                       builder:

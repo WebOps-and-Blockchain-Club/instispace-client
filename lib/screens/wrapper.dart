@@ -94,9 +94,8 @@ class _getMeLoaderState extends State<getMeLoader> {
                   onCompleted: (result) async{
                     print("logout result:$result");
                     if (result["logout"] == true) {
-                      await widget.prefs.clear();
+                      _auth.clearMe();
                       print("pref Cleared , prefs :${widget.prefs}");
-                      _auth.clearAuth();
                     }
                   }),
               builder:
@@ -141,16 +140,7 @@ class _getMeLoaderState extends State<getMeLoader> {
             interests.add(jsonEncode(interestJson[i]));
           }
           print("interests :$interests");
-          widget.prefs.setString('roll', _roll);
-          widget.prefs.setString('name', _name);
-          widget.prefs.setString('role', _userRole);
-          widget.prefs.setStringList('interests', interests);
-          widget.prefs.setString("id", _id);
-          widget.prefs.setString('hostelName', _hostelName);
-          widget.prefs.setString('hostelId', _hostelId);
-          if(_mobile != null) {
-            widget.prefs.setString('mobile', _mobile);
-          }
+          _auth.setMe(_roll, _name, _userRole, interests, _id, _hostelName, _hostelId, _mobile);
           print("done loading data");
           return const mainHome();
         });
