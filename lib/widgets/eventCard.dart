@@ -1,6 +1,7 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
+import 'package:client/widgets/deleteAlert.dart';
 import 'package:client/widgets/expandDescription.dart';
 import 'package:client/widgets/NetOpCard.dart';
 import 'package:client/widgets/imageView.dart';
@@ -164,6 +165,7 @@ class _EventsCardState extends State<EventsCard> {
                                   document: gql(delete),
                                   onCompleted: (result){
                                     print("result : $result");
+                                    Navigator.pop(context);
                                     widget.refetch!();
                                   }
                               ),
@@ -183,9 +185,37 @@ class _EventsCardState extends State<EventsCard> {
                                 }
                                 return IconButton(
                                   onPressed: (){
-                                    runMutation({
-                                      "eventId":events.id
-                                    });
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => DeleteAlert(
+                                          context: context,
+                                          deleteButton : ElevatedButton(
+                                            onPressed: () {
+                                              runMutation({
+                                                "eventId":events.id
+                                              });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              primary: const Color(0xFF2B2E35),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(24)
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                              minimumSize: const Size(80, 35),
+                                            ),
+                                            child: const Padding(
+                                              padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                              child: Text('Delete',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    );
                                   },
                                   icon: const Icon(Icons.delete_outline),
                                   color: Colors.white,

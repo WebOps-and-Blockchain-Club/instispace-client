@@ -8,7 +8,6 @@ import '../models/tag.dart';
 import 'NetOpCard.dart';
 import 'eventCard.dart';
 import 'loadingScreens.dart';
-import 'text.dart';
 import '../models/eventsClass.dart';
 
 class TagPage extends StatefulWidget {
@@ -95,19 +94,28 @@ class _TagPageState extends State<TagPage> {
       var data = result.data!["getTag"];
 
       ///When empty
-      if (result.data!["getTag"]["events"] == null ||
-          result.data!["getTag"]["netops"].isEmpty) {
+      if (result.data!["getTag"]["events"].isEmpty && result.data!["getTag"]["netops"].isEmpty) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.tagName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            backgroundColor: const Color(0xFF2B2E35),
+          ),
           body: Center(
             child: Column(
               children: [
-                PageTitle(widget.tagName, context),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 250, 0, 0),
                   child: Container(
                       alignment: Alignment.center,
                       child: const Text(
-                        'No events & netops Yet !!',
+                        'No Events & Netops Yet !!',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 30,
@@ -124,7 +132,7 @@ class _TagPageState extends State<TagPage> {
       }
       else {
         all.clear();
-        for (var i = 0; i < data["events"].length; i++) {
+        for (var i = 0; i < result.data!["getTag"]["events"].length; i++) {
           List<Tag> tags = [];
           for (var k = 0; k < data["events"][i]["tags"].length; k++) {
             // print("Tag_name: ${netopList[i]["tags"][k]["title"]}, category: ${netopList[i]["tags"][k]["category"]}");
@@ -156,6 +164,7 @@ class _TagPageState extends State<TagPage> {
                 () => "event",
           );
         }
+        print("None of the following");
 
         for (var i = 0; i < data["netops"].length; i++) {
           List<Tag> tags = [];
@@ -169,6 +178,9 @@ class _TagPageState extends State<TagPage> {
               ),
             );
           }
+          List<String> imageUrls=[];
+          if(data['netops'][i]['photo']!=null && data['netops'][i]['photo']!="")
+          {imageUrls=data['netops'][i]['photo'].split(" AND ");}
           all.putIfAbsent(NetOpPost(
             title: result.data!["getTag"]["netops"][i]["title"],
             tags: tags,
@@ -177,7 +189,7 @@ class _TagPageState extends State<TagPage> {
             likeCount: data["netops"][i]["likeCount"],
             endTime: data['netops'][i]['endTime'],
             attachment: data['netops'][i]['attachments'],
-            imgUrl: data['netops'][i]['photo'],
+            imgUrl: imageUrls,
             linkToAction: data['netops'][i]['linkToAction'],
             linkName: data['netops'][i]['linkName'],
             description: data["netops"][i]["content"],
