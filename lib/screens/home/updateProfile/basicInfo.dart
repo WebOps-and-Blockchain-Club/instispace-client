@@ -22,6 +22,7 @@ class _BasicInfoState extends State<BasicInfo> {
   ///Variables
   List<String> Hostels = [];
   String _DropDownValue = "Select Hostel";
+  Map<String, String> hostels = {};
   final _formkey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController PhoneNumberController = TextEditingController();
@@ -80,7 +81,10 @@ class _BasicInfoState extends State<BasicInfo> {
           Hostels.add("Select Hostel");
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
             Hostels.add(result.data!["getHostels"][i]["name"].toString());
+            hostels.putIfAbsent(result.data!["getHostels"][i]["name"], () => result.data!["getHostels"][i]["id"]);
           }
+
+
           // print(Hostels);
           return Scaffold(
             appBar: AppBar(
@@ -217,6 +221,7 @@ class _BasicInfoState extends State<BasicInfo> {
                                     name: nameController.text,
                                     phoneNumber: PhoneNumberController.text,
                                     hostelName: _DropDownValue,
+                                    hostelId: hostels[_DropDownValue]!,
                                   )));
                             }
                           }
@@ -252,8 +257,4 @@ class _BasicInfoState extends State<BasicInfo> {
   bool isValidNumber (String number) {
     return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(number);
   }
-  void Navigate () {
-    Navigator.pop(context);
-  }
 }
-

@@ -27,8 +27,8 @@ class _TagPageState extends State<TagPage> {
   Map all = {};
   String search = '';
   bool isStarred = false;
-  late String userId;
-  late String userRole;
+  late String userId = '';
+  late String userRole = '';
 
   ///Keys
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

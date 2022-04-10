@@ -18,10 +18,12 @@ class EditInterests extends StatefulWidget {
   final String name;
   final String phoneNumber;
   final String hostelName;
+  final String hostelId;
   EditInterests(
       { required this.name,
         required this.phoneNumber,
         required this.hostelName,
+        required this.hostelId,
       });
 
   @override
@@ -41,13 +43,11 @@ class _EditInterestsState extends State<EditInterests> {
   String interestsErr = "";
   String roll = '';
   String role="";
-  late AuthService _auth;
+  String id = '';
+  final AuthService _auth = AuthService();
   @override
   void initState(){
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _auth = Provider.of<AuthService>(context,listen:false);
-    });
     _sharedPreference();
 
   }
@@ -59,6 +59,7 @@ class _EditInterestsState extends State<EditInterests> {
     setState(() {
       roll = prefs!.getString('roll')!;
       role = prefs!.getString('role')!;
+      id = prefs!.getString('id')!;
     });
   }
 
@@ -126,17 +127,20 @@ class _EditInterestsState extends State<EditInterests> {
                               options: MutationOptions(
                                   document: gql(updateUser),
                                   onCompleted: (dynamic resultData) {
-                                    if(resultData["updateUser"]){
-                                      //ToDO update in shared preference.
+                                    if(resultData["updateUser"] == true){
                                       List<String> interests = [];
-                                      var interestJson = selectedInterest!.values;
-
-                                      //_auth.setMe(roll, widget.name, role, interests, _id, widget.hostelName, _hostelId, widget.phoneNumber);
+                                      for (var element in selectedInterest!.values) {
+                                        for(var i=0;i<element.length;i++){
+                                          interests.add(jsonEncode(element[i]));
+                                        }
+                                      }
+                                      // print("interest in edit : $interests");
+                                      _auth.setMe(roll, widget.name, role, interests, id, widget.hostelName, widget.hostelId, widget.phoneNumber);
                                       Navigator.of(context).popAndPushNamed('/');
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text("Profile updated successfully")
-                                        )
+                                          const SnackBar(
+                                              content: Text("Profile updated successfully")
+                                          )
                                       );
                                     }
                                   }),
@@ -160,7 +164,6 @@ class _EditInterestsState extends State<EditInterests> {
                                 return Center(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      print("selectedInterests2 : $selectedInterest");
                                       selectedInterest!.forEach((key, value) {
                                         for (var i = 0; i < value.length; i++) {
                                           selected.add(value[i].id);
@@ -173,14 +176,13 @@ class _EditInterestsState extends State<EditInterests> {
                                         });
                                       }
                                       else {
-                                        print("interest Json = ${selectedInterest!.values.toString()}");
                                         //ToDo runMutation
                                         runMutation({
                                           'userInput': {
                                             'name': widget.name,
                                             'interest': selected,
                                             'hostel': widget.hostelName,
-                                            "mobile": widget.phoneNumber
+                                            // "mobile": widget.phoneNumber
                                           }
                                         });
                                       }
