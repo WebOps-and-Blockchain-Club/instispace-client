@@ -44,6 +44,9 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
   @override
   void initState() {
     super.initState();
+    _DropDownValue = widget.amenities.hostel;
+    nameController.text = widget.amenities.name;
+    descController.text = widget.amenities.description;
     _sharedPreference();
   }
 
@@ -81,10 +84,6 @@ class _UpdateAmenityState extends State<UpdateAmenity> {
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
             Hostels.putIfAbsent(result.data!["getHostels"][i]["name"], () => result.data!["getHostels"][i]["id"]);
           }
-
-          _DropDownValue = widget.amenities.hostel;
-          nameController.text = widget.amenities.name;
-          descController.text = widget.amenities.description;
 
           return Scaffold(
             appBar: AppBar(

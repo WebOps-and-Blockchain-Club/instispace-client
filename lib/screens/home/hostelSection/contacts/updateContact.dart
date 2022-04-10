@@ -44,6 +44,11 @@ class _UpdateContactState extends State<UpdateContact> {
   @override
   void initState() {
     super.initState();
+    _DropDownValue = widget.contacts.hostel;
+    nameController.text = widget.contacts.name;
+    typeController.text = widget.contacts.type;
+    contactController.text = widget.contacts.contact;
+
     _sharedPreference();
   }
 
@@ -79,11 +84,6 @@ class _UpdateContactState extends State<UpdateContact> {
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
             Hostels.putIfAbsent(result.data!["getHostels"][i]["name"], () => result.data!["getHostels"][i]["id"]);
           }
-
-          _DropDownValue = widget.contacts.hostel;
-          nameController.text = widget.contacts.name;
-          typeController.text = widget.contacts.type;
-          contactController.text = widget.contacts.contact;
 
           return Scaffold(
             appBar: AppBar(
