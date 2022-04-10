@@ -46,7 +46,7 @@ class _WrapperState extends State<Wrapper> {
               (prefs!.getString('hostelId') == null && prefs!.getString('role') == "USER" )||
                           prefs!.getString("id") == null)
                       ? getMeLoader(prefs: prefs!,)
-                      : mainHome())
+                      : const mainHome())
                   : userInit(auth: auth));
         }));
   }
@@ -121,6 +121,7 @@ class _getMeLoaderState extends State<getMeLoader> {
             return const SizedBox.shrink();
           }
           print("after loading");
+          // print("result Data : ${result.data}");
           String _userRole = result.data!["getMe"]["role"];
           print("role : $_userRole");
           String _hostelName = (result.data!["getMe"]["hostel"] == null)?"":result.data!["getMe"]["hostel"]["name"];

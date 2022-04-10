@@ -100,7 +100,13 @@ class _InterestPageState extends State<InterestPage> {
                   Mutation(
                       options: MutationOptions(
                           document: gql(updateUser),
-                          onCompleted: (dynamic resultData) {}),
+                          onCompleted: (dynamic resultData) {
+                            print("resultData in interest: $resultData");
+                            if(resultData["updateUser"]){
+                              widget.auth.setisNewUser(false);
+                              Navigator.pop(context);
+                            }
+                          }),
                       builder: (
                         RunMutation runMutation,
                         QueryResult? result,
@@ -139,10 +145,7 @@ class _InterestPageState extends State<InterestPage> {
                                     }
                                   });
                                   print(
-                                      'name:${widget.name},interest:${selected},hostel:${widget.hostelName}');
-                                  widget.auth.setisNewUser(false);
-                                  Navigator.pop(context);
-                                }
+                                      'name:${widget.name},interest:${selected},hostel:${widget.hostelName}');                                }
                               },
                             style: ElevatedButton.styleFrom(
                               primary: const Color(0xFF2B2E35),
