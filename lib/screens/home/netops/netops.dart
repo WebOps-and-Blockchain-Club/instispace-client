@@ -140,6 +140,41 @@ class _Post_ListingState extends State<Post_Listing> {
                         child: Column(
                           children: [
                             PageTitle('Networking & Opportunities', context),
+
+                            ///Search bar and filter button
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.width * 1,
+                                child: Search(
+                                  search: search,
+                                  refetch: refetch,
+                                  ScaffoldKey: _scaffoldKey,
+                                  page: 'netops',
+                                  callback: (String val) {
+                                    setState(() {
+                                      search = val;
+                                    }
+                                    );
+                                  },
+                                  widget: Filters(
+                                    mostLikeValues: mostlikesvalue,
+                                    isStarred: isStarred,
+                                    selectedFilterIds: selectedFilterIds,
+                                    filterSettings: filterSettings,
+                                    refetch: refetch,
+                                    page: 'netops',
+                                    callback: (bool val) {
+                                      setState(() {
+                                        isStarred = val;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0,250,0,0),
                               child: Container(

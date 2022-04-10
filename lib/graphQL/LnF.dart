@@ -27,8 +27,8 @@ class LnFQuery {
 }
   """;
   String editItem = """
-  mutation(\$editItemInput: EditItemInput!, \$itemId: String!, \$editItemsImages: [Upload!]){
-  editItems(EditItemInput: \$editItemInput, ItemId: \$itemId, Images:\$editItemsImages)
+  mutation EditItems(\$editItemInput: EditItemInput!, \$itemId: String!, \$images: [Upload!]) {
+  editItems(EditItemInput: \$editItemInput, ItemId: \$itemId, Images: \$images)
 }
   """;
   String resolveItem = """

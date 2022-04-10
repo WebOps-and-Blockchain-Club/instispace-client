@@ -2,7 +2,6 @@ import 'package:client/graphQL/LnF.dart';
 import 'package:client/screens/home/lostAndFound/LFCard.dart';
 import 'package:client/screens/home/lostAndFound/addFound.dart';
 import 'package:client/screens/home/lostAndFound/addLost.dart';
-import 'package:client/widgets/search.dart';
 import 'package:client/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/tag.dart';
-import '../../../widgets/filters.dart';
 import '../../../widgets/loadingScreens.dart';
 import '../../../models/L&Fclass.dart';
 
@@ -29,9 +27,10 @@ class _LNFListingState extends State<LNFListing> {
   ///Variables
   List<LnF> Posts = [];
   String userId="";
-  bool lostFilterValue = true;
-  bool foundFilterValue = true;
-  List<String> itemFilter = [];
+  bool lostFilterValue = false;
+  bool foundFilterValue = false;
+  bool all = true;
+  List<String> itemFilter = ["LOST","FOUND"];
   int take = 10;
   late int total;
   String search = "";
@@ -62,14 +61,18 @@ class _LNFListingState extends State<LNFListing> {
 
   @override
   Widget build(BuildContext context) {
-    itemFilter.clear();
-    if (lostFilterValue) {
-      itemFilter.add("LOST");
-    }
-    if (foundFilterValue) {
-      itemFilter.add("FOUND");
-    }
 
+    // itemFilter.clear();
+    // if(lostFilterValue){
+    //   itemFilter.add("LOST");
+    // }
+    // if(foundFilterValue) {
+    //   itemFilter.add("FOUND");
+    // }
+    // if(all) {
+    //   itemFilter.add("LOST");
+    //   itemFilter.add("FOUND");
+    // }
     filterSettings.putIfAbsent(Tag(
       category: '',
       id: "id",
@@ -91,13 +94,13 @@ class _LNFListingState extends State<LNFListing> {
           },
         ),
         builder: (QueryResult result, {fetchMore, refetch}) {
+          print("search : $search");
           if (result.hasException) {
             return Text(result.exception.toString());
           }
           if (Posts.isEmpty) {
             if (result.isLoading) {
               return Scaffold(
-
                 body: Center(
                   child: Column(
                     children: [
@@ -106,7 +109,7 @@ class _LNFListingState extends State<LNFListing> {
                       Expanded(
                           child: ListView.separated(
                               itemBuilder: (context, index) =>
-                                  const NewCardSkeleton(),
+                              const NewCardSkeleton(),
                               separatorBuilder: (context,
                                   index) => const SizedBox(height: 6,),
                               itemCount: 5)
@@ -119,8 +122,7 @@ class _LNFListingState extends State<LNFListing> {
           }
 
           ///For empty screen
-          if (result.data!["getItems"]["itemsList"] == null ||
-              result.data!["getItems"]["itemsList"].isEmpty) {
+          if (result.data == null) {
             return Scaffold(
               body: Center(
                 child: Column(
@@ -282,39 +284,210 @@ class _LNFListingState extends State<LNFListing> {
                     onRefresh: () {
                       return refetch!();
                     },
-                    child: ListView(
-                      controller: scrollController,
-                        children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ///Heading
-                          PageTitle("Lost & Found", context),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ///Heading
+                        PageTitle("Lost & Found", context),
 
-                          ///Search bar and filter button
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                            child: Search(
-                                search: search,
-                                refetch: refetch,
-                                ScaffoldKey: ScaffoldKey,
-                                page: 'L&F',
-                                callback: (val) {
-                                  setState(() {
-                                    search = val;
-                                  });
-                                },
-                                widget: Filters(isStarred: false,
-                                  filterSettings: filterSettings,
-                                  selectedFilterIds: [],
-                                  mostLikeValues: false,
-                                  refetch: refetch,
-                                  page: 'L&F',
-                                  callback: (val) {},)),
+                        ///Search bar
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(22,8,10,0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+
+                                ///Search bar
+                                Expanded(
+                                  flex: 12,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                                    child: SizedBox(
+                                      height: 35,
+                                      child: TextFormField(
+                                        controller: searchController,
+                                        cursorColor: Colors.grey,
+                                        decoration: InputDecoration(
+                                          contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(100.0),
+                                          ),
+
+                                          hintText: 'Search',
+                                        ),
+                                        keyboardType: TextInputType.multiline,
+                                        // onChanged: (String value){
+                                        //   if(value.length>=3){
+                                        //
+                                        //   }
+                                        // },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                ///Search button
+                                IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      search = searchController.text;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.search_outlined),
+                                  color: const Color(0xFF42454D),
+                                ),
+
+                              ],
+                            ),
                           ),
+                        ),
 
-                          ///Listing of lost and found cards
-                          ListView(
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(22.0,0,0,0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets
+                                    .fromLTRB(
+                                    0.0, 0.0, 6.0, 0.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      lostFilterValue = false;
+                                      foundFilterValue = false;
+                                      all = true;
+                                    });
+                                    itemFilter.clear();
+                                    itemFilter.add("LOST");
+                                    itemFilter.add("FOUND");
+                                    refetch!();
+                                  },
+                                  style: ElevatedButton
+                                      .styleFrom(
+                                    primary: all ? Colors
+                                        .white : Color(
+                                        0xFF42454D),
+                                    padding: const EdgeInsets
+                                        .symmetric(vertical: 4,
+                                        horizontal: 8),
+                                    minimumSize: Size(50, 35),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius
+                                            .circular(20.0)
+                                    ),
+                                  ),
+                                  child: Text("All",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: all ? Color(
+                                            0xFF42454D) : Colors
+                                            .white,
+                                        fontSize: 15
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets
+                                    .fromLTRB(
+                                    0.0, 0.0, 6.0, 0.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      lostFilterValue = true;
+                                      all = false;
+                                      foundFilterValue = false;
+                                    });
+                                    itemFilter.clear();
+                                    itemFilter.add("LOST");
+                                    refetch!();
+                                    },
+                                  style: ElevatedButton
+                                      .styleFrom(
+                                    primary: lostFilterValue ? Colors
+                                        .white : Color(
+                                        0xFF42454D),
+                                    padding: const EdgeInsets
+                                        .symmetric(vertical: 4,
+                                        horizontal: 8),
+                                    minimumSize: Size(50, 35),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius
+                                            .circular(20.0)
+                                    ),
+                                  ),
+                                  child: Text("Lost",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: lostFilterValue ? Color(
+                                            0xFF42454D) : Colors
+                                            .white,
+                                        fontSize: 15
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets
+                                    .fromLTRB(
+                                    0.0, 0.0, 6.0, 0.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      foundFilterValue = true;
+                                      all = false;
+                                      lostFilterValue = false;
+                                    });
+                                    itemFilter.clear();
+                                    itemFilter.add("FOUND");
+                                    refetch!();
+                                  },
+                                  style: ElevatedButton
+                                      .styleFrom(
+                                    primary: foundFilterValue ? Colors
+                                        .white : Color(
+                                        0xFF42454D),
+                                    padding: const EdgeInsets
+                                        .symmetric(vertical: 4,
+                                        horizontal: 8),
+                                    minimumSize: Size(50, 35),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius
+                                            .circular(20.0)
+                                    ),
+                                  ),
+                                  child: Text("Found",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: foundFilterValue ? Color(
+                                            0xFF42454D) : Colors
+                                            .white,
+                                        fontSize: 15
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        ///Listing of lost and found cards
+                        SizedBox(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.6,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.550,
+                          child: ListView(
                             shrinkWrap: true,
                             controller: scrollController1,
                             children: [
@@ -340,9 +513,9 @@ class _LNFListingState extends State<LNFListing> {
                                 ),
                             ],
                           ),
-                        ],
-                      ),
-                    ]),
+                        ),
+                      ],
+                    ),
                   ),
                 ));
           }

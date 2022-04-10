@@ -1,12 +1,18 @@
+import 'dart:convert';
+
+import 'package:client/services/Auth.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../graphQL/auth.dart';
 import '../../../models/formErrormsgs.dart';
 import '../../../models/tag.dart';
 import '../../../widgets/text.dart';
 import '../../userInit/interestWrap.dart';
+import 'basicInfo.dart';
 
 class EditInterests extends StatefulWidget {
   final String name;
@@ -15,7 +21,7 @@ class EditInterests extends StatefulWidget {
   EditInterests(
       { required this.name,
         required this.phoneNumber,
-        required this.hostelName
+        required this.hostelName,
       });
 
   @override
@@ -33,6 +39,28 @@ class _EditInterestsState extends State<EditInterests> {
   Map<String, List<Tag>>? selectedInterest = {};
   List selected = [];
   String interestsErr = "";
+  String roll = '';
+  String role="";
+  late AuthService _auth;
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _auth = Provider.of<AuthService>(context,listen:false);
+    });
+    _sharedPreference();
+
+  }
+
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    print("prefs name");
+    setState(() {
+      roll = prefs!.getString('roll')!;
+      role = prefs!.getString('role')!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +127,12 @@ class _EditInterestsState extends State<EditInterests> {
                                   document: gql(updateUser),
                                   onCompleted: (dynamic resultData) {
                                     if(resultData["updateUser"]){
+                                      //ToDO update in shared preference.
+                                      List<String> interests = [];
+                                      var interestJson = selectedInterest!.values;
 
-                                      Navigator.pushNamed(context, '/');
+                                      //_auth.setMe(roll, widget.name, role, interests, _id, widget.hostelName, _hostelId, widget.phoneNumber);
+                                      Navigator.of(context).popAndPushNamed('/');
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                             content: Text("Profile updated successfully")
@@ -141,11 +173,14 @@ class _EditInterestsState extends State<EditInterests> {
                                         });
                                       }
                                       else {
+                                        print("interest Json = ${selectedInterest!.values.toString()}");
+                                        //ToDo runMutation
                                         runMutation({
                                           'userInput': {
                                             'name': widget.name,
                                             'interest': selected,
                                             'hostel': widget.hostelName,
+                                            "mobile": widget.phoneNumber
                                           }
                                         });
                                       }
@@ -249,4 +284,5 @@ class _EditInterestsState extends State<EditInterests> {
               }),
         ));
   }
+
 }
