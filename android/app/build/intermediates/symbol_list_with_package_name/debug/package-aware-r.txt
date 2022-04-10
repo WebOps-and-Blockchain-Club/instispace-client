@@ -1,4 +1,4 @@
-com.example.client
+com.cfi.instispace
 attr activityAction
 attr activityName
 attr alpha

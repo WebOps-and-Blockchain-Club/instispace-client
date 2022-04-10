@@ -1,6 +1,7 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/events.dart';
+import 'package:client/widgets/deleteAlert.dart';
 import 'package:client/widgets/expandDescription.dart';
 import 'package:client/widgets/NetOpCard.dart';
 import 'package:client/widgets/imageView.dart';
@@ -230,6 +231,7 @@ class _EventsCardState extends State<EventsCard> {
                                   document: gql(delete),
                                   onCompleted: (result) {
                                     print("result : $result");
+                                    Navigator.pop(context);
                                     widget.refetch!();
                                   }),
                               builder: (

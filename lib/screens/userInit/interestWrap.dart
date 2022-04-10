@@ -76,7 +76,7 @@ class _interestWrapState extends State<interestWrap> {
             );
           }).toList(),
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

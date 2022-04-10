@@ -41,15 +41,21 @@ class _EditFoundState extends State<EditFound> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-
-    ///Retrieved data of initial post
-    String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     var post=widget.post;
     nameController.text=post.what;
     locationController.text=post.location;
     contactController.text=post.contact;
     initializeDateFormatting('az');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    ///Retrieved data of initial post
+    String selectedImage = fileNames.isEmpty? "Please select an image": fileNames.toString();
 
     return Scaffold(
 
@@ -132,18 +138,18 @@ class _EditFoundState extends State<EditFound> {
                     height: 35.0,
                     child: TextFormField(
                       controller: nameController,
-
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(100.0),
                         ),
+
                         hintText: 'Name of the item',
                       ),
 
                       validator: (value){
                         if (value == null || value.isEmpty) {
-                          return 'Item name cannot be empty';
+                          return 'Item Name cannot be empty';
                         }
                         return null;
                       },
@@ -342,7 +348,7 @@ class _EditFoundState extends State<EditFound> {
                                 'photo',
                                 e.bytes as List<int>,
                                 filename: e.name,
-                                contentType: MediaType("image","png"),
+                                contentType: MediaType("image",e.name.split(".").last),
                               )
                           );
                           byteData.remove(e.bytes);
@@ -393,12 +399,83 @@ class _EditFoundState extends State<EditFound> {
                       ),
 
                       ///Submit Button
+                      // Mutation(
+                      //     options:MutationOptions(
+                      //         document: gql(editItem),
+                      //         onCompleted: (dynamic resultData){
+                      //           print("result:$resultData");
+                      //           if(resultData["editItems"]==true){
+                      //             Navigator.pop(context);
+                      //             widget.refetchPost!();
+                      //             ScaffoldMessenger.of(context).showSnackBar(
+                      //               const SnackBar(content: Text('Post Created')),
+                      //             );
+                      //           }
+                      //           else{
+                      //             ScaffoldMessenger.of(context).showSnackBar(
+                      //               const SnackBar(content: Text('Post Creation Failed')),
+                      //             );
+                      //           }
+                      //         },
+                      //         onError: (dynamic error){
+                      //           print("error:$error");
+                      //           ScaffoldMessenger.of(context).showSnackBar(
+                      //             const SnackBar(content: Text('Post Creation Failed,server Error')),
+                      //           );
+                      //         }
+                      //     ),
+                      //     builder:(
+                      //         RunMutation runMutation,
+                      //         QueryResult? result,
+                      //         ){
+                      //       if (result!.hasException){
+                      //         print(result.exception.toString());
+                      //       }
+                      //       if(result.isLoading){
+                      //         return Center(
+                      //             child: LoadingAnimationWidget.threeRotatingDots(
+                      //               color: Color(0xFF2B2E35),
+                      //               size: 20,
+                      //             ));
+                      //       }
+                      //       return ElevatedButton(
+                      //         onPressed: ()async{
+                      //           if (_formKey.currentState!.validate()){
+                      //             await runMutation({
+                      //               "itemId": widget.post.id,
+                      //               "editItemInput": {
+                      //                 "name": nameController.text,
+                      //                 "location":locationController.text,
+                      //                 "time":"$dateTime",
+                      //                 "contact":contactController.text,
+                      //               },
+                      //               "editItemsImages": multipartfile.isEmpty ? null : multipartfile,
+                      //             });
+                      //           }
+                      //         },
+                      //         child: const Text("Submit",
+                      //           style: TextStyle(
+                      //             color: Colors.white,
+                      //             fontSize: 16,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //         style: ElevatedButton.styleFrom(
+                      //             primary: const Color(0xFF2B2E35),
+                      //             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      //             minimumSize: const Size(80, 35),
+                      //             shape: RoundedRectangleBorder(
+                      //                 borderRadius: BorderRadius.circular(24)
+                      //             )
+                      //         ),
+                      //       );
+                      //     }
+                      // ),
                       Mutation(
                           options:MutationOptions(
                               document: gql(editItem),
                               onCompleted: (dynamic resultData){
-                                print("result:$resultData");
-                                if(resultData["createItem"]==true){
+                                if(resultData["editItems"]==true){
                                   Navigator.pop(context);
                                   widget.refetchPost!();
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -412,7 +489,6 @@ class _EditFoundState extends State<EditFound> {
                                 }
                               },
                               onError: (dynamic error){
-                                print("error:$error");
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Post Creation Failed,server Error')),
                                 );
@@ -436,15 +512,16 @@ class _EditFoundState extends State<EditFound> {
                               onPressed: ()async{
                                 if (_formKey.currentState!.validate()){
                                   await runMutation({
-                                    "itemInput": {
+                                    "itemId":widget.post.id,
+                                    "editItemInput": {
                                       "name": nameController.text,
                                       "location":locationController.text,
-                                      "time":dateTime,
-                                      "category": "FOUND",
+                                      "time":"$dateTime",
                                       "contact":contactController.text,
                                     },
                                     "images": multipartfile.isEmpty ? null : multipartfile,
                                   });
+                                  print("name : ${nameController.text}");
                                 }
                               },
                               child: const Text("Submit",

@@ -58,7 +58,7 @@ class _NetopsCardState extends State<NetopsCard> {
         children: [
           ///Title,Edit,Delete,Star Buttons Row
           Container(
-            color: Color(0xFF42454D),
+            color: const Color(0xFF42454D),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
               child: Row(
@@ -216,7 +216,7 @@ class _NetopsCardState extends State<NetopsCard> {
           ///Tags Row
           if (tags.isNotEmpty)
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 8, 0),
+              padding: const EdgeInsets.fromLTRB(15, 10, 8, 0),
               child: Wrap(
                 children: tags
                     .map((tag) => SizedBox(
@@ -231,10 +231,10 @@ class _NetopsCardState extends State<NetopsCard> {
           ///Attachments Wrap
           if (post.attachment != null && post.attachment != '')
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 8, 0),
+              padding: const EdgeInsets.fromLTRB(15, 10, 8, 0),
               child: Row(
                 children: [
-                  Icon(Icons.attachment),
+                  const Icon(Icons.attachment),
                   Wrap(
                     children: tags
                         .map((tag) => SizedBox(
@@ -299,7 +299,7 @@ class _NetopsCardState extends State<NetopsCard> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFF42454D),
+                      primary: const Color(0xFF42454D),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)),
                     ),
@@ -364,7 +364,6 @@ class _NetopsCardState extends State<NetopsCard> {
                         await Share.share(
                             "${post.title} \n${post.description}");
                         // }
-                        print('shared');
                       },
                       icon: const Icon(Icons.share),
                       iconSize: 20,
@@ -394,7 +393,6 @@ class _NetopsCardState extends State<NetopsCard> {
                               endDate: DateTime.parse(post.endTime),
                               location: ""),
                         ),
-                        print('remainder added')
                       },
                       icon: const Icon(Icons.access_alarm),
                       iconSize: 20,
@@ -589,8 +587,6 @@ showAlertDialog(BuildContext context, String reportNetop, String id) {
         }
         return ElevatedButton(
             onPressed: () {
-              print("reported");
-              print(reportController.text);
               runMutation({
                 "description": reportController.text,
                 "id": id,
@@ -608,7 +604,7 @@ showAlertDialog(BuildContext context, String reportNetop, String id) {
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFF2B2E35),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              minimumSize: Size(50, 35),
+              minimumSize: const Size(50, 35),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0)),
             ));

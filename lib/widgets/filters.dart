@@ -1,5 +1,3 @@
-import 'package:client/screens/userInit/dropDown.dart';
-import 'package:client/widgets/titles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

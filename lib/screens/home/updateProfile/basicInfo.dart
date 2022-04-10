@@ -22,10 +22,10 @@ class _BasicInfoState extends State<BasicInfo> {
   ///Variables
   List<String> Hostels = [];
   String _DropDownValue = "Select Hostel";
+  Map<String, String> hostels = {};
   final _formkey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController PhoneNumberController = TextEditingController();
-  set DropDownValue(String value) => setState(() => _DropDownValue = value);
   String emptyNameErr = "";
   String emptyContactErr = "";
   String emptyHostelErr = '';
@@ -34,9 +34,8 @@ class _BasicInfoState extends State<BasicInfo> {
   String hostelName ='';
   String mobile = '';
 
-
   @override
-  void initstate(){
+  void initState(){
     super.initState();
     _sharedPreference();
   }
@@ -44,22 +43,25 @@ class _BasicInfoState extends State<BasicInfo> {
   SharedPreferences? prefs;
   void _sharedPreference()async{
     prefs = await SharedPreferences.getInstance();
-    print("prefs home : $prefs");
+    print("prefs name");
     setState(() {
       userName = prefs!.getString('name')!;
       hostelName = prefs!.getString('hostelName')!;
+      print("hostelName:${prefs!.getString('hostelName')!}");
       if(prefs!.getString('mobile') != null) {
         mobile = prefs!.getString('mobile')!;
       }
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
 
     nameController.text = userName;
+    _DropDownValue=hostelName;
     print("Username : $userName");
-    print("textCOntroller : ${nameController.text}");
+    print("textController : ${nameController.text}");
 
     return Query(
         options: QueryOptions(
@@ -79,8 +81,10 @@ class _BasicInfoState extends State<BasicInfo> {
           Hostels.add("Select Hostel");
           for (var i = 0; i < result.data!["getHostels"].length; i++) {
             Hostels.add(result.data!["getHostels"][i]["name"].toString());
+            hostels.putIfAbsent(result.data!["getHostels"][i]["name"], () => result.data!["getHostels"][i]["id"]);
           }
-          _DropDownValue = Hostels[0];
+
+
           // print(Hostels);
           return Scaffold(
             appBar: AppBar(
@@ -213,13 +217,15 @@ class _BasicInfoState extends State<BasicInfo> {
                                 emptyContactErr = "";
                               });
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => EditInterests(
+                                  builder: (BuildContext Context) => EditInterests(
                                     name: nameController.text,
                                     phoneNumber: PhoneNumberController.text,
                                     hostelName: _DropDownValue,
+                                    hostelId: hostels[_DropDownValue]!,
                                   )));
                             }
                           }
+                          print("nameController : ${nameController.text}, phoneNumber : ${PhoneNumberController.text}, hostelName: ${_DropDownValue}");
                         },
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFF2B2E35),

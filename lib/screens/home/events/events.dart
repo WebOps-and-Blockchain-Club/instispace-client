@@ -143,6 +143,41 @@ class _HomeState extends State<EventsHome> {
                     child: Column(
                       children: [
                         PageTitle('Events', context),
+
+                        ///Search bar and filter button
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: Search(
+                              search: search,
+                              refetch: refetch,
+                              ScaffoldKey: ScaffoldKey,
+                              page: 'netops',
+                              callback: (String val) {
+                                setState(() {
+                                  search = val;
+                                }
+                                );
+                              },
+                              widget: Filters(
+                                mostLikeValues: mostlikesvalue,
+                                isStarred: isStarred,
+                                selectedFilterIds: selectedFilterIds,
+                                refetch: refetch,
+                                interest: interest,
+                                page: 'netops',
+                                callback: (bool val) {
+                                  setState(() {
+                                    isStarred = val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0,250,0,0),
                           child: Container(

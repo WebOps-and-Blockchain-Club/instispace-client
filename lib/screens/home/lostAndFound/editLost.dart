@@ -402,7 +402,7 @@ class _EditLostState extends State<EditLost> {
                             options:MutationOptions(
                                 document: gql(editItem),
                                 onCompleted: (dynamic resultData){
-                                  if(resultData["createItem"]==true){
+                                  if(resultData["editItems"]==true){
                                     Navigator.pop(context);
                                     widget.refetchPost!();
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -426,7 +426,7 @@ class _EditLostState extends State<EditLost> {
                                 QueryResult? result,
                                 ){
                               if (result!.hasException){
-                                return Text(result.exception.toString());
+                                print(result.exception.toString());
                               }
                               if(result.isLoading){
                                 return Center(
@@ -440,14 +440,13 @@ class _EditLostState extends State<EditLost> {
                                   if (_formKey.currentState!.validate()){
                                     await runMutation({
                                       "itemId":widget.post.id,
-                                      "edititemInput": {
+                                      "editItemInput": {
                                         "name": nameController.text,
                                         "location":locationController.text,
                                         "time":"$dateTime",
-                                        "category": "LOST",
                                         "contact":contactController.text,
                                       },
-                                      "editItemsImages": multipartfile.isEmpty ? null : multipartfile,
+                                      "images": multipartfile.isEmpty ? null : multipartfile,
                                     });
                                   }
                                 },

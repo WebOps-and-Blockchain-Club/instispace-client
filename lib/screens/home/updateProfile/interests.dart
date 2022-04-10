@@ -1,21 +1,29 @@
+import 'dart:convert';
+
+import 'package:client/services/Auth.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../graphQL/auth.dart';
 import '../../../models/formErrormsgs.dart';
 import '../../../models/tag.dart';
 import '../../../widgets/text.dart';
 import '../../userInit/interestWrap.dart';
+import 'basicInfo.dart';
 
 class EditInterests extends StatefulWidget {
   final String name;
   final String phoneNumber;
   final String hostelName;
+  final String hostelId;
   EditInterests(
       { required this.name,
         required this.phoneNumber,
-        required this.hostelName
+        required this.hostelName,
+        required this.hostelId,
       });
 
   @override
@@ -33,6 +41,27 @@ class _EditInterestsState extends State<EditInterests> {
   Map<String, List<Tag>>? selectedInterest = {};
   List selected = [];
   String interestsErr = "";
+  String roll = '';
+  String role="";
+  String id = '';
+  final AuthService _auth = AuthService();
+  @override
+  void initState(){
+    super.initState();
+    _sharedPreference();
+
+  }
+
+  SharedPreferences? prefs;
+  void _sharedPreference()async{
+    prefs = await SharedPreferences.getInstance();
+    print("prefs name");
+    setState(() {
+      roll = prefs!.getString('roll')!;
+      role = prefs!.getString('role')!;
+      id = prefs!.getString('id')!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,13 +127,20 @@ class _EditInterestsState extends State<EditInterests> {
                               options: MutationOptions(
                                   document: gql(updateUser),
                                   onCompleted: (dynamic resultData) {
-                                    if(resultData["updateUser"]){
-
-                                      Navigator.pushNamed(context, '/');
+                                    if(resultData["updateUser"] == true){
+                                      List<String> interests = [];
+                                      for (var element in selectedInterest!.values) {
+                                        for(var i=0;i<element.length;i++){
+                                          interests.add(jsonEncode(element[i]));
+                                        }
+                                      }
+                                      // print("interest in edit : $interests");
+                                      _auth.setMe(roll, widget.name, role, interests, id, widget.hostelName, widget.hostelId, widget.phoneNumber);
+                                      Navigator.of(context).popAndPushNamed('/');
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text("Profile updated successfully")
-                                        )
+                                          const SnackBar(
+                                              content: Text("Profile updated successfully")
+                                          )
                                       );
                                     }
                                   }),
@@ -128,7 +164,6 @@ class _EditInterestsState extends State<EditInterests> {
                                 return Center(
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      print("selectedInterests2 : $selectedInterest");
                                       selectedInterest!.forEach((key, value) {
                                         for (var i = 0; i < value.length; i++) {
                                           selected.add(value[i].id);
@@ -141,11 +176,13 @@ class _EditInterestsState extends State<EditInterests> {
                                         });
                                       }
                                       else {
+                                        //ToDo runMutation
                                         runMutation({
                                           'userInput': {
                                             'name': widget.name,
                                             'interest': selected,
                                             'hostel': widget.hostelName,
+                                            // "mobile": widget.phoneNumber
                                           }
                                         });
                                       }
@@ -249,4 +286,5 @@ class _EditInterestsState extends State<EditInterests> {
               }),
         ));
   }
+
 }

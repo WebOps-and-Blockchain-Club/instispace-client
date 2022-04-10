@@ -62,10 +62,9 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
   final _formkey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
-
   @override
-  Widget build(BuildContext context) {
-
+  void initState () {
+    super.initState();
     ///Retrieved values of the inital posts
     titleController.text = widget.announcement.title;
     description = widget.announcement.description;
@@ -73,7 +72,10 @@ class _EditAnnouncementsState extends State<EditAnnouncements> {
     endtime = widget.announcement.endTime.toString().substring(11,16);
     selectedHostels = widget.announcement.hostelIds;
     endTime = "$endDate $endtime";
+  }
 
+  @override
+  Widget build(BuildContext context) {
 
     String imageName = selectedImage.isEmpty
         ? "Please select image"

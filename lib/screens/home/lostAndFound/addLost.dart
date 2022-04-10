@@ -9,6 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../models/formErrormsgs.dart';
+import '../../../widgets/formTexts.dart';
+
 class AddLost extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchPosts;
   AddLost({required this.refetchPosts});
@@ -28,6 +31,8 @@ class _AddLostState extends State<AddLost> {
   List multipartfile=[];
   List fileNames=[];
   FilePickerResult? result=null;
+  String emptyNameErr = "";
+  String emptyLocationErr = "";
 
   ///Controllers
   TextEditingController nameController =TextEditingController();
@@ -100,63 +105,44 @@ class _AddLostState extends State<AddLost> {
                     ),
 
                     ///Item Name Question
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                      child: Row(
-                        children: const [
-                          Text("What did you lose?",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            color: Color(0xFF222222),
-                          ),
-                          ),
-                        ],
-                      ),
-                    ),
 
-                    ///Item Name Field
+                    FormText('What did you lose?'),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
                       child: SizedBox(
-                        height: 35.0,
-                        child: TextFormField(
-                          controller: nameController,
-
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(100.0),
+                        height: 35,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              hintText: 'Name of the item',
                             ),
-
-                            hintText: 'Name of the item',
+                            controller: nameController,
+                            validator: (val) {
+                              if(val == null || val.isEmpty) {
+                                setState(() {
+                                  emptyNameErr = "Item name cannot be empty";
+                                });
+                              }
+                              else {
+                                emptyNameErr = "";
+                              }
+                              return null;
+                            },
                           ),
-
-                          validator: (value){
-                            if (value == null || value.isEmpty) {
-                              return 'Item Name cannot be empty';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ),
 
+                    errorMessages(emptyNameErr),
+
                     ///When Question
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      child: Row(
-                        children: const [
-                          Text("When?",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF222222),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    FormText("When?"),
 
                     ///When Field
                     Padding(
@@ -181,60 +167,43 @@ class _AddLostState extends State<AddLost> {
                     ),
 
                     ///Location Question
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      child: Row(
-                        children: const [
-                          Text('Where?',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF222222),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    ///Location Field
+                    FormText('Where?'),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
                       child: SizedBox(
-                        height: 35.0,
-                        child: TextFormField(
-                          controller: locationController,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(7.0, 10.0, 5.0, 2.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(100.0),
+                        height: 35,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.fromLTRB(8,5,0,8),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              hintText: 'Enter Location',
                             ),
-                            hintText: 'Enter Location',
+                            controller: locationController,
+                            validator: (val) {
+                              if(val == null || val.isEmpty) {
+                                setState(() {
+                                  emptyLocationErr = "Location cannot be empty";
+                                });
+                              }
+                              else {
+                                emptyLocationErr = "";
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value){
-                            if (value == null || value.isEmpty) {
-                              return 'Location cannot be empty';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ),
 
+                    errorMessages(emptyLocationErr),
+
                     ///Contact Question (optional)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      child: Row(
-                        children: const [
-                          Text("How to reach you? (optional)",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                              color: Color(0xFF222222),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    FormText("How to reach you? (optional)"),
 
                     ///Contact Field (optional)
                     Padding(
@@ -408,28 +377,29 @@ class _AddLostState extends State<AddLost> {
                                       ));
                                 }
                                 return ElevatedButton(
-                                    onPressed: (){
-                                      print("${multipartfile.isEmpty ? null : multipartfile}");
-                                      print("result:$multipartfile");
+                                    onPressed: ()async
+                                    {
                                       if (_formKey.currentState!.validate()){
-                                        for(var i=0;i<byteData.length;i++) {
-                                          multipartfile.add(MultipartFile.fromBytes(
-                                            'photo',
-                                            byteData[i],
-                                            filename: fileNames[i],
-                                            contentType: MediaType("image",fileNames[i].split(".").last),
-                                          ));
+                                        if(nameController.text.isNotEmpty && locationController.text.isNotEmpty) {
+                                          for(var i=0;i<byteData.length;i++) {
+                                            multipartfile.add(MultipartFile.fromBytes(
+                                              'photo',
+                                              byteData[i],
+                                              filename: fileNames[i],
+                                              contentType: MediaType("image",fileNames[i].split(".").last),
+                                            ));
+                                          }
+                                          await runMutation({
+                                            "itemInput": {
+                                              "name": nameController.text,
+                                              "location":locationController.text,
+                                              "time":"$dateTime",
+                                              "category": "LOST",
+                                              "contact":contactController.text,
+                                            },
+                                            "images": multipartfile.isEmpty ? null : multipartfile,
+                                          });
                                         }
-                                        runMutation({
-                                          "itemInput": {
-                                            "name": nameController.text,
-                                            "location":locationController.text,
-                                            "time":"$dateTime",
-                                            "category": "LOST",
-                                            "contact":contactController.text,
-                                          },
-                                          "images": multipartfile.isEmpty ? null : multipartfile,
-                                        });
                                       }
                                     },
                                   child: const Text("Submit",
