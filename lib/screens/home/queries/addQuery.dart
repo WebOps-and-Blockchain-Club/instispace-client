@@ -5,6 +5,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../../models/formErrormsgs.dart';
 class AddQuery extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchQuery;
   AddQuery({required this.refetchQuery});
@@ -24,10 +26,15 @@ class _AddQueryState extends State<AddQuery> {
   List fileNames = [];
   String selectedImage = "Please select images";
   FilePickerResult? Result;
+  String emptyTitleErr = '';
+  String emptyDescErr = '';
 
   ///Controllers
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  ///Keys
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +52,7 @@ class _AddQueryState extends State<AddQuery> {
 
       body: SafeArea(
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               Padding(
@@ -79,20 +87,21 @@ class _AddQueryState extends State<AddQuery> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0),
                             ),
-
                             hintText: 'Enter Title',
                           ),
-
                           validator: (value){
                             if (value == null || value.isEmpty) {
-                              return 'Item Name cannot be empty';
+                              setState(() {
+                                emptyTitleErr =
+                                "Title can't be empty";
+                              });
                             }
                             return null;
                           },
                         ),
                       ),
                     ),
-
+                    errorMessages(emptyTitleErr),
                     ///Description field
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -119,13 +128,21 @@ class _AddQueryState extends State<AddQuery> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0),
                             ),
-
                             hintText: 'Enter description',
                           ),
+                          validator: (value){
+                            if (value == null || value.isEmpty) {
+                              setState(() {
+                                emptyDescErr =
+                                "Description can't be empty";
+                              });
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
-
+                    errorMessages(emptyDescErr),
                     ///Images (optional)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -200,14 +217,6 @@ class _AddQueryState extends State<AddQuery> {
                         children: Result!.files.map((e) => InkWell(
                           onLongPress: (){
                             setState(() {
-                              multipartfileImage.remove(
-                                  MultipartFile.fromBytes(
-                                    'photo',
-                                    e.bytes as List<int>,
-                                    filename: e.name,
-                                    contentType: MediaType("image","png"),
-                                  )
-                              );
                               byteDataImage.remove(e.bytes);
                               fileNames.remove(e.name);
                               Result!.files.remove(e);
@@ -299,14 +308,29 @@ class _AddQueryState extends State<AddQuery> {
                                 return ElevatedButton(
                                     onPressed:()
                                         {
-                                          runMutation({
-                                          "createQuerysInput": {
-                                          "title": titleController.text,
-                                          "content": descriptionController.text,
-                                          },
-                                          "images": multipartfileImage,
-                                          // "attachments": multipartfileAttachment,
-                                          });
+                                          if(_formKey.currentState!
+                                              .validate()){
+                                            if(titleController
+                                                .text.isNotEmpty &&
+                                                descriptionController
+                                                    .text.isNotEmpty){
+                                              for(var i=0;i<byteDataImage.length;i++){
+                                                multipartfileImage.add(MultipartFile.fromBytes(
+                                                  'photo',
+                                                  byteDataImage[i],
+                                                  filename: fileNames[i],
+                                                  contentType: MediaType("image","png"),
+                                                ));
+                                              }
+                                              runMutation({
+                                                "createQuerysInput": {
+                                                  "title": titleController.text,
+                                                  "content": descriptionController.text,
+                                                },
+                                                "images": multipartfileImage,
+                                              });
+                                            }
+                                          }
                                         },
                                     child: const Text("Submit",
                                       style: TextStyle(

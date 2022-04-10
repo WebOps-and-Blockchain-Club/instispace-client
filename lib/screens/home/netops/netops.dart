@@ -11,7 +11,7 @@ import 'package:client/widgets/loadingScreens.dart';
 import '../../../models/tag.dart';
 import 'package:client/graphQL/netops.dart';
 import 'package:client/widgets/NetOpCard.dart';
-import 'package:http/http.dart' as http;
+
 
 
 class Post_Listing extends StatefulWidget {
@@ -34,7 +34,7 @@ class _Post_ListingState extends State<Post_Listing> {
   bool mostlikesvalue =false;
   bool isStarred =false;
   bool display = false;
-  Map<Tag,bool> filterSettings={};
+  Map<String, List<Tag>> interest = {};
   List<String>selectedFilterIds=[];
   late int total;
   int take= 10;
@@ -43,7 +43,6 @@ class _Post_ListingState extends State<Post_Listing> {
   ///Controllers
   ScrollController scrollController =ScrollController();
   ScrollController scrollController1 =ScrollController();
-  TextEditingController reportController =TextEditingController();
   TextEditingController searchController = TextEditingController();
 
   ///Keys
@@ -70,7 +69,7 @@ class _Post_ListingState extends State<Post_Listing> {
             document: gql(getTags)
         ),
         builder:(QueryResult result, {fetchMore, refetch}){
-          filterSettings.clear();
+          interest.clear();
           if (result.hasException) {
              print(result.exception.toString());
           }
@@ -93,12 +92,12 @@ class _Post_ListingState extends State<Post_Listing> {
           }
           var tagData = result.data!["getTags"];
           for(var i=0;i<tagData.length;i++ ){
-            filterSettings.putIfAbsent(
-                Tag(
-                  category: tagData[i]["category"],
-                  id: tagData[i]["id"],
-                  Tag_name: tagData[i]["title"],
-                ), () => false);
+            interest.putIfAbsent(
+                tagData[i]["category"].toString(), () => []);
+            interest[tagData[i]["category"]]!.add(Tag(
+                Tag_name: tagData[i]["title"].toString(),
+                category: tagData[i]["category"].toString(),
+                id: tagData[i]["id"].toString()));
           }
           return Query(
               options: QueryOptions(
@@ -128,7 +127,7 @@ class _Post_ListingState extends State<Post_Listing> {
                     );
                   }
                 }
-
+                print("selected Ids:$selectedFilterIds");
                 if (result.data!["getNetops"]["netopList"] == null || result.data!["getNetops"]["netopList"].isEmpty){
                   return Scaffold(
                     body: RefreshIndicator(
@@ -140,6 +139,39 @@ class _Post_ListingState extends State<Post_Listing> {
                         child: Column(
                           children: [
                             PageTitle('Networking & Opportunities', context),
+                            ///Search bar and filter button
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.width * 1,
+                                child: Search(
+                                  search: search,
+                                  refetch: refetch,
+                                  ScaffoldKey: _scaffoldKey,
+                                  page: 'netops',
+                                  callback: (String val) {
+                                    setState(() {
+                                      search = val;
+                                    }
+                                    );
+                                  },
+                                  widget: Filters(
+                                    mostLikeValues: mostlikesvalue,
+                                    isStarred: isStarred,
+                                    selectedFilterIds: selectedFilterIds,
+                                    interest: interest,
+                                    refetch: refetch,
+                                    page: 'netops',
+                                    callback: (bool val) {
+                                      setState(() {
+                                        isStarred = val;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0,250,0,0),
                               child: Container(
@@ -292,7 +324,7 @@ class _Post_ListingState extends State<Post_Listing> {
                                         mostLikeValues: mostlikesvalue,
                                         isStarred: isStarred,
                                         selectedFilterIds: selectedFilterIds,
-                                        filterSettings: filterSettings,
+                                        interest: interest,
                                         refetch: refetch,
                                         page: 'netops',
                                         callback: (bool val) {
@@ -318,7 +350,6 @@ class _Post_ListingState extends State<Post_Listing> {
                                               NetopsCard(
                                                   refetch:refetch,
                                                   userId: userId,
-                                                  reportController: reportController,
                                                   post :post,
                                                   page: 'NetopsSection',))
                                               .toList(),

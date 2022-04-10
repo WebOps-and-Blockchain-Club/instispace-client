@@ -7,6 +7,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 
+import '../../../widgets/imageView.dart';
+
 class queryComments extends StatefulWidget {
   final queryClass post;
 
@@ -143,6 +145,27 @@ class _queryCommentsState extends State<queryComments> {
                                             ],
                                           ),
                                         ),
+
+                                        ///Image
+                                        Wrap(
+                                          children: comment.imgUrl.map((image) => Padding(
+                                            padding: const EdgeInsets.fromLTRB(3.0, 3.0, 3.0, 0.0),
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context).size.width*0.2,
+                                              height: MediaQuery.of(context).size.height*0.2,
+                                              child: GestureDetector(
+                                                child: Center(
+                                                  child: Image.network(image,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                onTap: () {
+                                                  openImageView(context, comment.imgUrl.indexOf(image), comment.imgUrl);
+                                                },
+                                              ),
+                                            ),
+                                          )).toList(),
+                                        )
                                       ],
                                     ),
                                   ),

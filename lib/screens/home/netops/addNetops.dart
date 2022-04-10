@@ -553,24 +553,9 @@ class _AddPostState extends State<AddPost> {
                                                 if (Result != null) {
                                                   setState(() {
                                                     fileNames.clear();
-                                                    for (var i = 0;
-                                                        i <
-                                                            Result!
-                                                                .files.length;
-                                                        i++) {
-                                                      fileNames.add(Result!
-                                                          .files[i].name);
-                                                      byteDataImage.add(Result!
-                                                          .files[i].bytes);
-                                                      multipartfileImage.add(
-                                                          MultipartFile
-                                                              .fromBytes(
-                                                        'photo',
-                                                        byteDataImage[i],
-                                                        filename: fileNames[i],
-                                                        contentType: MediaType(
-                                                            "image", "png"),
-                                                      ));
+                                                    for (var i = 0; i < Result!.files.length; i++) {
+                                                      fileNames.add(Result!.files[i].name);
+                                                      byteDataImage.add(Result!.files[i].bytes);
                                                     }
                                                   });
                                                 }
@@ -600,21 +585,8 @@ class _AddPostState extends State<AddPost> {
                                               .map((e) => InkWell(
                                                     onLongPress: () {
                                                       setState(() {
-                                                        multipartfileImage
-                                                            .remove(
-                                                                MultipartFile
-                                                                    .fromBytes(
-                                                          'photo',
-                                                          e.bytes as List<int>,
-                                                          filename: e.name,
-                                                          contentType:
-                                                              MediaType("image",
-                                                                  "png"),
-                                                        ));
-                                                        byteDataImage
-                                                            .remove(e.bytes);
-                                                        fileNames
-                                                            .remove(e.name);
+                                                        byteDataImage.remove(e.bytes);
+                                                        fileNames.remove(e.name);
                                                         Result!.files.remove(e);
                                                       });
                                                     },
@@ -887,6 +859,16 @@ class _AddPostState extends State<AddPost> {
                                                         "Please Select at least one Tag";
                                                   });
                                                 } else {
+                                                  for(var i=0;i<byteDataImage.length;i++) {
+                                                    multipartfileImage.add(
+                                                        MultipartFile.fromBytes(
+                                                          'photo',
+                                                          byteDataImage[i],
+                                                          filename: fileNames[i],
+                                                          contentType: MediaType(
+                                                              "image", fileNames[i].split(".").last),
+                                                        ));
+                                                  }
                                                   runMutation({
                                                     "newNetopData": {
                                                       "content":

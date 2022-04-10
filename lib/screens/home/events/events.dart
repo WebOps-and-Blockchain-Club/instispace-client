@@ -48,7 +48,7 @@ class _HomeState extends State<EventsHome> {
   bool mostlikesvalue =false;
   bool isStarred =false;
   List<String>selectedFilterIds=[];
-  Map<Tag,bool> filterSettings={};
+  Map<String, List<Tag>> interest = {};
   int skip=0;
   int take=10;
   bool display = false;
@@ -75,7 +75,7 @@ class _HomeState extends State<EventsHome> {
         document: gql(getTags),
       ),
       builder: (QueryResult result, {fetchMore, refetch}){
-        filterSettings.clear();
+        interest.clear();
         if (result.hasException) {
           return Text(result.exception.toString());
         }
@@ -98,12 +98,12 @@ class _HomeState extends State<EventsHome> {
         }
         var tagData = result.data!["getTags"];
         for(var i=0;i<tagData.length;i++ ){
-          filterSettings.putIfAbsent(
-              Tag(
-                category: tagData[i]["category"],
-                id: tagData[i]["id"],
-                Tag_name: tagData[i]["title"],
-              ), () => false);
+          interest.putIfAbsent(
+              tagData[i]["category"].toString(), () => []);
+          interest[tagData[i]["category"]]!.add(Tag(
+              Tag_name: tagData[i]["title"].toString(),
+              category: tagData[i]["category"].toString(),
+              id: tagData[i]["id"].toString()));
         }
         return Query(
             options: QueryOptions(
@@ -255,7 +255,7 @@ class _HomeState extends State<EventsHome> {
                               widget: Filters(refetch: refetch,
                                 mostLikeValues: mostlikesvalue,
                                 isStarred: isStarred,
-                                filterSettings: filterSettings,
+                                interest: interest,
                                 selectedFilterIds: selectedFilterIds,
                                 page: 'events', callback: (bool val) { setState(() {
                                   isStarred= val;

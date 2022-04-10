@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 ///Loading screens
 class NewCardSkeleton extends StatelessWidget {
   const NewCardSkeleton({
@@ -10,7 +9,7 @@ class NewCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25,25,0,25),
+      padding: const EdgeInsets.fromLTRB(25, 25, 0, 25),
       child: Column(
         children: [
           Row(

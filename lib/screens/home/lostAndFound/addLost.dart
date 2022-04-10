@@ -408,10 +408,9 @@ class _AddLostState extends State<AddLost> {
                                       ));
                                 }
                                 return ElevatedButton(
-                                    onPressed: ()async{
+                                    onPressed: (){
                                       print("${multipartfile.isEmpty ? null : multipartfile}");
                                       print("result:$multipartfile");
-                                      // print("contact:${contactController.text}");
                                       if (_formKey.currentState!.validate()){
                                         for(var i=0;i<byteData.length;i++) {
                                           multipartfile.add(MultipartFile.fromBytes(
@@ -421,7 +420,7 @@ class _AddLostState extends State<AddLost> {
                                             contentType: MediaType("image",fileNames[i].split(".").last),
                                           ));
                                         }
-                                        await runMutation({
+                                        runMutation({
                                           "itemInput": {
                                             "name": nameController.text,
                                             "location":locationController.text,

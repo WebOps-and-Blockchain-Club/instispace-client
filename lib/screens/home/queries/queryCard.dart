@@ -8,14 +8,15 @@ import 'package:client/widgets/imageView.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/widgets/marquee.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'queryComments.dart';
+
+
 class QueryCard extends StatefulWidget {
   final queryClass post;
   final Future<QueryResult?> Function()? refetchQuery;
-  DateTime postCreated; 
-  QueryCard({required this.post,required this.refetchQuery,required this.postCreated});
+  QueryCard({required this.post,required this.refetchQuery});
   @override
   _QueryCardState createState() => _QueryCardState();
 }
@@ -25,7 +26,8 @@ class _QueryCardState extends State<QueryCard> {
   ///GraphQL
   String toggleLike = Queries().toggleLike;
   String getQuery = Queries().getMyQuery;
-
+  String reportQuery = Queries().reportMyQuery;
+  String deleteQuery = Queries().deleteQuery;
   ///Variables
   String userId = "";
   late String differenceTime;
@@ -45,7 +47,7 @@ class _QueryCardState extends State<QueryCard> {
 
   @override
   Widget build(BuildContext context) {
-    differenceTime = difference(widget.postCreated);
+    differenceTime = difference(widget.post.createdAt);
     queryClass post= widget.post;
     return Query(
       options: QueryOptions(
@@ -67,8 +69,6 @@ class _QueryCardState extends State<QueryCard> {
               )
           );
         }
-        int likeCount = result.data!["getMyQuery"]["likeCount"];
-        bool isLiked = result.data!["getMyQuery"]["isLiked"];
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(0,0,0,10),
@@ -83,34 +83,98 @@ class _QueryCardState extends State<QueryCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ///Title Container
                 Container(
                   color: const Color(0xFF42454D),
-                  child: Padding(
-                    ///Conditional Padding
-                    padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
-                    child: MarqueeWidget(
-                      direction: Axis.horizontal,
-                      child: Text(
-                        capitalize(post.title),
-                        style: TextStyle(
-                          ///Conditional Font Size
-                          fontWeight: (userId==post.createdById)
-                              ? FontWeight.w700
-                              : FontWeight.bold,
-                          ///Conditional Font Size
-                          fontSize: (userId==post.createdById)
-                              ? 18
-                              : 18,
-                          color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        ///Conditional Padding
+                        padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width*0.6,
+                          child: MarqueeWidget(
+                            direction: Axis.horizontal,
+                            child: Text(
+                              capitalize(post.title),
+                              style: TextStyle(
+                                ///Conditional Font Size
+                                fontWeight: (userId==post.createdById)
+                                    ? FontWeight.w700
+                                    : FontWeight.bold,
+                                ///Conditional Font Size
+                                fontSize: (userId==post.createdById)
+                                    ? 18
+                                    : 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Row(
+                        children: [
+                          ///Edit Button
+                          if(userId == post.createdById)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: IconButton(
+                                onPressed: () =>
+                                {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditQuery(post:post, refetchQuery: widget.refetchQuery,),
+                                      )
+                                  ),
+                                },
+                                icon: const Icon(Icons.edit),
+                                color: Colors.grey,
+                                iconSize: 22,
+                              ),
+                            ),
+                          ///Delete Button
+                          if(userId == post.createdById)
+                            Mutation(
+                                options: MutationOptions(
+                                    document: gql(deleteQuery),
+                                    onCompleted: (result) {
+                                      print('result: $result');
+                                      // if(result["deleteMyQuery"]){
+                                      //   widget.refetchQuery!();
+                                      // }
+                                    }),
+                                builder: (
+                                    RunMutation runMutation,
+                                    QueryResult? result,
+                                    ) {
+                                  if (result!.hasException) {
+                                    print(result.exception.toString());
+                                  }
+                                  if (result.isLoading) {
+                                    return Center(
+                                        child: LoadingAnimationWidget
+                                            .threeRotatingDots(
+                                          color: Colors.white,
+                                          size: 20,
+                                        ));
+                                  }
+                                  return IconButton(
+                                    onPressed: () {
+                                      runMutation({"id": post.id});
+                                    },
+                                    icon: const Icon(Icons.delete_outline),
+                                    color: Colors.white,
+                                  );
+                                }),
+                        ],
+                      )
+                    ],
                   ),
                 ),
 
                 ///Images
-                if (post.imgUrl.isNotEmpty)
+                if (post.imgUrl.isNotEmpty )
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15,10,15,0),
                     child: CarouselSlider(
@@ -163,37 +227,75 @@ class _QueryCardState extends State<QueryCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      ///Like Button
-                      Mutation(
-                          options:MutationOptions(
-                              document: gql(toggleLike)
+                      /// Like Button and Like Count
+                      Row(
+                        children: [
+                          ///Like Icon
+                          Mutation(
+                              options:MutationOptions(
+                                  document: gql(toggleLike),
+                                  onCompleted: (result){
+                                    // print(result);
+                                    if(result['toggleLikeQuery']){
+                                    }
+                                  }
+                              ),
+                              builder: (
+                                  RunMutation runMutation,
+                                  QueryResult? result,
+                                  ){
+                                if (result!.hasException){
+                                  print(result.exception.toString());
+                                }
+                                return Ink(
+                                  decoration: const ShapeDecoration(
+                                      color: Color(0xFFFFFF),
+                                      shape: CircleBorder(
+                                        side: BorderSide.none,
+                                      )
+                                  ),
+                                  height: MediaQuery.of(context).size.height*0.05,
+                                  width: MediaQuery.of(context).size.width*0.1,
+                                  child: Center(
+                                    child: IconButton(
+                                      onPressed: ()
+                                      {
+                                        runMutation({
+                                          "id": post.id
+                                        });
+                                        setState(() {
+                                          post.isLiked = !post.isLiked;
+                                          print("istLiked :${post.isLiked}");
+                                          if(post.isLiked){
+                                            post.likeCount = post.likeCount+1;
+                                            print("likeCOunt: ${post.likeCount}");
+                                          }
+                                          else{
+                                            post.likeCount = post.likeCount-1;
+                                            print("likeCOunt: ${post.likeCount}");
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(Icons.thumb_up),
+                                      iconSize: 20,
+                                      color: post.isLiked? const Color(0xFF42454D):Colors.grey,
+                                    ),
+                                  ),
+                                );
+                              }
                           ),
-                          builder: (
-                              RunMutation runMutation,
-                              QueryResult? result,
-                              ){
-                            if (result!.hasException){
-                              return Text(result.exception.toString());
-                            }
-                            return IconButton(
-                              onPressed: (){
-                                runMutation({
-                                  "id":post.id
-                                });
-                                refetch!();
-                              },
-                              icon: const Icon(Icons.thumb_up),
-                              color: isLiked? Colors.black:Colors.grey,
-                              iconSize: 22,
-                            );
-                          }
-                      ),
 
-                      ///Like Count
-                      Text("$likeCount",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),),
+                          ///Like Count
+                          Text(
+                            "${post.likeCount}",
+                            style: const TextStyle(
+                              color: Color(0xFF42454D),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 10.0,
+                            ),
+                          ),
+                        ],
+                      ),
 
                       ///Comment Button
                       Padding(
@@ -214,25 +316,32 @@ class _QueryCardState extends State<QueryCard> {
                         ),
                       ),
 
-                      ///Edit Button
-                      if(userId == post.createdById)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                          child: IconButton(
-                            onPressed: () =>
-                            {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditQuery(post:post, refetchQuery: widget.refetchQuery,),
-                                  )
-                              ),
-                            },
-                            icon: const Icon(Icons.edit),
-                            color: Colors.grey,
-                            iconSize: 22,
+                      ///Report Button
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,14,0),
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                              color: Colors.white,
+                              shape: CircleBorder(
+                                side: BorderSide.none,
+                              )
                           ),
-                        )
+                          height: MediaQuery.of(context).size.height*0.05,
+                          width: MediaQuery.of(context).size.width*0.1,
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () =>
+                              {
+                                showAlertDialog(context,reportQuery,post.id)
+                              },
+                              icon: const Icon(Icons.report),
+                              iconSize: 20,
+                              color:Colors.grey,
+                              // color: const Color(0xFF021096),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -254,5 +363,4 @@ String capitalize(String s) {
     return s;
   }
 }
-
 

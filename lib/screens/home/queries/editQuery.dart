@@ -6,6 +6,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../../models/formErrormsgs.dart';
 class EditQuery extends StatefulWidget {
   final Future<QueryResult?> Function()? refetchQuery;
   final queryClass post;
@@ -21,22 +23,33 @@ class _EditQueryState extends State<EditQuery> {
   String editQuery = Queries().editQuery;
 
   ///Variables
-  var byteDataImage;
-  var multipartfileImage;
+  List byteDataImage = [];
+  List multipartfileImage = [];
   String selectedImage = "Please select an image";
-  PlatformFile? file=null;
+  String emptyTitleErr = '';
+  String emptyDescErr = '';
+  FilePickerResult? result;
+  List fileNames = [];
 
   ///Controllers
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+  ///Keys
+  final _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     ///Retrieved data of initial post
     queryClass post = widget.post;
     titleController.text = post.title;
     descriptionController.text = post.content;
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
 
@@ -51,6 +64,7 @@ class _EditQueryState extends State<EditQuery> {
 
       body: SafeArea(
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               Padding(
@@ -91,14 +105,17 @@ class _EditQueryState extends State<EditQuery> {
 
                           validator: (value){
                             if (value == null || value.isEmpty) {
-                              return 'Item Name cannot be empty';
+                              setState(() {
+                                emptyTitleErr =
+                                "Title can't be empty";
+                              });
                             }
                             return null;
                           },
                         ),
                       ),
                     ),
-
+                    errorMessages(emptyTitleErr),
                     ///Description field
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -125,13 +142,21 @@ class _EditQueryState extends State<EditQuery> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0),
                             ),
-
                             hintText: 'Enter description',
                           ),
+                          validator: (value){
+                            if (value == null || value.isEmpty) {
+                              setState(() {
+                                emptyDescErr =
+                                "Description can't be empty";
+                              });
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
-
+                    errorMessages(emptyDescErr),
                     ///Images (optional)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -163,26 +188,19 @@ class _EditQueryState extends State<EditQuery> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                             ),
                             onPressed: () async {
-                              final FilePickerResult? result =
+                              result =
                               await FilePicker.platform.pickFiles(
                                 type: FileType.image,
                                 allowMultiple: false,
                                 withData: true,
                               );
                               if (result != null) {
-                                file = result.files.first;
                                 setState(() {
-                                  selectedImage = file!.name;
-                                  // print("selectedImage:$selectedImage");
-                                  // print("file:$file");
-                                  byteDataImage= file!.bytes;
-                                  ("byteData:$byteDataImage");
-                                  multipartfileImage=MultipartFile.fromBytes(
-                                    'photo',
-                                    byteDataImage,
-                                    filename: selectedImage,
-                                    contentType: MediaType("image","png"),
-                                  );
+                                  fileNames.clear();
+                                  for (var i=0;i<result!.files.length;i++){
+                                    fileNames.add(result!.files[i].name);
+                                    byteDataImage.add(result!.files[i].bytes);
+                                  }
                                 });
                               }
                             },
@@ -202,26 +220,30 @@ class _EditQueryState extends State<EditQuery> {
                     ),
 
                     ///Selected Images
-                    if(file!=null)
-                      InkWell(
-                        onLongPress: (){
-                          setState(() {
-                            file=null;
-                            multipartfileImage=null;
-                            byteDataImage=null;
-                            selectedImage = "Please select an image";
-                          });
-                        },
-                        child:
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.memory(
-                            file!.bytes!,
+                    if(result!=null)
+                      Wrap(
+                        children: result!.files.map((e) => InkWell(
+                          onLongPress: (){
+                            setState(() {
+                              byteDataImage.remove(e.bytes);
+                              fileNames.remove(e.name);
+                              result!.files.remove(e);
+                            });
+                          },
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.memory(
+                              e.bytes!,
+                            ),
                           ),
-                        ),
+                        )).toList(),
                       ),
-
+                    if(result!=null)
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("long press to delete"),
+                      ),
 
                     ///Buttons Row
                     Row(
@@ -263,18 +285,18 @@ class _EditQueryState extends State<EditQuery> {
                               options: MutationOptions(
                                   document: gql(editQuery),
                                   onCompleted: (dynamic resultData){
-                                    print(resultData);
-                                    if(resultData["createMyQuery"]==true){
+                                    print("resultData:$resultData");
+                                    if(resultData["editMyQuery"]==true){
                                       Navigator.pop(context);
                                       widget.refetchQuery!();
-                                      print("post created");
+                                      print("post edited");
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Query Created')),
+                                        const SnackBar(content: Text('Query Edited')),
                                       );
                                     }
                                     else{
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Query Creation Failed')),
+                                        const SnackBar(content: Text('Query Edit Failed')),
                                       );
                                     }
                                   },
@@ -289,7 +311,7 @@ class _EditQueryState extends State<EditQuery> {
                                   QueryResult? result,
                                   ){
                                 if (result!.hasException){
-                                  return Text(result.exception.toString());
+                                  print("exception : ${result.exception.toString()}");
                                 }
                                 if(result.isLoading){
                                   return Center(
@@ -301,13 +323,30 @@ class _EditQueryState extends State<EditQuery> {
                                 return ElevatedButton(
                                   onPressed:()
                                   {
-                                    runMutation({
-                                      "createQuerysInput": {
-                                        "title": titleController.text,
-                                        "content": descriptionController.text,
-                                      },
-                                      "image": multipartfileImage,
-                                    });
+                                    //ToDo Check functionality
+                                    if(_formKey.currentState!.validate()){
+                                      if(titleController
+                                          .text.isNotEmpty &&
+                                          descriptionController
+                                              .text.isNotEmpty){
+                                        for(var i=0;i<byteDataImage.length;i++){
+                                          multipartfileImage.add(MultipartFile.fromBytes(
+                                            'photo',
+                                            byteDataImage[i],
+                                            filename: fileNames[i],
+                                            contentType: MediaType("image","png"),
+                                          ));
+                                        }
+                                        runMutation({
+                                          "id":widget.post.id,
+                                          "editMyQuerysData": {
+                                            "title": titleController.text,
+                                            "content": descriptionController.text,
+                                          },
+                                          "image": multipartfileImage,
+                                        });
+                                      }
+                                    }
                                   },
                                   child: const Padding(
                                     padding: EdgeInsets.fromLTRB(15,5,15,5),

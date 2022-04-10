@@ -31,8 +31,8 @@ class _AddPostEventsState extends State<AddPostEvents> {
   ///Variables
   List<String>selectedTags = [];
   List<String>selectedIds = [];
-  List byteData = [];
-  List multipartfile = [];
+  List byteDataImage = [];
+  List multipartfileImage = [];
   List fileNames = [];
   Map<String,String>tagList = {};
   FilePickerResult? Result;
@@ -190,22 +190,45 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                   errorMessages(emptyTitleErr),
 
 
-                                  ///Select Image Button
-                                  FormText('Please Select Images'),
+                                  ///Image Selector
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      FormText('Please Select Images'),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            0, 10, 15, 0),
+                                        child: Text(
+                                          '(if any)',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15, 5, 15, 0),
                                     child: SizedBox(
                                       width: 250.0,
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              primary: const Color(0xFF42454D),
+                                              primary:
+                                              const Color(0xFF42454D),
                                               elevation: 0.0,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
-                                          ),
-                                          onPressed: () async
-                                          {
-                                            Result =
-                                            await FilePicker.platform.pickFiles(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      24.0))),
+                                          onPressed: () async {
+                                            Result = await FilePicker
+                                                .platform
+                                                .pickFiles(
                                               type: FileType.image,
                                               allowMultiple: true,
                                               withData: true,
@@ -213,48 +236,39 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                             if (Result != null) {
                                               setState(() {
                                                 fileNames.clear();
-                                                for (var i=0;i<Result!.files.length;i++){
+                                                for (var i = 0;i < Result!.files.length; i++) {
                                                   fileNames.add(Result!.files[i].name);
-                                                  byteData.add(Result!.files[i].bytes);
-                                                  multipartfile.add(MultipartFile.fromBytes(
-                                                    'photo',
-                                                    byteData[i],
-                                                    filename: fileNames[i],
-                                                    contentType: MediaType("image","png"),
-                                                  ));
+                                                  byteDataImage.add(Result!.files[i].bytes);
                                                 }
                                               });
                                             }
                                           },
 
-                                          ///Name of selected images
-                                          child: Text(
-                                            selectedImage,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold,
+                                          ///Selected images name
+                                          child: Padding(
+                                            padding:
+                                            const EdgeInsets.fromLTRB(
+                                                0.0, 7.0, 0.0, 7.0),
+                                            child: Text(
+                                              selectedImage.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 17.0,
+                                                  fontWeight:
+                                                  FontWeight.w300),
                                             ),
-                                          )
-                                      ),
+                                          )),
                                     ),
                                   ),
 
                                   ///Selected Images
-                                  if(Result!=null)
+                                  if (Result != null)
                                     Wrap(
-                                      children: Result!.files.map((e) => InkWell(
-                                        onLongPress: (){
+                                      children: Result!.files
+                                          .map((e) => InkWell(
+                                        onLongPress: () {
                                           setState(() {
-                                            multipartfile.remove(
-                                                MultipartFile.fromBytes(
-                                                  'photo',
-                                                  e.bytes as List<int>,
-                                                  filename: e.name,
-                                                  contentType: MediaType("image","png"),
-                                                )
-                                            );
-                                            byteData.remove(e.bytes);
+                                            byteDataImage.remove(e.bytes);
                                             fileNames.remove(e.name);
                                             Result!.files.remove(e);
                                           });
@@ -266,7 +280,13 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                             e.bytes!,
                                           ),
                                         ),
-                                      )).toList(),
+                                      ))
+                                          .toList(),
+                                    ),
+                                  if (Result != null)
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text("long press to delete"),
                                     ),
 
                                   ///Description Field
@@ -686,7 +706,17 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                     });
                                                   }
                                                   else {
-                                                    await runMutation({
+                                                    for(var i=0;i<byteDataImage.length;i++) {
+                                                      multipartfileImage.add(
+                                                          MultipartFile.fromBytes(
+                                                            'photo',
+                                                            byteDataImage[i],
+                                                            filename: fileNames[i],
+                                                            contentType: MediaType(
+                                                                "image", fileNames[i].split(".").last),
+                                                          ));
+                                                    }
+                                                    runMutation({
                                                       "newEventData": {
                                                         "content": myControllerDescription
                                                             .text,
@@ -701,10 +731,9 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                                         "location": myControllerLocation
                                                             .text,
                                                       },
-                                                      "image": multipartfile
-                                                          .isEmpty
+                                                      "image": multipartfileImage.isEmpty
                                                           ? null
-                                                          : multipartfile,
+                                                          : multipartfileImage,
                                                     });
                                                   }
                                                 }

@@ -82,14 +82,20 @@ class Queries{
 }
   """;
   String editQuery = """
-  mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!, \$image: Upload){
-  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData, Image: \$image)
+ mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!){
+  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData)
 }
   """;
 
   String deleteQuery = """
-  mutation(\$queryId: String!){
-  deleteMyQuery(MyQueryId: \$queryId)
+ mutation(\$id: String!){
+  deleteMyQuery(MyQueryId: \$id)
+}
+  """;
+
+  String reportMyQuery = """
+  mutation(\$description: String!, \$id: String!){
+  reportMyQuery(description: \$description, MyQueryId: \$id)
 }
   """;
 }

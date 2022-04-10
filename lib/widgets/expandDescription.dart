@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
   DescriptionTextWidget({required this.text});
 
   @override
-  _DescriptionTextWidgetState createState() => new _DescriptionTextWidgetState();
+  _DescriptionTextWidgetState createState() =>
+      new _DescriptionTextWidgetState();
 }
 
 class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
-
   ///Variables
   late String firstHalf;
   late String secondHalf;
@@ -34,37 +33,38 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: secondHalf.isEmpty
-          ?  MarkdownBody(
-        data: firstHalf,
-        shrinkWrap: true,
-      )
+          ? MarkdownBody(
+              data: firstHalf,
+              shrinkWrap: true,
+            )
           : Column(
-        children: <Widget>[
-          ///Showing first part of text
-          MarkdownBody(
-              data:flag ? (firstHalf + "...") : (firstHalf + secondHalf),
-            shrinkWrap: true,
-          ),
-
-          ///2nd part will expand on clicking this
-          InkWell(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text(
-                  flag ? "Read More" : "Read Less",
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                ///Showing first part of text
+                MarkdownBody(
+                  data: flag ? (firstHalf + "...") : (firstHalf + secondHalf),
+                  shrinkWrap: true,
+                ),
+
+                ///2nd part will expand on clicking this
+                InkWell(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        flag ? "Read More" : "Read Less",
+                        style: const TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    setState(() {
+                      flag = !flag;
+                    });
+                  },
                 ),
               ],
             ),
-            onTap: () {
-              setState(() {
-                flag = !flag;
-              });
-            },
-          ),
-        ],
-      ),
     );
   }
 }

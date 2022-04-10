@@ -29,7 +29,6 @@ class _QueryHomeState extends State<QueryHome> {
   bool orderByLikes =false;
   bool display = false;
   String search = "";
-  late DateTime createdAt;
 
   ///Controllers
   TextEditingController searchController = TextEditingController();
@@ -117,8 +116,8 @@ class _QueryHomeState extends State<QueryHome> {
             List<String> imageUrls=[];
             if(data[i]["photo"]!=null && data[i]["photo"]!="")
             {imageUrls=data[i]["photo"].split(" AND ");}
-            createdAt = DateTime.parse(data[i]["createdAt"]);
             posts.add(queryClass(id: data[i]["id"],
+              createdAt: DateTime.parse(data[i]["createdAt"]),
               title: data[i]["title"],
               likeCount: data[i]["likeCount"],
               content: data[i]["content"],
@@ -180,68 +179,58 @@ class _QueryHomeState extends State<QueryHome> {
                   },
                   color: const Color(0xFF2B2E35),
                   child: ListView(
-                    controller: scrollController,
-                      children: [ Column(
-                          children: [
-                            /// Heading
-                            PageTitle('Queries', context),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                ///Search bar and filter button
-                                Search(
-                                    search: search,
-                                    refetch: refetch,
-                                    ScaffoldKey: ScaffoldKey,
-                                    page: 'queries',
-                                    widget: Filters(filterSettings: const {},
-                                      refetch: refetch,
-                                      selectedFilterIds: const [],
-                                      isStarred: false,
-                                      mostLikeValues: false,
-                                      page: 'queries',
-                                      callback: (bool val) {},
-                                    ),
-                                    callback: (val) =>
-                                        setState(() {
-                                          search = val;
-                                        })
-                                ),
+                    children: [
+                      /// Heading
+                      PageTitle('Queries', context),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ///Search bar and filter button
+                          Search(
+                              search: search,
+                              refetch: refetch,
+                              ScaffoldKey: ScaffoldKey,
+                              page: 'queries',
+                              widget: Filters(interest: const {},
+                                refetch: refetch,
+                                selectedFilterIds: const [],
+                                isStarred: false,
+                                mostLikeValues: false,
+                                page: 'queries',
+                                callback: (bool val) {},
+                              ),
+                              callback: (val) =>
+                                  setState(() {
+                                    search = val;
+                                  })
+                          ),
 
-                                ///Listing queries
-                                SizedBox(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.70,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * 0.550,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 8, 10, 10),
-                                    child: RefreshIndicator(
-                                      color: const Color(0xFF2B2E35),
-                                      onRefresh: () {
-                                        return refetch!();
-                                      },
-                                      child: ListView(
-                                        controller: scrollController1,
-                                        children: posts.map((e) => QueryCard(
-                                          post: e,
-                                          refetchQuery: refetch,
-                                          postCreated: createdAt,)).toList(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ]
+                          ///Listing queries
+                          SizedBox(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.689,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.550,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10, 8, 10, 10),
+                              child: ListView(
+                                controller: scrollController1,
+                                children: posts.map((e) => QueryCard(
+                                  post: e,
+                                  refetchQuery: refetch,
+                                  )).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ]
                       ),
-                      ]
-                  ),
                 )
             ),
           );

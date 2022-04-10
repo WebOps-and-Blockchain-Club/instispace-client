@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:client/screens/wrapper.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -16,12 +15,10 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   enableVibration: true,
 );
 
-
-
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
- FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async{
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("A bg message just showed up : ${message.messageId}");
 }
@@ -32,7 +29,8 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,

@@ -110,7 +110,8 @@ class _EditPostEventsState extends State<EditPostEvents> {
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                child: ListView(children: [
+                child: ListView(
+                    children: [
                   SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -192,14 +193,6 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                                   .add(Result!.files[i].name);
                                               byteData
                                                   .add(Result!.files[i].bytes);
-                                              multipartfile
-                                                  .add(MultipartFile.fromBytes(
-                                                'photo',
-                                                byteData[i],
-                                                filename: fileNames[i],
-                                                contentType:
-                                                    MediaType("image", "png"),
-                                              ));
                                             }
                                           });
                                         }
@@ -224,14 +217,6 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                       .map((e) => InkWell(
                                             onLongPress: () {
                                               setState(() {
-                                                multipartfile.remove(
-                                                    MultipartFile.fromBytes(
-                                                  'photo',
-                                                  e.bytes as List<int>,
-                                                  filename: e.name,
-                                                  contentType:
-                                                      MediaType("image", "png"),
-                                                ));
                                                 byteData.remove(e.bytes);
                                                 fileNames.remove(e.name);
                                                 Result!.files.remove(e);
@@ -680,7 +665,17 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                                     "Please select at least one tag";
                                               });
                                             } else {
-                                              await runMutation({
+                                              for(var i=0;i<byteData.length;i++){
+                                                multipartfile
+                                                    .add(MultipartFile.fromBytes(
+                                                  'photo',
+                                                  byteData[i],
+                                                  filename: fileNames[i],
+                                                  contentType:
+                                                  MediaType("image", "png"),
+                                                ));
+                                              }
+                                              runMutation({
                                                 "editEventData": {
                                                   "content":
                                                       myControllerDescription

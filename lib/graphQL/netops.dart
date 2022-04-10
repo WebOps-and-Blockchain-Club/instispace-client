@@ -101,13 +101,13 @@ mutation(\$netopId: String!){
 }
   """;
   String editNetop = """
-  mutation EditNetop(\$editNetopsData: editNetopsInput!, \$netopId: String!, \$attachments: [Upload!], \$image: Upload) {
-  editNetop(EditNetopsData: \$editNetopsData, NetopId: \$netopId, Attachments: \$attachments, Image: \$image)
+ mutation(\$editNetopsData: editNetopsInput!, \$netopId: String!){
+  editNetop(EditNetopsData: \$editNetopsData, NetopId: \$netopId)
 }
 """;
   String reportNetop = """
- mutation(\$description: String!, \$netopId: String!){
-  reportNetop(description: \$description, NetopId: \$netopId)
+ mutation(\$description: String!, \$id: String!){
+  reportNetop(description: \$description, NetopId: \$id)
 }
   """;
   String netopSubscription = """

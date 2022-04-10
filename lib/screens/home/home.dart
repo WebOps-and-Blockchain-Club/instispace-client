@@ -42,7 +42,6 @@ class _HomePageState extends State<HomePage> {
   Map all = {};
 
   ///Controllers
-  late TextEditingController reportController;
   late ScrollController scrollController;
 
   ///Keys
@@ -56,7 +55,6 @@ class _HomePageState extends State<HomePage> {
       _auth = Provider.of<AuthService>(context, listen: false);
     });
     scrollController = ScrollController();
-    reportController = TextEditingController();
     _sharedPreference();
   }
   SharedPreferences? prefs;
@@ -1014,7 +1012,7 @@ class _HomePageState extends State<HomePage> {
       return EventsCard(refetch:refetch, userId: userid, post: post, userRole: userRole,);
     }
     else if(category == "netop"){
-      return NetopsCard(refetch:refetch, userId: userid, post: post, reportController: reportController, page: 'homePage');
+      return NetopsCard(refetch:refetch, userId: userid, post: post, page: 'homePage');
     }
     else if(category == "announcement"){
       // return AnnouncementHomeCard(announcements: post);
