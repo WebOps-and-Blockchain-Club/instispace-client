@@ -58,13 +58,10 @@ class _EditPostState extends State<EditPost> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    String selectedImage =
-    fileNames.isEmpty ? "Please select image(s)" : fileNames.toString();
-    ///Retrieving data of initial netops post
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     var post=widget.post;
-    List<Tag> usertagList = post.tags;
-    var dateTime=post.endTime;
     titleController.text = post.title;
     descriptionController.text=post.description;
     if(post.linkToAction!=null && post.linkToAction!=""){
@@ -73,6 +70,17 @@ class _EditPostState extends State<EditPost> {
     if(post.linkName!=null && post.linkName!=""){
       urlNameController.text=post.linkName!;
     }
+  }
+  @override
+  Widget build(BuildContext context) {
+    String selectedImage =
+    fileNames.isEmpty ? "Please select image(s)" : fileNames.toString();
+    ///Retrieving data of initial netops post
+    var post=widget.post;
+    var dateTime=post.endTime;
+    List<Tag> usertagList = post.tags;
+
+
     return Query(
       options: QueryOptions(
         document: gql(getTags),

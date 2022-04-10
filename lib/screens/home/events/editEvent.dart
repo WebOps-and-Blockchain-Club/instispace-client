@@ -62,10 +62,10 @@ class _EditPostEventsState extends State<EditPostEvents> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    ///Retrieved values of inital post
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     var post = widget.post;
-    List<Tag> usertagList = post.tags;
     myControllerTitle.text = post.title;
     myControllerLocation.text = post.location;
     if (post.linkToAction != null && post.linkToAction != "") {
@@ -73,6 +73,14 @@ class _EditPostEventsState extends State<EditPostEvents> {
     }
     myControllerDescription.text = post.description;
     formNameController.text = post.linkName!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ///Retrieved values of inital post
+    var post = widget.post;
+    List<Tag> usertagList = post.tags;
+
     return Query(
         options: QueryOptions(document: gql(getTags)),
         builder: (QueryResult result, {fetchMore, refetch}) {
