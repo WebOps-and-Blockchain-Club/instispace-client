@@ -296,6 +296,7 @@ class _Post_ListingState extends State<Post_Listing> {
                         return refetch!();
                       },
                       child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         controller: scrollController1,
                           children: [
                             Column(

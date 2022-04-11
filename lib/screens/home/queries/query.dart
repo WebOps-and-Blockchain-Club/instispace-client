@@ -179,6 +179,7 @@ class _QueryHomeState extends State<QueryHome> {
                   },
                   color: const Color(0xFF2B2E35),
                   child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     children: [
                       /// Heading
                       PageTitle('Queries', context),

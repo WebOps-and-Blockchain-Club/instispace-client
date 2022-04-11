@@ -125,638 +125,636 @@ class _EditPostState extends State<EditPost> {
                     child: Form(
                         key: _formKey,
                         child:
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height*0.89,
-                        child: ListView(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ///Title
-                                FormText('Title'),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
-                                  child: SizedBox(
-                                    height: 35.0,
-                                    child: TextFormField(
-                                      controller: titleController,
-                                      decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-                                        hintText: 'Enter title',
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ///Title
+                              FormText('Title'),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 5, 15, 5),
+                                child: SizedBox(
+                                  height: 35.0,
+                                  child: TextFormField(
+                                    controller: titleController,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100.0),
                                       ),
-                                      validator: (value){
-                                        if (value == null || value.isEmpty) {
-                                          setState(() {
-                                            emptyTitleErr = "Title can't be empty";
-                                          });
-                                        }
-                                        return null;
-                                      },
+                                      hintText: 'Enter title',
                                     ),
-                                  ),
-                                ),
-
-                                errorMessages(emptyTitleErr),
-
-                                ///Description
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                FormText('Description'),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(12, 7, 15, 5),
-                                  child: SizedBox(
-                                    height: 35.0,
-                                    child: TextFormField(
-                                      controller: descriptionController,
-
-                                      decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-
-                                        hintText: 'Enter description',
-                                      ),
-                                      keyboardType: TextInputType.multiline,
-                                      validator: (value){
-                                        if (value == null || value.isEmpty) {
-                                          setState(() {
-                                            emptyDescErr = "Description can't be empty";
-                                          });
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ),
-
-                                errorMessages(emptyDescErr),
-
-                                ///End Time
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Wrap(
-                                  children: [
-                                    FormText('End Time'),
-                                    const Padding(
-                                      padding: EdgeInsets.fromLTRB(15,5,15,0),
-                                      child: Text(
-                                        '(Post will be displayed till the end time is reached)',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                ///Date Time Picker for endTime
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(12, 0, 15, 5),
-                                  child: DateTimePicker(
-                                    type: DateTimePickerType.dateTimeSeparate,
-                                    dateMask: 'd MMM, yyyy',
-                                    initialValue: post.endTime,
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime(2100),
-                                    icon: const Icon(Icons.event),
-                                    dateLabelText: 'Date',
-                                    timeLabelText: "Hour",
-                                    onChanged: (val) => {
-                                      dateTime= dateTimeString(val),
-                                    },
-                                    validator: (val) {
+                                    validator: (value){
+                                      if (value == null || value.isEmpty) {
+                                        setState(() {
+                                          emptyTitleErr = "Title can't be empty";
+                                        });
+                                      }
                                       return null;
                                     },
-                                    // onSaved: (val) => print(val),
                                   ),
                                 ),
+                              ),
 
+                              errorMessages(emptyTitleErr),
 
-                                ///Tag Selector
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                FormText('Please Select Tags'),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                  child: SizedBox(
-                                      width: 250,
-                                      child: StatefulBuilder(
-                                        builder: (BuildContext context,StateSetter setState) {
-                                          return Column(
-                                            children: [
-                                              SizedBox(
-                                                width:250,
-                                                child: ElevatedButton(
-                                                    onPressed: ()async{
-                                                      final finalResult=await showSearch(
-                                                        context: context,
-                                                        delegate: CustomSearchDelegate(searchTerms:tagList),
-                                                      );
-                                                      setState(() {
-                                                        if(finalResult!=''){
-                                                          if(!selectedTags.contains(finalResult)) {
-                                                            selectedTags.add(finalResult);
-                                                          }
-                                                        }
-                                                      });
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary: const Color(0xFF42454D),
-                                                        elevation: 0.0,
-                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
-                                                    ),
-                                                    child: const Text('Select tags',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 17.0,
-                                                          fontWeight: FontWeight.w300
-                                                      ),)),
-                                              ),
-                                              errorMessages(emptyTagsError),
+                              ///Description
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              FormText('Description'),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 7, 15, 5),
+                                child: SizedBox(
+                                  height: 35.0,
+                                  child: TextFormField(
+                                    controller: descriptionController,
 
-                                              ///Selected Tags
-                                              selectedTags==[]?Container():
-                                              Wrap(
-                                                children:selectedTags.map((e) =>
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(4.0),
-                                                      child: ElevatedButton(//shape,color etc...
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            selectedTags.remove(e);
-                                                          });
-                                                        },
-                                                        child: Text(
-                                                          e,
-                                                          style: const TextStyle(
-                                                            color: Color(0xFF2B2E35),
-                                                            fontSize: 12.5,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        style: ElevatedButton.styleFrom(
-                                                          primary: const Color(0xFFFFFFFF),
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(15)
-                                                          ),
-                                                          // side: BorderSide(color: Color(0xFF2B2E35)),
-                                                          padding: const EdgeInsets.symmetric(
-                                                              vertical: 2,
-                                                              horizontal: 6),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                ).toList(),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      )
-                                  ),
-                                ),
-
-
-                                ///Additional fields
-                                ListTile(
-                                  title: Row(
-                                    children: [
-                                      const Text('Additional Fields',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
-                                      showAdditional? const Icon(Icons.arrow_upward): const Icon(Icons.arrow_downward),
-                                    ],
-                                  ),
-                                  onTap: (){
-                                    setState(() {
-                                      showAdditional = !showAdditional;
-                                    });
-                                  },
-                                ),
-
-                                if(showAdditional)
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ///Call to Action Link
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          FormText('Call To Action Link'),
-                                          const Padding(
-                                            padding: EdgeInsets.fromLTRB(0,10,15,0),
-                                            child: Text(
-                                              '(if any)',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100.0),
                                       ),
 
-                                      ///Link Name
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(21,7,15,0),
-                                        child: Text(
-                                          'Button name',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(18, 5, 15, 5),
-                                        child: SizedBox(
-                                          height: 35.0,
-                                          child: TextFormField(
-                                            controller: urlNameController,
-
-                                            decoration: InputDecoration(
-                                              contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(100.0),
-                                              ),
-
-                                              hintText: 'Enter a name',
-                                            ),
-                                            keyboardType: TextInputType.multiline,
-                                            validator: (val) {
-                                              if(val!.isEmpty && urlController.text.isNotEmpty) {
-                                                setState(() {
-                                                  emptyUrlNameErr = "Please provide button name too if you are giving link";
-                                                });
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ),
-
-                                      errorMessages(emptyUrlNameErr),
-
-                                      ///Link Field
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(21,7,15,0),
-                                        child: Text(
-                                          'Link',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(18, 5, 15, 5),
-                                        child: SizedBox(
-                                          height: 35.0,
-                                          child: TextFormField(
-                                            controller: urlController,
-
-                                            decoration: InputDecoration(
-                                              contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(100.0),
-                                              ),
-
-                                              hintText: 'Enter URL',
-                                            ),
-                                            keyboardType: TextInputType.multiline,
-                                            validator: (val) {
-                                              if(val!.isEmpty && urlNameController.text.isNotEmpty) {
-                                                setState(() {
-                                                  emptyUrlErr = 'Please provide link too if you are giving button name';
-                                                });
-                                              }
-                                              if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
-                                              {
-                                                setState(() {
-                                                  emptyUrlErr = 'Please provide a valid link';
-                                                });
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ),
-
-                                      errorMessages(emptyUrlErr),
-
-                                      ///Image Selector
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          FormText('Please Select Images'),
-                                          const Padding(
-                                            padding: EdgeInsets.fromLTRB(0,10,15,0),
-                                            child: Text(
-                                              '(if any)',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                        child: SizedBox(
-                                            width: 250.0,
-                                            child: StatefulBuilder(
-                                              builder: (BuildContext context,StateSetter setState){
-                                                return ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary: const Color(0xFF42454D),
-                                                        elevation: 0.0,
-                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
-                                                    ),
-                                                    onPressed: () async {
-                                                      Result =
-                                                      await FilePicker.platform.pickFiles(
-                                                        type: FileType.image,
-                                                        allowMultiple: true,
-                                                      );
-                                                      if (Result != null) {
-                                                        setState(() {
-                                                          fileNames.clear();
-                                                          for (var i = 0; i < Result!.files.length; i++) {
-                                                            fileNames.add(Result!.files[i].name);
-                                                            byteDataImage.add(Result!.files[i].bytes);
-                                                          }
-                                                        });
-                                                      }
-                                                    },
-
-                                                    ///Image name
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                                      child: Text(
-                                                        selectedImage.toString(),
-                                                        style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17.0,
-                                                            fontWeight: FontWeight.w300
-                                                        ),
-                                                      ),
-                                                    ));
-                                              },
-                                            )
-                                        ),
-                                      ),
-
-                                      ///Selected Images
-                                      if (Result != null)
-                                        Wrap(
-                                          children: Result!.files
-                                              .map((e) => InkWell(
-                                            onLongPress: () {
-                                              setState(() {
-                                                byteDataImage.remove(e.bytes);
-                                                fileNames.remove(e.name);
-                                                Result!.files.remove(e);
-                                              });
-                                            },
-                                            child: SizedBox(
-                                              width: 50,
-                                              height: 50,
-                                              child: Image.memory(
-                                                e.bytes!,
-                                              ),
-                                            ),
-                                          ))
-                                              .toList(),
-                                        ),
-                                      if (Result != null)
-                                        const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text("long press to delete"),
-                                        ),
-
-                                      ///Attachment Selector
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          FormText('Please Select Attachments'),
-                                          const Padding(
-                                            padding: EdgeInsets.fromLTRB(0,10,15,0),
-                                            child: Text(
-                                              '(if any)',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                        child: SizedBox(
-                                          width: 250.0,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary: const Color(0xFF42454D),
-                                                  elevation: 0.0,
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
-                                              ),
-                                              onPressed: () async {
-                                                final FilePickerResult? result =
-                                                await FilePicker.platform.pickFiles(
-                                                  type: FileType.custom,
-                                                  allowedExtensions: ["pdf"],
-                                                  allowMultiple: true,
-                                                  withData: true,
-                                                );
-                                                if (result != null) {
-                                                  setState(() {
-                                                    AttachmentNames.clear();
-                                                    for (var i=0;i<result.files.length;i++){
-                                                      AttachmentNames.add(result.files[i].name);
-                                                      byteDataAttachment.add(result.files[i].bytes);
-                                                      multipartfileAttachment.add(MultipartFile.fromBytes(
-                                                        'file',
-                                                        byteDataAttachment[i],
-                                                        filename: AttachmentNames[i],
-                                                        contentType: MediaType("file","pdf"),
-                                                      ));
-                                                    }
-                                                  });
-                                                }
-                                              },
-
-                                              ///Attachments Name
-                                              child: Padding(
-                                                padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
-                                                child: Text(
-                                                  AttachmentNames.toString(),
-                                                  style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 17.0,
-                                                      fontWeight: FontWeight.w300
-                                                  ),
-                                                ),
-                                              )),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                              ],
-                            ),
-                            const Spacer(),
-                            ///Discard and Submit Buttons
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ///Discard Button
-                                  ElevatedButton(
-                                    onPressed: ()=>{
-                                      Navigator.pop(context)
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.fromLTRB(15,5,15,5),
-                                      child: Text('Discard',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),),
+                                      hintText: 'Enter description',
                                     ),
-                                    style: ElevatedButton.styleFrom(
-                                      primary: const Color(0xFF2B2E35),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(24)
-                                      ),
-                                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                      minimumSize: const Size(80, 35),
-                                    ),
-                                  ),
-
-                                  ///Edit Button
-                                  Mutation(
-                                      options: MutationOptions(
-                                          document: gql(editNetop),
-                                          onCompleted: (dynamic resultData){
-                                            if(resultData["editNetop"]==true){
-                                              Navigator.pop(context);
-                                              widget.refetchNetops!();
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Post Edited')),
-                                              );
-                                            }
-                                            else{
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Post Creation Failed')),
-                                              );
-                                            }
-                                          },
-                                          onError: (dynamic error){
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('Post Creation Failed,server error')),
-                                            );
-                                          }
-                                      ),
-                                      builder: (
-                                          RunMutation runMutation,
-                                          QueryResult? result,
-                                          ) {
-                                        if (result!.hasException){
-                                          print("result : ${result.exception.toString()}");
-                                        }
-                                        if(result.isLoading){
-                                          return Center(
-                                              child: LoadingAnimationWidget.threeRotatingDots(
-                                                color: const Color(0xFF2B2E35),
-                                                size: 20,
-                                              ));
-                                        }
-                                        return ElevatedButton(
-                                          onPressed: ()=>{
-                                            if (_formKey.currentState!
-                                                .validate()){
-                                              for(var i=0;i<selectedTags.length;i++){
-                                                key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i],orElse: ()=>""),
-                                                selectedIds.add(key),
-                                              },
-                                              if (selectedIds.isEmpty) {
-                                                emptyTagsError = 'Please select at least one tag'
-                                              }
-                                              else{
-                                                for(var i=0;i<byteDataImage.length;i++) {
-                                                  multipartfileImage.add(
-                                                      MultipartFile.fromBytes(
-                                                        'photo',
-                                                        byteDataImage[i],
-                                                        filename: fileNames[i],
-                                                        contentType: MediaType(
-                                                            "image", fileNames[i].split(".").last),
-                                                      )),
-                                                },
-                                                print("title : ${titleController.text}"),
-                                                runMutation({
-                                                  "netopId":post.id,
-                                                  "editNetopsData":{
-                                                    "title":titleController.text,
-                                                    "content":descriptionController.text,
-                                                    "endTime":dateTime,
-                                                    "tagIds":selectedIds,
-                                                    "linkName":urlNameController.text,
-                                                    "linkToAction":urlController.text,
-                                                  },
-                                                  "image":multipartfileImage.isEmpty
-                                                ? null
-                                                    : multipartfileImage,
-                                                  "attachments":multipartfileAttachment,
-                                                })
-                                              }
-                                            }
-                                          },
-                                          child: const Padding(
-                                            padding: EdgeInsets.fromLTRB(15,5,15,5),
-                                            child: Text('Submit',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            primary: const Color(0xFF2B2E35),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(24)
-                                            ),
-                                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                            minimumSize: const Size(80, 35),
-                                          ),
-                                        );
+                                    keyboardType: TextInputType.multiline,
+                                    validator: (value){
+                                      if (value == null || value.isEmpty) {
+                                        setState(() {
+                                          emptyDescErr = "Description can't be empty";
+                                        });
                                       }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              errorMessages(emptyDescErr),
+
+                              ///End Time
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Wrap(
+                                children: [
+                                  FormText('End Time'),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(15,5,15,0),
+                                    child: Text(
+                                      '(Post will be displayed till the end time is reached)',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
+
+                              ///Date Time Picker for endTime
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 0, 15, 5),
+                                child: DateTimePicker(
+                                  type: DateTimePickerType.dateTimeSeparate,
+                                  dateMask: 'd MMM, yyyy',
+                                  initialValue: post.endTime,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100),
+                                  icon: const Icon(Icons.event),
+                                  dateLabelText: 'Date',
+                                  timeLabelText: "Hour",
+                                  onChanged: (val) => {
+                                    dateTime= dateTimeString(val),
+                                  },
+                                  validator: (val) {
+                                    return null;
+                                  },
+                                  // onSaved: (val) => print(val),
+                                ),
+                              ),
+
+
+                              ///Tag Selector
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              FormText('Please Select Tags'),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                                child: SizedBox(
+                                    width: 250,
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,StateSetter setState) {
+                                        return Column(
+                                          children: [
+                                            SizedBox(
+                                              width:250,
+                                              child: ElevatedButton(
+                                                  onPressed: ()async{
+                                                    final finalResult=await showSearch(
+                                                      context: context,
+                                                      delegate: CustomSearchDelegate(searchTerms:tagList),
+                                                    );
+                                                    setState(() {
+                                                      if(finalResult!=''){
+                                                        if(!selectedTags.contains(finalResult)) {
+                                                          selectedTags.add(finalResult);
+                                                        }
+                                                      }
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      primary: const Color(0xFF42454D),
+                                                      elevation: 0.0,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                                  ),
+                                                  child: const Text('Select tags',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.w300
+                                                    ),)),
+                                            ),
+                                            errorMessages(emptyTagsError),
+
+                                            ///Selected Tags
+                                            selectedTags==[]?Container():
+                                            Wrap(
+                                              children:selectedTags.map((e) =>
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: ElevatedButton(//shape,color etc...
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          selectedTags.remove(e);
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        e,
+                                                        style: const TextStyle(
+                                                          color: Color(0xFF2B2E35),
+                                                          fontSize: 12.5,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      style: ElevatedButton.styleFrom(
+                                                        primary: const Color(0xFFFFFFFF),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(15)
+                                                        ),
+                                                        // side: BorderSide(color: Color(0xFF2B2E35)),
+                                                        padding: const EdgeInsets.symmetric(
+                                                            vertical: 2,
+                                                            horizontal: 6),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ).toList(),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    )
+                                ),
+                              ),
+
+
+                              ///Additional fields
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    const Text('Additional Fields',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),),
+                                    showAdditional? const Icon(Icons.arrow_upward): const Icon(Icons.arrow_downward),
+                                  ],
+                                ),
+                                onTap: (){
+                                  setState(() {
+                                    showAdditional = !showAdditional;
+                                  });
+                                },
+                              ),
+
+                              if(showAdditional)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ///Call to Action Link
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        FormText('Call To Action Link'),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(0,10,15,0),
+                                          child: Text(
+                                            '(if any)',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    ///Link Name
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(21,7,15,0),
+                                      child: Text(
+                                        'Button name',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(18, 5, 15, 5),
+                                      child: SizedBox(
+                                        height: 35.0,
+                                        child: TextFormField(
+                                          controller: urlNameController,
+
+                                          decoration: InputDecoration(
+                                            contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(100.0),
+                                            ),
+
+                                            hintText: 'Enter a name',
+                                          ),
+                                          keyboardType: TextInputType.multiline,
+                                          validator: (val) {
+                                            if(val!.isEmpty && urlController.text.isNotEmpty) {
+                                              setState(() {
+                                                emptyUrlNameErr = "Please provide button name too if you are giving link";
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+
+                                    errorMessages(emptyUrlNameErr),
+
+                                    ///Link Field
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(21,7,15,0),
+                                      child: Text(
+                                        'Link',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(18, 5, 15, 5),
+                                      child: SizedBox(
+                                        height: 35.0,
+                                        child: TextFormField(
+                                          controller: urlController,
+
+                                          decoration: InputDecoration(
+                                            contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(100.0),
+                                            ),
+
+                                            hintText: 'Enter URL',
+                                          ),
+                                          keyboardType: TextInputType.multiline,
+                                          validator: (val) {
+                                            if(val!.isEmpty && urlNameController.text.isNotEmpty) {
+                                              setState(() {
+                                                emptyUrlErr = 'Please provide link too if you are giving button name';
+                                              });
+                                            }
+                                            if (val.isNotEmpty && !Uri.parse(val).isAbsolute)
+                                            {
+                                              setState(() {
+                                                emptyUrlErr = 'Please provide a valid link';
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+
+                                    errorMessages(emptyUrlErr),
+
+                                    ///Image Selector
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        FormText('Please Select Images'),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(0,10,15,0),
+                                          child: Text(
+                                            '(if any)',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                                      child: SizedBox(
+                                          width: 250.0,
+                                          child: StatefulBuilder(
+                                            builder: (BuildContext context,StateSetter setState){
+                                              return ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      primary: const Color(0xFF42454D),
+                                                      elevation: 0.0,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                                  ),
+                                                  onPressed: () async {
+                                                    Result =
+                                                    await FilePicker.platform.pickFiles(
+                                                      type: FileType.image,
+                                                      allowMultiple: true,
+                                                    );
+                                                    if (Result != null) {
+                                                      setState(() {
+                                                        fileNames.clear();
+                                                        for (var i = 0; i < Result!.files.length; i++) {
+                                                          fileNames.add(Result!.files[i].name);
+                                                          byteDataImage.add(Result!.files[i].bytes);
+                                                        }
+                                                      });
+                                                    }
+                                                  },
+
+                                                  ///Image name
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                                    child: Text(
+                                                      selectedImage.toString(),
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 17.0,
+                                                          fontWeight: FontWeight.w300
+                                                      ),
+                                                    ),
+                                                  ));
+                                            },
+                                          )
+                                      ),
+                                    ),
+
+                                    ///Selected Images
+                                    if (Result != null)
+                                      Wrap(
+                                        children: Result!.files
+                                            .map((e) => InkWell(
+                                          onLongPress: () {
+                                            setState(() {
+                                              byteDataImage.remove(e.bytes);
+                                              fileNames.remove(e.name);
+                                              Result!.files.remove(e);
+                                            });
+                                          },
+                                          child: SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                            child: Image.memory(
+                                              e.bytes!,
+                                            ),
+                                          ),
+                                        ))
+                                            .toList(),
+                                      ),
+                                    if (Result != null)
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text("long press to delete"),
+                                      ),
+
+                                    ///Attachment Selector
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        FormText('Please Select Attachments'),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(0,10,15,0),
+                                          child: Text(
+                                            '(if any)',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                      child: SizedBox(
+                                        width: 250.0,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: const Color(0xFF42454D),
+                                                elevation: 0.0,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                            ),
+                                            onPressed: () async {
+                                              final FilePickerResult? result =
+                                              await FilePicker.platform.pickFiles(
+                                                type: FileType.custom,
+                                                allowedExtensions: ["pdf"],
+                                                allowMultiple: true,
+                                                withData: true,
+                                              );
+                                              if (result != null) {
+                                                setState(() {
+                                                  AttachmentNames.clear();
+                                                  for (var i=0;i<result.files.length;i++){
+                                                    AttachmentNames.add(result.files[i].name);
+                                                    byteDataAttachment.add(result.files[i].bytes);
+                                                    multipartfileAttachment.add(MultipartFile.fromBytes(
+                                                      'file',
+                                                      byteDataAttachment[i],
+                                                      filename: AttachmentNames[i],
+                                                      contentType: MediaType("file","pdf"),
+                                                    ));
+                                                  }
+                                                });
+                                              }
+                                            },
+
+                                            ///Attachments Name
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(0.0,7.0,0.0,7.0),
+                                              child: Text(
+                                                AttachmentNames.toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 17.0,
+                                                    fontWeight: FontWeight.w300
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                            ],
+                          ),
+
+                          ///Discard and Submit Buttons
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ///Discard Button
+                                ElevatedButton(
+                                  onPressed: ()=>{
+                                    Navigator.pop(context)
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                    child: Text('Discard',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xFF2B2E35),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                    minimumSize: const Size(80, 35),
+                                  ),
+                                ),
+
+                                ///Edit Button
+                                Mutation(
+                                    options: MutationOptions(
+                                        document: gql(editNetop),
+                                        onCompleted: (dynamic resultData){
+                                          if(resultData["editNetop"]==true){
+                                            Navigator.pop(context);
+                                            widget.refetchNetops!();
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Post Edited')),
+                                            );
+                                          }
+                                          else{
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Post Creation Failed')),
+                                            );
+                                          }
+                                        },
+                                        onError: (dynamic error){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Post Creation Failed,server error')),
+                                          );
+                                        }
+                                    ),
+                                    builder: (
+                                        RunMutation runMutation,
+                                        QueryResult? result,
+                                        ) {
+                                      if (result!.hasException){
+                                        print("result : ${result.exception.toString()}");
+                                      }
+                                      if(result.isLoading){
+                                        return Center(
+                                            child: LoadingAnimationWidget.threeRotatingDots(
+                                              color: const Color(0xFF2B2E35),
+                                              size: 20,
+                                            ));
+                                      }
+                                      return ElevatedButton(
+                                        onPressed: ()=>{
+                                          if (_formKey.currentState!
+                                              .validate()){
+                                            for(var i=0;i<selectedTags.length;i++){
+                                              key = tagList.keys.firstWhere((k) => tagList[k]==selectedTags[i],orElse: ()=>""),
+                                              selectedIds.add(key),
+                                            },
+                                            if (selectedIds.isEmpty) {
+                                              emptyTagsError = 'Please select at least one tag'
+                                            }
+                                            else{
+                                              for(var i=0;i<byteDataImage.length;i++) {
+                                                multipartfileImage.add(
+                                                    MultipartFile.fromBytes(
+                                                      'photo',
+                                                      byteDataImage[i],
+                                                      filename: fileNames[i],
+                                                      contentType: MediaType(
+                                                          "image", fileNames[i].split(".").last),
+                                                    )),
+                                              },
+                                              print("title : ${titleController.text}"),
+                                              runMutation({
+                                                "netopId":post.id,
+                                                "editNetopsData":{
+                                                  "title":titleController.text,
+                                                  "content":descriptionController.text,
+                                                  "endTime":dateTime,
+                                                  "tagIds":selectedIds,
+                                                  "linkName":urlNameController.text,
+                                                  "linkToAction":urlController.text,
+                                                },
+                                                "image":multipartfileImage.isEmpty
+                                              ? null
+                                                  : multipartfileImage,
+                                                "attachments":multipartfileAttachment,
+                                              })
+                                            }
+                                          }
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.fromLTRB(15,5,15,5),
+                                          child: Text('Submit',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: const Color(0xFF2B2E35),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(24)
+                                          ),
+                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                          minimumSize: const Size(80, 35),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       )
                     ),
                   ),

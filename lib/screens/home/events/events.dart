@@ -272,6 +272,7 @@ class _HomeState extends State<EventsHome> {
                     },
                     color: const Color(0xFF2B2E35),
                     child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
                       controller: scrollController,
                       children: [
 
