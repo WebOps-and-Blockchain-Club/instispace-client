@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:client/graphQL/netops.dart';
 import 'package:client/models/netopsClass.dart';
+import 'package:client/widgets/deleteAlert.dart';
 import 'package:client/widgets/expandDescription.dart';
 import 'package:client/widgets/imageView.dart';
 import 'package:client/widgets/tagButtons.dart';
@@ -113,6 +114,7 @@ class _NetopsCardState extends State<NetopsCard> {
                                 onCompleted: (result) {
                                   print('result: $result[deleteNetop]');
                                   widget.refetch!();
+                                  Navigator.pop(context);
                                 }),
                             builder: (
                               RunMutation runMutation,
@@ -131,7 +133,16 @@ class _NetopsCardState extends State<NetopsCard> {
                               }
                               return IconButton(
                                 onPressed: () {
-                                  runMutation({"netopId": post.id});
+                                  showDialog(
+                                      context: context,
+                                      builder: (context)=>DeleteAlert(
+                                          deleteButton: ElevatedButton(
+                                            onPressed: (){
+                                              runMutation({"netopId": post.id});
+                                            }, child: const Text('Delete'),
+                                          ),
+                                          context: context),
+                                  );
                                 },
                                 icon: const Icon(Icons.delete_outline),
                                 color: Colors.white,
@@ -362,7 +373,7 @@ class _NetopsCardState extends State<NetopsCard> {
                         // }
                         // else{
                         await Share.share(
-                            "${post.title} \n${post.description}");
+                            "*${post.title}* \n${post.description}");
                         // }
                       },
                       icon: const Icon(Icons.share),
@@ -469,49 +480,62 @@ class _NetopsCardState extends State<NetopsCard> {
                 ),
 
                 ///Comment Button
-                Mutation(
-                    options: MutationOptions(document: gql(toggleLike)),
-                    builder: (
-                      RunMutation runMutation,
-                      QueryResult? result,
-                    ) {
-                      if (result!.hasException) {
-                        print(result.exception.toString());
-                      }
-                      if (result.isLoading) {
-                        return Center(
-                            child: LoadingAnimationWidget.threeRotatingDots(
-                          color: Colors.white,
-                          size: 20,
-                        ));
-                      }
-                      return Ink(
-                        decoration: const ShapeDecoration(
-                            color: Color(0xFFFFFFFF),
-                            shape: CircleBorder(
-                              side: BorderSide.none,
-                            )),
-                        height: 36,
-                        width: 36,
-                        child: Center(
-                          child: IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Comments(
+                Row(
+                  children: [
+                    Mutation(
+                        options: MutationOptions(document: gql(toggleLike)),
+                        builder: (
+                            RunMutation runMutation,
+                            QueryResult? result,
+                            ) {
+                          if (result!.hasException) {
+                            print(result.exception.toString());
+                          }
+                          if (result.isLoading) {
+                            return Center(
+                                child: LoadingAnimationWidget.threeRotatingDots(
+                                  color: Colors.white,
+                                  size: 20,
+                                ));
+                          }
+                          return Ink(
+                            decoration: const ShapeDecoration(
+                                color: Color(0xFFFFFFFF),
+                                shape: CircleBorder(
+                                  side: BorderSide.none,
+                                )),
+                            height: 36,
+                            width: 36,
+                            child: Center(
+                              child: IconButton(
+                                onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Comments(
                                           post: post,
                                         )),
+                                  ),
+                                  print('commented'),
+                                },
+                                icon: Icon(Icons.comment),
+                                iconSize: 20,
+                                color: Colors.grey,
                               ),
-                              print('commented'),
-                            },
-                            icon: Icon(Icons.comment),
-                            iconSize: 20,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      );
-                    }),
+                            ),
+                          );
+                        }),
+                    ///Comment Count
+                    Text(
+                      "${post.commentCount}",
+                      style: const TextStyle(
+                        color: Color(0xFF42454D),
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                  ],
+                ),
 
                 ///Report Button
                 Padding(

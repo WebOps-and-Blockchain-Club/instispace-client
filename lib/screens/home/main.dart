@@ -26,7 +26,7 @@ import 'lostAndFound/LF.dart';
 import 'package:client/screens/home/netops/netops.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:client/graphQL/feedback.dart';
+
 
 class mainHome extends StatefulWidget {
   const mainHome({Key? key}) : super(key: key);
@@ -41,7 +41,7 @@ class _mainHomeState extends State<mainHome> {
   String logOut = authQuery().logOut;
 
   ///Variables
-  late AuthService _auth;
+  AuthService _auth = AuthService();
   int _selectedIndex = 2;
   late String userRole;
 
@@ -131,7 +131,7 @@ class _mainHomeState extends State<mainHome> {
   Widget build(BuildContext context) {
     _firebaseMessaging.getToken().then((token) {
       fcmToken = token!;
-      print("fcmtoken:$token");
+      // print("fcmtoken:$token");
     });
 
         return Scaffold(

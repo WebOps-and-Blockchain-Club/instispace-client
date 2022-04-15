@@ -623,7 +623,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                     ElevatedButton(
                                       onPressed: ()=>{
                                         prefs!.setString("titleControllerEvent", myControllerTitle.text),
-                                        prefs!.setString("descriptionControllerNetop",myControllerDescription.text),
+                                        prefs!.setString("descriptionControllerEvent",myControllerDescription.text),
                                         prefs!.setString("formLinkControllerEvent",myControllerFormLink.text),
                                         prefs!.setString("formNameControllerEvent",formNameController.text),
                                         prefs!.setStringList("addEventTags", selectedTags),

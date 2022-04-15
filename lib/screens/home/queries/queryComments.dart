@@ -7,6 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 
+import '../../../models/formErrormsgs.dart';
 import '../../../widgets/imageView.dart';
 
 class queryComments extends StatefulWidget {
@@ -31,6 +32,10 @@ class _queryCommentsState extends State<queryComments> {
   List byteDataImage = [];
   List multipartfileImage = [];
   List fileNames = [];
+  String emptyCommentErr = '';
+
+  ///Keys
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,9 @@ class _queryCommentsState extends State<queryComments> {
               );
             }
 
-            return ListView(
+            return Form(
+              key: _formKey,
+                child: ListView(
               children: [
                 SizedBox(
                   height: Result != null
@@ -82,94 +89,94 @@ class _queryCommentsState extends State<queryComments> {
                       Column(
                         children: comments
                             .map((comment) => Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                  child: Card(
-                                    color: const Color(0xFFDEDDFF),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 5),
-                                          child: Row(
-                                            children: [
-                                              //PP
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        10, 10, 5, 0),
-                                                child: Container(
-                                                  height: 30.0,
-                                                  width: 30.0,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.blue,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                50.0)),
-                                                  ),
-                                                ),
-                                              ),
-
-                                              ///Name
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 6, 10, 0),
-                                                child: Text(
-                                                  comment.name,
-                                                  style: const TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                          padding:
+                          const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: Card(
+                            color: const Color(0xFFDEDDFF),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0, 0, 0, 5),
+                                  child: Row(
+                                    children: [
+                                      //PP
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.fromLTRB(
+                                            10, 10, 5, 0),
+                                        child: Container(
+                                          height: 30.0,
+                                          width: 30.0,
+                                          decoration:
+                                          const BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(
+                                                    50.0)),
                                           ),
                                         ),
+                                      ),
 
-                                        ///Comment
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 2, 10, 8),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                comment.message,
-                                                style: TextStyle(
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.w300,
-                                                ),
-                                              ),
-                                            ],
+                                      ///Name
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.fromLTRB(
+                                            5, 6, 10, 0),
+                                        child: Text(
+                                          comment.name,
+                                          style: const TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-
-                                        ///Image
-                                        Wrap(
-                                          children: comment.imgUrl.map((image) => Padding(
-                                            padding: const EdgeInsets.fromLTRB(3.0, 3.0, 3.0, 0.0),
-                                            child: SizedBox(
-                                              width: MediaQuery.of(context).size.width*0.2,
-                                              height: MediaQuery.of(context).size.height*0.2,
-                                              child: GestureDetector(
-                                                child: Center(
-                                                  child: Image.network(image,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  openImageView(context, comment.imgUrl.indexOf(image), comment.imgUrl);
-                                                },
-                                              ),
-                                            ),
-                                          )).toList(),
-                                        )
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ))
+                                ),
+
+                                ///Comment
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 2, 10, 8),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        comment.message,
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                ///Image
+                                Wrap(
+                                  children: comment.imgUrl.map((image) => Padding(
+                                    padding: const EdgeInsets.fromLTRB(3.0, 3.0, 3.0, 0.0),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.2,
+                                      height: MediaQuery.of(context).size.height*0.2,
+                                      child: GestureDetector(
+                                        child: Center(
+                                          child: Image.network(image,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          openImageView(context, comment.imgUrl.indexOf(image), comment.imgUrl);
+                                        },
+                                      ),
+                                    ),
+                                  )).toList(),
+                                )
+                              ],
+                            ),
+                          ),
+                        ))
                             .toList(),
                       )
                     ],
@@ -181,28 +188,28 @@ class _queryCommentsState extends State<queryComments> {
                   Wrap(
                     children: Result!.files
                         .map((e) => InkWell(
-                              onLongPress: () {
-                                setState(() {
-                                  multipartfileImage
-                                      .remove(MultipartFile.fromBytes(
-                                    'photo',
-                                    e.bytes as List<int>,
-                                    filename: e.name,
-                                    contentType: MediaType("image", "png"),
-                                  ));
-                                  byteDataImage.remove(e.bytes);
-                                  fileNames.remove(e.name);
-                                  Result!.files.remove(e);
-                                });
-                              },
-                              child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Image.memory(
-                                  e.bytes!,
-                                ),
-                              ),
-                            ))
+                      onLongPress: () {
+                        setState(() {
+                          multipartfileImage
+                              .remove(MultipartFile.fromBytes(
+                            'photo',
+                            e.bytes as List<int>,
+                            filename: e.name,
+                            contentType: MediaType("image", "png"),
+                          ));
+                          byteDataImage.remove(e.bytes);
+                          fileNames.remove(e.name);
+                          Result!.files.remove(e);
+                        });
+                      },
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Image.memory(
+                          e.bytes!,
+                        ),
+                      ),
+                    ))
                         .toList(),
                   ),
 
@@ -219,7 +226,7 @@ class _queryCommentsState extends State<queryComments> {
                           decoration: const BoxDecoration(
                             color: Colors.blue,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(50.0)),
+                            BorderRadius.all(Radius.circular(50.0)),
                           ),
                           child: const CircleAvatar(
                             radius: 30.0,
@@ -228,19 +235,33 @@ class _queryCommentsState extends State<queryComments> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: TextFormField(
-                            controller: commentController,
-                            decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              labelText: 'Write a comment',
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 16),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: TextFormField(
+                                controller: commentController,
+                                decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  labelText: 'Write a comment',
+                                ),
+                                validator: (value){
+                                  if (value == null || value.isEmpty) {
+                                    setState(() {
+                                      emptyCommentErr =
+                                      "Comment can't be empty";
+                                    });
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
                           ),
-                        ),
+                          errorMessages(emptyCommentErr),
+                        ],
                       ),
                       IconButton(
                           onPressed: () async {
@@ -276,9 +297,9 @@ class _queryCommentsState extends State<queryComments> {
                               Result = null;
                             }),
                         builder: (
-                          RunMutation runMutation,
-                          QueryResult? result,
-                        ) {
+                            RunMutation runMutation,
+                            QueryResult? result,
+                            ) {
                           if (result!.hasException) {
                             return Text(result.exception.toString());
                           }
@@ -295,11 +316,16 @@ class _queryCommentsState extends State<queryComments> {
                           }
                           return IconButton(
                             onPressed: () {
-                              runMutation({
-                                "content": commentController.text,
-                                "id": widget.post.id,
-                                "images": multipartfileImage,
-                              });
+                              if(_formKey.currentState!
+                                  .validate()){
+                                if(commentController.text.isNotEmpty){
+                                  runMutation({
+                                    "content": commentController.text,
+                                    "id": widget.post.id,
+                                    "images": multipartfileImage,
+                                  });
+                                }
+                              }
                             },
                             icon: const Icon(Icons.send),
                             iconSize: 24,
@@ -310,6 +336,7 @@ class _queryCommentsState extends State<queryComments> {
                   ),
                 ),
               ],
+            )
             );
           },
         ));

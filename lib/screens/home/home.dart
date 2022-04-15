@@ -27,11 +27,11 @@ class _HomePageState extends State<HomePage> {
 
 
   ///GraphQL
-  late AuthService _auth;
+  AuthService _auth = AuthService();
   String getMeHome = homeQuery().getMeHome;
 
   ///Variables
-  var result;
+
   String userName="";
   String userRole="";
   String userid="";
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   SharedPreferences? prefs;
   void _sharedPreference()async{
     prefs = await SharedPreferences.getInstance();
-    print("prefs home : $prefs");
+    // print("prefs home : $prefs");
     setState(() {
       userName = prefs!.getString('name')!;
       userRole = prefs!.getString("role")!;
@@ -220,6 +220,8 @@ class _HomePageState extends State<HomePage> {
                 imageUrls = data['netops'][i]["photo"].split(" AND ");
               }
               all.putIfAbsent(NetOpPost(
+                commentCount: result
+                    .data!["getMe"]["getHome"]["netops"][i]["commentCount"],
                 title: result
                     .data!["getMe"]["getHome"]["netops"][i]["title"],
                 tags: tags,
@@ -383,6 +385,8 @@ class _HomePageState extends State<HomePage> {
                     imageUrls = data['netops'][i]["photo"].split(" AND ");
                   }
                   all.putIfAbsent(NetOpPost(
+                    commentCount: result
+                        .data!["getMe"]["getHome"]["netops"][i]["commentCount"],
                     title: result
                         .data!["getMe"]["getHome"]["netops"][i]["title"],
                     tags: tags,

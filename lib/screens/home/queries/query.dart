@@ -117,6 +117,7 @@ class _QueryHomeState extends State<QueryHome> {
             if(data[i]["photo"]!=null && data[i]["photo"]!="")
             {imageUrls=data[i]["photo"].split(" AND ");}
             posts.add(queryClass(id: data[i]["id"],
+              commentCount: data[i]["commentCount"],
               createdAt: DateTime.parse(data[i]["createdAt"]),
               title: data[i]["title"],
               likeCount: data[i]["likeCount"],

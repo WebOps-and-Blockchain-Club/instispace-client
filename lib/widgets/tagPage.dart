@@ -182,6 +182,7 @@ class _TagPageState extends State<TagPage> {
           if(data['netops'][i]['photo']!=null && data['netops'][i]['photo']!="")
           {imageUrls=data['netops'][i]['photo'].split(" AND ");}
           all.putIfAbsent(NetOpPost(
+            commentCount: result.data!["getTag"]["netops"][i]["commentCount"],
             title: result.data!["getTag"]["netops"][i]["title"],
             tags: tags,
             id: result.data!["getTag"]["netops"][i]["id"],

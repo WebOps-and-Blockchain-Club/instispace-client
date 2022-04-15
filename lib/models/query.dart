@@ -9,6 +9,7 @@ class queryClass{
   bool isLiked;
   String createdById;
   DateTime createdAt;
+  int commentCount;
 
-  queryClass({required this.id,required this.title,required this.likeCount,required this.content, required this.createdByName, required this.createdByRoll,required this.imgUrl,required this.isLiked, required this.createdById,required this.createdAt});
+  queryClass({required this.id,required this.title,required this.likeCount,required this.content, required this.createdByName, required this.createdByRoll,required this.imgUrl,required this.isLiked, required this.createdById,required this.createdAt,required this.commentCount});
 }

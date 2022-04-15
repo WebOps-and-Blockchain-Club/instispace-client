@@ -5,6 +5,7 @@ import 'package:client/widgets/imageView.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
+import '../../../widgets/deleteAlert.dart';
 import 'editLost.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -108,9 +109,18 @@ class LFCard extends StatelessWidget {
                             }
                             return IconButton(
                                 onPressed: (){
-                                  runMutation({
-                                    "resolveItemItemId":post.id,
-                                  });
+                                  showDialog(
+                                    context: context,
+                                    builder: (context)=>DeleteAlert(
+                                        deleteButton: ElevatedButton(
+                                          onPressed: (){
+                                            runMutation({
+                                              "resolveItemItemId":post.id,
+                                            });
+                                          }, child: const Text('Delete'),
+                                        ),
+                                        context: context),
+                                  );
                                 },
                               icon: const Icon(Icons.check_circle_outline),
                               iconSize: 24,

@@ -5,6 +5,7 @@ class netopsQuery {
     netopList {
       id,
       content,
+      commentCount
       comments {
         content
         id

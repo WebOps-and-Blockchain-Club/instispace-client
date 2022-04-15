@@ -66,7 +66,7 @@ class getMeLoader extends StatefulWidget {
 class _getMeLoaderState extends State<getMeLoader> {
   String getMe = homeQuery().getMe;
   String logOut = authQuery().logOut;
-  late AuthService _auth;
+  AuthService _auth = AuthService();
   late String fcmToken;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override

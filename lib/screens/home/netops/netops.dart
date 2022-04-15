@@ -221,6 +221,7 @@ class _Post_ListingState extends State<Post_Listing> {
                     if(netopList[i]["photo"]!=null && netopList[i]["photo"]!="")
                     {imageUrls=netopList[i]["photo"].split(" AND ");}
                     posts.add(NetOpPost(
+                      commentCount: netopList[i]["commentCount"],
                       title: netopList[i]["title"],
                       description: netopList[i]["content"],
                       likeCount: netopList[i]["likeCount"],

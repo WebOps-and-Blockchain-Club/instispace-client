@@ -7,6 +7,7 @@ import 'package:client/screens/home/hostelSection/amenities/createAmenity.dart';
 import 'package:client/screens/userInit/dropDown.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../models/hostelProfile.dart';
 import '../../../../widgets/text.dart';
@@ -39,8 +40,10 @@ class _HostelAmenitiesState extends State<HostelAmenities> {
   List<Amenities> amenities = [];
   late String userRole;
 
+
   ///Controllers
   ScrollController scrollController = ScrollController(initialScrollOffset: 0.0);
+
 
   @override
   Widget build(BuildContext context) {
@@ -365,6 +368,8 @@ class _HostelAmenitiesState extends State<HostelAmenities> {
           );
     });
   }
+
+
   ///Widget for the floating action button
   Widget? _getFAB(Future<QueryResult?> Function()? refetch) {
     if(userRole=="ADMIN" || userRole == 'HAS' || userRole == 'HOSTEL_SEC'){

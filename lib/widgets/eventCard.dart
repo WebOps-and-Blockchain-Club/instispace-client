@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/models/tag.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:client/widgets/marquee.dart';
 import '../screens/home/events/editEvent.dart';
@@ -230,9 +231,14 @@ class _EventsCardState extends State<EventsCard> {
                               options: MutationOptions(
                                   document: gql(delete),
                                   onCompleted: (result) {
-                                    print("result : $result");
-                                    Navigator.pop(context);
+                                    // print("result : $result");
                                     widget.refetch!();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Post Deleted')),
+                                    );
+                                    Navigator.pop(context);
                                   }),
                               builder: (
                                 RunMutation runMutation,
@@ -251,7 +257,16 @@ class _EventsCardState extends State<EventsCard> {
                                 }
                                 return IconButton(
                                   onPressed: () {
-                                    runMutation({"eventId": events.id});
+                                    showDialog(
+                                      context: context,
+                                      builder: (context)=>DeleteAlert(
+                                          deleteButton: ElevatedButton(
+                                            onPressed: (){
+                                              runMutation({"eventId": events.id});
+                                            }, child: const Text('Delete'),
+                                          ),
+                                          context: context),
+                                    );
                                   },
                                   icon: const Icon(Icons.delete_outline),
                                   color: Colors.white,
@@ -442,7 +457,10 @@ class _EventsCardState extends State<EventsCard> {
                 children: [
                   ///Share Icon
                   IconButton(
-                    onPressed: () => {print('shared')},
+                    onPressed: () async{
+                    await Share.share(
+                    "*${events.title}* \n${events.description}");
+                    },
                     icon: const Icon(Icons.share),
                     iconSize: 20,
                     color: Colors.grey,

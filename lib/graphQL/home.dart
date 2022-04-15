@@ -5,6 +5,7 @@ query{
     getHome {
       netops {
         id
+        commentCount
         title
         content
         photo

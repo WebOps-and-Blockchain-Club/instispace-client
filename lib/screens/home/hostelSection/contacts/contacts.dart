@@ -328,93 +328,88 @@ class _HostelcontactsState extends State<Hostelcontacts> {
             },
             child: ListView(
               shrinkWrap: true,
-              children: [
+                children: [
+                  ///Heading
+                  PageTitle('Contacts', context),
 
-                ///Heading
-                PageTitle('Contacts', context),
-
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
-                  child: ListView(
-                    shrinkWrap: true,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
 
-                            ///Hostel Contacts
-                            if(contacts.isNotEmpty)
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
-                                child: Text('Hostel Contacts',
-                                  style: TextStyle(
-                                      color: Color(0xFF222222),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
+
+                        ///Hostel Contacts
+                        if(contacts.isNotEmpty)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                            child: Text('Hostel Contacts',
+                              style: TextStyle(
+                                  color: Color(0xFF222222),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
                               ),
                             ),
-                            //Hostel contact list
-                            if(contacts.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    5.0, 8.0, 5.0, 0.0),
-                                child: ListView(
-                                    controller: scrollController,
-                                    shrinkWrap: true,
-                                    children: [ Column(
-                                      children: contacts
-                                          .map((post) =>
-                                          HostelContacts(
-                                            contacts: post,
-                                            userRole: userRole, refetch: refetch,
-                                          ))
-                                          .toList(),
-                                    ),
-                                    ]
-                                ),
-                              ),
-
-                            ///EMERGENCY CONTACTS
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
-                                child: Text('Emergency Contacts',
-                                  style: TextStyle(
-                                      color: Color(0xFF222222),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Emergency-Contact List
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  5.0, 8.0, 5.0, 15.0),
-                              child: ListView(
+                          ),
+                        ),
+                        ///Hostel contact list
+                        if(contacts.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                5.0, 8.0, 5.0, 0.0),
+                            child: ListView(
                                 controller: scrollController,
                                 shrinkWrap: true,
-                                children: [Column(
-                                  children: emergencyContacts
+                                children: [ Column(
+                                  children: contacts
                                       .map((post) =>
-                                      EmergencyContacts(
-                                        Emergencycontacts: post,
+                                      HostelContacts(
+                                        contacts: post,
+                                        userRole: userRole, refetch: refetch,
                                       ))
                                       .toList(),
                                 ),
-                                ],
+                                ]
+                            ),
+                          ),
+
+                        ///EMERGENCY CONTACTS
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(8, 10, 8, 4),
+                            child: Text('Emergency Contacts',
+                              style: TextStyle(
+                                  color: Color(0xFF222222),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ]
+
+                        ///Emergency-Contact List
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              5.0, 8.0, 5.0, 15.0),
+                          child: ListView(
+                            controller: scrollController,
+                            shrinkWrap: true,
+                            children: [Column(
+                              children: emergencyContacts
+                                  .map((post) =>
+                                  EmergencyContacts(
+                                    Emergencycontacts: post,
+                                  ))
+                                  .toList(),
+                            ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ]
             ),
           ),
           floatingActionButton: _getFAB(refetch),

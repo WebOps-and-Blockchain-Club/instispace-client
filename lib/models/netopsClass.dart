@@ -15,10 +15,12 @@ class NetOpPost {
   bool isStarred;
   bool isLiked;
   DateTime createdAt;
+  int commentCount;
   String createdById;
 
   NetOpPost({required this.title,
   required this.description,
+    required this.commentCount,
   required this.imgUrl,
   required this.likeCount,
   required this.linkToAction,

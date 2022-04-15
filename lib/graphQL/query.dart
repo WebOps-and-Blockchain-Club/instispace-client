@@ -10,6 +10,7 @@ class Queries{
       isLiked
       likeCount
       createdAt
+      commentCount
       createdBy {
         roll
         name
@@ -89,7 +90,7 @@ class Queries{
 
   String deleteQuery = """
  mutation(\$id: String!){
-  deleteMyQuery(MyQueryId: \$id)
+  deleteMyQuery(MyQueryId: \$id )
 }
   """;
 
