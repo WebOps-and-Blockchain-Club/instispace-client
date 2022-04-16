@@ -6,14 +6,13 @@ typedef void StringCallback(String val);
 
 class Search extends StatefulWidget {
   ///variables
-  String search = "";
   final StringCallback callback;
   final Future<QueryResult?> Function()? refetch;
   final GlobalKey<ScaffoldState> ScaffoldKey;
   final String page;
   final Widget widget;
   Search(
-      {required this.search,
+      {
       required this.refetch,
       required this.ScaffoldKey,
       required this.page,
@@ -27,6 +26,7 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   ///Variables
   bool display = false;
+  String search = "";
 
   ///Controller
   TextEditingController searchController = TextEditingController();
