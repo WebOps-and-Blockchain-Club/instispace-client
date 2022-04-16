@@ -46,6 +46,7 @@ class _EditPostState extends State<EditPost> {
   List byteDataImage = [];
   List multipartfileImage = [];
   List fileNames = [];
+  var dateTime=DateTime.now().add(const Duration(days: 7));
   FilePickerResult? Result;
 
   ///Controllers
@@ -77,7 +78,6 @@ class _EditPostState extends State<EditPost> {
     fileNames.isEmpty ? "Please select image(s)" : fileNames.toString();
     ///Retrieving data of initial netops post
     var post=widget.post;
-    var dateTime=post.endTime;
     List<Tag> usertagList = post.tags;
 
 
@@ -229,7 +229,7 @@ class _EditPostState extends State<EditPost> {
                                   dateLabelText: 'Date',
                                   timeLabelText: "Hour",
                                   onChanged: (val) => {
-                                    dateTime= dateTimeString(val),
+                                    dateTime = DateFormat("yyyy-MM-DD hh:mm:ss").parse("$val:00"),
                                   },
                                   validator: (val) {
                                     return null;
@@ -718,7 +718,7 @@ class _EditPostState extends State<EditPost> {
                                                 "editNetopsData":{
                                                   "title":titleController.text,
                                                   "content":descriptionController.text,
-                                                  "endTime":dateTime,
+                                                  "endTime":"$dateTime",
                                                   "tagIds":selectedIds,
                                                   "linkName":urlNameController.text,
                                                   "linkToAction":urlController.text,
@@ -766,16 +766,16 @@ class _EditPostState extends State<EditPost> {
       },
     );
   }
-  String dateTimeString(String utcDateTime) {
-    if (utcDateTime == "") {
-      return "";
-    }
-    var parseDateTime = DateTime.parse(utcDateTime);
-    final localDateTime = parseDateTime.toLocal();
-
-    var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
-
-    return dateTimeFormat.format(localDateTime);
-  }
+  // String dateTimeString(String utcDateTime) {
+  //   if (utcDateTime == "") {
+  //     return "";
+  //   }
+  //   var parseDateTime = DateTime.parse(utcDateTime);
+  //   final localDateTime = parseDateTime.toLocal();
+  //
+  //   var dateTimeFormat = DateFormat("yyyy-MM-DDThh:mm:ss");
+  //
+  //   return dateTimeFormat.format(localDateTime);
+  // }
 }
 

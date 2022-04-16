@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:client/widgets/formTexts.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:client/graphQL/LnF.dart';
 import 'package:http/http.dart';
@@ -42,7 +45,6 @@ class _AddFoundState extends State<AddFound> {
 
   ///Keys
   final _formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -272,8 +274,6 @@ class _AddFoundState extends State<AddFound> {
                                 }
                               });
                             }
-
-
 
                           },
                           ///Selected images name

@@ -272,6 +272,7 @@ class _AddPostEventsState extends State<AddPostEvents> {
                                             fileNames.remove(e.name);
                                             Result!.files.remove(e);
                                           });
+                                          print("longPressed");
                                         },
                                         child: SizedBox(
                                           width: 50,

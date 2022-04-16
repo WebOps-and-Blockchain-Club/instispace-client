@@ -151,7 +151,6 @@ class _HomeState extends State<EventsHome> {
                             height: MediaQuery.of(context).size.height * 0.06,
                             width: MediaQuery.of(context).size.width * 1,
                             child: Search(
-                              search: search,
                               refetch: refetch,
                               ScaffoldKey: ScaffoldKey,
                               page: 'netops',
@@ -284,7 +283,6 @@ class _HomeState extends State<EventsHome> {
 
                           ///Calling search bar + filter button
                           child: Search(
-                              search: search,
                               refetch: refetch,
                               ScaffoldKey: ScaffoldKey,
                               page: 'events',

@@ -333,96 +333,173 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                 ),
                               ),
 
-                              ///Select Tags
+                              // ///Select Tags
+                              // FormText('Please Select Tags'),
+                              // Padding(
+                              //   padding:
+                              //       const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              //   child: StatefulBuilder(
+                              //     builder: (BuildContext context,
+                              //         StateSetter setState) {
+                              //       return SizedBox(
+                              //         width: 250,
+                              //         child: ElevatedButton(
+                              //           onPressed: () async {
+                              //             final finalResult = await showSearch(
+                              //               context: context,
+                              //               delegate: CustomSearchDelegate(
+                              //                   searchTerms: tagList),
+                              //             );
+                              //             setState(() {
+                              //               if (finalResult!= '') {
+                              //                 if (!selectedTags
+                              //                     .contains(finalResult)) {
+                              //                   selectedTags.add(finalResult);
+                              //                 }
+                              //               }
+                              //             });
+                              //           },
+                              //           child: const Text(
+                              //             "Select tags",
+                              //             style: TextStyle(
+                              //               color: Colors.white,
+                              //               fontSize: 16,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //           style: ElevatedButton.styleFrom(
+                              //               primary: const Color(0xFF42454D),
+                              //               elevation: 0.0,
+                              //               shape: RoundedRectangleBorder(
+                              //                   borderRadius:
+                              //                       BorderRadius.circular(
+                              //                           24.0))),
+                              //         ),
+                              //       );
+                              //     },
+                              //   ),
+                              // ),
+                              //
+                              // errorMessages(emptyTagsError),
+                              //
+                              // ///Selected Tags
+                              // selectedTags==[]?Container():
+                              // Wrap(
+                              //   children:selectedTags.map((e) =>
+                              //       Padding(
+                              //         padding: const EdgeInsets.all(4.0),
+                              //         child: ElevatedButton(//shape,color etc...
+                              //           onPressed: () {
+                              //             setState(() {
+                              //               selectedTags.remove(e);
+                              //             });
+                              //           },
+                              //           child: Text(
+                              //             e,
+                              //             style: const TextStyle(
+                              //               color: Color(0xFF2B2E35),
+                              //               fontSize: 12.5,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //           style: ElevatedButton.styleFrom(
+                              //             primary: const Color(0xFFFFFFFF),
+                              //             shape: RoundedRectangleBorder(
+                              //                 borderRadius: BorderRadius.circular(15)
+                              //             ),
+                              //             // side: BorderSide(color: Color(0xFF2B2E35)),
+                              //             padding: const EdgeInsets.symmetric(
+                              //                 vertical: 2,
+                              //                 horizontal: 6),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //   ).toList(),
+                              // ),
+
+                              ///Tag Selector
+                              const SizedBox(
+                                height: 10,
+                              ),
                               FormText('Please Select Tags'),
                               Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                child: StatefulBuilder(
-                                  builder: (BuildContext context,
-                                      StateSetter setState) {
-                                    return SizedBox(
-                                      width: 250,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          final finalResult = await showSearch(
-                                            context: context,
-                                            delegate: CustomSearchDelegate(
-                                                searchTerms: tagList),
-                                          );
-                                          setState(() {
-                                            if (finalResult != '') {
-                                              if (!selectedTags
-                                                  .contains(finalResult)) {
-                                                selectedTags.add(finalResult);
-                                              }
-                                            }
-                                          });
-                                        },
-                                        child: const Text(
-                                          "Select tags",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                            primary: const Color(0xFF42454D),
-                                            elevation: 0.0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        24.0))),
-                                      ),
-                                    );
-                                  },
+                                padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                                child: SizedBox(
+                                    width: 250,
+                                    child: StatefulBuilder(
+                                      builder: (BuildContext context,StateSetter setState) {
+                                        return Column(
+                                          children: [
+                                            SizedBox(
+                                              width:250,
+                                              child: ElevatedButton(
+                                                  onPressed: ()async{
+                                                    final finalResult=await showSearch(
+                                                      context: context,
+                                                      delegate: CustomSearchDelegate(searchTerms:tagList),
+                                                    );
+                                                    setState(() {
+                                                      if(finalResult!=''){
+                                                        if(!selectedTags.contains(finalResult)) {
+                                                          selectedTags.add(finalResult);
+                                                        }
+                                                      }
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      primary: const Color(0xFF42454D),
+                                                      elevation: 0.0,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0))
+                                                  ),
+                                                  child: const Text('Select tags',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 17.0,
+                                                        fontWeight: FontWeight.w300
+                                                    ),)),
+                                            ),
+                                            errorMessages(emptyTagsError),
+
+                                            ///Selected Tags
+                                            selectedTags==[]?Container():
+                                            Wrap(
+                                              children:selectedTags.map((e) =>
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: ElevatedButton(//shape,color etc...
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          selectedTags.remove(e);
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        e,
+                                                        style: const TextStyle(
+                                                          color: Color(0xFF2B2E35),
+                                                          fontSize: 12.5,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      style: ElevatedButton.styleFrom(
+                                                        primary: const Color(0xFFFFFFFF),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(15)
+                                                        ),
+                                                        // side: BorderSide(color: Color(0xFF2B2E35)),
+                                                        padding: const EdgeInsets.symmetric(
+                                                            vertical: 2,
+                                                            horizontal: 6),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ).toList(),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    )
                                 ),
                               ),
-                              errorMessages(emptyTagsError),
-
-                              ///Selected tags
-                              selectedTags == []
-                                  ? Container()
-                                  : Wrap(
-                                      children: selectedTags
-                                          .map(
-                                            (e) => Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: ElevatedButton(
-                                                //shape,color etc...
-                                                onPressed: () {
-                                                  setState(() {
-                                                    selectedTags.remove(e);
-                                                  });
-                                                },
-                                                child: Text(
-                                                  e,
-                                                  style: const TextStyle(
-                                                    color: Color(0xFF2B2E35),
-                                                    fontSize: 12.5,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  primary:
-                                                      const Color(0xFFFFFFFF),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  // side: BorderSide(color: Color(0xFF2B2E35)),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 2,
-                                                      horizontal: 6),
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
 
                               ///Additional Fields
                               ListTile(
@@ -683,6 +760,7 @@ class _EditPostEventsState extends State<EditPostEvents> {
                                                   MediaType("image", "png"),
                                                 ));
                                               }
+                                              print("description : ${myControllerDescription.text}");
                                               runMutation({
                                                 "editEventData": {
                                                   "content":
