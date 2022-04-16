@@ -89,9 +89,10 @@ class LFCard extends StatelessWidget {
                           options: MutationOptions(
                             document: gql(resolveItem),
                             onCompleted: (result){
-                              // print(result);
+                              print(result);
                               if(result["resolveItem"]){
                                 refetchPosts!();
+                                Navigator.pop(context);
                               }
                             }
                           ),
@@ -111,13 +112,14 @@ class LFCard extends StatelessWidget {
                                 onPressed: (){
                                   showDialog(
                                     context: context,
-                                    builder: (context)=>DeleteAlert(
+                                    builder: (context) => DeleteAlert(
                                         deleteButton: ElevatedButton(
                                           onPressed: (){
                                             runMutation({
                                               "resolveItemItemId":post.id,
                                             });
-                                          }, child: const Text('Delete'),
+                                          },
+                                          child: const Text('Delete'),
                                         ),
                                         context: context),
                                   );

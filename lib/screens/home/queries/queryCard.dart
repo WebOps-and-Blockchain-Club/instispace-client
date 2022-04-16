@@ -50,6 +50,7 @@ class _QueryCardState extends State<QueryCard> {
   Widget build(BuildContext context) {
     differenceTime = difference(widget.post.createdAt);
     queryClass post= widget.post;
+    print("images : ${widget.post.imgUrl}");
     return Padding(
       padding: const EdgeInsets.fromLTRB(0,0,0,10),
       child: Card(
@@ -107,6 +108,8 @@ class _QueryCardState extends State<QueryCard> {
                                     builder: (context) => EditQuery(post:post, refetchQuery: widget.refetchQuery,),
                                   )
                               ),
+                              print("object"),
+
                             },
                             icon: const Icon(Icons.edit),
                             color: Colors.white,
@@ -120,9 +123,10 @@ class _QueryCardState extends State<QueryCard> {
                                 document: gql(deleteQuery),
                                 onCompleted: (result) {
                                   print('result: $result');
-                                  if(result["deleteMyQuery"]){
+                                  if(result["deleteMyQuery"] == true){
                                     widget.refetchQuery!();
                                     Navigator.pop(context);
+                                    print("deleted");
                                   }
                                 }),
                             builder: (
@@ -147,8 +151,7 @@ class _QueryCardState extends State<QueryCard> {
                                     builder: (context)=>DeleteAlert(
                                         deleteButton: ElevatedButton(
                                           onPressed: (){
-                                            print("id:${post.id}");
-                                            runMutation({"id": post.id});
+                                            runMutation({"myQueryId": post.id});
                                           }, child: const Text('Delete'),
                                         ),
                                         context: context),
