@@ -181,7 +181,7 @@ class _EventsCardState extends State<EventsCard> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: MarqueeWidget(
                           direction: Axis.horizontal,
                           child: Text(

@@ -323,7 +323,7 @@ class _NetopsCardState extends State<NetopsCard> {
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 10, 18, 0),
             child: Text(
-              'Posted by Anshul, $timeDifference',
+              'Posted by ${post.createdByName}, $timeDifference',
               // ${post.createdByName}
               style: const TextStyle(
                 color: Colors.grey,
