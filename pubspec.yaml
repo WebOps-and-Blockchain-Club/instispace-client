@@ -42,6 +42,7 @@ dependencies:
   date_time_picker:
   validators:
   file_picker: ^4.3.0
+  image_picker: ^0.8.5
   markdown_editable_textinput: ^2.0.2
   flutter_markdown:
   getwidget: ^2.0.4
