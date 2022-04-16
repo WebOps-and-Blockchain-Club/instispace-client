@@ -44,6 +44,7 @@ class _EditInterestsState extends State<EditInterests> {
   String roll = '';
   String role="";
   String id = '';
+  List<Tag> interests = [];
   final AuthService _auth = AuthService();
   @override
   void initState(){
@@ -60,8 +61,19 @@ class _EditInterestsState extends State<EditInterests> {
       roll = prefs!.getString('roll')!;
       role = prefs!.getString('role')!;
       id = prefs!.getString('id')!;
+      var _interests = prefs!.getStringList("interests")!;
+      for(var i=0;i<_interests.length;i++){
+        var interest = jsonDecode(_interests[i]);
+        interests.add(
+            Tag(
+                category: interest["category"], Tag_name: interest["title"], id: interest["id"]
+            ));
+        selectedInterest?.putIfAbsent("", () => interests);
+      }
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +118,8 @@ class _EditInterestsState extends State<EditInterests> {
                       category: result.data!["getTags"][i]["category"].toString(),
                       id: result.data!["getTags"][i]["id"].toString()));
                 }
+
+                  interest.remove(selectedInterest?.values);
                 return ListView(
                     children: [
 
