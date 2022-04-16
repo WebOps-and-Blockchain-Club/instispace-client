@@ -108,7 +108,6 @@ class _Post_ListingState extends State<Post_Listing> {
                 if (result.hasException) {
                   return Text(result.exception.toString());
                 }
-                if(posts.isEmpty) {
                   if (result.isLoading) {
                     return Scaffold(
                       body: Center(
@@ -126,8 +125,6 @@ class _Post_ListingState extends State<Post_Listing> {
                       ),
                     );
                   }
-                }
-                print("selected Ids:$selectedFilterIds");
                 if (result.data!["getNetops"]["netopList"] == null || result.data!["getNetops"]["netopList"].isEmpty){
                   return Scaffold(
                     body: RefreshIndicator(
@@ -241,38 +238,76 @@ class _Post_ListingState extends State<Post_Listing> {
                     );
                   }
                   total = data["total"];
-                  FetchMoreOptions opts = FetchMoreOptions(
-                      variables: {
-                        "take": take,
-                        "lastNetopId": posts.last.id,
-                        "orderByLikes": mostlikesvalue,
-                        "filteringCondition": {
-                          "tags": selectedFilterIds,
-                          "isStared": isStarred
-                        },
-                        "search": search
-                      },
-                      updateQuery: (previousResultData, fetchMoreResultData) {
-                        posts.clear();
-                        final List<dynamic> repos = [
-                          ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
-                          ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
-                        ];
-                        fetchMoreResultData['getNetops']['netopList'] = repos;
-                        print("fetchMore triggered");
-                        return fetchMoreResultData;
+                  if(posts.isNotEmpty)
+                    {
+                      FetchMoreOptions opts = FetchMoreOptions(
+                          variables: {
+                            "take": take,
+                            "lastNetopId": posts.last.id,
+                            "orderByLikes": mostlikesvalue,
+                            "filteringCondition": {
+                              "tags": selectedFilterIds,
+                              "isStared": isStarred
+                            },
+                            "search": search
+                          },
+                          updateQuery: (previousResultData, fetchMoreResultData) {
+                            posts.clear();
+                            final List<dynamic> repos = [
+                              ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
+                              ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
+                            ];
+                            fetchMoreResultData['getNetops']['netopList'] = repos;
+                            print("fetchMore triggered");
+                            return fetchMoreResultData;
+                          }
+                      );
+                      scrollController1.addListener(() async {
+                        var triggerFetchMoreSize =
+                            0.99 * scrollController1.position.maxScrollExtent;
+                        if (scrollController1.position.pixels >
+                            triggerFetchMoreSize && total > posts.length) {
+                          await fetchMore!(opts);
+                          scrollController1.jumpTo(triggerFetchMoreSize);
+                        }
                       }
                       );
-                  scrollController1.addListener(() async {
-                    var triggerFetchMoreSize =
-                        0.99 * scrollController1.position.maxScrollExtent;
-                    if (scrollController1.position.pixels >
-                        triggerFetchMoreSize && total > posts.length) {
-                      await fetchMore!(opts);
-                      scrollController1.jumpTo(triggerFetchMoreSize);
                     }
+
+                  if(posts.isEmpty){
+                    FetchMoreOptions opts = FetchMoreOptions(
+                        variables: {
+                          "take": take,
+                          "lastNetopId": "",
+                          "orderByLikes": mostlikesvalue,
+                          "filteringCondition": {
+                            "tags": selectedFilterIds,
+                            "isStared": isStarred
+                          },
+                          "search": search
+                        },
+                        updateQuery: (previousResultData, fetchMoreResultData) {
+                          posts.clear();
+                          final List<dynamic> repos = [
+                            ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
+                            ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
+                          ];
+                          fetchMoreResultData['getNetops']['netopList'] = repos;
+                          print("fetchMore triggered");
+                          return fetchMoreResultData;
+                        }
+                    );
+                    scrollController1.addListener(() async {
+                      var triggerFetchMoreSize =
+                          0.99 * scrollController1.position.maxScrollExtent;
+                      if (scrollController1.position.pixels >
+                          triggerFetchMoreSize && total > posts.length) {
+                        await fetchMore!(opts);
+                        scrollController1.jumpTo(triggerFetchMoreSize);
+                      }
+                    }
+                    );
                   }
-                  );
 
                   return Scaffold(
 

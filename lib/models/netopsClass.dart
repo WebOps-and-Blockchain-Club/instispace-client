@@ -15,7 +15,7 @@ class NetOpPost {
   bool isStarred;
   bool isLiked;
   DateTime createdAt;
-  int commentCount;
+  int? commentCount;
   String createdById;
 
   NetOpPost({required this.title,

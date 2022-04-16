@@ -102,12 +102,12 @@ class _HostelHomeState extends State<HostelHome> {
             //L&F Button
             BottomNavigationBarItem(
               icon: Icon(Icons.category),
-              label: 'amenities',
+              label: 'Amenities',
               backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.announcement),
-              label: 'announcements',
+              label: 'Announcements',
               backgroundColor: Color(0xFF2B2E35),
             ),
             BottomNavigationBarItem(

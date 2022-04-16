@@ -98,7 +98,6 @@ class _LNFListingState extends State<LNFListing> {
           if (result.hasException) {
             return Text(result.exception.toString());
           }
-          if (Posts.isEmpty) {
             if (result.isLoading) {
               return Scaffold(
                 body: Center(
@@ -119,7 +118,6 @@ class _LNFListingState extends State<LNFListing> {
                 ),
               );
             }
-          }
 
           ///For empty screen
           if (result.data == null) {
@@ -211,7 +209,37 @@ class _LNFListingState extends State<LNFListing> {
             }
             total = result.data!["getItems"]["total"];
 
-            FetchMoreOptions opts = FetchMoreOptions(
+            if(Posts.isEmpty) {
+              FetchMoreOptions opts = FetchMoreOptions(
+                  variables: {
+                    "take": take,
+                    "lastItemId": "",
+                    "itemsFilter": itemFilter,
+                    "search": search
+                  },
+                  updateQuery: (previousResultData, fetchMoreResultData) {
+                    final List<dynamic> repos = [
+                      ...previousResultData!["getItems"]["itemsList"]
+                      as List<dynamic>,
+                      ...fetchMoreResultData!["getItems"]["itemsList"]
+                      as List<dynamic>
+                    ];
+                    fetchMoreResultData["getItems"]["itemsList"] = repos;
+                    return fetchMoreResultData;
+                  });
+              scrollController.addListener(() async {
+                var triggerFetchMoreSize =
+                    0.99 * scrollController.position.maxScrollExtent;
+                if (scrollController.position.pixels > triggerFetchMoreSize &&
+                    total > Posts.length) {
+                  await fetchMore!(opts);
+                  scrollController.jumpTo(triggerFetchMoreSize);
+                }
+              });
+            }
+
+            if(Posts.isNotEmpty) {
+              FetchMoreOptions opts = FetchMoreOptions(
                 variables: {
                   "take": take,
                   "lastItemId": Posts.last.id,
@@ -228,15 +256,17 @@ class _LNFListingState extends State<LNFListing> {
                   fetchMoreResultData["getItems"]["itemsList"] = repos;
                   return fetchMoreResultData;
                 });
-            scrollController.addListener(() async {
-              var triggerFetchMoreSize =
-                  0.99 * scrollController.position.maxScrollExtent;
-              if (scrollController.position.pixels > triggerFetchMoreSize &&
-                  total > Posts.length) {
-                await fetchMore!(opts);
-                scrollController.jumpTo(triggerFetchMoreSize);
-              }
-            });
+              scrollController.addListener(() async {
+                var triggerFetchMoreSize =
+                    0.99 * scrollController.position.maxScrollExtent;
+                if (scrollController.position.pixels > triggerFetchMoreSize &&
+                    total > Posts.length) {
+                  await fetchMore!(opts);
+                  scrollController.jumpTo(triggerFetchMoreSize);
+                }
+              });
+            }
+
 
             return Scaffold(
 
@@ -295,194 +325,202 @@ class _LNFListingState extends State<LNFListing> {
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(22,8,10,0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.06,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
 
-                                ///Search bar
-                                Expanded(
-                                  flex: 12,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,0,0,0),
-                                    child: SizedBox(
-                                      height: 35,
-                                      child: TextFormField(
-                                        controller: searchController,
-                                        cursorColor: Colors.grey,
-                                        decoration: InputDecoration(
-                                          contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100.0),
+                                  ///Search bar
+                                  Expanded(
+                                    flex: 12,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                                      child: SizedBox(
+                                        height: 35,
+                                        child: TextFormField(
+                                          controller: searchController,
+                                          cursorColor: Colors.grey,
+                                          decoration: InputDecoration(
+                                            contentPadding: const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(100.0),
+                                            ),
+
+                                            hintText: 'Search',
                                           ),
-
-                                          hintText: 'Search',
+                                          keyboardType: TextInputType.multiline,
+                                          // onChanged: (String value){
+                                          //   if(value.length>=3){
+                                          //
+                                          //   }
+                                          // },
                                         ),
-                                        keyboardType: TextInputType.multiline,
-                                        // onChanged: (String value){
-                                        //   if(value.length>=3){
-                                        //
-                                        //   }
-                                        // },
                                       ),
                                     ),
                                   ),
-                                ),
 
-                                ///Search button
-                                IconButton(
-                                  onPressed: (){
-                                    setState(() {
-                                      search = searchController.text;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.search_outlined),
-                                  color: const Color(0xFF42454D),
-                                ),
+                                  ///Search button
+                                  IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        search = searchController.text;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.search_outlined),
+                                    color: const Color(0xFF42454D),
+                                  ),
 
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
 
                         Padding(
                           padding: const EdgeInsets.fromLTRB(22.0,0,0,0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets
-                                    .fromLTRB(
-                                    0.0, 0.0, 6.0, 0.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      lostFilterValue = false;
-                                      foundFilterValue = false;
-                                      all = true;
-                                    });
-                                    itemFilter.clear();
-                                    itemFilter.add("LOST");
-                                    itemFilter.add("FOUND");
-                                    refetch!();
-                                  },
-                                  style: ElevatedButton
-                                      .styleFrom(
-                                    primary: all ? Colors
-                                        .white : Color(
-                                        0xFF42454D),
-                                    padding: const EdgeInsets
-                                        .symmetric(vertical: 4,
-                                        horizontal: 8),
-                                    minimumSize: Size(50, 35),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius
-                                            .circular(20.0)
-                                    ),
-                                  ),
-                                  child: Text("All",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight
-                                            .bold,
-                                        color: all ? Color(
-                                            0xFF42454D) : Colors
-                                            .white,
-                                        fontSize: 15
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets
-                                    .fromLTRB(
-                                    0.0, 0.0, 6.0, 0.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      lostFilterValue = true;
-                                      all = false;
-                                      foundFilterValue = false;
-                                    });
-                                    itemFilter.clear();
-                                    itemFilter.add("LOST");
-                                    refetch!();
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height*0.05,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets
+                                      .fromLTRB(
+                                      0.0, 0.0, 6.0, 0.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        lostFilterValue = false;
+                                        foundFilterValue = false;
+                                        all = true;
+                                      });
+                                      itemFilter.clear();
+                                      itemFilter.add("LOST");
+                                      itemFilter.add("FOUND");
+                                      refetch!();
                                     },
-                                  style: ElevatedButton
-                                      .styleFrom(
-                                    primary: lostFilterValue ? Colors
-                                        .white : Color(
-                                        0xFF42454D),
-                                    padding: const EdgeInsets
-                                        .symmetric(vertical: 4,
-                                        horizontal: 8),
-                                    minimumSize: Size(50, 35),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius
-                                            .circular(20.0)
+                                    style: ElevatedButton
+                                        .styleFrom(
+                                      primary: all ? Colors
+                                          .white : Color(
+                                          0xFF42454D),
+                                      padding: const EdgeInsets
+                                          .symmetric(vertical: 4,
+                                          horizontal: 8),
+                                      minimumSize: Size(50, 35),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius
+                                              .circular(20.0)
+                                      ),
                                     ),
-                                  ),
-                                  child: Text("Lost",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight
-                                            .bold,
-                                        color: lostFilterValue ? Color(
-                                            0xFF42454D) : Colors
-                                            .white,
-                                        fontSize: 15
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets
-                                    .fromLTRB(
-                                    0.0, 0.0, 6.0, 0.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      foundFilterValue = true;
-                                      all = false;
-                                      lostFilterValue = false;
-                                    });
-                                    itemFilter.clear();
-                                    itemFilter.add("FOUND");
-                                    refetch!();
-                                  },
-                                  style: ElevatedButton
-                                      .styleFrom(
-                                    primary: foundFilterValue ? Colors
-                                        .white : Color(
-                                        0xFF42454D),
-                                    padding: const EdgeInsets
-                                        .symmetric(vertical: 4,
-                                        horizontal: 8),
-                                    minimumSize: Size(50, 35),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius
-                                            .circular(20.0)
-                                    ),
-                                  ),
-                                  child: Text("Found",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight
-                                            .bold,
-                                        color: foundFilterValue ? Color(
-                                            0xFF42454D) : Colors
-                                            .white,
-                                        fontSize: 15
+                                    child: Text("All",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight
+                                              .bold,
+                                          color: all ? Color(
+                                              0xFF42454D) : Colors
+                                              .white,
+                                          fontSize: 15
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets
+                                      .fromLTRB(
+                                      0.0, 0.0, 6.0, 0.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        lostFilterValue = true;
+                                        all = false;
+                                        foundFilterValue = false;
+                                      });
+                                      itemFilter.clear();
+                                      itemFilter.add("LOST");
+                                      refetch!();
+                                      },
+                                    style: ElevatedButton
+                                        .styleFrom(
+                                      primary: lostFilterValue ? Colors
+                                          .white : Color(
+                                          0xFF42454D),
+                                      padding: const EdgeInsets
+                                          .symmetric(vertical: 4,
+                                          horizontal: 8),
+                                      minimumSize: Size(50, 35),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius
+                                              .circular(20.0)
+                                      ),
+                                    ),
+                                    child: Text("Lost",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight
+                                              .bold,
+                                          color: lostFilterValue ? Color(
+                                              0xFF42454D) : Colors
+                                              .white,
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets
+                                      .fromLTRB(
+                                      0.0, 0.0, 6.0, 0.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        foundFilterValue = true;
+                                        all = false;
+                                        lostFilterValue = false;
+                                      });
+                                      itemFilter.clear();
+                                      itemFilter.add("FOUND");
+                                      refetch!();
+                                    },
+                                    style: ElevatedButton
+                                        .styleFrom(
+                                      primary: foundFilterValue ? Colors
+                                          .white : Color(
+                                          0xFF42454D),
+                                      padding: const EdgeInsets
+                                          .symmetric(vertical: 4,
+                                          horizontal: 8),
+                                      minimumSize: Size(50, 35),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius
+                                              .circular(20.0)
+                                      ),
+                                    ),
+                                    child: Text("Found",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight
+                                              .bold,
+                                          color: foundFilterValue ? Color(
+                                              0xFF42454D) : Colors
+                                              .white,
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
 
                         ///Listing of lost and found cards
+
+                        if(Posts.isNotEmpty)
                         SizedBox(
                           height: MediaQuery
                               .of(context)
                               .size
-                              .height * 0.6,
+                              .height * 0.55,
                           width: MediaQuery
                               .of(context)
                               .size
@@ -514,6 +552,9 @@ class _LNFListingState extends State<LNFListing> {
                             ],
                           ),
                         ),
+
+                        if(Posts.isEmpty)
+                          Container()
                       ],
                     ),
                   ),
