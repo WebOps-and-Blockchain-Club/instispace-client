@@ -143,7 +143,6 @@ class _Post_ListingState extends State<Post_Listing> {
                                 height: MediaQuery.of(context).size.height * 0.06,
                                 width: MediaQuery.of(context).size.width * 1,
                                 child: Search(
-                                  search: search,
                                   refetch: refetch,
                                   ScaffoldKey: _scaffoldKey,
                                   page: 'netops',
@@ -224,7 +223,7 @@ class _Post_ListingState extends State<Post_Listing> {
                       likeCount: netopList[i]["likeCount"],
                       tags: tags,
                       endTime: netopList[i]["endTime"],
-                      createdByName: '',
+                      createdByName: netopList[i]["createdBy"]["name"],
                       linkToAction: netopList[i]["linkToAction"],
                       linkName: netopList[i]["linkName"],
                       imgUrl: imageUrls,
@@ -347,7 +346,6 @@ class _Post_ListingState extends State<Post_Listing> {
                                     height: MediaQuery.of(context).size.height * 0.06,
                                     width: MediaQuery.of(context).size.width * 1,
                                     child: Search(
-                                      search: search,
                                       refetch: refetch,
                                       ScaffoldKey: _scaffoldKey,
                                       page: 'netops',

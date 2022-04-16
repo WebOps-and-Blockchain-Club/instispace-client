@@ -78,6 +78,26 @@ class _QueryHomeState extends State<QueryHome> {
               child: Column(
                 children: [
                   PageTitle('Queries', context),
+
+                  ///Search bar and filter button
+                  Search(
+                      refetch: refetch,
+                      ScaffoldKey: ScaffoldKey,
+                      page: 'queries',
+                      widget: Filters(interest: const {},
+                        refetch: refetch,
+                        selectedFilterIds: const [],
+                        isStarred: false,
+                        mostLikeValues: false,
+                        page: 'queries',
+                        callback: (bool val) {},
+                      ),
+                      callback: (val) =>
+                          setState(() {
+                            search = val;
+                          })
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 250, 0, 0),
                     child: Container(
@@ -189,7 +209,6 @@ class _QueryHomeState extends State<QueryHome> {
                         children: [
                           ///Search bar and filter button
                           Search(
-                              search: search,
                               refetch: refetch,
                               ScaffoldKey: ScaffoldKey,
                               page: 'queries',

@@ -36,6 +36,7 @@ class _LNFListingState extends State<LNFListing> {
   String search = "";
   bool display = false;
   Map<Tag,bool> filterSettings = {};
+  String emptyScreenText = "No Lost & Found cases yet !!";
 
   ///Controllers
   TextEditingController searchController = TextEditingController();
@@ -395,6 +396,7 @@ class _LNFListingState extends State<LNFListing> {
                                         foundFilterValue = false;
                                         all = true;
                                       });
+                                      emptyScreenText = "No Lost & Found cases yet !!";
                                       itemFilter.clear();
                                       itemFilter.add("LOST");
                                       itemFilter.add("FOUND");
@@ -437,6 +439,7 @@ class _LNFListingState extends State<LNFListing> {
                                         all = false;
                                         foundFilterValue = false;
                                       });
+                                      emptyScreenText = "No Lost cases yet !!";
                                       itemFilter.clear();
                                       itemFilter.add("LOST");
                                       refetch!();
@@ -478,6 +481,7 @@ class _LNFListingState extends State<LNFListing> {
                                         all = false;
                                         lostFilterValue = false;
                                       });
+                                      emptyScreenText = "No Found cases yet !!";
                                       itemFilter.clear();
                                       itemFilter.add("FOUND");
                                       refetch!();
@@ -554,7 +558,21 @@ class _LNFListingState extends State<LNFListing> {
                         ),
 
                         if(Posts.isEmpty)
-                          Container()
+                          Container(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0,150,0,0),
+                                child: Text(
+                                  emptyScreenText,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                          )
                       ],
                     ),
                   ),

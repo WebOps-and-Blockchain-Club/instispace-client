@@ -34,8 +34,8 @@ class Queries{
 }
   """;
   String createQuery="""
-  mutation(\$createQuerysInput: createQuerysInput!, \$images: [Upload!]){
-  createMyQuery(createQuerysInput: \$createQuerysInput, Images: \$images)
+  mutation(\$createQuerysInput: createQuerysInput!, \$images: [Upload!], \$attachments: [Upload!]){
+  createMyQuery(createQuerysInput: \$createQuerysInput, Images: \$images, Attachments: \$attachments)
 }
   """;
   String toggleLike="""
@@ -83,14 +83,14 @@ class Queries{
 }
   """;
   String editQuery = """
- mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!){
-  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData)
+mutation(\$id: String!, \$editMyQuerysData: editQuerysInput!, \$image: [Upload!], \$attachments: [Upload!]){
+  editMyQuery(MyQueryId: \$id, EditMyQuerysData: \$editMyQuerysData, Image: \$image, Attachments: \$attachments)
 }
   """;
 
   String deleteQuery = """
- mutation(\$id: String!){
-  deleteMyQuery(MyQueryId: \$id )
+ mutation(\$myQueryId: String!){
+  deleteMyQuery(MyQueryId: \$myQueryId)
 }
   """;
 
