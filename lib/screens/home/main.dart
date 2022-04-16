@@ -155,6 +155,7 @@ class _mainHomeState extends State<mainHome> {
                 ),
               ],
             ),
+            toolbarHeight: MediaQuery.of(context).size.height*0.09,
             actions: [
               ///Notifications Button
               IconButton(
@@ -423,46 +424,49 @@ class _mainHomeState extends State<mainHome> {
           ),
 
           ///Bottom Navigation Bar
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            unselectedItemColor: Colors.grey,
-            selectedItemColor: const Color(0xFFFFFFFF),
-            backgroundColor: const Color(0xFF2B2E35),
-            currentIndex: _selectedIndex,
-            iconSize: 24,
-            unselectedFontSize: 12,
-            selectedFontSize: 13,
-            items: const <BottomNavigationBarItem>[
-              //L&F Button
-              BottomNavigationBarItem(
-                icon: Icon(Icons.local_grocery_store),
-                label: 'L&F',
-                backgroundColor: Color(0xFF2B2E35),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.query_stats_rounded),
-                label: 'Queries',
-                backgroundColor: Color(0xFF2B2E35),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-                backgroundColor: Color(0xFF2B2E35),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.event),
-                label: 'Events',
-                backgroundColor: Color(0xFF2B2E35),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.connect_without_contact_sharp),
-                label: 'NetOps',
-                backgroundColor: Color(0xFF2B2E35),
-              ),
-            ],
-            showUnselectedLabels: true,
-            elevation: 0.0,
-            onTap: _onItemTapped,
+          bottomNavigationBar: SizedBox(
+            height: MediaQuery.of(context).size.height*0.08,
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              unselectedItemColor: Colors.grey,
+              selectedItemColor: const Color(0xFFFFFFFF),
+              backgroundColor: const Color(0xFF2B2E35),
+              currentIndex: _selectedIndex,
+              iconSize: 24,
+              unselectedFontSize: 12,
+              selectedFontSize: 13,
+              items: const <BottomNavigationBarItem>[
+                //L&F Button
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.local_grocery_store),
+                  label: 'L&F',
+                  backgroundColor: Color(0xFF2B2E35),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.query_stats_rounded),
+                  label: 'Queries',
+                  backgroundColor: Color(0xFF2B2E35),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                  backgroundColor: Color(0xFF2B2E35),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.event),
+                  label: 'Events',
+                  backgroundColor: Color(0xFF2B2E35),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.connect_without_contact_sharp),
+                  label: 'NetOps',
+                  backgroundColor: Color(0xFF2B2E35),
+                ),
+              ],
+              showUnselectedLabels: true,
+              elevation: 0.0,
+              onTap: _onItemTapped,
+            ),
           ),
         );
   }

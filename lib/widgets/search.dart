@@ -35,70 +35,73 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(22, 8, 10, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          ///Search bar
-          Expanded(
-            flex: 12,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: SizedBox(
-                height: 35,
-                child: TextFormField(
-                  controller: searchController,
-                  cursorColor: Colors.grey,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(100.0),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height*0.06,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ///Search bar
+            Expanded(
+              flex: 12,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: SizedBox(
+                  height: 35,
+                  child: TextFormField(
+                    controller: searchController,
+                    cursorColor: Colors.grey,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.fromLTRB(10.0, 10.0, 5.0, 2.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                      hintText: 'Search',
                     ),
-                    hintText: 'Search',
+                    keyboardType: TextInputType.multiline,
+                    // onChanged: (String value){
+                    //   if(value.length>=3){
+                    //
+                    //   }
+                    // },
                   ),
-                  keyboardType: TextInputType.multiline,
-                  // onChanged: (String value){
-                  //   if(value.length>=3){
-                  //
-                  //   }
-                  // },
                 ),
               ),
             ),
-          ),
 
-          ///Search button
-          IconButton(
-            onPressed: () {
-              widget.callback(searchController.text);
-            },
-            icon: const Icon(Icons.search_outlined),
-            color: const Color(0xFF42454D),
-          ),
-
-          ///Filter button
-          if (widget.page != 'queries')
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: IconButton(
-                onPressed: () {
-                  // widget.ScaffoldKey.currentState?.openEndDrawer();
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return widget.widget;
-                    },
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(10)),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.filter_alt_outlined),
-                color: const Color(0xFF42454D),
-              ),
+            ///Search button
+            IconButton(
+              onPressed: () {
+                widget.callback(searchController.text);
+              },
+              icon: const Icon(Icons.search_outlined),
+              color: const Color(0xFF42454D),
             ),
-        ],
+
+            ///Filter button
+            if (widget.page != 'queries')
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: IconButton(
+                  onPressed: () {
+                    // widget.ScaffoldKey.currentState?.openEndDrawer();
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return widget.widget;
+                      },
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(10)),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.filter_alt_outlined),
+                  color: const Color(0xFF42454D),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

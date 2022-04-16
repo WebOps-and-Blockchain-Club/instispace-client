@@ -9,7 +9,7 @@ Widget PageTitle(String text, BuildContext context) {
       color: Color(0xFF2B2E35),
     ),
     width: MediaQuery.of(context).size.width * 1,
-    height: 55,
+    height: MediaQuery.of(context).size.height*0.07,
     child: Center(
       child: Text(
         text,
