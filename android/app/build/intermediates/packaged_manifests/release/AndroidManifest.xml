@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cfi.instispace"
-    android:versionCode="1"
+    android:versionCode="2"
     android:versionName="1.0.0" >
 
     <uses-sdk
@@ -128,6 +128,15 @@
             android:authorities="com.cfi.instispace.flutterfirebasemessaginginitprovider"
             android:exported="false"
             android:initOrder="99" />
+        <provider
+            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+            android:authorities="com.cfi.instispace.flutter.image_provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/flutter_image_picker_file_paths" />
+        </provider>
 
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"

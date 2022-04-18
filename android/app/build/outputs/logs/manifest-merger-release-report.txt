@@ -7,6 +7,7 @@ INJECTED from /mnt/Volume1/CFIWebOps/insti-app/client/android/app/src/main/Andro
 MERGED from [:firebase_messaging] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:2:1-46:12
 MERGED from [:firebase_core] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:2:1-15:12
 MERGED from [:file_picker] /mnt/Volume1/CFIWebOps/insti-app/client/build/file_picker/intermediates/library_manifest/release/AndroidManifest.xml:2:1-17:12
+MERGED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:2:1-19:12
 MERGED from [:flutter_plugin_android_lifecycle] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_local_notifications] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_local_notifications/intermediates/library_manifest/release/AndroidManifest.xml:2:1-28:12
 MERGED from [:url_launcher_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/url_launcher_android/intermediates/library_manifest/release/AndroidManifest.xml:2:1-14:12
@@ -25,10 +26,10 @@ MERGED from [com.google.firebase:firebase-encoders-json:18.0.0] /home/janith/.gr
 MERGED from [com.google.firebase:firebase-installations:17.0.0] /home/janith/.gradle/caches/transforms-3/e23ffb982554d048f8f4c0ca1c75f67b/transformed/jetified-firebase-installations-17.0.0/AndroidManifest.xml:2:1-24:12
 MERGED from [com.google.firebase:firebase-common:20.0.0] /home/janith/.gradle/caches/transforms-3/4be0471b9896bd1a1c4ffbbc2458000c/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:15:1-40:12
 MERGED from [androidx.core:core-ktx:1.7.0] /home/janith/.gradle/caches/transforms-3/91cdca6378463357d3569b1436b4178f/transformed/jetified-core-ktx-1.7.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-stats:17.0.0] /home/janith/.gradle/caches/transforms-3/4887ee5f9d037aed3bb1d79d0f38f552/transformed/jetified-play-services-stats-17.0.0/AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/janith/.gradle/caches/transforms-3/b1bea98690dd2ae1de5fe28864bacfab/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/janith/.gradle/caches/transforms-3/cf9bcf6d153ed27bab272e7824288bad/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.heifwriter:heifwriter:1.0.0] /home/janith/.gradle/caches/transforms-3/f9304fdb43776fb759019925c2ff0370/transformed/heifwriter-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.0.0] /home/janith/.gradle/caches/transforms-3/804c6494788c74a156572e32f80c1545/transformed/jetified-play-services-cloud-messaging-17.0.0/AndroidManifest.xml:2:1-13:12
 MERGED from [com.google.firebase:firebase-iid-interop:17.1.0] /home/janith/.gradle/caches/transforms-3/cb4100ab827928f0c90830d58e24a39f/transformed/jetified-firebase-iid-interop-17.1.0/AndroidManifest.xml:2:1-10:12
@@ -101,6 +102,8 @@ MERGED from [:firebase_messaging] /mnt/Volume1/CFIWebOps/insti-app/client/build/
 MERGED from [:firebase_messaging] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_messaging/intermediates/library_manifest/release/AndroidManifest.xml:11:5-44:19
 MERGED from [:firebase_core] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:7:5-13:19
 MERGED from [:firebase_core] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:7:5-13:19
+MERGED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:7:5-17:19
+MERGED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:7:5-17:19
 MERGED from [:flutter_local_notifications] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_local_notifications/intermediates/library_manifest/release/AndroidManifest.xml:12:5-26:19
 MERGED from [:flutter_local_notifications] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_local_notifications/intermediates/library_manifest/release/AndroidManifest.xml:12:5-26:19
 MERGED from [:url_launcher_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/url_launcher_android/intermediates/library_manifest/release/AndroidManifest.xml:7:5-12:19
@@ -211,6 +214,8 @@ MERGED from [:firebase_core] /mnt/Volume1/CFIWebOps/insti-app/client/build/fireb
 MERGED from [:firebase_core] /mnt/Volume1/CFIWebOps/insti-app/client/build/firebase_core/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:file_picker] /mnt/Volume1/CFIWebOps/insti-app/client/build/file_picker/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:file_picker] /mnt/Volume1/CFIWebOps/insti-app/client/build/file_picker/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_local_notifications] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_local_notifications/intermediates/library_manifest/release/AndroidManifest.xml:5:5-44
@@ -247,14 +252,14 @@ MERGED from [com.google.firebase:firebase-common:20.0.0] /home/janith/.gradle/ca
 MERGED from [com.google.firebase:firebase-common:20.0.0] /home/janith/.gradle/caches/transforms-3/4be0471b9896bd1a1c4ffbbc2458000c/transformed/jetified-firebase-common-20.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core-ktx:1.7.0] /home/janith/.gradle/caches/transforms-3/91cdca6378463357d3569b1436b4178f/transformed/jetified-core-ktx-1.7.0/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.core:core-ktx:1.7.0] /home/janith/.gradle/caches/transforms-3/91cdca6378463357d3569b1436b4178f/transformed/jetified-core-ktx-1.7.0/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-stats:17.0.0] /home/janith/.gradle/caches/transforms-3/4887ee5f9d037aed3bb1d79d0f38f552/transformed/jetified-play-services-stats-17.0.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-stats:17.0.0] /home/janith/.gradle/caches/transforms-3/4887ee5f9d037aed3bb1d79d0f38f552/transformed/jetified-play-services-stats-17.0.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/janith/.gradle/caches/transforms-3/b1bea98690dd2ae1de5fe28864bacfab/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/janith/.gradle/caches/transforms-3/b1bea98690dd2ae1de5fe28864bacfab/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/janith/.gradle/caches/transforms-3/cf9bcf6d153ed27bab272e7824288bad/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/janith/.gradle/caches/transforms-3/cf9bcf6d153ed27bab272e7824288bad/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.exifinterface:exifinterface:1.3.0] /home/janith/.gradle/caches/transforms-3/25aa5dab9b7395c9a06b88a5dd09ef16/transformed/exifinterface-1.3.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.heifwriter:heifwriter:1.0.0] /home/janith/.gradle/caches/transforms-3/f9304fdb43776fb759019925c2ff0370/transformed/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.heifwriter:heifwriter:1.0.0] /home/janith/.gradle/caches/transforms-3/f9304fdb43776fb759019925c2ff0370/transformed/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-cloud-messaging:17.0.0] /home/janith/.gradle/caches/transforms-3/804c6494788c74a156572e32f80c1545/transformed/jetified-play-services-cloud-messaging-17.0.0/AndroidManifest.xml:5:5-44
@@ -435,6 +440,22 @@ action#android.intent.action.GET_CONTENT
 ADDED from [:file_picker] /mnt/Volume1/CFIWebOps/insti-app/client/build/file_picker/intermediates/library_manifest/release/AndroidManifest.xml:11:13-72
 	android:name
 		ADDED from [:file_picker] /mnt/Volume1/CFIWebOps/insti-app/client/build/file_picker/intermediates/library_manifest/release/AndroidManifest.xml:11:21-69
+provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
+ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:8:9-16:20
+	android:grantUriPermissions
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:12:13-47
+	android:authorities
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:10:13-74
+	android:exported
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:11:13-37
+	android:name
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:9:13-82
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:13:13-15:75
+	android:resource
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:15:17-72
+	android:name
+		ADDED from [:image_picker_android] /mnt/Volume1/CFIWebOps/insti-app/client/build/image_picker_android/intermediates/library_manifest/release/AndroidManifest.xml:14:17-67
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
 ADDED from [:flutter_local_notifications] /mnt/Volume1/CFIWebOps/insti-app/client/build/flutter_local_notifications/intermediates/library_manifest/release/AndroidManifest.xml:7:5-81
 	android:name
@@ -499,12 +520,6 @@ ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plu
 		ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plus/intermediates/library_manifest/release/AndroidManifest.xml:11:13-37
 	android:name
 		ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plus/intermediates/library_manifest/release/AndroidManifest.xml:9:13-77
-meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plus/intermediates/library_manifest/release/AndroidManifest.xml:13:13-15:68
-	android:resource
-		ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plus/intermediates/library_manifest/release/AndroidManifest.xml:15:17-65
-	android:name
-		ADDED from [:share_plus] /mnt/Volume1/CFIWebOps/insti-app/client/build/share_plus/intermediates/library_manifest/release/AndroidManifest.xml:14:17-67
 uses-library#androidx.window.extensions
 ADDED from [androidx.window:window:1.0.0-beta04] /home/janith/.gradle/caches/transforms-3/30853bb5176608249f59a2a5c94c091d/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
 	android:required
