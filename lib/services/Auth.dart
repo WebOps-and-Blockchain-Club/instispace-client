@@ -41,6 +41,7 @@ class AuthService extends ChangeNotifier{
     await _initAuth();
     prefs!.remove('token');
     prefs!.remove('role');
+    await clearMe();
     _token = null;
     _role=null;
     // print('clear auth called');
@@ -80,6 +81,7 @@ class AuthService extends ChangeNotifier{
     if(_mobile != null) {
       prefs!.setString('mobile', _mobile);
     }
+    notifyListeners();
   }
   _loadisNewUser() async{
     await _initAuth();

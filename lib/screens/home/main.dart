@@ -394,9 +394,8 @@ class _mainHomeState extends State<mainHome> {
                           onCompleted: (result) async{
                             print("logout result:$result");
                             if (result["logout"] == true) {
+                              await _auth.clearAuth();
                               await _auth.clearMe();
-                               _auth.clearAuth();
-                               print("pref Cleared , prefs :${prefs!.getString('name')}");
                             }
                           }),
                       builder:

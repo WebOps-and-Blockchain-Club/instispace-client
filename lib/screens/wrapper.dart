@@ -12,24 +12,13 @@ import '../graphQL/auth.dart';
 import '../graphQL/home.dart';
 
 class Wrapper extends StatefulWidget {
+  const Wrapper({Key? key}) : super(key: key);
+
   @override
   _WrapperState createState() => _WrapperState();
 }
 
 class _WrapperState extends State<Wrapper> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _sharedPreference();
-  }
-
-  void _sharedPreference() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  SharedPreferences? prefs;
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -38,113 +27,118 @@ class _WrapperState extends State<Wrapper> {
           return auth.token == null
               ? LogIn()
               : (auth.isNewUser == false
-                  ? ((    prefs!.getString('roll') == null ||
-                          prefs!.getString('name') == null ||
-                          prefs!.getString('role') == null ||
-                          prefs!.getStringList('interests') == null ||
-              (prefs!.getString('hostelName') == null &&  prefs!.getString('role') == "USER")||
-              (prefs!.getString('hostelId') == null && prefs!.getString('role') == "USER" )||
-                          prefs!.getString("id") == null)
-                      ? getMeLoader(prefs: prefs!,)
-                      : const mainHome())
+                  ? GetMeLoader(
+                      auth: auth,
+                    )
                   : userInit(auth: auth));
         }));
   }
 }
 
-
-
-
-class getMeLoader extends StatefulWidget {
-  final SharedPreferences prefs;
-  getMeLoader({required this.prefs});
+class GetMeLoader extends StatefulWidget {
+  final AuthService auth;
+  const GetMeLoader({Key? key, required this.auth}) : super(key: key);
 
   @override
-  State<getMeLoader> createState() => _getMeLoaderState();
+  State<GetMeLoader> createState() => _GetMeLoaderState();
 }
 
-class _getMeLoaderState extends State<getMeLoader> {
+class _GetMeLoaderState extends State<GetMeLoader> {
   String getMe = homeQuery().getMe;
   String logOut = authQuery().logOut;
-  AuthService _auth = AuthService();
   late String fcmToken;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _auth = Provider.of<AuthService>(context, listen: false);
-    });
+
+  Future<bool> setUserid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if ((prefs.getString('roll') == null ||
+        prefs.getString('name') == null ||
+        prefs.getString('role') == null ||
+        prefs.getStringList('interests') == null ||
+        (prefs.getString('hostelName') == null &&
+            prefs.getString('role') == "USER") ||
+        (prefs.getString('hostelId') == null &&
+            prefs.getString('role') == "USER") ||
+        prefs.getString("id") == null)) {
+      return false;
+    } else {
+      return true;
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     _firebaseMessaging.getToken().then((token) {
       fcmToken = token!;
     });
-    return Query(
-        options: QueryOptions(
-          document: gql(getMe),
-        ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            return Mutation(
-              options: MutationOptions(
-                  document: gql(logOut),
-                  onCompleted: (result) async{
-                    print("logout result:$result");
-                    if (result["logout"] == true) {
-                      _auth.clearMe();
-                      print("pref Cleared , prefs :${widget.prefs}");
+    return FutureBuilder(
+        future: setUserid(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data == true) {
+              return const mainHome();
+            } else {
+              return Query(
+                  options: QueryOptions(
+                    document: gql(getMe),
+                  ),
+                  builder: (QueryResult result, {fetchMore, refetch}) {
+                    if (result.hasException) {
+                      return Mutation(
+                        options: MutationOptions(
+                            document: gql(logOut),
+                            onCompleted: (result) async {
+                              if (result["logout"] == true) {
+                                widget.auth.clearMe();
+                              }
+                            }),
+                        builder:
+                            (RunMutation runMutation, QueryResult? result) {
+                          if (result!.hasException) {
+                            widget.auth.clearMe();
+                          }
+                          return ListTile(
+                            leading: const Icon(Icons.logout),
+                            horizontalTitleGap: 0,
+                            title: const Text("Logout"),
+                            onTap: () {
+                              runMutation({
+                                "fcmToken": fcmToken,
+                              });
+                            },
+                          );
+                        },
+                      );
                     }
-                  }),
-              builder:
-                  (RunMutation runMutation, QueryResult? result) {
-                if (result!.hasException) {
-                  print(result.exception.toString());
-                }
-                return ListTile(
-                  leading: const Icon(Icons.logout),
-                  horizontalTitleGap: 0,
-                  title: const Text("Logout"),
-                  onTap: () {
-                    runMutation({
-                      "fcmToken": fcmToken,
-                    });
-                  },
-                );
-              },
-            );
+                    if (result.isLoading) {
+                      return const SizedBox.shrink();
+                    }
+                    String _userRole = result.data!["getMe"]["role"];
+                    String _hostelName =
+                        (result.data!["getMe"]["hostel"] == null)
+                            ? ""
+                            : result.data!["getMe"]["hostel"]["name"];
+                    String _hostelId = (result.data!["getMe"]["hostel"] == null)
+                        ? ""
+                        : result.data!["getMe"]["hostel"]["id"];
+                    String _id = result.data!["getMe"]["id"];
+                    String _name = result.data!["getMe"]["name"];
+                    String _roll = result.data!["getMe"]["roll"];
+                    String? _mobile = result.data!["getMe"]["mobile"];
+                    var interestJson = result.data!["getMe"]["interest"];
+                    List<String> interests = [];
+                    for (var i = 0; i < interestJson.length; i++) {
+                      interests.add(jsonEncode(interestJson[i]));
+                    }
+                    widget.auth.setMe(_roll, _name, _userRole, interests, _id,
+                        _hostelName, _hostelId, _mobile);
+                    return const Scaffold(body: CircularProgressIndicator());
+                  });
+            }
+          } else {
+            return const CircularProgressIndicator();
           }
-          if (result.isLoading) {
-            print("is loading");
-            return const SizedBox.shrink();
-          }
-          print("after loading");
-          // print("result Data : ${result.data}");
-          String _userRole = result.data!["getMe"]["role"];
-          print("role : $_userRole");
-          String _hostelName = (result.data!["getMe"]["hostel"] == null)?"":result.data!["getMe"]["hostel"]["name"];
-          print("hostel : $_hostelName");
-          String _hostelId = (result.data!["getMe"]["hostel"] == null)?"":result.data!["getMe"]["hostel"]["id"];
-          print("hostelId : $_hostelId");
-          String _id = result.data!["getMe"]["id"];
-          print("id : $_id");
-          String _name = result.data!["getMe"]["name"];
-          print("name : $_name");
-          String _roll = result.data!["getMe"]["roll"];
-          print("roll :$_roll");
-          String? _mobile = result.data!["getMe"]["mobile"];
-          var interestJson = result.data!["getMe"]["interest"];
-          List<String> interests = [];
-          for (var i=0;i<interestJson.length;i++){
-            interests.add(jsonEncode(interestJson[i]));
-          }
-          print("interests :$interests");
-          _auth.setMe(_roll, _name, _userRole, interests, _id, _hostelName, _hostelId, _mobile);
-          print("done loading data");
-          return const mainHome();
         });
   }
 }
-
