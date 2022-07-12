@@ -89,7 +89,7 @@ class _GetMeLoaderState extends State<GetMeLoader> {
                         options: MutationOptions(
                             document: gql(logOut),
                             onCompleted: (result) async {
-                              if (result["logout"] == true) {
+                              if (result?["logout"] == true) {
                                 widget.auth.clearMe();
                               }
                             }),

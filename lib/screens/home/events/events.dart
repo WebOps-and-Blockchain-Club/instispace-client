@@ -1,346 +1,247 @@
-import 'package:client/graphQL/auth.dart';
-import 'package:client/graphQL/events.dart';
-import 'package:client/models/tag.dart';
-import 'package:client/screens/home/events/addEvent.dart';
-import 'package:client/widgets/eventCard.dart';
-import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../widgets/text.dart';
-import 'package:client/widgets/filters.dart';
-import 'package:client/widgets/text.dart';
-import 'package:client/widgets/loadingScreens.dart';
-import '../../../models/eventsClass.dart';
 
-class EventsHome extends StatefulWidget {
-  const EventsHome({Key? key}) : super(key: key);
+import '../hostelSection/hostel.dart';
+import 'new_event.dart';
+import '../../../widgets/headers/main.dart';
+import '../../../widgets/headers/drawer.dart';
+import '../../../widgets/card/main.dart';
+import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/utils/main.dart';
+import '../tag/select_tags.dart';
+import '../../../graphQL/events.dart';
+import '../../../models/event.dart';
+import '../../../models/post.dart';
+import '../../../models/tag.dart';
 
+class EventsPage extends StatefulWidget {
+  const EventsPage({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  State<EventsPage> createState() => _EventsPageState();
 }
 
-class _HomeState extends State<EventsHome> {
+class _EventsPageState extends State<EventsPage> {
+  // Constants
+  final isStaredTagModel =
+      TagModel(id: "isStared", title: "Pinned", category: "Custom");
+  final orderByLikesTagModel = TagModel(
+      id: "orderByLikes", title: "Likes: High to Low", category: "Custom");
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _sharedPreference();
-  }
+  //Keys
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  SharedPreferences? prefs;
-  void _sharedPreference()async{
-    prefs = await SharedPreferences.getInstance();
+  //Variables
+  bool orderByLikes = false;
+  bool isStared = false;
+  late TagsModel selectedTags = TagsModel.fromJson([]);
+  String search = "";
+  int skip = 0;
+  int take = 10;
+
+  //Controllers
+  final ScrollController _scrollController = ScrollController();
+
+  setFilters(TagsModel _selectedTags) {
     setState(() {
-      userRole = prefs!.getString('role')!;
-      userid = prefs!.getString('id')!;
+      isStared = _selectedTags.contains(isStaredTagModel);
+      orderByLikes = _selectedTags.contains(orderByLikesTagModel);
+      _selectedTags.remove(isStaredTagModel);
+      _selectedTags.remove(orderByLikesTagModel);
+      selectedTags = _selectedTags;
     });
   }
 
-  ///GraphQL
-  String getEvents = eventsQuery().getEvents;
-  String getTags = authQuery().getTags;
-
-
-  ///Variables
-  bool mostlikesvalue =false;
-  bool isStarred =false;
-  List<String>selectedFilterIds=[];
-  Map<String, List<Tag>> interest = {};
-  int skip=0;
-  int take=10;
-  bool display = false;
-  late int total;
-  List<eventsPost> posts =[];
-  String userRole ="";
-  String userid = "";
-  String search = "";
-
-
-  ///Controllers
-  TextEditingController searchController = TextEditingController();
-  ScrollController scrollController =ScrollController();
-  ScrollController scrollController1 =ScrollController();
-
-
-  ///Keys
-  var ScaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> variables = {
+      "take": take,
+      "lastId": "",
+      "orderByLikes": orderByLikes,
+      "filteringCondition": {
+        "tags": selectedTags.getTagIds(),
+        "isStared": isStared
+      },
+      "search": search
+    };
     return Query(
-      options: QueryOptions(
-        document: gql(getTags),
-      ),
-      builder: (QueryResult result, {fetchMore, refetch}){
-        interest.clear();
-        if (result.hasException) {
-          return Text(result.exception.toString());
-        }
-        if(result.isLoading){
+        options: QueryOptions(
+            document: gql(EventGQL().getAll), variables: variables),
+        builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
           return Scaffold(
-              body: Center(
-                child: Column(
-                  children: [
-                    PageTitle('Events', context),
-                    Expanded(
-                        child: ListView.separated(
-                            itemBuilder: (context, index) => const NewCardSkeleton(),
-                            separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                            itemCount: 5)
-                    )
-                  ],
-                ),
-              ),
-          );
-        }
-        var tagData = result.data!["getTags"];
-        for(var i=0;i<tagData.length;i++ ){
-          interest.putIfAbsent(
-              tagData[i]["category"].toString(), () => []);
-          interest[tagData[i]["category"]]!.add(Tag(
-              Tag_name: tagData[i]["title"].toString(),
-              category: tagData[i]["category"].toString(),
-              id: tagData[i]["id"].toString()));
-        }
-        return Query(
-            options: QueryOptions(
-              document: gql(getEvents),
-              variables: {"getEventsTake":take,"lastEventId": "","orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred},"search":search},
-            ),
-            builder: (QueryResult result, { fetchMore, refetch }){
-              if (result.hasException) {
-                return Text(result.exception.toString());
-              }
-
-              if(posts.isEmpty) {
-                if (result.isLoading) {
-                  return Scaffold(
-                      body: Center(
-                        child: Column(
-                          children: [
-                            PageTitle('Events', context),
-                            Expanded(
-                                child: ListView.separated(
-                                    itemBuilder: (context, index) => const NewCardSkeleton(),
-                                    separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                                    itemCount: 5)
-                            )
-                          ],
+            key: _scaffoldKey,
+            drawer: const CustomDrawer(),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: RefreshIndicator(
+                  onRefresh: () => refetch!(),
+                  child: NestedScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return CustomAppBar(
+                              title: "Events",
+                              leading: CustomIconButton(
+                                  icon: Icons.menu,
+                                  onPressed: () =>
+                                      _scaffoldKey.currentState!.openDrawer()),
+                              action: CustomIconButton(
+                                  icon: Icons.account_balance_outlined,
+                                  onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const HostelHome()))),
+                            );
+                          }, childCount: 1),
                         ),
-                      ),
-                  );
-                }
-              }
-
-              ///Screen if there is no Event
-              if (result.data!["getEvents"]["list"] == null || result.data!["getEvents"]["list"].isEmpty){
-                return Scaffold(
-                  floatingActionButton: _getFAB(refetch),
-                  body: Center(
-                    child: Column(
-                      children: [
-                        PageTitle('Events', context),
-
-                        ///Search bar and filter button
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            width: MediaQuery.of(context).size.width * 1,
-                            child: Search(
-                              refetch: refetch,
-                              ScaffoldKey: ScaffoldKey,
-                              page: 'netops',
-                              callback: (String val) {
+                        SliverPersistentHeader(
+                          pinned: true,
+                          floating: true,
+                          delegate: ContestTabHeader(
+                            SearchBar(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              onSubmitted: (value) {
                                 setState(() {
-                                  search = val;
+                                  search = value;
+                                });
+                                refetch!();
+                              },
+                              onFilterClick: () {
+                                if (orderByLikes) {
+                                  selectedTags.add(orderByLikesTagModel);
                                 }
+                                if (isStared) {
+                                  selectedTags.add(isStaredTagModel);
+                                }
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) => buildSheet(
+                                    context,
+                                    selectedTags,
+                                    (value) {
+                                      setFilters(value);
+                                      refetch!();
+                                    },
+                                    CategoryModel(category: "Custom", tags: [
+                                      TagModel(
+                                          id: "isStared",
+                                          title: "Pinned",
+                                          category: "Custom"),
+                                      TagModel(
+                                          id: "orderByLikes",
+                                          title: "Likes: High to Low",
+                                          category: "Custom")
+                                    ]),
+                                  ),
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(10)),
+                                  ),
                                 );
                               },
-                              widget: Filters(
-                                mostLikeValues: mostlikesvalue,
-                                isStarred: isStarred,
-                                selectedFilterIds: selectedFilterIds,
-                                refetch: refetch,
-                                interest: interest,
-                                page: 'netops',
-                                callback: (bool val) {
-                                  setState(() {
-                                    isStarred = val;
-                                  });
-                                },
-                              ),
                             ),
                           ),
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0,250,0,0),
-                          child: Container(
-                            alignment: Alignment.center,
-                              child: const Text(
-                                'No Events Yet !!',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w600
-                                ),
-                                textAlign: TextAlign.center,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              else{
-              var data=result.data!["getEvents"];
-              var eventList= data["list"];
-
-              posts.clear();
-              for(var i=0;i<result.data!["getEvents"]["list"].length;i++){
-                List<Tag> tags=[];
-                for(var k=0;k<eventList[i]["tags"].length;k++){
-                  // print("Tag_name: ${eventList[i]["tags"][k]["title"]}, category: ${eventList[i]["tags"][k]["category"]}");
-                  tags.add(
-                    Tag(
-                      Tag_name: eventList[i]["tags"][k]["title"],
-                      category: eventList[i]["tags"][k]["category"],
-                      id: eventList[i]["tags"][k]["id"],
-                    ),
-                  );
-                }
-                List<String> imageUrls=[];
-                if(eventList[i]["photo"]!=null && eventList[i]["photo"]!="")
-                {imageUrls=eventList[i]["photo"].split(" AND ");}
-                posts.add(eventsPost(
-                  createdById: eventList[i]["createdBy"]["id"],
-                  createdByName: eventList[i]["createdBy"]["name"],
-                  linkName: eventList[i]['linkName'],
-                  location: eventList[i]["location"],
-                  title: eventList[i]["title"],
-                  description: eventList[i]["content"],
-                  likeCount: eventList[i]["likeCount"],
-                  tags: tags,
-                  time: eventList[i]["time"],
-                  linkToAction:eventList[i]["linkToAction"],
-                  imgUrl: imageUrls,
-                  id:eventList[i]["id"],
-                  isLiked: eventList[i]["isLiked"],
-                  isStarred: eventList[i]["isStared"],
-                  createdAt: DateTime.parse(eventList[i]["createdAt"]),
-                )
-                );
-              }
-              total=data["total"];
-              FetchMoreOptions opts =FetchMoreOptions(
-                  variables: {"getEventsTake":take,"lastEventId": posts.last.id,"orderByLikes":mostlikesvalue,"filteringCondition":{"tags":selectedFilterIds,"isStared":isStarred},"search": search},
-                  updateQuery: (previousResultData,fetchMoreResultData){
-
-                    final List<dynamic> repos = [
-                      ...previousResultData!["getEvents"]["list"] as List<dynamic>,
-                      ...fetchMoreResultData!["getEvents"]["list"] as List<dynamic>
-                    ];
-                    fetchMoreResultData["getEvents"]["list"] = repos;
-                    return fetchMoreResultData;
-                  }
-              );
-              scrollController.addListener(()async {
-                var triggerFetchMoreSize =
-                    0.99 * scrollController.position.maxScrollExtent;
-                if (scrollController.position.pixels >
-                    triggerFetchMoreSize && total>posts.length){
-                  await fetchMore!(opts);
-                  scrollController.jumpTo(triggerFetchMoreSize);
-                }
-              });
-
-
-              return Scaffold(
-                key: ScaffoldKey,
-                backgroundColor: const Color(0xFFF7F7F7),
-                floatingActionButton: _getFAB(refetch),
-                body: SafeArea(
-                  child: RefreshIndicator(
-                    onRefresh: () {
-                      return refetch!();
+                        )
+                      ];
                     },
-                    color: const Color(0xFF2B2E35),
-                    child: ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      controller: scrollController,
-                      children: [
-
-                        ///Heading
-                        PageTitle('Events',context),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height*0.06,
-                          width: MediaQuery.of(context).size.width*0.9,
-
-                          ///Calling search bar + filter button
-                          child: Search(
-                              refetch: refetch,
-                              ScaffoldKey: ScaffoldKey,
-                              page: 'events',
-                              widget: Filters(refetch: refetch,
-                                mostLikeValues: mostlikesvalue,
-                                isStarred: isStarred,
-                                interest: interest,
-                                selectedFilterIds: selectedFilterIds,
-                                page: 'events', callback: (bool val) { setState(() {
-                                  isStarred= val;
-                                });},
-                              ), callback: (val) {setState(() {
-                            search = val;
-                              });},
-                          ),
-                        ),
-
-                        ///Listing all the events
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: ListView(
-                            controller: scrollController1,
-                            shrinkWrap: true,
-                            children: posts
-                            .map((post) => EventsCard(post: post, refetch:refetch, userRole: userRole, userId: userid,))
-                            .toList(),
-                      ),
-                        ),
-                        if(result.isLoading)
-                          const Center(
-                              child: CircularProgressIndicator(color: Colors.yellow,)
-                          ),
-                      ],
-                    ),
+                    body: scaffoldBody(result, refetch, variables, fetchMore),
                   ),
                 ),
-              );
-            }
-            }
-        );
-      },
-    );
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => NewEvent(
+                          refetch: refetch,
+                        )));
+              },
+              backgroundColor: const Color(0xFF2f247b),
+              child: const Icon(Icons.add),
+              elevation: 5,
+            ),
+          );
+        });
+  }
+}
+
+Widget scaffoldBody(
+    QueryResult result,
+    Future<QueryResult<Object?>?> Function()? refetch,
+    Map<String, dynamic> defaultVariables,
+    FetchMore? fetchMore) {
+  if (result.hasException) {
+    return Text(result.exception.toString());
   }
 
-  ///Widget for the floating action button
-  Widget? _getFAB(Future<QueryResult?> Function()? refetch) {
-    if(userRole=="ADMIN" || userRole == 'HAS' || userRole == 'SECRETORY' || userRole == 'HOSTEL_SEC' || userRole == 'LEADS' || userRole == 'MODERATOR'){
-      return FloatingActionButton(onPressed: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (BuildContext context)=> AddPostEvents(refetchPosts: refetch,)));
-      },
-        child: const Icon(Icons.add),
-        backgroundColor: Colors.red,
-      );
-    }
-    else {
-      return null;
-    }
+  if (result.isLoading && result.data == null) {
+    return const Text('Loading');
   }
+
+  final List<PostModel> posts =
+      EventsModel.fromJson(result.data!["getEvents"]["list"]).toPostsModel();
+
+  if (posts.isEmpty) {
+    return const Text('No posts');
+  }
+
+  final total = result.data!["getEvents"]["total"];
+  FetchMoreOptions opts = FetchMoreOptions(
+      variables: {...defaultVariables, "lastId": posts.last.id},
+      updateQuery: (previousResultData, fetchMoreResultData) {
+        final List<dynamic> repos = [
+          ...previousResultData!['getEvents']['list'] as List<dynamic>,
+          ...fetchMoreResultData!["getEvents"]["list"] as List<dynamic>
+        ];
+        fetchMoreResultData["getEvents"]["list"] = repos;
+        return fetchMoreResultData;
+      });
+
+  return NotificationListener<ScrollNotification>(
+    onNotification: (notification) {
+      if (notification.metrics.pixels >
+              0.8 * notification.metrics.maxScrollExtent &&
+          total > posts.length) {
+        fetchMore!(opts);
+      }
+      return true;
+    },
+    child: RefreshIndicator(
+      onRefresh: () {
+        return refetch!();
+      },
+      child: ListView.builder(
+          itemCount: posts.length + 1,
+          itemBuilder: (context, index) {
+            if (posts.length == index) {
+              if (total == posts.length) {
+                return const Center(child: Text("No More Posts"));
+              } else if (result.isLoading) {
+                return const Center(
+                  child: Text("Loading"),
+                );
+              }
+              return Center(
+                child: TextButton(
+                    onPressed: () => fetchMore!(opts),
+                    child: const Text("Load More")),
+              );
+            } else {
+              return PostCard(
+                post: posts[index],
+                refetch: refetch,
+                deleteMutationDocument: EventGQL().delete,
+              );
+            }
+          }),
+    ),
+  );
 }
