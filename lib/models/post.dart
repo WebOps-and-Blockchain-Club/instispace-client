@@ -1,4 +1,5 @@
 import 'package:client/models/actions.dart';
+import 'package:client/models/hostel.dart';
 import 'package:client/models/tag.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -8,9 +9,12 @@ class PostModel {
   final String? subTitle;
   final String description;
   final List<String>? imageUrls;
+  final List<String>? attachements;
   final String? location;
   final String? time;
+  final String? endTime;
   final TagsModel? tags;
+  final HostelsModel? hostels;
   final LikePostModel? like;
   final CommentPostModel? comment;
   final StarPostModel? star;
@@ -28,9 +32,12 @@ class PostModel {
       this.subTitle,
       required this.description,
       this.imageUrls,
+      this.attachements,
       this.location,
       this.time,
+      this.endTime,
       this.tags,
+      this.hostels,
       this.like,
       this.comment,
       this.star,

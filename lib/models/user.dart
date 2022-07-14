@@ -1,4 +1,7 @@
-import 'package:client/models/tag.dart';
+import 'announcement.dart';
+import 'event.dart';
+import 'netop.dart';
+import 'tag.dart';
 
 class UserModel {
   String? id;
@@ -11,6 +14,9 @@ class UserModel {
   List<TagModel>? interets;
   String? hostelName;
   String? hostelId;
+  List<AnnouncementModel>? announcements;
+  List<EventModel>? events;
+  List<NetopModel>? netops;
 
   UserModel(
       {this.id,
@@ -22,7 +28,10 @@ class UserModel {
       this.mobile,
       this.interets,
       this.hostelName,
-      this.hostelId});
+      this.hostelId,
+      this.announcements,
+      this.events,
+      this.netops});
 
   UserModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
@@ -34,7 +43,18 @@ class UserModel {
         mobile = data["mobile"],
         interets = TagsModel.fromJson(data["interest"] ?? []).tags,
         hostelName = data["hostel"] != null ? data["hostel"]["name"] : null,
-        hostelId = data["hostel"] != null ? data["hostel"]["id"] : null;
+        hostelId = data["hostel"] != null ? data["hostel"]["id"] : null,
+        announcements =
+            data["getHome"] != null && data["getHome"]["announcements"] != null
+                ? AnnouncementsModel.fromJson(data["getHome"]["announcements"])
+                    .announcements
+                : null,
+        events = data["getHome"] != null && data["getHome"]["events"] != null
+            ? EventsModel.fromJson(data["getHome"]["events"]).events
+            : null,
+        netops = data["getHome"] != null && data["getHome"]["events"] != null
+            ? NetopsModel.fromJson(data["getHome"]["events"]).netops
+            : null;
 
   void update(UserModelKeyEnum key, dynamic value) {
     key = value;

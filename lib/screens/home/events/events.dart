@@ -4,7 +4,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../hostelSection/hostel.dart';
 import 'new_event.dart';
 import '../../../widgets/headers/main.dart';
-import '../../../widgets/headers/drawer.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/utils/main.dart';
@@ -15,7 +14,8 @@ import '../../../models/post.dart';
 import '../../../models/tag.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const EventsPage({Key? key, required this.scaffoldKey}) : super(key: key);
 
   @override
   State<EventsPage> createState() => _EventsPageState();
@@ -27,9 +27,6 @@ class _EventsPageState extends State<EventsPage> {
       TagModel(id: "isStared", title: "Pinned", category: "Custom");
   final orderByLikesTagModel = TagModel(
       id: "orderByLikes", title: "Likes: High to Low", category: "Custom");
-
-  //Keys
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   //Variables
   bool orderByLikes = false;
@@ -69,8 +66,6 @@ class _EventsPageState extends State<EventsPage> {
             document: gql(EventGQL().getAll), variables: variables),
         builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
           return Scaffold(
-            key: _scaffoldKey,
-            drawer: const CustomDrawer(),
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -88,8 +83,9 @@ class _EventsPageState extends State<EventsPage> {
                               title: "Events",
                               leading: CustomIconButton(
                                   icon: Icons.menu,
-                                  onPressed: () =>
-                                      _scaffoldKey.currentState!.openDrawer()),
+                                  onPressed: () => widget
+                                      .scaffoldKey.currentState!
+                                      .openDrawer()),
                               action: CustomIconButton(
                                   icon: Icons.account_balance_outlined,
                                   onPressed: () => Navigator.of(context).push(
