@@ -12,7 +12,7 @@ import '../../screens/home/hostelSection/hostel.dart';
 import '../../screens/home/searchUser.dart';
 import '../../screens/home/updateProfile/basicInfo.dart';
 import '../../screens/home/userPage.dart';
-import '../../screens/login/createTag.dart';
+import '../../screens/auth/createTag.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);

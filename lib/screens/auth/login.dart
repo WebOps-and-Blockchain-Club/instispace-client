@@ -47,10 +47,10 @@ class _LogInState extends State<LogIn> {
                   resultData["login"]["token"],
                   resultData["login"]["role"],
                   resultData["login"]["isNewUser"]);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('User Logged In')),
+              );
             }
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User Logged In')),
-            );
           },
         ),
         builder: (
@@ -124,7 +124,7 @@ class _LogInState extends State<LogIn> {
                             runMutation({
                               'fcmToken': fcmToken,
                               'loginInputs': {
-                                "roll": name.text.trim().toUpperCase(),
+                                "roll": name.text.trim().toLowerCase(),
                                 "pass": pass.text,
                               }
                             });

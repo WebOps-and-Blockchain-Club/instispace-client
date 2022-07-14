@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:client/screens/wrapper.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:client/services/Client.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
+
+import 'screens/wrapper.dart';
+import 'services/auth.dart';
+import 'services/client.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'High_importance_channel',
@@ -46,20 +49,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GraphQLProvider(
-      client: client,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'My Hostel App',
-        theme: ThemeData(
-          // This is the theme of application.
+    return ChangeNotifierProvider(
+        create: (_) => AuthService(),
+        child: Consumer<AuthService>(builder: (context, auth, child) {
+          return GraphQLProvider(
+            client: client(auth.token),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'InstiSpace',
+              theme: ThemeData(
+                // This is the theme of application.
 
-          primarySwatch: Colors.red,
-          primaryColor: Colors.amber,
-          // colorScheme: ColorScheme.light().copyWith(secondary: const Color(0xFF2B2E35)),
-        ),
-        home: Wrapper(),
-      ),
-    );
+                primarySwatch: Colors.red,
+                primaryColor: Colors.amber,
+                // colorScheme: ColorScheme.light().copyWith(secondary: const Color(0xFF2B2E35)),
+              ),
+              home: Wrapper(auth: auth),
+            ),
+          );
+        }));
   }
 }
