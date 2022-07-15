@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../themes.dart';
+
 class Header extends StatelessWidget {
   final String title;
   final String? subTitle;
@@ -13,17 +15,13 @@ class Header extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-              color: Color(0xFF2f247b),
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         if (subTitle != null)
           Text(
             subTitle!,
-            style: const TextStyle(
-                color: Colors.purple,
-                fontSize: 16,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: ColorPalette.palette(context).secondary,
                 fontWeight: FontWeight.w500),
           )
       ],
@@ -52,10 +50,7 @@ class CustomAppBar extends StatelessWidget {
               child: Center(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                      color: Color(0xFF2f247b),
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -78,7 +73,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.purple[50],
+      color: ColorPalette.palette(context).secondary[50],
       padding: padding,
       height: 80,
       child: Row(
@@ -87,32 +82,26 @@ class SearchBar extends StatelessWidget {
           Expanded(
               child: Card(
                   margin: const EdgeInsets.all(0),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
+                  child: Theme(
+                    data: ThemeData(
+                      primarySwatch: ColorPalette.palette(context).primary,
                     ),
-                  ),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'What are you looking for?',
-                        prefixIcon: Icon(Icons.search)),
-                    onSubmitted: onSubmitted,
+                    child: TextField(
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'What are you looking for?',
+                          prefixIcon: Icon(Icons.search, size: 25)),
+                      onSubmitted: onSubmitted,
+                    ),
                   ))),
           if (onFilterClick != null)
             Card(
               margin: const EdgeInsets.only(left: 10),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
               child: InkWell(
                 onTap: onFilterClick,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8),
-                  child:
-                      Icon(Icons.filter_alt_outlined, color: Color(0xFF2f247b)),
+                  child: Icon(Icons.filter_alt_outlined),
                 ),
               ),
             )

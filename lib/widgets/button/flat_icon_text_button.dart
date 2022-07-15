@@ -16,17 +16,11 @@ class CustomFlatIconTextButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: const Color(0xFF2f247b),
-              size: 21,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
+            Icon(icon, size: 21),
+            const SizedBox(width: 10),
             Text(
               text,
-              style: const TextStyle(color: Color(0xFF2f247b)),
+              style: Theme.of(context).textTheme.labelLarge,
             )
           ],
         ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../themes.dart';
+
 class CustomDropdownButton extends StatelessWidget {
   final String? value;
   final List<String>? items;
@@ -20,9 +22,7 @@ class CustomDropdownButton extends StatelessWidget {
       child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(
-              color: const Color(0xFF2f247b),
-            ),
+            border: Border.all(color: ColorPalette.palette(context).primary),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
@@ -39,8 +39,7 @@ class CustomDropdownButton extends StatelessWidget {
                 icon: const Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Icon(Icons.keyboard_arrow_down)),
-                iconEnabledColor: const Color(0xFF2f247b),
-                style: const TextStyle(color: Color(0xFF2f247b), fontSize: 16),
+                iconEnabledColor: ColorPalette.palette(context).primary,
                 underline: Container(),
                 isExpanded: true,
               ))),

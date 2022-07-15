@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'screens/wrapper.dart';
 import 'services/auth.dart';
 import 'services/client.dart';
+import 'themes.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'High_importance_channel',
@@ -57,13 +58,7 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'InstiSpace',
-              theme: ThemeData(
-                // This is the theme of application.
-
-                primarySwatch: Colors.red,
-                primaryColor: Colors.amber,
-                // colorScheme: ColorScheme.light().copyWith(secondary: const Color(0xFF2B2E35)),
-              ),
+              theme: Themes.theme,
               home: Wrapper(auth: auth),
             ),
           );

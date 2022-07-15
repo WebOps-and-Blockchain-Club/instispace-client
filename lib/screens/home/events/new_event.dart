@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:client/graphQL/events.dart';
-import 'package:client/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
@@ -9,13 +7,15 @@ import 'package:provider/provider.dart';
 
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
+import '../../../graphQL/events.dart';
+import '../../../models/event.dart';
 import '../../../models/tag.dart';
 import '../../../models/date_time_format.dart';
 import '../../../screens/home/tag/tags_display.dart';
+import '../../../themes.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
-import '../../../widgets/form/text_form_field.dart';
 import '../../../widgets/text/label.dart';
 import '../tag/select_tags.dart';
 
@@ -168,28 +168,36 @@ class _NewEventState extends State<NewEvent> {
                         /// Info
                         const LabelText(text: "Info"),
                         // Title
-                        CustomTextFormField(
-                          controller: title,
-                          labelText: "Title",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter the title of the post";
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: title,
+                            decoration:
+                                const InputDecoration(labelText: "Title"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the title of the post";
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                         // Description
-                        CustomTextFormField(
-                          controller: description,
-                          labelText: "Description",
-                          minLines: 3,
-                          maxLines: 8,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter the description of the post";
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: description,
+                            minLines: 3,
+                            maxLines: 8,
+                            decoration:
+                                const InputDecoration(labelText: "Description"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the description of the post";
+                              }
+                              return null;
+                            },
+                          ),
                         ),
 
                         // Date Time
@@ -198,26 +206,33 @@ class _NewEventState extends State<NewEvent> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: CustomTextFormField(
-                                    controller: dateFormated,
-                                    labelText: "Event Date",
-                                    prefixIcon: Icons.calendar_month_outlined,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Enter the event date of the post";
-                                      }
-                                      return null;
-                                    },
-                                    readOnly: true,
-                                    onTap: () => showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now().add(
-                                                    const Duration(days: 7)),
-                                                firstDate: DateTime.now(),
-                                                lastDate: DateTime.now().add(
-                                                    const Duration(
-                                                        days: 30 * 5)))
-                                            .then((value) {
+                                child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                  controller: dateFormated,
+                                  decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                          Icons.calendar_month_outlined,
+                                          size: 20),
+                                      prefixIconConstraints:
+                                          Themes.inputIconConstraints,
+                                      labelText: "Event Date"),
+                                  readOnly: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter the event date of the post";
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () => showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now()
+                                                  .add(const Duration(days: 7)),
+                                              firstDate: DateTime.now(),
+                                              lastDate: DateTime.now().add(
+                                                  const Duration(days: 30 * 5)))
+                                          .then(
+                                        (value) {
                                           if (value != null) {
                                             date.text = value.toString();
                                             DateTimeFormatModel _date =
@@ -226,22 +241,31 @@ class _NewEventState extends State<NewEvent> {
                                             dateFormated.text =
                                                 _date.toFormat("MMM dd, yyyy");
                                           }
-                                        }))),
+                                        },
+                                      )),
+                            )),
                             const SizedBox(
                               width: 10,
                             ),
                             Expanded(
-                              child: CustomTextFormField(
+                                child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
                                   controller: timeFormated,
-                                  labelText: "Event Time",
-                                  prefixIcon: Icons.access_time_outlined,
+                                  decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                          Icons.access_time_outlined,
+                                          size: 20),
+                                      prefixIconConstraints:
+                                          Themes.inputIconConstraints,
+                                      labelText: "Event Time"),
+                                  readOnly: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return "Enter the event time of the post";
                                     }
                                     return null;
                                   },
-                                  readOnly: true,
                                   onTap: () => showTimePicker(
                                         context: context,
                                         initialTime: TimeOfDay.now(),
@@ -257,21 +281,29 @@ class _NewEventState extends State<NewEvent> {
                                               _time.toFormat("h:mm a");
                                         }
                                       })),
-                            ),
+                            )),
                           ],
                         ),
 
                         // Location
-                        CustomTextFormField(
-                          controller: location,
-                          labelText: "Location",
-                          prefixIcon: Icons.location_on_outlined,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter the location of the post";
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: location,
+                            decoration: InputDecoration(
+                              labelText: "Location",
+                              prefixIcon: const Icon(Icons.location_on_outlined,
+                                  size: 20),
+                              prefixIconConstraints:
+                                  Themes.inputIconConstraints,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the location of the post";
+                              }
+                              return null;
+                            },
+                          ),
                         ),
 
                         // Images & Tags
@@ -310,32 +342,41 @@ class _NewEventState extends State<NewEvent> {
                                     null,
                                   ),
                                   isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                  ),
                                 );
                               },
                               text: "Select Tags",
-                              backgroundColor: Colors.white,
-                              borderColor: const Color(0xFF2f247b),
-                              textColor: const Color(0xFF2f247b),
+                              color: ColorPalette.palette(context).primary,
+                              type: ButtonType.outlined,
                             ),
                           ],
                         ),
 
                         // CTA (optional)
                         const LabelText(text: "Call To Action(Optional)"),
-                        CustomTextFormField(
-                          controller: ctaName,
-                          labelText: "Display Text",
-                          prefixIcon: Icons.text_fields,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: ctaName,
+                            decoration: InputDecoration(
+                              labelText: "Display Text",
+                              prefixIcon:
+                                  const Icon(Icons.text_fields, size: 20),
+                              prefixIconConstraints:
+                                  Themes.inputIconConstraints,
+                            ),
+                          ),
                         ),
-                        CustomTextFormField(
-                          controller: ctaLink,
-                          labelText: "Link",
-                          prefixIcon: Icons.link,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: ctaLink,
+                            decoration: InputDecoration(
+                              labelText: "Link",
+                              prefixIcon: const Icon(Icons.link, size: 20),
+                              prefixIconConstraints:
+                                  Themes.inputIconConstraints,
+                            ),
+                          ),
                         ),
 
                         Padding(
@@ -346,8 +387,8 @@ class _NewEventState extends State<NewEvent> {
                                   child: CustomElevatedButton(
                                 onPressed: clearData,
                                 text: "Clear",
-                                backgroundColor: Colors.green[50] as Color,
-                                textColor: Colors.green,
+                                color: ColorPalette.palette(context).success,
+                                type: ButtonType.outlined,
                               )),
                               const SizedBox(width: 20),
                               Expanded(
@@ -422,7 +463,6 @@ class _NewEventState extends State<NewEvent> {
             }),
           );
         });
-    // return
   }
 
   @override

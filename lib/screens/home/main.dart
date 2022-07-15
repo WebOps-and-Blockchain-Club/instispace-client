@@ -119,10 +119,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
         child: body(_selectedIndex, widget, _scaffoldKey),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        unselectedItemColor: const Color(0xFF2f247b),
-        selectedItemColor: Colors.purple[400],
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.purple[50],
         currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -146,7 +142,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
             label: 'NetOps',
           ),
         ],
-        showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),
     );

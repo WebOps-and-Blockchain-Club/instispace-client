@@ -1,9 +1,10 @@
-import 'package:client/widgets/button/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../../../graphQL/auth.dart';
 import '../../../models/tag.dart';
+import '../../../graphQL/tag.dart';
+import '../../../widgets/button/elevated_button.dart';
+import '../../../themes.dart';
 
 class SelectTags extends StatefulWidget {
   final TagsModel selectedTags;
@@ -23,8 +24,6 @@ class SelectTags extends StatefulWidget {
 }
 
 class _SelectTagsState extends State<SelectTags> {
-  String getTags = authQuery().getTags;
-
   late TagsModel selectedTags;
   List<String> minimizedCategorys = [];
 
@@ -40,7 +39,7 @@ class _SelectTagsState extends State<SelectTags> {
       padding: const EdgeInsets.all(10),
       child: Query(
           options: QueryOptions(
-            document: gql(getTags),
+            document: gql(TagGQL().get),
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
@@ -71,11 +70,7 @@ class _SelectTagsState extends State<SelectTags> {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
-                const Divider(
-                  color: Color(0xFF2f247b),
-                  thickness: 1,
-                  height: 1,
-                ),
+                const Divider(height: 1),
                 Expanded(
                   child: ListView.builder(
                       controller: widget.controller,
@@ -103,20 +98,12 @@ class _SelectTagsState extends State<SelectTags> {
                                 children: [
                                   Text(
                                     category.category,
-                                    style: const TextStyle(
-                                        color: Color(0xFF2f247b),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                   isMinimized
-                                      ? const Icon(
-                                          Icons.arrow_drop_down,
-                                          color: Color(0xFF2f247b),
-                                        )
-                                      : const Icon(
-                                          Icons.arrow_drop_up,
-                                          color: Color(0xFF2f247b),
-                                        )
+                                      ? const Icon(Icons.arrow_drop_down)
+                                      : const Icon(Icons.arrow_drop_up)
                                 ],
                               ),
                             ),
@@ -148,7 +135,9 @@ class _SelectTagsState extends State<SelectTags> {
                                                 ? Colors.purple[100]
                                                 : Colors.transparent,
                                             border: Border.all(
-                                                color: Colors.purple),
+                                                color: ColorPalette.palette(
+                                                        context)
+                                                    .secondary),
                                             borderRadius:
                                                 BorderRadius.circular(8)),
                                         padding: const EdgeInsets.symmetric(
@@ -159,14 +148,6 @@ class _SelectTagsState extends State<SelectTags> {
                                     );
                                   })),
                             ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Divider(
-                              color: Color(0xFF2f247b),
-                              thickness: 1,
-                              height: 1,
-                            ),
-                          ),
                         ]);
                       }),
                 ),

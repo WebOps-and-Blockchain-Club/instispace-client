@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../themes.dart';
+
 class ImagePickerService extends ChangeNotifier {
   final int noOfImages;
   final int quality;
@@ -166,13 +168,13 @@ class ImagePickerService extends ChangeNotifier {
   Widget pickImageButton(BuildContext context) {
     _initImagePicker();
     return CustomElevatedButton(
-        onPressed: () {
-          _onImageButtonPressed(context: context);
-        },
-        text: "Select Image",
-        backgroundColor: Colors.white,
-        borderColor: const Color(0xFF2f247b),
-        textColor: const Color(0xFF2f247b));
+      onPressed: () {
+        _onImageButtonPressed(context: context);
+      },
+      text: "Select Image",
+      color: ColorPalette.palette(context).primary,
+      type: ButtonType.outlined,
+    );
   }
 }
 

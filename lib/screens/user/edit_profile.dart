@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'edit_password.dart';
 import '../../../graphQL/auth.dart';
@@ -9,11 +10,11 @@ import '../../../services/auth.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/form/dropdown_button.dart';
-import '../../../widgets/form/text_form_field.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/text/label.dart';
 import '../home/tag/select_tags.dart';
 import '../home/tag/tags_display.dart';
+import '../../themes.dart';
 
 class EditProfile extends StatelessWidget {
   final AuthService auth;
@@ -98,26 +99,47 @@ class _EditProfileUserState extends State<EditProfileUser> {
                         }
                       },
                     )),
-                const SizedBox(height: 100),
+                const SizedBox(height: 20),
+                CachedNetworkImage(
+                  imageUrl:
+                      'https://photos.iitm.ac.in/byroll.php?roll=${widget.auth.user!.roll}',
+                  placeholder: (_, __) =>
+                      const Icon(Icons.account_circle_rounded, size: 100),
+                  errorWidget: (_, __, ___) =>
+                      const Icon(Icons.account_circle_rounded, size: 100),
+                  width: 100,
+                  height: 100,
+                  imageBuilder: (_, imageProvider) => CircleAvatar(
+                    backgroundImage: imageProvider,
+                  ),
+                ),
+                const SizedBox(height: 10),
 
                 /// Info
                 const LabelText(text: "Info"),
                 // Name
-                CustomTextFormField(
-                  controller: name,
-                  labelText: "Profile Name",
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter the name";
-                    }
-                    return null;
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextFormField(
+                    controller: name,
+                    decoration:
+                        const InputDecoration(labelText: "Profile Name"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter the name";
+                      }
+                      return null;
+                    },
+                  ),
                 ),
                 // Mobile Number
-                CustomTextFormField(
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextFormField(
                     controller: mobile,
-                    labelText: "Mobile Number(Optional)",
                     keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                        labelText: "Mobile Number (Optional)", counterText: ""),
                     maxLength: 10,
                     validator: (val) {
                       if (val != null &&
@@ -126,7 +148,9 @@ class _EditProfileUserState extends State<EditProfileUser> {
                         return "Please enter a valid number";
                       }
                       return null;
-                    }),
+                    },
+                  ),
+                ),
 
                 // Hostel
                 const LabelText(text: "Select Hostel"),
@@ -150,7 +174,10 @@ class _EditProfileUserState extends State<EditProfileUser> {
                         })),
                 if (tagError.isNotEmpty)
                   Text(tagError,
-                      style: const TextStyle(color: Colors.red, fontSize: 12)),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: ColorPalette.palette(context).error,
+                          fontSize: 12)),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -169,24 +196,19 @@ class _EditProfileUserState extends State<EditProfileUser> {
                             null,
                           ),
                           isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(10)),
-                          ),
                         );
                       },
                       text: "Select Tags",
-                      backgroundColor: Colors.white,
-                      borderColor: const Color(0xFF2f247b),
-                      textColor: const Color(0xFF2f247b),
+                      color: ColorPalette.palette(context).primary,
+                      type: ButtonType.outlined,
                     ),
                   ],
                 ),
 
                 if (result != null && result.hasException)
-                  Text(result.exception.toString(),
-                      style: const TextStyle(color: Colors.red, fontSize: 12)),
+                  SelectableText(result.exception.toString(),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: ColorPalette.palette(context).error)),
 
                 Padding(
                   padding: const EdgeInsets.only(top: 10),

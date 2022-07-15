@@ -136,11 +136,6 @@ class _EventsPageState extends State<EventsPage> {
                                     ]),
                                   ),
                                   isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                  ),
                                 );
                               },
                             ),
@@ -154,16 +149,13 @@ class _EventsPageState extends State<EventsPage> {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => NewEvent(
-                          refetch: refetch,
-                        )));
-              },
-              backgroundColor: const Color(0xFF2f247b),
-              child: const Icon(Icons.add),
-              elevation: 5,
-            ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => NewEvent(
+                            refetch: refetch,
+                          )));
+                },
+                child: const Icon(Icons.add)),
           );
         });
   }

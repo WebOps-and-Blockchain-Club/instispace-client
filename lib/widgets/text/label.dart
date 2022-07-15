@@ -8,10 +8,7 @@ class LabelText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
-      child: Text(
-        text,
-        style: const TextStyle(color: Color(0xFF2f247b), fontSize: 16),
-      ),
+      child: Text(text, style: Theme.of(context).textTheme.titleSmall),
     );
   }
 }

@@ -1,5 +1,6 @@
-import 'package:client/models/tag.dart';
 import 'package:flutter/material.dart';
+
+import '../../../models/tag.dart';
 
 class TagsDisplay extends StatelessWidget {
   final TagsModel tagsModel;
@@ -22,13 +23,9 @@ class TagsDisplay extends StatelessWidget {
         children: List.generate(tagsModel.tags.length, (index) {
           return Chip(
             label: Text(tagsModel.tags[index].title),
-            backgroundColor: Colors.white,
             padding: const EdgeInsets.all(4),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            deleteIcon:
-                const Icon(Icons.close, size: 20, color: Color(0xFF2f247b)),
+            deleteIcon: const Icon(Icons.close, size: 20),
             onDeleted: () {
               tagsModel.remove(tagsModel.tags[index]);
               onDelete(tagsModel);

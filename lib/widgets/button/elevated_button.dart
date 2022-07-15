@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../themes.dart';
+
 class CustomElevatedButton extends StatelessWidget {
-  final Color backgroundColor;
-  final Color borderColor;
-  final Color textColor;
+  final MaterialColor? color;
+  final ButtonType type;
   final void Function()? onPressed;
   final String text;
   final bool isLoading;
   const CustomElevatedButton(
       {Key? key,
-      this.backgroundColor = Colors.green,
-      this.borderColor = Colors.green,
-      this.textColor = Colors.white,
+      this.color,
+      this.type = ButtonType.solid,
       required this.onPressed,
       required this.text,
       this.isLoading = false})
@@ -19,31 +19,37 @@ class CustomElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MaterialColor primaryColor =
+        color ?? ColorPalette.palette(context).success;
     return ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
             elevation: 5,
-            primary: backgroundColor,
+            primary:
+                type == ButtonType.outlined ? primaryColor[50] : primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: borderColor))),
+                side: BorderSide(color: primaryColor))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (isLoading)
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
                 child: SizedBox(
                     width: 15,
                     height: 15,
                     child: CircularProgressIndicator(
-                        color: textColor, strokeWidth: 2)),
+                        color: Colors.white, strokeWidth: 2)),
               ),
             Text(
               text,
-              style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: type == ButtonType.outlined ? color : Colors.white),
             ),
           ],
         ));
   }
 }
+
+enum ButtonType { solid, outlined }

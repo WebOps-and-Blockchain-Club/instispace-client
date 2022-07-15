@@ -4,8 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
+import '../../themes.dart';
 import '../../widgets/button/elevated_button.dart';
-import '../../widgets/form/text_form_field.dart';
 import '../../widgets/text/label.dart';
 
 class LogIn extends StatefulWidget {
@@ -76,11 +76,15 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                     const LabelText(text: "Log In with LDAP"),
-                    CustomTextFormField(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: TextFormField(
                         controller: name,
-                        labelText: "Roll Number",
-                        prefixIcon: Icons.person,
-                        isDense: false,
+                        decoration: InputDecoration(
+                          labelText: "Roll Number",
+                          prefixIcon: const Icon(Icons.person, size: 20),
+                          prefixIconConstraints: Themes.inputIconConstraints,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter the roll number";
@@ -89,30 +93,46 @@ class _LogInState extends State<LogIn> {
                             return "Enter the valid username";
                           }
                           return null;
-                        }),
-                    CustomTextFormField(
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: TextFormField(
                         controller: pass,
-                        labelText: "Password",
-                        prefixIcon: Icons.password,
-                        isDense: false,
                         obscureText: passwordVisible,
                         maxLines: 1,
-                        suffixIcon: passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        suffixIconPressed: () => setState(() {
-                              passwordVisible = !passwordVisible;
-                            }),
+                        decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.password, size: 20),
+                            suffixIcon: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () => setState(() {
+                                passwordVisible = !passwordVisible;
+                              }),
+                              icon: Icon(
+                                  passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 20),
+                            ),
+                            prefixIconConstraints: Themes.inputIconConstraints,
+                            suffixIconConstraints: Themes.inputIconConstraints,
+                            labelText: "Password"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Enter the LDAP password";
                           }
                           return null;
-                        }),
-                    if (result!.hasException)
-                      Text(result.exception.toString(),
-                          style:
-                              const TextStyle(color: Colors.red, fontSize: 12)),
+                        },
+                      ),
+                    ),
+                    if (result != null && result.hasException)
+                      SelectableText(result.exception.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: ColorPalette.palette(context).error)),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: CustomElevatedButton(
@@ -131,7 +151,7 @@ class _LogInState extends State<LogIn> {
                           }
                         },
                         text: "SIGN IN",
-                        isLoading: result.isLoading,
+                        isLoading: result!.isLoading,
                       ),
                     )
                   ],

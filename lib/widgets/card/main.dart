@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:intl/intl.dart';
 
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
 import '../../utils/string_extension.dart';
 import 'action_buttons.dart';
+import '../../themes.dart';
 
 /// Common Card widget for Events, Netops, Queries and Lost & Found
 class PostCard extends StatefulWidget {
@@ -29,9 +29,6 @@ class _PostCardState extends State<PostCard> {
     final post = widget.post;
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      shadowColor: Colors.purple[50],
-      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -45,21 +42,13 @@ class _PostCardState extends State<PostCard> {
               children: [
                 // Title
                 Expanded(
-                    child: SelectableText(
-                  post.title.capitalize(),
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2f247b)),
-                )),
+                    child: SelectableText(post.title.capitalize(),
+                        style: Theme.of(context).textTheme.titleLarge)),
                 // Action Menu
                 PopupMenuButton(
                     child: const Padding(
                       padding: EdgeInsets.only(top: 3, left: 3),
-                      child: Icon(
-                        Icons.more_vert,
-                        color: Color(0xFF2f247b),
-                      ),
+                      child: Icon(Icons.more_vert),
                     ),
                     itemBuilder: (context) {
                       return [
@@ -95,14 +84,9 @@ class _PostCardState extends State<PostCard> {
             ),
             // Posted By & Time
             if (post.footer != null)
-              SelectableText(
-                post.footer!,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-            const Divider(
-              color: Color(0xFF2f247b),
-              thickness: 2,
-            ),
+              SelectableText(post.footer!,
+                  style: Theme.of(context).textTheme.labelSmall),
+            const Divider(),
 
             // Image
             if (post.imageUrls != null &&
@@ -128,21 +112,22 @@ class _PostCardState extends State<PostCard> {
                       children: [
                         Container(
                             decoration: BoxDecoration(
-                                color: Colors.purple[50],
+                                color:
+                                    ColorPalette.palette(context).secondary[50],
                                 borderRadius: BorderRadius.circular(8)),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
-                            child: const Icon(
-                              Icons.timer,
-                              color: Colors.purple,
-                            )),
+                            child: Icon(Icons.timer,
+                                color:
+                                    ColorPalette.palette(context).secondary)),
                         const SizedBox(
                           width: 10,
                         ),
                         Expanded(
                           child: SelectableText(
                               DateTimeFormatModel.fromString(post.time!)
-                                  .toFormat()),
+                                  .toFormat(),
+                              style: Theme.of(context).textTheme.bodyLarge),
                         )
                       ],
                     ),
@@ -154,22 +139,20 @@ class _PostCardState extends State<PostCard> {
                       children: [
                         Container(
                             decoration: BoxDecoration(
-                                color: Colors.purple[50],
+                                color:
+                                    ColorPalette.palette(context).secondary[50],
                                 borderRadius: BorderRadius.circular(8)),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
-                            child: const Icon(
-                              Icons.location_city,
-                              color: Colors.purple,
-                            )),
+                            child: Icon(Icons.location_city,
+                                color:
+                                    ColorPalette.palette(context).secondary)),
                         const SizedBox(
                           width: 10,
                         ),
                         Expanded(
-                          child: SelectableText(
-                            post.location!.capitalize(),
-                            style: const TextStyle(fontSize: 15),
-                          ),
+                          child: SelectableText(post.location!.capitalize(),
+                              style: Theme.of(context).textTheme.bodyLarge),
                         )
                       ],
                     ),
@@ -183,6 +166,7 @@ class _PostCardState extends State<PostCard> {
               child: SelectableText(
                 post.description.capitalize(),
                 textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
 
@@ -233,16 +217,4 @@ class _PostCardState extends State<PostCard> {
       ),
     );
   }
-}
-
-String dateTimeString(String utcDateTime) {
-  if (utcDateTime == "") {
-    return "";
-  }
-  var parseDateTime = DateTime.parse(utcDateTime);
-  final localDateTime = parseDateTime.toLocal();
-
-  var dateTimeFormat = DateFormat("dd/MM/yyyy hh:mm:ss aaa");
-
-  return dateTimeFormat.format(localDateTime);
 }

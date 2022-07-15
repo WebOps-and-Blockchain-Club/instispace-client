@@ -5,9 +5,8 @@ import '../../../graphQL/auth.dart';
 import '../../../services/auth.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
-import '../../../widgets/form/text_form_field.dart';
 import '../../../widgets/headers/main.dart';
-import '../../../widgets/text/label.dart';
+import '../../themes.dart';
 
 class EditPassword extends StatefulWidget {
   final AuthService auth;
@@ -79,43 +78,68 @@ class _EditPasswordState extends State<EditPassword> {
                             const SizedBox(height: 100),
 
                             // Name
-                            CustomTextFormField(
-                              controller: name,
-                              labelText: "Profile Name",
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Enter the name";
-                                }
-                                return null;
-                              },
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                controller: name,
+                                decoration: const InputDecoration(
+                                    labelText: "Profile Name"),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Enter the name";
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
+
                             // Password
-                            CustomTextFormField(
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
                                 controller: pass,
-                                labelText: "Password",
-                                prefixIcon: Icons.password,
-                                isDense: false,
                                 obscureText: true,
                                 maxLines: 1,
+                                decoration: InputDecoration(
+                                    prefixIcon:
+                                        const Icon(Icons.password, size: 20),
+                                    prefixIconConstraints:
+                                        Themes.inputIconConstraints,
+                                    labelText: "Password"),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Enter the new password";
                                   }
                                   return null;
-                                }),
-                            CustomTextFormField(
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
                                 controller: confirmPass,
-                                labelText: "Confirm Password",
-                                prefixIcon: Icons.password,
-                                isDense: false,
                                 obscureText: confirmPassVisible,
                                 maxLines: 1,
-                                suffixIcon: confirmPassVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                suffixIconPressed: () => setState(() {
-                                      confirmPassVisible = !confirmPassVisible;
-                                    }),
+                                decoration: InputDecoration(
+                                    prefixIcon:
+                                        const Icon(Icons.password, size: 20),
+                                    suffixIcon: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () => setState(() {
+                                        confirmPassVisible =
+                                            !confirmPassVisible;
+                                      }),
+                                      icon: Icon(
+                                          confirmPassVisible
+                                              ? Icons.visibility
+                                              : Icons.visibility_off,
+                                          size: 20),
+                                    ),
+                                    prefixIconConstraints:
+                                        Themes.inputIconConstraints,
+                                    suffixIconConstraints:
+                                        Themes.inputIconConstraints,
+                                    labelText: "Confirm Password"),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
                                     return "Re-enter the password to confirm";
@@ -123,12 +147,18 @@ class _EditPasswordState extends State<EditPassword> {
                                     return "Password don't match";
                                   }
                                   return null;
-                                }),
+                                },
+                              ),
+                            ),
 
                             if (result != null && result.hasException)
-                              Text(result.exception.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.red, fontSize: 12)),
+                              SelectableText(result.exception.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          color: ColorPalette.palette(context)
+                                              .error)),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
@@ -155,9 +185,5 @@ class _EditPasswordState extends State<EditPassword> {
                         ),
                       );
                     }))));
-  }
-
-  bool isValidNumber(String number) {
-    return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(number);
   }
 }

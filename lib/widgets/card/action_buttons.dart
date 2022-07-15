@@ -10,9 +10,9 @@ import '../../models/tag.dart';
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
-import '../form/text_form_field.dart';
 import '../tagPage.dart';
 import '../../utils/string_extension.dart';
+import '../../themes.dart';
 
 class CTAButton extends StatelessWidget {
   final CTAModel cta;
@@ -45,10 +45,8 @@ class TagButton extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 0),
-        child: Text(
-          "#" + tag.title,
-          style: const TextStyle(color: Color(0xFF2f247b)),
-        ),
+        child: Text("#" + tag.title,
+            style: Theme.of(context).textTheme.labelLarge),
       ),
     );
   }
@@ -96,16 +94,12 @@ class _LikePostButtonState extends State<LikePostButton> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                      isLiked == true
-                          ? Icons.thumb_up_alt
-                          : Icons.thumb_up_alt_outlined,
-                      color: const Color(0xFF2f247b)),
+                  Icon(isLiked == true
+                      ? Icons.thumb_up_alt
+                      : Icons.thumb_up_alt_outlined),
                   const SizedBox(width: 5),
-                  Text(
-                    count.toString(),
-                    style: const TextStyle(color: Color(0xFF2f247b)),
-                  )
+                  Text(count.toString(),
+                      style: Theme.of(context).textTheme.labelLarge)
                 ],
               ),
             ));
@@ -126,7 +120,7 @@ class CommentPostButton extends StatelessWidget {
           const Icon(Icons.comment),
           const SizedBox(width: 5),
           Text(comment.count.toString(),
-              style: const TextStyle(color: Color(0xFF2f247b))),
+              style: Theme.of(context).textTheme.labelLarge),
         ],
       ),
     );
@@ -196,25 +190,17 @@ class SetReminderButton extends StatelessWidget {
   }
 }
 
-class SharePostButton extends StatefulWidget {
+class SharePostButton extends StatelessWidget {
   final PostModel post;
   const SharePostButton({Key? key, required this.post}) : super(key: key);
 
   @override
-  State<SharePostButton> createState() => _SharePostButtonState();
-}
-
-class _SharePostButtonState extends State<SharePostButton> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Share.share("*${widget.post.time}* \n${widget.post.description}");
+        await Share.share("*${post.time}* \n${post.description}");
       },
-      child: const Icon(
-        Icons.share,
-        color: Color(0xFF2f247b),
-      ),
+      child: const Icon(Icons.share),
     );
   }
 }
@@ -258,24 +244,21 @@ class _DeletePostButtonState extends State<DeletePostButton> {
           builder: (BuildContext context) {
             return StatefulBuilder(builder: (context, _) {
               return AlertDialog(
-                title: const Text(
-                  'Delete',
-                  style: TextStyle(color: Color(0xFF2f247b)),
-                  textAlign: TextAlign.center,
-                ),
+                titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                actionsPadding: const EdgeInsets.all(10),
+                title: const Text('Delete', textAlign: TextAlign.center),
                 content: const Text(
-                  "Are you sure you want to delete this post?",
-                  textAlign: TextAlign.center,
-                ),
+                    "Are you sure you want to delete this post?",
+                    textAlign: TextAlign.center),
                 actions: <Widget>[
                   CustomElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     text: "Cancel",
-                    backgroundColor: Colors.red[50] as Color,
-                    textColor: Colors.red,
-                    borderColor: Colors.red,
+                    color: ColorPalette.palette(context).warning,
+                    type: ButtonType.outlined,
                   ),
                   Mutation(
                       options: MutationOptions(
@@ -306,8 +289,7 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                           },
                           text: "Delete",
                           isLoading: result!.isLoading,
-                          backgroundColor: Colors.red,
-                          borderColor: Colors.red,
+                          color: ColorPalette.palette(context).warning,
                         );
                       }),
                 ],
@@ -346,24 +328,23 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                 titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 actionsPadding: const EdgeInsets.all(10),
-                title: const Text(
-                  'Report',
-                  style: TextStyle(color: Color(0xFF2f247b)),
-                  textAlign: TextAlign.center,
-                ),
+                title: const Text('Report', textAlign: TextAlign.center),
                 content: Form(
                   key: formKey,
-                  child: CustomTextFormField(
-                    controller: description,
-                    labelText: "Why do you report this post?",
-                    minLines: 5,
-                    maxLines: 8,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Enter the reason for reporting";
-                      }
-                      return null;
-                    },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: TextFormField(
+                        controller: description,
+                        minLines: 5,
+                        maxLines: 8,
+                        decoration: const InputDecoration(
+                            labelText: "Why do you report this post?"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter the reason for reporting";
+                          }
+                          return null;
+                        }),
                   ),
                 ),
                 actions: <Widget>[
@@ -372,9 +353,8 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                       Navigator.of(context).pop();
                     },
                     text: "Cancel",
-                    backgroundColor: Colors.red[50] as Color,
-                    textColor: Colors.red,
-                    borderColor: Colors.red,
+                    color: ColorPalette.palette(context).warning,
+                    type: ButtonType.outlined,
                   ),
                   Mutation(
                       options: MutationOptions(
@@ -408,24 +388,20 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                             if (!isValid) return;
                             runMutation({
                               "description": description.text,
-                              // "id": widget.report.fkPostId,
-                              "id": "8fed3965-dbeb-4102-b506-80a6e6e7bb7"
+                              "id": widget.report.fkPostId,
+                              // "id": "8fed3965-dbeb-4102-b506-80a6e6e7bb7"
                             });
                           },
                           text: "Report",
                           isLoading: result!.isLoading,
-                          backgroundColor: Colors.red,
-                          borderColor: Colors.red,
+                          color: ColorPalette.palette(context).warning,
                         );
                       }),
                 ],
               );
             });
           }),
-      child: const Icon(
-        Icons.warning_rounded,
-        color: Color(0xFF2f247b),
-      ),
+      child: const Icon(Icons.warning_rounded),
     );
   }
 }
