@@ -167,7 +167,7 @@ Widget scaffoldBody(
     Map<String, dynamic> defaultVariables,
     FetchMore? fetchMore) {
   if (result.hasException) {
-    return Text(result.exception.toString());
+    return SelectableText(result.exception.toString());
   }
 
   if (result.isLoading && result.data == null) {

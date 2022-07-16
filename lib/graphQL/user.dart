@@ -95,4 +95,39 @@ class UserGQL {
       }
     }
   """;
+
+  String searchUser = """
+    query(\$search: String!, \$take: Float!, \$skip: Float!) {
+      searchLDAPUser(search: \$search, take: \$take, skip: \$skip) {
+        list {
+          roll
+          name
+          department
+        }
+        total
+      }
+    }
+  """;
+
+  String getUser = """
+    query(\$getUserInput: GetUserInput!) {
+      getUser(GetUserInput: \$getUserInput) {
+        interest {
+          title
+          id
+          category
+        }
+        name
+        roll
+        role
+        isNewUser
+        id
+        mobile
+        hostel {
+          name
+          id
+        }
+      }
+    }
+  """;
 }

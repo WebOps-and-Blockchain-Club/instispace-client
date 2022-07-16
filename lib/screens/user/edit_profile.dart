@@ -22,7 +22,11 @@ class EditProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (auth.user!.role == "USER" || auth.user!.role == "MODERATOR") {
+    if (auth.user == null) {
+      return const Scaffold(
+        body: Text("Loading"),
+      );
+    } else if (auth.user!.role == "USER" || auth.user!.role == "MODERATOR") {
       return EditProfileUser(auth: auth);
     } else {
       return EditPassword(auth: auth);
@@ -234,6 +238,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                             'name': name.text,
                             'interest': selectedTags.getTagIds(),
                             'hostel': hostel,
+                            'mobile': mobile.text == "" ? null : mobile.text,
                           }
                         });
                       }

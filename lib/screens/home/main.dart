@@ -114,7 +114,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(auth: widget.auth, fcmToken: fcmToken),
       body: Center(
         child: body(_selectedIndex, widget, _scaffoldKey),
       ),
