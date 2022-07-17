@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../services/auth.dart';
+import '../../models/user.dart';
 import '../../models/post.dart';
 import '../../graphQL/events.dart';
 import '../../widgets/button/icon_button.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
+    final List<HomeModel>? home = auth.user?.toHomeModel();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -72,47 +74,15 @@ class _HomePageState extends State<HomePage> {
               body: RefreshIndicator(
                 onRefresh: () => auth.clearUser(),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        if (auth.user != null &&
-                            (auth.user!.announcements == null ||
-                                auth.user!.announcements!.isEmpty) &&
-                            (auth.user!.events == null ||
-                                auth.user!.events!.isEmpty) &&
-                            (auth.user!.netops == null ||
-                                auth.user!.netops!.isEmpty))
-                          const Text("No Posts"),
-                        if (auth.user != null &&
-                            auth.user!.announcements != null &&
-                            auth.user!.announcements!.isNotEmpty)
-                          Section(
-                              title: "Announcements",
-                              posts: auth.user!.announcements!
-                                  .map((e) => e.toPostModel())
-                                  .toList()),
-                        if (auth.user != null &&
-                            auth.user!.events != null &&
-                            auth.user!.events!.isNotEmpty)
-                          Section(
-                              title: "Events",
-                              posts: auth.user!.events!
-                                  .map((e) => e.toPostModel())
-                                  .toList()),
-                        if (auth.user != null &&
-                            auth.user!.netops != null &&
-                            auth.user!.netops!.isNotEmpty)
-                          Section(
-                              title: "Networking & Opportunities",
-                              posts: auth.user!.netops!
-                                  .map((e) => e.toPostModel())
-                                  .toList()),
-                      ],
-                    ),
-                  ),
-                ),
+                    padding: const EdgeInsets.only(top: 10),
+                    child: (home == null || home.isEmpty)
+                        ? const Text("No Posts")
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: home.length,
+                            itemBuilder: (context, index) => Section(
+                                title: home[index].title,
+                                posts: home[index].posts))),
               ),
             ),
           ),

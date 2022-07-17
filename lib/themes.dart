@@ -32,6 +32,11 @@ class Themes {
         labelSmall: const TextStyle(
             color: Colors.grey, letterSpacing: 0, fontSize: 12)),
 
+    appBarTheme: AppBarTheme(
+        backgroundColor: ColorPalette._secondary[50],
+        elevation: 0,
+        iconTheme: IconThemeData(color: ColorPalette._primary)),
+
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
         unselectedItemColor: ColorPalette._primary,
@@ -78,6 +83,11 @@ class Themes {
         color: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         clipBehavior: Clip.antiAlias),
+
+    listTileTheme: ListTileThemeData(
+        horizontalTitleGap: 0,
+        iconColor: ColorPalette._primary,
+        textColor: ColorPalette._primary),
 
     // Icon Theme
     iconTheme: IconThemeData(color: ColorPalette._primary),
