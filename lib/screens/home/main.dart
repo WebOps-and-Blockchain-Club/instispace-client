@@ -23,9 +23,6 @@ class HomeWrapper extends StatefulWidget {
 class _HomeWrapperState extends State<HomeWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  late String fcmToken;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -34,10 +31,18 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
   }
 
+  late String? fcmToken = "";
+
+  Future<void> getToken() async {
+    String? _fcmToken = await FirebaseMessaging.instance.getToken();
+    setState(() {
+      fcmToken = _fcmToken;
+    });
+  }
+
   @override
   void initState() {
-    super.initState();
-
+    getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -51,7 +56,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 channel.id,
                 channel.name,
                 channelDescription: channel.description,
-                color: Colors.blue,
+                color: const Color(0xFF2F247B),
                 playSound: true,
                 icon: '@mipmap/ic_launcher',
               ),
@@ -83,6 +88,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
             });
       }
     });
+
+    super.initState();
   }
 
   Widget body(int index, widget, scaffoldKey) {
@@ -109,12 +116,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    _firebaseMessaging.getToken().then((token) {
-      fcmToken = token!;
-    });
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(auth: widget.auth, fcmToken: fcmToken),
+      drawer: CustomDrawer(auth: widget.auth, fcmToken: fcmToken!),
       body: Center(
         child: body(_selectedIndex, widget, _scaffoldKey),
       ),

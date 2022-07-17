@@ -22,9 +22,23 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('app_icon');
+
+const IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(
+  requestSoundPermission: false,
+  requestBadgePermission: false,
+  requestAlertPermission: false,
+);
+
+const InitializationSettings initializationSettings = InitializationSettings(
+  android: initializationSettingsAndroid,
+  iOS: initializationSettingsIOS,
+);
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("A bg message just showed up : ${message.messageId}");
 }
 
 Future<void> main() async {

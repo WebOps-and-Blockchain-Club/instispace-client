@@ -22,11 +22,18 @@ class _LogInState extends State<LogIn> {
   final TextEditingController name = TextEditingController();
   final TextEditingController pass = TextEditingController();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  late String fcmToken;
+  late String? fcmToken = "";
+
+  Future<void> getToken() async {
+    String? _fcmToken = await FirebaseMessaging.instance.getToken();
+    setState(() {
+      fcmToken = _fcmToken;
+    });
+  }
 
   @override
   void initState() {
+    getToken();
     super.initState();
   }
 
@@ -34,10 +41,6 @@ class _LogInState extends State<LogIn> {
 
   @override
   Widget build(BuildContext context) {
-    _firebaseMessaging.getToken().then((token) {
-      fcmToken = token!;
-    });
-
     return Mutation(
         options: MutationOptions(
           document: gql(AuthGQL().login),
@@ -142,7 +145,7 @@ class _LogInState extends State<LogIn> {
 
                           if (isValid) {
                             runMutation({
-                              'fcmToken': fcmToken,
+                              'fcmToken': "fcmToken",
                               'loginInputs': {
                                 "roll": name.text.trim().toLowerCase(),
                                 "pass": pass.text,
