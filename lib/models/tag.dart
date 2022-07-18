@@ -68,7 +68,7 @@ class TagModel {
         category = data["category"];
 
   Map<String, dynamic> toJson() =>
-      {"id": id, "title": title, "category": category};
+      {"__typename": "Tag", "id": id, "title": title, "category": category};
 }
 
 class CategoryModel {

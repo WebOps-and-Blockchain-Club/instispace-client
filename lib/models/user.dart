@@ -1,5 +1,4 @@
-import 'package:client/models/post.dart';
-
+import 'post.dart';
 import 'announcement.dart';
 import 'event.dart';
 import 'netop.dart';
@@ -95,6 +94,31 @@ class HomeModel {
   final List<PostModel> posts;
 
   HomeModel({required this.title, required this.posts});
+}
+
+class CreatedByModel {
+  final String id;
+  final String name;
+  final String? roll;
+  final String? role;
+
+  CreatedByModel({required this.id, required this.name, this.roll, this.role});
+
+  CreatedByModel.fromJson(Map<String, dynamic> data)
+      : id = data["id"],
+        name = data["name"],
+        roll = data["roll"],
+        role = data["role"];
+
+  Map<String, dynamic> toJson() {
+    return {
+      "__typename": "User",
+      "id": id,
+      "name": name,
+      "roll": roll,
+      "role": role,
+    };
+  }
 }
 
 class User {

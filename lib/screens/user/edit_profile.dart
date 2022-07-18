@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../utils/validation.dart';
 import 'edit_password.dart';
 import '../../../graphQL/auth.dart';
 import '../../../models/hostel.dart';
@@ -285,9 +286,5 @@ class _EditProfileUserState extends State<EditProfileUser> {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: scaffoldBody(result, refetch))));
         });
-  }
-
-  bool isValidNumber(String number) {
-    return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(number);
   }
 }

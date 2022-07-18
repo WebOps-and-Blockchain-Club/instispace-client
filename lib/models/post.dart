@@ -1,7 +1,9 @@
-import 'package:client/models/actions.dart';
-import 'package:client/models/hostel.dart';
-import 'package:client/models/tag.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
+import 'actions.dart';
+import 'hostel.dart';
+import 'tag.dart';
+import 'user.dart';
 
 class PostModel {
   final String id;
@@ -24,7 +26,8 @@ class PostModel {
   final ReportPostModel? report;
   final Function(Future<QueryResult<Object?>?> Function()?)? edit;
   final DeletePostModel? delete;
-  final String? footer;
+  final CreatedByModel createdBy;
+  final String createdAt;
 
   PostModel(
       {required this.id,
@@ -47,5 +50,6 @@ class PostModel {
       this.report,
       this.edit,
       this.delete,
-      this.footer});
+      required this.createdBy,
+      required this.createdAt});
 }

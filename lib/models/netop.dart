@@ -1,9 +1,9 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'user.dart';
 import 'post.dart';
 import 'tag.dart';
 import 'actions.dart';
-import 'date_time_format.dart';
 
 class NetopsModel {
   final List<NetopModel> netops;
@@ -31,7 +31,7 @@ class NetopModel {
   final List<String> permissions;
   final List<String>? attachements;
   final String createdAt;
-  final String createdByUserName;
+  final CreatedByModel createdBy;
 
   NetopModel(
       {required this.id,
@@ -45,7 +45,7 @@ class NetopModel {
       required this.cta,
       this.attachements,
       required this.createdAt,
-      required this.createdByUserName,
+      required this.createdBy,
       required this.permissions});
 
   NetopModel.fromJson(Map<String, dynamic> data)
@@ -53,7 +53,7 @@ class NetopModel {
         title = data["title"],
         description = data["content"],
         imageUrl = mergeAttachments(data["photo"], data["attachments"])?.first,
-        endTime = data["time"],
+        endTime = data["endTime"],
         tags = TagsModel.fromJson(data["tags"]),
         like = LikePostModel(
             fkPostId: data["id"],
@@ -77,8 +77,27 @@ class NetopModel {
         //         ? data["permissions"]
         //         : [],
         permissions = ["EDIT", "DELETE"],
-        createdByUserName = data["createdBy"]["name"],
+        createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
+
+  Map<String, dynamic> toJson() {
+    return {
+      "__typename": "Netop",
+      "id": id,
+      "title": title,
+      "content": description,
+      "photo": imageUrl,
+      "endTime": endTime,
+      "tags": tags.toJson(),
+      "likeCount": like.count,
+      "isLiked": like.isLikedByUser,
+      "isStared": star.isStarredByUser,
+      "linkName": cta?.name,
+      "linkToAction": cta?.link,
+      "createdAt": createdAt,
+      "createdBy": createdBy.toJson()
+    };
+  }
 
   PostModel toPostModel() {
     return PostModel(
@@ -94,11 +113,8 @@ class NetopModel {
         delete: permissions.contains("DELETE")
             ? DeletePostModel(fkPostId: id, mutationDocument: "")
             : null,
-        footer: "Posted by " +
-            createdByUserName +
-            ", " +
-            DateTimeFormatModel.fromString(createdAt).toDiffString() +
-            " ago");
+        createdBy: createdBy,
+        createdAt: createdAt);
   }
 }
 

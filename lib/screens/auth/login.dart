@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
+import '../../utils/validation.dart';
 import '../../widgets/button/elevated_button.dart';
 import '../../widgets/text/label.dart';
 
@@ -163,16 +164,5 @@ class _LogInState extends State<LogIn> {
             )),
           );
         });
-  }
-
-  bool isValidEmail(String email) {
-    return RegExp(
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-        .hasMatch(email);
-  }
-
-  bool isValidRoll(String roll) {
-    return RegExp(r'\b([a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z][0-9]{3,3})\b')
-        .hasMatch(roll);
   }
 }

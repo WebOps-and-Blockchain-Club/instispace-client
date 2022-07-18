@@ -9,6 +9,12 @@ class HostelsModel {
   List<String> getNames() {
     return hostels.map((e) => e.name).toList();
   }
+
+  String? getId(String? name) {
+    String? id;
+    hostels.map((e) => id = e.name == name ? e.id : null);
+    return id;
+  }
 }
 
 class HostelModel {

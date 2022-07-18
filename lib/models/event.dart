@@ -1,10 +1,10 @@
-import 'package:client/graphQL/events.dart';
-import 'package:client/models/actions.dart';
-import 'package:client/models/date_time_format.dart';
-import 'package:client/models/post.dart';
-import 'package:client/models/tag.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'post.dart';
+import 'actions.dart';
+import 'tag.dart';
+import 'user.dart';
+import '../graphQL/events.dart';
 import '../screens/home/events/new_event.dart';
 
 class EventsModel {
@@ -33,7 +33,7 @@ class EventModel {
   final StarPostModel star;
   final CTAModel? cta;
   final List<String> permissions;
-  final String createdByUserName;
+  final CreatedByModel createdBy;
   final String createdAt;
 
   EventModel(
@@ -48,7 +48,7 @@ class EventModel {
       required this.star,
       this.cta,
       required this.permissions,
-      required this.createdByUserName,
+      required this.createdBy,
       required this.createdAt});
 
   EventModel.fromJson(Map<String, dynamic> data)
@@ -78,7 +78,7 @@ class EventModel {
         //         ? data["permissions"]
         //         : [],
         permissions = ["EDIT", "DELETE"],
-        createdByUserName = data["createdBy"]["name"],
+        createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
 
   PostModel toPostModel() {
@@ -110,11 +110,8 @@ class EventModel {
         delete: permissions.contains("DELETE")
             ? DeletePostModel(fkPostId: id, mutationDocument: EventGQL().delete)
             : null,
-        footer: "Posted by " +
-            createdByUserName +
-            ", " +
-            DateTimeFormatModel.fromString(createdAt).toDiffString() +
-            " ago");
+        createdBy: createdBy,
+        createdAt: createdAt);
   }
 }
 

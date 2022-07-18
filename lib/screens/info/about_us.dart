@@ -82,6 +82,11 @@ class AboutUsPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              const SizedBox(
+                height: 150,
+                child: Image(
+                    image: AssetImage('assets/logo/primary_with_text.png')),
+              ),
               Card(
                 child: Padding(
                   padding:
