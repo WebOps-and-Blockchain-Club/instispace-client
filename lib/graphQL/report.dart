@@ -14,6 +14,7 @@ class ReportGQL {
           isLiked
           attachments
           isStared
+          permissions
           createdBy {
             id
             name
@@ -36,6 +37,7 @@ class ReportGQL {
           attachments
           likeCount
           isLiked
+          permissions
           createdBy {
             name
             roll
@@ -62,7 +64,7 @@ class ReportGQL {
   """;
 
   String updateStatusFragment = """
-    fragment fields on Report {
+    fragment reportStatusField on Report {
       id
       status
     }

@@ -1,7 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../models/user.dart';
 import '../../main.dart';
 import '../../services/auth.dart';
 import '../../widgets/headers/drawer.dart';
@@ -13,8 +15,12 @@ import 'queries/query.dart';
 
 class HomeWrapper extends StatefulWidget {
   final AuthService auth;
+  final UserModel user;
+  final Future<QueryResult<Object?>?> Function()? refetch;
 
-  const HomeWrapper({Key? key, required this.auth}) : super(key: key);
+  const HomeWrapper(
+      {Key? key, required this.auth, required this.user, required this.refetch})
+      : super(key: key);
 
   @override
   State<HomeWrapper> createState() => _HomeWrapperState();
@@ -92,7 +98,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     super.initState();
   }
 
-  Widget body(int index, widget, scaffoldKey) {
+  Widget body(int index, AuthService auth, UserModel user, scaffoldKey) {
     switch (index) {
       case 0:
         return const LNFListing();
@@ -101,16 +107,25 @@ class _HomeWrapperState extends State<HomeWrapper> {
         return const QueryHome();
 
       case 2:
-        return HomePage(auth: widget.auth, scaffoldKey: scaffoldKey);
+        return HomePage(
+            auth: auth,
+            user: user,
+            refetch: widget.refetch,
+            scaffoldKey: scaffoldKey);
 
       case 3:
         return EventsPage(scaffoldKey: scaffoldKey);
 
       case 4:
-        return const Post_Listing();
+        return NetopsPage(
+            permissions: user.permissions, scaffoldKey: scaffoldKey);
 
       default:
-        return HomePage(auth: widget.auth, scaffoldKey: scaffoldKey);
+        return HomePage(
+            auth: widget.auth,
+            user: user,
+            refetch: widget.refetch,
+            scaffoldKey: scaffoldKey);
     }
   }
 
@@ -118,9 +133,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(auth: widget.auth, fcmToken: fcmToken!),
+      drawer: CustomDrawer(
+          auth: widget.auth, user: widget.user, fcmToken: fcmToken!),
       body: Center(
-        child: body(_selectedIndex, widget, _scaffoldKey),
+        child: body(_selectedIndex, widget.auth, widget.user, _scaffoldKey),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

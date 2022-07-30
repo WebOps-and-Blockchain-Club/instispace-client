@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../models/user.dart';
 import '../services/auth.dart';
 import '../../graphQL/user.dart';
 import 'auth/login.dart';
@@ -20,51 +21,39 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
     if (auth.token == null) return LogIn(auth: auth);
-    if (auth.user == null) return GetMe(auth: auth);
-    if (auth.user!.isNewUser != false) return EditProfile(auth: auth);
-    if (auth.user!.id == null) return GetMe(auth: auth);
-    return HomeWrapper(auth: auth);
-  }
-}
 
-class GetMe extends StatefulWidget {
-  final AuthService auth;
-  const GetMe({Key? key, required this.auth}) : super(key: key);
-
-  @override
-  State<GetMe> createState() => _GetMeState();
-}
-
-class _GetMeState extends State<GetMe> {
-  Widget scaffoldBody(
-      QueryResult result, Future<QueryResult<Object?>?> Function()? refetch) {
-    if (result.hasException) {
-      return SelectableText(result.exception.toString());
-    }
-
-    if (result.isLoading) {
-      return const Text('Loading');
-    }
-
-    if (result.data != null) {
-      widget.auth.updateUser(result.data!["getMe"]);
-    }
-
-    return const Text('Loading');
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Query(
         options: QueryOptions(document: gql(UserGQL().getMe)),
         builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
-          return SafeArea(
-            child: Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: scaffoldBody(result, refetch),
-              ),
-            ),
+          return Scaffold(
+            body: (() {
+              if (result.hasException) {
+                return SelectableText(result.exception.toString());
+              }
+
+              if (result.isLoading) {
+                return const Text('Loading');
+              }
+
+              final UserModel user = UserModel.fromJson(result.data!["getMe"]);
+
+              if (user.isNewUser == true) {
+                return EditProfile(
+                  auth: auth,
+                  user: user,
+                  refetch: refetch,
+                );
+              } else if (user.isNewUser == false) {
+                return HomeWrapper(
+                  auth: auth,
+                  user: user,
+                  refetch: refetch,
+                );
+              }
+
+              return SelectableText(
+                  "Some error occured ${result.data.toString()}");
+            }()),
           );
         });
   }

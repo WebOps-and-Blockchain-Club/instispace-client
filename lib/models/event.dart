@@ -1,15 +1,10 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
-
 import 'post.dart';
 import 'actions.dart';
 import 'tag.dart';
 import 'user.dart';
-import '../graphQL/events.dart';
-import '../screens/home/events/new_event.dart';
 
 class EventsModel {
   final List<EventModel> events;
-  static String deleteMutationDocument = EventGQL().delete;
 
   EventsModel({required this.events});
 
@@ -60,24 +55,18 @@ class EventModel {
         time = data["time"],
         tags = TagsModel.fromJson(data["tags"]),
         like = LikePostModel(
-            fkPostId: data["id"],
-            count: data["likeCount"],
-            isLikedByUser: data["isLiked"],
-            mutationDocument: EventGQL().toggleLike),
+          count: data["likeCount"],
+          isLikedByUser: data["isLiked"],
+        ),
         star = StarPostModel(
-            fkPostId: data["id"],
-            isStarredByUser: data["isStared"],
-            mutationDocument: EventGQL().toggleStar),
+          isStarredByUser: data["isStared"],
+        ),
         cta = data["linkToAction"] != null && data["linkToAction"] != ""
             ? CTAModel(
                 name: data["linkName"] ?? "Click me",
                 link: data["linkToAction"])
             : null,
-        // permissions =
-        //     data["permissions"] != null && data["permissions"].isNotEmpty
-        //         ? data["permissions"]
-        //         : [],
-        permissions = ["EDIT", "DELETE"],
+        permissions = data["permissions"].cast<String>(),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
 
@@ -92,26 +81,10 @@ class EventModel {
         tags: tags,
         like: like,
         star: star,
-        shareAllowed: true,
-        setReminderAllowed: true,
         cta: cta,
-        edit: permissions.contains("EDIT")
-            ? (Future<QueryResult<Object?>?> Function()? refetch) => NewEvent(
-                  refetch: refetch,
-                  event: EditEventModel(
-                      id: id,
-                      title: title,
-                      description: description,
-                      location: location,
-                      time: time,
-                      tags: tags),
-                )
-            : null,
-        delete: permissions.contains("DELETE")
-            ? DeletePostModel(fkPostId: id, mutationDocument: EventGQL().delete)
-            : null,
         createdBy: createdBy,
-        createdAt: createdAt);
+        createdAt: createdAt,
+        permissions: permissions + ["SHARE", "SET_REMINDER", "STAR", "LIKE"]);
   }
 }
 

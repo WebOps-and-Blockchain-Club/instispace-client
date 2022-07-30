@@ -8,16 +8,10 @@ class CTAModel {
 }
 
 class LikePostModel {
-  final String fkPostId;
   final int count;
   final bool isLikedByUser;
-  final String mutationDocument;
 
-  LikePostModel(
-      {required this.fkPostId,
-      required this.count,
-      required this.isLikedByUser,
-      required this.mutationDocument});
+  LikePostModel({required this.count, required this.isLikedByUser});
 }
 
 class CommentPostModel {
@@ -30,26 +24,7 @@ class CommentPostModel {
 }
 
 class StarPostModel {
-  final String fkPostId;
   final bool isStarredByUser;
-  final String mutationDocument;
 
-  StarPostModel(
-      {required this.fkPostId,
-      required this.isStarredByUser,
-      required this.mutationDocument});
-}
-
-class DeletePostModel {
-  final String fkPostId;
-  final String mutationDocument;
-
-  DeletePostModel({required this.fkPostId, required this.mutationDocument});
-}
-
-class ReportPostModel {
-  final String fkPostId;
-  final String mutationDocument;
-
-  ReportPostModel({required this.fkPostId, required this.mutationDocument});
+  StarPostModel({required this.isStarredByUser});
 }

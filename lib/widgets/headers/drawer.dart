@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../models/user.dart';
 import '../../screens/user/profile.dart';
 import '../../screens/user/edit_profile.dart';
 import '../../screens/user/search_user.dart';
@@ -21,8 +22,13 @@ import '../button/elevated_button.dart';
 
 class CustomDrawer extends StatelessWidget {
   final AuthService auth;
+  final UserModel user;
   final String fcmToken;
-  const CustomDrawer({Key? key, required this.auth, required this.fcmToken})
+  const CustomDrawer(
+      {Key? key,
+      required this.auth,
+      required this.user,
+      required this.fcmToken})
       : super(key: key);
 
   @override
@@ -85,19 +91,18 @@ class CustomDrawer extends StatelessWidget {
                         const Divider(indent: 15, endIndent: 15),
 
                         // My Profile
-                        if (auth.user != null)
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("My Profile"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => Profile(
-                                        user: auth.user!,
-                                      )));
-                            },
-                          ),
+                        ListTile(
+                          leading: const Icon(Icons.account_circle_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("My Profile"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => Profile(
+                                      user: user,
+                                    )));
+                          },
+                        ),
 
                         // Edit Profile
                         ListTile(
@@ -107,8 +112,10 @@ class CustomDrawer extends StatelessWidget {
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EditProfile(auth: auth)));
+                                builder: (BuildContext context) => EditProfile(
+                                      auth: auth,
+                                      user: user,
+                                    )));
                           },
                         ),
 
@@ -126,7 +133,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
 
                         // My Hostel
-                        if (auth.user != null && auth.user!.hostelId != null)
+                        if (user.hostelId != null)
                           ListTile(
                             leading: const Icon(Icons.account_balance),
                             horizontalTitleGap: 0,
@@ -140,8 +147,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         // Reports
-                        if (auth.user != null &&
-                            auth.user!.permissions.contains("GET_REPORTS"))
+                        if (user.permissions.contains("GET_REPORTS"))
                           ListTile(
                             leading: const Icon(Icons.account_circle_outlined),
                             horizontalTitleGap: 0,
@@ -155,8 +161,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         // Create Account
-                        if (auth.user != null &&
-                            auth.user!.permissions.contains("CREATE_ACCOUNT"))
+                        if (user.permissions.contains("CREATE_ACCOUNT"))
                           ListTile(
                             leading: const Icon(Icons.addchart_outlined),
                             horizontalTitleGap: 0,
@@ -166,14 +171,13 @@ class CustomDrawer extends StatelessWidget {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       CreateAccountPage(
-                                        role: auth.user!.role!,
+                                        role: user.role!,
                                       )));
                             },
                           ),
 
                         // Create Tag
-                        if (auth.user != null &&
-                            auth.user!.permissions.contains("CREATE_TAG"))
+                        if (user.permissions.contains("CREATE_TAG"))
                           ListTile(
                             leading: const Icon(Icons.add_outlined),
                             horizontalTitleGap: 0,
@@ -187,8 +191,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         // Create Hostel
-                        if (auth.user != null &&
-                            auth.user!.permissions.contains("CREATE_HOSTEL"))
+                        if (user.permissions.contains("CREATE_HOSTEL"))
                           ListTile(
                             leading: const Icon(Icons.account_balance_outlined),
                             horizontalTitleGap: 0,
@@ -202,8 +205,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         // Update Role
-                        if (auth.user != null &&
-                            auth.user!.permissions.contains("UPDATE_ROLE"))
+                        if (user.permissions.contains("UPDATE_ROLE"))
                           ListTile(
                             leading: const Icon(Icons.upgrade),
                             horizontalTitleGap: 0,
@@ -217,8 +219,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         // Feedback
-                        auth.user != null &&
-                                auth.user!.permissions.contains("VIEW_FEEDBACK")
+                        user.permissions.contains("VIEW_FEEDBACK")
                             ? const ViewFeedback()
                             : ListTile(
                                 leading: const Icon(Icons.feedback_outlined),
@@ -373,7 +374,8 @@ Future<dynamic> logoutAlert(BuildContext context, Function callback) {
               Mutation(
                   options: MutationOptions(
                     document: gql(AuthGQL().logout),
-                    onCompleted: (dynamic resultData) {
+                    onCompleted: (dynamic resultData) async {
+                      HiveStore().reset();
                       Navigator.of(context).pop();
                       callback();
                       ScaffoldMessenger.of(context).showSnackBar(

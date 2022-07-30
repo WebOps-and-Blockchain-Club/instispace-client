@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../models/user.dart';
 import '../../utils/validation.dart';
 import 'edit_password.dart';
 import '../../../graphQL/auth.dart';
@@ -19,25 +20,39 @@ import '../../themes.dart';
 
 class EditProfile extends StatelessWidget {
   final AuthService auth;
-  const EditProfile({Key? key, required this.auth}) : super(key: key);
+  final UserModel user;
+  final Future<QueryResult<Object?>?> Function()? refetch;
+
+  const EditProfile(
+      {Key? key, required this.auth, required this.user, this.refetch})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (auth.user == null) {
-      return const Scaffold(
-        body: Text("Loading"),
+    if (user.role == "USER" || user.role == "MODERATOR") {
+      return EditProfileUser(
+        auth: auth,
+        user: user,
+        refetch: refetch,
       );
-    } else if (auth.user!.role == "USER" || auth.user!.role == "MODERATOR") {
-      return EditProfileUser(auth: auth);
     } else {
-      return EditPassword(auth: auth);
+      return EditPassword(
+        auth: auth,
+        user: user,
+        refetch: refetch,
+      );
     }
   }
 }
 
 class EditProfileUser extends StatefulWidget {
   final AuthService auth;
-  const EditProfileUser({Key? key, required this.auth}) : super(key: key);
+  final UserModel user;
+  final Future<QueryResult<Object?>?> Function()? refetch;
+
+  const EditProfileUser(
+      {Key? key, required this.auth, required this.user, this.refetch})
+      : super(key: key);
 
   @override
   State<EditProfileUser> createState() => _EditProfileUserState();
@@ -76,7 +91,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
           document: gql(AuthGQL().updateUser),
           onCompleted: (dynamic resultData) {
             if (resultData["updateUser"] == true) {
-              widget.auth.clearUser();
+              if (widget.refetch != null) widget.refetch!();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Profile Updated')),
               );
@@ -97,7 +112,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                     leading: CustomIconButton(
                       icon: Icons.arrow_back,
                       onPressed: () {
-                        if (widget.auth.user!.isNewUser == true) {
+                        if (widget.user.isNewUser == true) {
                           widget.auth.logout();
                         } else {
                           Navigator.of(context).pop();
@@ -107,15 +122,21 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 const SizedBox(height: 20),
                 CachedNetworkImage(
                   imageUrl:
-                      'https://photos.iitm.ac.in/byroll.php?roll=${widget.auth.user!.roll}',
+                      'https://photos.iitm.ac.in/byroll.php?roll=${widget.user.roll?.toUpperCase()}',
                   placeholder: (_, __) =>
                       const Icon(Icons.account_circle_rounded, size: 100),
                   errorWidget: (_, __, ___) =>
                       const Icon(Icons.account_circle_rounded, size: 100),
-                  width: 100,
-                  height: 100,
-                  imageBuilder: (_, imageProvider) => CircleAvatar(
-                    backgroundImage: imageProvider,
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -256,19 +277,17 @@ class _EditProfileUserState extends State<EditProfileUser> {
 
   @override
   void initState() {
-    if (widget.auth.user != null) {
-      if (widget.auth.user!.name != null) name.text = widget.auth.user!.name!;
-      if (widget.auth.user!.mobile != null) {
-        mobile.text = widget.auth.user!.mobile!;
-      }
-      if (widget.auth.user!.hostelName != null) {
-        hostel = widget.auth.user!.hostelName!;
-      }
-      if (widget.auth.user!.interets != null) {
-        setState(() {
-          selectedTags = TagsModel(tags: widget.auth.user!.interets!);
-        });
-      }
+    if (widget.user.name != null) name.text = widget.user.name!;
+    if (widget.user.mobile != null) {
+      mobile.text = widget.user.mobile!;
+    }
+    if (widget.user.hostelName != null) {
+      hostel = widget.user.hostelName!;
+    }
+    if (widget.user.interets != null) {
+      setState(() {
+        selectedTags = TagsModel(tags: widget.user.interets!);
+      });
     }
     super.initState();
   }

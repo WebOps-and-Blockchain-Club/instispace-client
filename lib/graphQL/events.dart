@@ -1,7 +1,31 @@
 class EventGQL {
   String create = """
     mutation(\$newData: createEventInput!, \$image: [Upload!]){
-      createEvent(NewEventData: \$newData, Image: \$image)
+      createEvent(NewEventData: \$newData, Image: \$image) {
+        id
+        createdAt
+        title
+        content
+        photo
+        location
+        time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        permissions
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdAt
+        createdBy {
+          id
+          name
+        }
+      }
     }
   """;
   String edit = """
@@ -24,6 +48,7 @@ class EventGQL {
           isStared
           linkName
           linkToAction
+          permissions
           tags {
             title
             id

@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
+import '../helpers/navigate.dart';
 import '../../models/actions.dart';
 import '../../models/post.dart';
 import '../../models/tag.dart';
@@ -52,53 +53,40 @@ class TagButton extends StatelessWidget {
   }
 }
 
-class LikePostButton extends StatefulWidget {
+class LikePostButton extends StatelessWidget {
   final LikePostModel like;
-  const LikePostButton({Key? key, required this.like}) : super(key: key);
-
-  @override
-  State<LikePostButton> createState() => _LikePostButtonState();
-}
-
-class _LikePostButtonState extends State<LikePostButton> {
-  late bool isLiked;
-  late int count;
-
-  @override
-  void initState() {
-    super.initState();
-    isLiked = widget.like.isLikedByUser;
-    count = widget.like.count;
-  }
+  final PostAction likeAction;
+  const LikePostButton({Key? key, required this.like, required this.likeAction})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Mutation(
-        options: MutationOptions(document: gql(widget.like.mutationDocument)),
+        options: MutationOptions(
+            document: gql(likeAction.document),
+            update: (cache, result) {
+              if (result != null && (!result.hasException)) {
+                likeAction.updateCache(cache, result);
+              }
+            }),
         builder: (
           RunMutation runMutation,
           QueryResult? result,
         ) =>
             InkWell(
               onTap: () {
-                runMutation({"id": widget.like.fkPostId});
-                setState(() {
-                  if (isLiked) {
-                    count -= 1;
-                  } else {
-                    count += 1;
-                  }
-                  isLiked = !isLiked;
-                });
+                if (!(result != null && result.isLoading)) {
+                  runMutation({"id": likeAction.id});
+                }
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(isLiked == true
+                  Icon(like.isLikedByUser == true
                       ? Icons.thumb_up_alt
                       : Icons.thumb_up_alt_outlined),
                   const SizedBox(width: 5),
-                  Text(count.toString(),
+                  Text(like.count.toString(),
                       style: Theme.of(context).textTheme.labelLarge)
                 ],
               ),
@@ -129,7 +117,9 @@ class CommentPostButton extends StatelessWidget {
 
 class StarPostButton extends StatefulWidget {
   final StarPostModel star;
-  const StarPostButton({Key? key, required this.star}) : super(key: key);
+  final PostAction starAction;
+  const StarPostButton({Key? key, required this.star, required this.starAction})
+      : super(key: key);
 
   @override
   State<StarPostButton> createState() => _StarPostButtonState();
@@ -141,15 +131,22 @@ class _StarPostButtonState extends State<StarPostButton> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isStarred = widget.star.isStarredByUser;
-    });
+    isStarred = widget.star.isStarredByUser;
   }
 
   @override
   Widget build(BuildContext context) {
     return Mutation(
-        options: MutationOptions(document: gql(widget.star.mutationDocument)),
+        options: MutationOptions(
+            document: gql(widget.starAction.document),
+            update: (cache, result) {
+              if (result != null && (!result.hasException)) {
+                setState(() {
+                  isStarred = !isStarred;
+                });
+                widget.starAction.updateCache(cache, result);
+              }
+            }),
         builder: (
           RunMutation runMutation,
           QueryResult? result,
@@ -158,10 +155,9 @@ class _StarPostButtonState extends State<StarPostButton> {
               icon: isStarred == true ? Icons.star : Icons.star_outline,
               text: "Star",
               onPressed: () {
-                runMutation({"id": widget.star.fkPostId});
-                setState(() {
-                  isStarred = !isStarred;
-                });
+                if (!(result != null && result.isLoading)) {
+                  runMutation({"id": widget.starAction.id});
+                }
               },
             ));
   }
@@ -206,8 +202,8 @@ class SharePostButton extends StatelessWidget {
 }
 
 class EditPostButton extends StatelessWidget {
-  final Widget navigateTo;
-  const EditPostButton({Key? key, required this.navigateTo}) : super(key: key);
+  final NavigateAction edit;
+  const EditPostButton({Key? key, required this.edit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -215,19 +211,15 @@ class EditPostButton extends StatelessWidget {
       icon: Icons.edit_outlined,
       text: "Edit",
       onPressed: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => navigateTo));
+        navigate(context, edit.to);
       },
     );
   }
 }
 
 class DeletePostButton extends StatefulWidget {
-  final DeletePostModel delete;
-  final Future<QueryResult<Object?>?> Function()? refetch;
-  const DeletePostButton(
-      {Key? key, required this.delete, required this.refetch})
-      : super(key: key);
+  final PostAction delete;
+  const DeletePostButton({Key? key, required this.delete}) : super(key: key);
 
   @override
   State<DeletePostButton> createState() => _DeletePostButtonState();
@@ -262,14 +254,16 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                   ),
                   Mutation(
                       options: MutationOptions(
-                        document: gql(widget.delete.mutationDocument),
-                        onCompleted: (dynamic resultData) {
-                          widget.refetch!();
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Post Deleted')),
-                          );
+                        document: gql(widget.delete.document),
+                        update: (cache, result) {
+                          if (result != null && (!result.hasException)) {
+                            widget.delete.updateCache(cache, result);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Post Deleted')),
+                            );
+                          }
                         },
                         onError: (dynamic error) {
                           Navigator.pop(context);
@@ -285,7 +279,7 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                       ) {
                         return CustomElevatedButton(
                           onPressed: () {
-                            runMutation({"id": widget.delete.fkPostId});
+                            runMutation({"id": widget.delete.id});
                           },
                           text: "Delete",
                           isLoading: result!.isLoading,
@@ -301,10 +295,11 @@ class _DeletePostButtonState extends State<DeletePostButton> {
 }
 
 class ReportPostButton extends StatefulWidget {
-  final ReportPostModel report;
-  final Future<QueryResult<Object?>?> Function()? refetch;
-  const ReportPostButton({Key? key, required this.report, this.refetch})
-      : super(key: key);
+  final PostAction report;
+  const ReportPostButton({
+    Key? key,
+    required this.report,
+  }) : super(key: key);
 
   @override
   State<ReportPostButton> createState() => _ReportPostButtonState();
@@ -358,10 +353,10 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                   ),
                   Mutation(
                       options: MutationOptions(
-                        document: gql(widget.report.mutationDocument),
-                        onCompleted: (dynamic resultData) {
-                          if (resultData != null) {
-                            widget.refetch!();
+                        document: gql(widget.report.document),
+                        update: (cache, result) {
+                          if (result != null && (!result.hasException)) {
+                            widget.report.updateCache(cache, result);
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -388,7 +383,7 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                             if (!isValid) return;
                             runMutation({
                               "description": description.text,
-                              "id": widget.report.fkPostId,
+                              "id": widget.report.id,
                               // "id": "8fed3965-dbeb-4102-b506-80a6e6e7bb7"
                             });
                           },

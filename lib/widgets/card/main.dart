@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
@@ -10,13 +9,8 @@ import '../../themes.dart';
 /// Common Card widget for Events, Netops, Queries and Lost & Found
 class PostCard extends StatefulWidget {
   final PostModel post;
-  final Future<QueryResult<Object?>?> Function()? refetch;
-  final String deleteMutationDocument;
-  const PostCard(
-      {Key? key,
-      required this.post,
-      this.refetch,
-      required this.deleteMutationDocument})
+  final PostActions actions;
+  const PostCard({Key? key, required this.post, required this.actions})
       : super(key: key);
 
   @override
@@ -26,7 +20,8 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
-    final post = widget.post;
+    final PostModel post = widget.post;
+    final PostActions actions = widget.actions;
     return Card(
       margin: const EdgeInsets.only(bottom: 15),
       child: Padding(
@@ -52,27 +47,31 @@ class _PostCardState extends State<PostCard> {
                     ),
                     itemBuilder: (context) {
                       return [
-                        if (post.edit != null)
+                        if (post.permissions.contains("EDIT") &&
+                            widget.actions.edit != null)
                           PopupMenuItem(
                               height: 10,
                               padding: EdgeInsets.zero,
-                              child: EditPostButton(
-                                  navigateTo: post.edit!(widget.refetch))),
-                        if (post.delete != null)
+                              child:
+                                  EditPostButton(edit: widget.actions.edit!)),
+                        if (post.permissions.contains("DELETE") &&
+                            widget.actions.delete != null)
                           PopupMenuItem(
                               height: 10,
                               padding: EdgeInsets.zero,
-                              child: DeletePostButton(
-                                delete: post.delete!,
-                                refetch: widget.refetch,
-                              )),
-                        if (post.star != null)
+                              child: DeletePostButton(delete: actions.delete!)),
+                        if (post.permissions.contains("STAR") &&
+                            post.star != null &&
+                            actions.star != null)
                           PopupMenuItem(
                             height: 10,
                             padding: EdgeInsets.zero,
-                            child: StarPostButton(star: post.star!),
+                            child: StarPostButton(
+                              star: post.star!,
+                              starAction: actions.star!,
+                            ),
                           ),
-                        if (post.setReminderAllowed)
+                        if (post.permissions.contains("SET_REMINDER"))
                           PopupMenuItem(
                             height: 10,
                             padding: EdgeInsets.zero,
@@ -198,16 +197,23 @@ class _PostCardState extends State<PostCard> {
                     spacing: 20,
                     runSpacing: 20,
                     children: [
-                      if (post.like != null) LikePostButton(like: post.like!),
+                      if (post.permissions.contains("LIKE") &&
+                          post.like != null &&
+                          actions.like != null)
+                        LikePostButton(
+                          like: post.like!,
+                          likeAction: actions.like!,
+                        ),
                       if (post.comment != null)
                         CommentPostButton(comment: post.comment!),
-                      if (post.shareAllowed) SharePostButton(post: post),
+                      if (post.permissions.contains("SHARE"))
+                        SharePostButton(post: post),
                     ],
                   ),
-                  if (post.report != null)
+                  if (post.permissions.contains("REPORT") &&
+                      actions.report != null)
                     ReportPostButton(
-                      report: post.report!,
-                      refetch: widget.refetch,
+                      report: actions.report!,
                     ),
                 ],
               ),

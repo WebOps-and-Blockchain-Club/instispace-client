@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../models/post.dart';
 import '../../models/date_time_format.dart';
 import '../../models/report.dart';
 import '../../widgets/card/main.dart';
@@ -231,9 +232,7 @@ class _ReportCardState extends State<ReportCard> {
         ),
         PostCard(
           post: report.netop ?? report.query!,
-          refetch: widget.refetch,
-          // TODO: Add delete mutation document here
-          deleteMutationDocument: "",
+          actions: PostActions(),
         ),
         const Padding(
           padding: EdgeInsets.only(bottom: 20.0),

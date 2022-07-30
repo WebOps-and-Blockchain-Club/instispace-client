@@ -179,7 +179,8 @@ class UserCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: ListTile(
           leading: CachedNetworkImage(
-            imageUrl: "",
+            imageUrl:
+                'https://photos.iitm.ac.in/byroll.php?roll=${user["roll"]?.toUpperCase()}',
             placeholder: (_, __) => const SizedBox(
               child: CircularProgressIndicator(),
               width: 30,

@@ -1,5 +1,3 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
-
 import 'user.dart';
 import 'post.dart';
 import 'tag.dart';
@@ -42,7 +40,7 @@ class NetopModel {
       required this.tags,
       required this.like,
       required this.star,
-      required this.cta,
+      this.cta,
       this.attachements,
       required this.createdAt,
       required this.createdBy,
@@ -56,14 +54,8 @@ class NetopModel {
         endTime = data["endTime"],
         tags = TagsModel.fromJson(data["tags"]),
         like = LikePostModel(
-            fkPostId: data["id"],
-            count: data["likeCount"],
-            isLikedByUser: data["isLiked"],
-            mutationDocument: ""),
-        star = StarPostModel(
-            fkPostId: data["id"],
-            isStarredByUser: data["isStared"],
-            mutationDocument: ""),
+            count: data["likeCount"], isLikedByUser: data["isLiked"]),
+        star = StarPostModel(isStarredByUser: data["isStared"]),
         cta = data["linkToAction"] != null && data["linkToAction"] != ""
             ? CTAModel(
                 name: data["linkName"] ?? "Click me",
@@ -72,11 +64,7 @@ class NetopModel {
         attachements = mergeAttachments(data["photo"], data["attachments"])
             ?.skip(1)
             .toList(),
-        // permissions =
-        //     data["permissions"] != null && data["permissions"].isNotEmpty
-        //         ? data["permissions"]
-        //         : [],
-        permissions = ["EDIT", "DELETE"],
+        permissions = data["permissions"].cast<String>(),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
 
@@ -104,18 +92,35 @@ class NetopModel {
         id: id,
         title: title,
         description: description,
+        imageUrls: imageUrl != null ? [imageUrl!] : null,
         attachements: attachements,
-        shareAllowed: false,
-        setReminderAllowed: false,
-        edit: permissions.contains("EDIT")
-            ? (Future<QueryResult<Object?>?> Function()? refetch) => null
-            : null,
-        delete: permissions.contains("DELETE")
-            ? DeletePostModel(fkPostId: id, mutationDocument: "")
-            : null,
+        like: like,
+        star: star,
+        endTime: endTime,
+        tags: tags,
         createdBy: createdBy,
-        createdAt: createdAt);
+        createdAt: createdAt,
+        permissions: permissions + ["SET_REMINDER", "SHARE", "LIKE", "STAR"]);
   }
+}
+
+class EditNetopModel {
+  final String id;
+  final String title;
+  final String description;
+  final List<String>? imageUrls;
+  final String endTime;
+  final TagsModel tags;
+  final CTAModel? cta;
+
+  EditNetopModel(
+      {required this.id,
+      required this.title,
+      required this.description,
+      this.imageUrls,
+      required this.endTime,
+      required this.tags,
+      this.cta});
 }
 
 List<String>? mergeAttachments(String? image, String? attachement) {

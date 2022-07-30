@@ -16,6 +16,7 @@ class UserGQL {
             endTime
             createdAt
             linkToAction
+            permissions
             comments {
               content
               id
@@ -48,6 +49,7 @@ class UserGQL {
             isStared
             linkName
             linkToAction
+            permissions
             tags {
               title
               id
@@ -88,6 +90,7 @@ class UserGQL {
         isNewUser
         id
         mobile
+        permissions
         hostel {
           name
           id

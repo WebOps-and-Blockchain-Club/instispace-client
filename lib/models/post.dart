@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
@@ -20,14 +22,10 @@ class PostModel {
   final LikePostModel? like;
   final CommentPostModel? comment;
   final StarPostModel? star;
-  bool shareAllowed = false;
-  bool setReminderAllowed = false;
   final CTAModel? cta;
-  final ReportPostModel? report;
-  final Function(Future<QueryResult<Object?>?> Function()?)? edit;
-  final DeletePostModel? delete;
   final CreatedByModel createdBy;
   final String createdAt;
+  final List<String> permissions;
 
   PostModel(
       {required this.id,
@@ -44,12 +42,37 @@ class PostModel {
       this.like,
       this.comment,
       this.star,
-      required this.shareAllowed,
-      required this.setReminderAllowed,
       this.cta,
-      this.report,
-      this.edit,
-      this.delete,
       required this.createdBy,
-      required this.createdAt});
+      required this.createdAt,
+      required this.permissions});
+}
+
+class PostActions {
+  final NavigateAction? edit;
+  final PostAction? delete;
+  final PostAction? like;
+  final PostAction? star;
+  final PostAction? report;
+
+  PostActions({this.edit, this.delete, this.like, this.star, this.report});
+}
+
+class PostAction {
+  final String id;
+  final String document;
+  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)
+      updateCache;
+
+  PostAction({
+    required this.id,
+    required this.document,
+    required this.updateCache,
+  });
+}
+
+class NavigateAction {
+  final Widget to;
+
+  NavigateAction({required this.to});
 }

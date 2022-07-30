@@ -1,416 +1,254 @@
-import 'package:client/graphQL/auth.dart';
-import 'package:client/screens/home/netops/addNetops.dart';
-import 'package:client/widgets/filters.dart';
-import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../models/netopsClass.dart';
-import '../../../widgets/text.dart';
-import 'package:client/widgets/loadingScreens.dart';
+
+import 'actions.dart';
+import 'new_netop.dart';
+import '../hostelSection/hostel.dart';
+import '../tag/select_tags.dart';
+import '../../../widgets/headers/main.dart';
+import '../../../widgets/card/main.dart';
+import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/utils/main.dart';
+import '../../../graphQL/netops.dart';
+import '../../../models/netop.dart';
+import '../../../models/post.dart';
 import '../../../models/tag.dart';
-import 'package:client/graphQL/netops.dart';
-import 'package:client/widgets/NetOpCard.dart';
 
-
-
-class Post_Listing extends StatefulWidget {
-  const Post_Listing({Key? key}) : super(key: key);
-
+class NetopsPage extends StatefulWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final List<String> permissions;
+  const NetopsPage(
+      {Key? key, required this.scaffoldKey, required this.permissions})
+      : super(key: key);
 
   @override
-  _Post_ListingState createState() => _Post_ListingState();
+  State<NetopsPage> createState() => _NetopsPageState();
 }
 
-class _Post_ListingState extends State<Post_Listing> {
+class _NetopsPageState extends State<NetopsPage> {
+  // Constants
+  final isStaredTagModel =
+      TagModel(id: "isStared", title: "Pinned", category: "Custom");
+  final orderByLikesTagModel = TagModel(
+      id: "orderByLikes", title: "Likes: High to Low", category: "Custom");
 
-  ///GraphQL
-  String getNetops = netopsQuery().getNetops;
-  String getTags = authQuery().getTags;
-
-  ///Variables
+  //Variables
+  bool orderByLikes = false;
+  bool isStared = false;
+  late TagsModel selectedTags = TagsModel.fromJson([]);
   String search = "";
-  List<NetOpPost> posts = [];
-  bool mostlikesvalue =false;
-  bool isStarred =false;
-  bool display = false;
-  Map<String, List<Tag>> interest = {};
-  List<String>selectedFilterIds=[];
-  late int total;
-  int take= 10;
-  var bytes;
+  int skip = 0;
+  int take = 10;
 
-  ///Controllers
-  ScrollController scrollController =ScrollController();
-  ScrollController scrollController1 =ScrollController();
-  TextEditingController searchController = TextEditingController();
+  late String searchValidationError = "";
 
-  ///Keys
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String userId="";
+  //Controllers
+  final ScrollController _scrollController = ScrollController();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _sharedPreference();
-  }
-  SharedPreferences? prefs;
-  void _sharedPreference()async{
-    prefs = await SharedPreferences.getInstance();
+  setFilters(TagsModel _selectedTags) {
     setState(() {
-      userId = prefs!.getString('id')!;
+      isStared = _selectedTags.contains(isStaredTagModel);
+      orderByLikes = _selectedTags.contains(orderByLikesTagModel);
+      _selectedTags.remove(isStaredTagModel);
+      _selectedTags.remove(orderByLikesTagModel);
+      selectedTags = _selectedTags;
     });
   }
+
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> variables = {
+      "take": take,
+      "lastId": "",
+      "orderByLikes": orderByLikes,
+      "filteringCondition": {
+        "tags": selectedTags.getTagIds(),
+        "isStared": isStared
+      },
+      "search": search
+    };
+    final QueryOptions<Object?> options =
+        QueryOptions(document: gql(NetopGQL.getAll), variables: variables);
     return Query(
-        options: QueryOptions(
-            document: gql(getTags)
-        ),
-        builder:(QueryResult result, {fetchMore, refetch}){
-          interest.clear();
-          if (result.hasException) {
-             print(result.exception.toString());
-          }
-          if(result.isLoading){
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  children: [
-                    PageTitle('Networking & Opportunities', context),
-                    Expanded(
-                        child: ListView.separated(
-                            itemBuilder: (context, index) => const NewCardSkeleton(),
-                            separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                            itemCount: 5)
-                    )
-                  ],
+        options: options,
+        builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
+          return Scaffold(
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: RefreshIndicator(
+                  onRefresh: () => refetch!(),
+                  child: NestedScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return CustomAppBar(
+                              title: "Networking",
+                              leading: CustomIconButton(
+                                  icon: Icons.menu,
+                                  onPressed: () => widget
+                                      .scaffoldKey.currentState!
+                                      .openDrawer()),
+                              action: CustomIconButton(
+                                  icon: Icons.account_balance_outlined,
+                                  onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const HostelHome()))),
+                            );
+                          }, childCount: 1),
+                        ),
+                        SliverPersistentHeader(
+                          pinned: true,
+                          floating: true,
+                          delegate: SearchBarDelegate(
+                            additionalHeight:
+                                searchValidationError != "" ? 18 : 0,
+                            searchUI: SearchBar(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              onSubmitted: (value) {
+                                if (value.isEmpty || value.length >= 4) {
+                                  setState(() {
+                                    search = value;
+                                    searchValidationError = "";
+                                  });
+                                  refetch!();
+                                } else {
+                                  setState(() {
+                                    searchValidationError =
+                                        "Enter atleast 4 characters";
+                                  });
+                                }
+                              },
+                              error: searchValidationError,
+                              onFilterClick: () {
+                                if (orderByLikes) {
+                                  selectedTags.add(orderByLikesTagModel);
+                                }
+                                if (isStared) {
+                                  selectedTags.add(isStaredTagModel);
+                                }
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) => buildSheet(
+                                    context,
+                                    selectedTags,
+                                    (value) {
+                                      setFilters(value);
+                                      refetch!();
+                                    },
+                                    CategoryModel(category: "Custom", tags: [
+                                      TagModel(
+                                          id: "isStared",
+                                          title: "Pinned",
+                                          category: "Custom"),
+                                      TagModel(
+                                          id: "orderByLikes",
+                                          title: "Likes: High to Low",
+                                          category: "Custom")
+                                    ]),
+                                  ),
+                                  isScrollControlled: true,
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      ];
+                    },
+                    body: (() {
+                      if (result.hasException) {
+                        return SelectableText(result.exception.toString());
+                      }
+
+                      if (result.isLoading && result.data == null) {
+                        return const Text('Loading');
+                      }
+
+                      final List<PostModel> posts = NetopsModel.fromJson(
+                              result.data!["getNetops"]["netopList"])
+                          .toPostsModel();
+
+                      if (posts.isEmpty) {
+                        return const Text('No posts');
+                      }
+
+                      final total = result.data!["getNetops"]["total"];
+                      FetchMoreOptions opts = FetchMoreOptions(
+                          variables: {...variables, "lastId": posts.last.id},
+                          updateQuery:
+                              (previousResultData, fetchMoreResultData) {
+                            final List<dynamic> repos = [
+                              ...previousResultData!['getNetops']['netopList']
+                                  as List<dynamic>,
+                              ...fetchMoreResultData!["getNetops"]["netopList"]
+                                  as List<dynamic>
+                            ];
+                            fetchMoreResultData["getNetops"]["netopList"] =
+                                repos;
+                            return fetchMoreResultData;
+                          });
+
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.metrics.pixels >
+                                  0.8 * notification.metrics.maxScrollExtent &&
+                              total > posts.length) {
+                            fetchMore!(opts);
+                          }
+                          return true;
+                        },
+                        child: RefreshIndicator(
+                          onRefresh: () {
+                            return refetch!();
+                          },
+                          child: ListView.builder(
+                              itemCount: posts.length + 1,
+                              itemBuilder: (context, index) {
+                                if (posts.length == index) {
+                                  if (total == posts.length) {
+                                    return const Center(
+                                        child: Text("No More Posts"));
+                                  } else if (result.isLoading) {
+                                    return const Center(
+                                      child: Text("Loading"),
+                                    );
+                                  }
+                                  return Center(
+                                    child: TextButton(
+                                        onPressed: () => fetchMore!(opts),
+                                        child: const Text("Load More")),
+                                  );
+                                } else {
+                                  final PostActions actions =
+                                      netopActions(posts[index], options);
+                                  return PostCard(
+                                      post: posts[index], actions: actions);
+                                }
+                              }),
+                        ),
+                      );
+                    }()),
+                  ),
                 ),
               ),
-            );
-          }
-          var tagData = result.data!["getTags"];
-          for(var i=0;i<tagData.length;i++ ){
-            interest.putIfAbsent(
-                tagData[i]["category"].toString(), () => []);
-            interest[tagData[i]["category"]]!.add(Tag(
-                Tag_name: tagData[i]["title"].toString(),
-                category: tagData[i]["category"].toString(),
-                id: tagData[i]["id"].toString()));
-          }
-          return Query(
-              options: QueryOptions(
-                document: gql(getNetops),
-                variables: {"take":take,"lastNetopId":"","orderByLikes":mostlikesvalue,"filteringCondition":{"tags": selectedFilterIds,"isStared":isStarred},"search": search},
-              ),
-              builder: (QueryResult result, {fetchMore, refetch}){
-                if (result.hasException) {
-                  return Text(result.exception.toString());
-                }
-                  if (result.isLoading) {
-                    return Scaffold(
-                      body: Center(
-                        child: Column(
-                          children: [
-                            PageTitle('Networking & Opportunities', context),
-                            Expanded(
-                                child: ListView.separated(
-                                    itemBuilder: (context, index) => const NewCardSkeleton(),
-                                    separatorBuilder: (context, index) => const SizedBox(height: 6,),
-                                    itemCount: 5)
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                if (result.data!["getNetops"]["netopList"] == null || result.data!["getNetops"]["netopList"].isEmpty){
-                  return Scaffold(
-                    body: RefreshIndicator(
-                      color: const Color(0xFF2B2E35),
-                      onRefresh: () {
-                        return refetch!();
-                      },
-                      child: Center(
-                        child: Column(
-                          children: [
-                            PageTitle('Networking & Opportunities', context),
-                            ///Search bar and filter button
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.06,
-                                width: MediaQuery.of(context).size.width * 1,
-                                child: Search(
-                                  refetch: refetch,
-                                  ScaffoldKey: _scaffoldKey,
-                                  page: 'netops',
-                                  callback: (String val) {
-                                    setState(() {
-                                      search = val;
-                                    }
-                                    );
-                                  },
-                                  widget: Filters(
-                                    mostLikeValues: mostlikesvalue,
-                                    isStarred: isStarred,
-                                    selectedFilterIds: selectedFilterIds,
-                                    interest: interest,
-                                    refetch: refetch,
-                                    page: 'netops',
-                                    callback: (bool val) {
-                                      setState(() {
-                                        isStarred = val;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0,250,0,0),
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    'No Netops Yet !!',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  )
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    floatingActionButton: FloatingActionButton(onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  AddPost(refetchPosts: refetch,)));
+            ),
+            floatingActionButton: widget.permissions.contains("CREATE_NETOP")
+                ? FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => NewNetopPage(
+                                options: options,
+                              )));
                     },
-                      child: const Icon(Icons.add),
-                      backgroundColor: const Color(0xFFFF0000),
-                    ),
-                  );
-                }
-                else {
-                  var data = result.data!["getNetops"];
-                  var netopList = data["netopList"];
-                  posts.clear();
-                  for (var i = 0; i < result.data!["getNetops"]["netopList"].length; i++) {
-                    List<Tag> tags = [];
-                    for (var k = 0; k < netopList[i]["tags"].length; k++) {
-                      tags.add(
-                        Tag(
-                          Tag_name: netopList[i]["tags"][k]["title"],
-                          category: netopList[i]["tags"][k]["category"],
-                          id: netopList[i]["tags"][k]["id"],
-                        ),
-                      );
-                    }
-                    List<String> imageUrls=[];
-                    if(netopList[i]["photo"]!=null && netopList[i]["photo"]!="")
-                    {imageUrls=netopList[i]["photo"].split(" AND ");}
-                    posts.add(NetOpPost(
-                      commentCount: netopList[i]["commentCount"],
-                      title: netopList[i]["title"],
-                      description: netopList[i]["content"],
-                      likeCount: netopList[i]["likeCount"],
-                      tags: tags,
-                      endTime: netopList[i]["endTime"],
-                      createdByName: netopList[i]["createdBy"]["name"],
-                      linkToAction: netopList[i]["linkToAction"],
-                      linkName: netopList[i]["linkName"],
-                      imgUrl: imageUrls,
-                      attachment: netopList[i]["attachments"],
-                      id: netopList[i]["id"],
-                      isLiked: netopList[i]['isLiked'],
-                      isStarred: netopList[i]['isStared'],
-                      createdById: netopList[i]["createdBy"]["id"],
-                      createdAt: DateTime.parse(netopList[i]["createdAt"]),
-                    )
-                    );
-                  }
-                  total = data["total"];
-                  if(posts.isNotEmpty)
-                    {
-                      FetchMoreOptions opts = FetchMoreOptions(
-                          variables: {
-                            "take": take,
-                            "lastNetopId": posts.last.id,
-                            "orderByLikes": mostlikesvalue,
-                            "filteringCondition": {
-                              "tags": selectedFilterIds,
-                              "isStared": isStarred
-                            },
-                            "search": search
-                          },
-                          updateQuery: (previousResultData, fetchMoreResultData) {
-                            posts.clear();
-                            final List<dynamic> repos = [
-                              ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
-                              ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
-                            ];
-                            fetchMoreResultData['getNetops']['netopList'] = repos;
-                            print("fetchMore triggered");
-                            return fetchMoreResultData;
-                          }
-                      );
-                      scrollController1.addListener(() async {
-                        var triggerFetchMoreSize =
-                            0.99 * scrollController1.position.maxScrollExtent;
-                        if (scrollController1.position.pixels >
-                            triggerFetchMoreSize && total > posts.length) {
-                          await fetchMore!(opts);
-                          scrollController1.jumpTo(triggerFetchMoreSize);
-                        }
-                      }
-                      );
-                    }
-
-                  if(posts.isEmpty){
-                    FetchMoreOptions opts = FetchMoreOptions(
-                        variables: {
-                          "take": take,
-                          "lastNetopId": "",
-                          "orderByLikes": mostlikesvalue,
-                          "filteringCondition": {
-                            "tags": selectedFilterIds,
-                            "isStared": isStarred
-                          },
-                          "search": search
-                        },
-                        updateQuery: (previousResultData, fetchMoreResultData) {
-                          posts.clear();
-                          final List<dynamic> repos = [
-                            ...previousResultData!['getNetops']['netopList'] as List<dynamic>,
-                            ...fetchMoreResultData!['getNetops']['netopList'] as List<dynamic>
-                          ];
-                          fetchMoreResultData['getNetops']['netopList'] = repos;
-                          print("fetchMore triggered");
-                          return fetchMoreResultData;
-                        }
-                    );
-                    scrollController1.addListener(() async {
-                      var triggerFetchMoreSize =
-                          0.99 * scrollController1.position.maxScrollExtent;
-                      if (scrollController1.position.pixels >
-                          triggerFetchMoreSize && total > posts.length) {
-                        await fetchMore!(opts);
-                        scrollController1.jumpTo(triggerFetchMoreSize);
-                      }
-                    }
-                    );
-                  }
-
-                  return Scaffold(
-
-                    key: _scaffoldKey,
-
-                    backgroundColor: Color(0xFFDFDFDF),
-
-                    ///Floating Action Button
-                    floatingActionButton: FloatingActionButton(onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  AddPost(refetchPosts: refetch,)));
-                      },
-                      child: const Icon(Icons.add),
-                      backgroundColor: const Color(0xFFFF0000),
-                    ),
-
-                    ///Page
-                    body: RefreshIndicator(
-                      onRefresh: () {
-                        return refetch!();
-                      },
-                      child: ListView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        controller: scrollController1,
-                          children: [
-                            Column(
-                              children: [
-                                ///Heading
-                                PageTitle('Networking & Opportunities', context),
-
-                                ///Search bar and filter button
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.06,
-                                    width: MediaQuery.of(context).size.width * 1,
-                                    child: Search(
-                                      refetch: refetch,
-                                      ScaffoldKey: _scaffoldKey,
-                                      page: 'netops',
-                                      callback: (String val) {
-                                        setState(() {
-                                          search = val;
-                                        }
-                                        );
-                                        },
-                                      widget: Filters(
-                                        mostLikeValues: mostlikesvalue,
-                                        isStarred: isStarred,
-                                        selectedFilterIds: selectedFilterIds,
-                                        interest: interest,
-                                        refetch: refetch,
-                                        page: 'netops',
-                                        callback: (bool val) {
-                                          setState(() {
-                                            isStarred = val;
-                                          });
-                                          },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                ///Listing of netops cards
-                                ListView(
-                                    controller: scrollController,
-                                    shrinkWrap: true,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                        child: Column(
-                                          children: posts
-                                              .map((post) =>
-                                              NetopsCard(
-                                                  refetch:refetch,
-                                                  userId: userId,
-                                                  post :post,
-                                                  page: 'NetopsSection',))
-                                              .toList(),
-                                        ),
-                                      ),
-                                    ]
-                                ),
-                                if(result.isLoading)
-                                  const Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.lightBlueAccent,)
-                                  ),
-                              ],
-                            ),
-                          ]
-                      ),
-                    ),
-                  );
-                }
-
-              }
+                    child: const Icon(Icons.add))
+                : null,
           );
-        }
-    );
-
+        });
   }
 }
-
-

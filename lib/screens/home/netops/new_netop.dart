@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
@@ -7,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
-import '../../../graphQL/events.dart';
-import '../../../models/event.dart';
+import '../../../graphQL/netops.dart';
+import '../../../models/netop.dart';
 import '../../../models/tag.dart';
 import '../../../models/date_time_format.dart';
 import '../../../screens/home/tag/tags_display.dart';
@@ -19,17 +18,17 @@ import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/text/label.dart';
 import '../tag/select_tags.dart';
 
-class NewEvent extends StatefulWidget {
+class NewNetopPage extends StatefulWidget {
   final QueryOptions options;
-  final EditEventModel? event;
-  const NewEvent({Key? key, required this.options, this.event})
+  final EditNetopModel? netop;
+  const NewNetopPage({Key? key, required this.options, this.netop})
       : super(key: key);
 
   @override
-  State<NewEvent> createState() => _NewEventState();
+  State<NewNetopPage> createState() => _NewNetopPageState();
 }
 
-class _NewEventState extends State<NewEvent> {
+class _NewNetopPageState extends State<NewNetopPage> {
   //Keys
   final formKey = GlobalKey<FormState>();
 
@@ -38,15 +37,14 @@ class _NewEventState extends State<NewEvent> {
   final description = TextEditingController();
   final date = TextEditingController();
   final dateFormated = TextEditingController();
-  final time = TextEditingController();
+  final endTime = TextEditingController();
   final timeFormated = TextEditingController();
-  final location = TextEditingController();
   final ctaName = TextEditingController();
   final ctaLink = TextEditingController();
 
   // Graphql
-  String createEvent = EventGQL().create;
-  String editEvent = EventGQL().edit;
+  String create = NetopGQL.create;
+  String edit = NetopGQL.edit;
 
   // Variables
   late TagsModel selectedTags = TagsModel.fromJson([]);
@@ -55,25 +53,24 @@ class _NewEventState extends State<NewEvent> {
   // Services
   final localStorage = LocalStorageService();
 
-  Future getEventData(EditEventModel? _event) async {
-    if (_event != null) {
-      title.text = _event.title;
-      description.text = _event.description;
+  Future getNetopData(EditNetopModel? _netop) async {
+    if (_netop != null) {
+      title.text = _netop.title;
+      description.text = _netop.description;
       // img
-      date.text = _event.time;
-      dateFormated.text =
-          DateTimeFormatModel.fromString(_event.time).toFormat("MMM dd, yyyy");
-      time.text = _event.time;
+      date.text = _netop.endTime;
+      dateFormated.text = DateTimeFormatModel.fromString(_netop.endTime)
+          .toFormat("MMM dd, yyyy");
+      endTime.text = _netop.endTime;
       timeFormated.text =
-          DateTimeFormatModel.fromString(_event.time).toFormat("h:mm a");
-      location.text = _event.location;
-      if (_event.cta?.name != null) ctaName.text = _event.cta!.name;
-      if (_event.cta?.link != null) ctaLink.text = _event.cta!.link;
+          DateTimeFormatModel.fromString(_netop.endTime).toFormat("h:mm a");
+      if (_netop.cta?.name != null) ctaName.text = _netop.cta!.name;
+      if (_netop.cta?.link != null) ctaLink.text = _netop.cta!.link;
       setState(() {
-        selectedTags = _event.tags;
+        selectedTags = _netop.tags;
       });
     } else {
-      var data = await localStorage.getData("new_event");
+      var data = await localStorage.getData("new_netop");
       if (data != null) {
         title.text = data["title"];
         description.text = data["description"];
@@ -81,10 +78,9 @@ class _NewEventState extends State<NewEvent> {
         date.text = data["date"];
         dateFormated.text = DateTimeFormatModel.fromString(data["date"])
             .toFormat("MMM dd, yyyy");
-        time.text = data["time"];
+        endTime.text = data["endTime"];
         timeFormated.text =
-            DateTimeFormatModel.fromString(data["time"]).toFormat("h:mm a");
-        location.text = data["location"];
+            DateTimeFormatModel.fromString(data["endTime"]).toFormat("h:mm a");
         ctaName.text = data["ctaName"];
         ctaLink.text = data["ctaLink"];
         setState(() {
@@ -95,15 +91,14 @@ class _NewEventState extends State<NewEvent> {
   }
 
   void clearData() {
-    if (widget.event == null) localStorage.clearData("new_event");
+    if (widget.netop == null) localStorage.clearData("new_netop");
     title.clear();
     description.clear();
     // img
     date.clear();
     dateFormated.clear();
-    time.clear();
+    endTime.clear();
     timeFormated.clear();
-    location.clear();
     ctaName.clear();
     ctaLink.clear();
     setState(() {
@@ -113,7 +108,7 @@ class _NewEventState extends State<NewEvent> {
 
   @override
   void initState() {
-    getEventData(widget.event);
+    getNetopData(widget.netop);
     super.initState();
   }
 
@@ -121,29 +116,45 @@ class _NewEventState extends State<NewEvent> {
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(widget.event != null ? editEvent : createEvent),
+            document: gql(widget.netop != null ? edit : create),
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
-                if (widget.event != null) {
+                if (widget.netop != null) {
                   // TODO: update the cache value for edit
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Event Edited')),
+                    const SnackBar(content: Text('Post Edited')),
                   );
                 } else {
                   dynamic data = cache.readQuery(widget.options.asRequest);
-                  data["getEvents"]["list"] =
-                      [result.data!["createEvent"]] + data["getEvents"]["list"];
-                  data["getEvents"]["total"] = data["getEvents"]["total"] + 1;
+                  data["getNetops"]["netopList"] = [
+                        result.data!["createNetop"]
+                      ] +
+                      data["getNetops"]["netopList"];
+                  data["getNetops"]["total"] = data["getNetops"]["total"] + 1;
                   cache.writeQuery(widget.options.asRequest, data: data);
                   clearData();
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Event Created')),
+                    const SnackBar(content: Text('Post Created')),
                   );
                 }
               }
             },
+            // onCompleted: (dynamic resultData) {
+            //   if (resultData["createEvent"] == true) {
+            //     widget.refetch!();
+            //     clearData();
+            //     Navigator.pop(context);
+            //     ScaffoldMessenger.of(context).showSnackBar(
+            //       const SnackBar(content: Text('Post Created')),
+            //     );
+            //   } else {
+            //     ScaffoldMessenger.of(context).showSnackBar(
+            //       const SnackBar(content: Text('Post Creation Failed')),
+            //     );
+            //   }
+            // },
             onError: (dynamic error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -167,7 +178,7 @@ class _NewEventState extends State<NewEvent> {
                     child: ListView(
                       children: [
                         CustomAppBar(
-                            title: "New Event",
+                            title: "New Post",
                             leading: CustomIconButton(
                               icon: Icons.arrow_back,
                               onPressed: () => Navigator.of(context).pop(),
@@ -209,7 +220,8 @@ class _NewEventState extends State<NewEvent> {
                         ),
 
                         // Date Time
-                        const LabelText(text: "Time & Location"),
+                        const LabelText(
+                            text: "How long do you need this post to be live?"),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -224,11 +236,11 @@ class _NewEventState extends State<NewEvent> {
                                           size: 20),
                                       prefixIconConstraints:
                                           Themes.inputIconConstraints,
-                                      labelText: "Event Date"),
+                                      labelText: "Date"),
                                   readOnly: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return "Enter the event date of the post";
+                                      return "Enter the date";
                                     }
                                     return null;
                                   },
@@ -266,11 +278,11 @@ class _NewEventState extends State<NewEvent> {
                                           size: 20),
                                       prefixIconConstraints:
                                           Themes.inputIconConstraints,
-                                      labelText: "Event Time"),
+                                      labelText: "Time"),
                                   readOnly: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return "Enter the event time of the post";
+                                      return "Enter the time";
                                     }
                                     return null;
                                   },
@@ -281,7 +293,7 @@ class _NewEventState extends State<NewEvent> {
                                         if (value != null) {
                                           DateTime _dateTime = DateTime(2021, 1,
                                               1, value.hour, value.minute);
-                                          time.text = _dateTime.toString();
+                                          endTime.text = _dateTime.toString();
                                           DateTimeFormatModel _time =
                                               DateTimeFormatModel(
                                                   dateTime: _dateTime);
@@ -291,27 +303,6 @@ class _NewEventState extends State<NewEvent> {
                                       })),
                             )),
                           ],
-                        ),
-
-                        // Location
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: location,
-                            decoration: InputDecoration(
-                              labelText: "Location",
-                              prefixIcon: const Icon(Icons.location_on_outlined,
-                                  size: 20),
-                              prefixIconConstraints:
-                                  Themes.inputIconConstraints,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the location of the post";
-                              }
-                              return null;
-                            },
-                          ),
                         ),
 
                         // Images & Tags
@@ -421,24 +412,23 @@ class _NewEventState extends State<NewEvent> {
                                       DateTimeFormatModel.fromString(
                                           date.text.split(" ").first +
                                               " " +
-                                              time.text.split(" ").last);
+                                              endTime.text.split(" ").last);
 
                                   if (isValid) {
                                     List<MultipartFile>? image =
                                         await imagePickerService
                                             .getMultipartFiles();
-                                    if (widget.event != null) {
+                                    if (widget.netop != null) {
                                       runMutation({
                                         "editData": {
-                                          "content": description.text,
                                           "title": title.text,
-                                          "tagIds": selectedTags.getTagIds(),
-                                          "time": _dateTime.toISOFormat(),
+                                          "content": description.text,
+                                          "tags": selectedTags.getTagIds(),
+                                          "endTime": _dateTime.toISOFormat(),
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
-                                          "location": location.text,
                                         },
-                                        "id": widget.event!.id,
+                                        "id": widget.netop!.id,
                                         "image": image,
                                       });
                                     } else {
@@ -446,9 +436,8 @@ class _NewEventState extends State<NewEvent> {
                                         "newData": {
                                           "title": title.text,
                                           "content": description.text,
-                                          "location": location.text,
-                                          "tagIds": selectedTags.getTagIds(),
-                                          "time": _dateTime.toISOFormat(),
+                                          "tags": selectedTags.getTagIds(),
+                                          "endTime": _dateTime.toISOFormat(),
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
@@ -475,14 +464,13 @@ class _NewEventState extends State<NewEvent> {
 
   @override
   void dispose() {
-    if (widget.event == null) {
-      localStorage.setData("new_event", {
+    if (widget.netop == null) {
+      localStorage.setData("new_netop", {
         "title": title.text,
         "description": description.text,
         "selectedTags": jsonEncode(selectedTags.toJson()),
         "date": date.text,
-        "time": time.text,
-        "location": location.text,
+        "endTime": endTime.text,
         "ctaName": ctaName.text,
         "ctaLink": ctaLink.text
       });

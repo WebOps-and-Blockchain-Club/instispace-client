@@ -6,11 +6,17 @@ import '../../../services/auth.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
+import '../../models/user.dart';
 import '../../themes.dart';
 
 class EditPassword extends StatefulWidget {
   final AuthService auth;
-  const EditPassword({Key? key, required this.auth}) : super(key: key);
+  final UserModel user;
+  final Future<QueryResult<Object?>?> Function()? refetch;
+
+  const EditPassword(
+      {Key? key, required this.auth, required this.user, this.refetch})
+      : super(key: key);
 
   @override
   State<EditPassword> createState() => _EditPasswordState();
@@ -30,9 +36,7 @@ class _EditPasswordState extends State<EditPassword> {
 
   @override
   void initState() {
-    if (widget.auth.user != null) {
-      if (widget.auth.user!.name != null) name.text = widget.auth.user!.name!;
-    }
+    if (widget.user.name != null) name.text = widget.user.name!;
     super.initState();
   }
 
@@ -47,7 +51,7 @@ class _EditPasswordState extends State<EditPassword> {
                       document: gql(AuthGQL().updatePassword),
                       onCompleted: (dynamic resultData) {
                         if (resultData["updateSuperUser"] == true) {
-                          widget.auth.clearUser();
+                          if (widget.refetch != null) widget.refetch!();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Profile Updated')),
                           );
@@ -68,7 +72,7 @@ class _EditPasswordState extends State<EditPassword> {
                                 leading: CustomIconButton(
                                   icon: Icons.arrow_back,
                                   onPressed: () {
-                                    if (widget.auth.user!.id != null) {
+                                    if (widget.user.id != null) {
                                       Navigator.of(context).pop();
                                     } else {
                                       widget.auth.logout();

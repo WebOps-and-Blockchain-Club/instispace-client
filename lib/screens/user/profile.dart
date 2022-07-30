@@ -71,15 +71,21 @@ class Profile extends StatelessWidget {
                 const SizedBox(height: 20),
                 CachedNetworkImage(
                   imageUrl:
-                      'https://photos.iitm.ac.in/byroll.php?roll=${_user.roll}',
+                      'https://photos.iitm.ac.in/byroll.php?roll=${_user.roll?.toUpperCase()}',
                   placeholder: (_, __) =>
                       const Icon(Icons.account_circle_rounded, size: 100),
                   errorWidget: (_, __, ___) =>
                       const Icon(Icons.account_circle_rounded, size: 100),
-                  width: 100,
-                  height: 100,
-                  imageBuilder: (_, imageProvider) => CircleAvatar(
-                    backgroundImage: imageProvider,
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),

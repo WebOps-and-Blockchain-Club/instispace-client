@@ -64,10 +64,15 @@ class CustomAppBar extends StatelessWidget {
 
 class SearchBar extends StatelessWidget {
   final void Function(String) onSubmitted;
+  final String? error;
   final void Function()? onFilterClick;
   final EdgeInsetsGeometry? padding;
   const SearchBar(
-      {Key? key, required this.onSubmitted, this.onFilterClick, this.padding})
+      {Key? key,
+      required this.onSubmitted,
+      this.error,
+      this.onFilterClick,
+      this.padding})
       : super(key: key);
 
   @override
@@ -75,33 +80,55 @@ class SearchBar extends StatelessWidget {
     return Container(
       color: ColorPalette.palette(context).secondary[50],
       padding: padding,
-      height: 80,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-              child: Card(
-                  margin: const EdgeInsets.all(0),
-                  child: Theme(
-                    data: ThemeData(
-                      primarySwatch: ColorPalette.palette(context).primary,
+          SizedBox(
+            height: 40,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                    child: Card(
+                        margin: const EdgeInsets.all(0),
+                        child: Theme(
+                          data: ThemeData(
+                            primarySwatch:
+                                ColorPalette.palette(context).primary,
+                          ),
+                          child: TextField(
+                            decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'What are you looking for?',
+                                prefixIcon: Icon(Icons.search, size: 25)),
+                            onSubmitted: onSubmitted,
+                          ),
+                        ))),
+                if (onFilterClick != null)
+                  Card(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: InkWell(
+                      onTap: onFilterClick,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Icon(Icons.filter_alt_outlined),
+                      ),
                     ),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'What are you looking for?',
-                          prefixIcon: Icon(Icons.search, size: 25)),
-                      onSubmitted: onSubmitted,
-                    ),
-                  ))),
-          if (onFilterClick != null)
-            Card(
-              margin: const EdgeInsets.only(left: 10),
-              child: InkWell(
-                onTap: onFilterClick,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Icon(Icons.filter_alt_outlined),
+                  )
+              ],
+            ),
+          ),
+          if (error != null && error != "")
+            SizedBox(
+              height: 18,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  error!,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: ColorPalette.palette(context).error),
                 ),
               ),
             )

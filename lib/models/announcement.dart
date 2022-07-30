@@ -1,9 +1,6 @@
-import 'package:graphql_flutter/graphql_flutter.dart';
-
 import 'user.dart';
 import 'post.dart';
 import 'hostel.dart';
-import 'actions.dart';
 
 class AnnouncementsModel {
   final List<AnnouncementModel> announcements;
@@ -47,7 +44,6 @@ class AnnouncementModel {
         createdBy = CreatedByModel.fromJson(data["user"]),
         hostels = HostelsModel.fromJson(data["hostels"]).hostels,
         permissions = ["EDIT", "DELETE"];
-  // permissions = data["permissions"];
 
   PostModel toPostModel() {
     return PostModel(
@@ -55,15 +51,8 @@ class AnnouncementModel {
         title: title,
         description: description,
         attachements: attachements,
-        shareAllowed: false,
-        setReminderAllowed: false,
-        edit: permissions.contains("EDIT")
-            ? (Future<QueryResult<Object?>?> Function()? refetch) => null
-            : null,
-        delete: permissions.contains("DELETE")
-            ? DeletePostModel(fkPostId: id, mutationDocument: "")
-            : null,
         createdBy: createdBy,
-        createdAt: createdAt);
+        createdAt: createdAt,
+        permissions: permissions);
   }
 }

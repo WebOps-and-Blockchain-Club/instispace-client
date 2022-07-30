@@ -19,7 +19,7 @@ ValueNotifier<GraphQLClient> client(String? token) {
   }
 
   return ValueNotifier<GraphQLClient>(GraphQLClient(
-    cache: GraphQLCache(store: InMemoryStore()),
+    cache: GraphQLCache(store: HiveStore()),
     link: link,
   ));
 }

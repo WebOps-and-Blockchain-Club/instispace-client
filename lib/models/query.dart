@@ -23,6 +23,7 @@ class QueryModel {
   final LikePostModel like;
   final CreatedByModel createdBy;
   final String createdAt;
+  final List<String> permissions;
 
   QueryModel(
       {required this.id,
@@ -31,7 +32,8 @@ class QueryModel {
       this.attachements,
       required this.like,
       required this.createdBy,
-      required this.createdAt});
+      required this.createdAt,
+      required this.permissions});
 
   QueryModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
@@ -39,13 +41,12 @@ class QueryModel {
         description = data["content"],
         attachements = data["photo"]?.split(" AND ").toList(),
         like = LikePostModel(
-            fkPostId: data["id"],
-            count: data["likeCount"],
-            isLikedByUser: data["isLiked"],
-            // TODO: Add the like mutation document here
-            mutationDocument: ""),
+          count: data["likeCount"],
+          isLikedByUser: data["isLiked"],
+        ),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
-        createdAt = data["createdAt"];
+        createdAt = data["createdAt"],
+        permissions = ["EDIT", "DELETE"];
 
   Map<String, dynamic> toJson() {
     return {
@@ -67,11 +68,10 @@ class QueryModel {
         title: title,
         description: description,
         attachements: attachements,
-        shareAllowed: false,
-        setReminderAllowed: false,
         like: like,
         createdBy: createdBy,
-        createdAt: createdAt);
+        createdAt: createdAt,
+        permissions: permissions);
   }
 }
 

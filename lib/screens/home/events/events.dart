@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../hostelSection/hostel.dart';
+import 'actions.dart';
 import 'new_event.dart';
+import '../hostelSection/hostel.dart';
+import '../tag/select_tags.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/utils/main.dart';
-import '../tag/select_tags.dart';
 import '../../../graphQL/events.dart';
 import '../../../models/event.dart';
 import '../../../models/post.dart';
@@ -36,6 +37,8 @@ class _EventsPageState extends State<EventsPage> {
   int skip = 0;
   int take = 10;
 
+  late String searchValidationError = "";
+
   //Controllers
   final ScrollController _scrollController = ScrollController();
 
@@ -61,9 +64,10 @@ class _EventsPageState extends State<EventsPage> {
       },
       "search": search
     };
+    final QueryOptions<Object?> options =
+        QueryOptions(document: gql(EventGQL().getAll), variables: variables);
     return Query(
-        options: QueryOptions(
-            document: gql(EventGQL().getAll), variables: variables),
+        options: options,
         builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
           return Scaffold(
             body: SafeArea(
@@ -98,16 +102,27 @@ class _EventsPageState extends State<EventsPage> {
                         SliverPersistentHeader(
                           pinned: true,
                           floating: true,
-                          delegate: ContestTabHeader(
-                            SearchBar(
+                          delegate: SearchBarDelegate(
+                            additionalHeight:
+                                searchValidationError != "" ? 18 : 0,
+                            searchUI: SearchBar(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               onSubmitted: (value) {
-                                setState(() {
-                                  search = value;
-                                });
-                                refetch!();
+                                if (value.isEmpty || value.length >= 4) {
+                                  setState(() {
+                                    search = value;
+                                    searchValidationError = "";
+                                  });
+                                  refetch!();
+                                } else {
+                                  setState(() {
+                                    searchValidationError =
+                                        "Enter atleast 4 characters";
+                                  });
+                                }
                               },
+                              error: searchValidationError,
                               onFilterClick: () {
                                 if (orderByLikes) {
                                   selectedTags.add(orderByLikesTagModel);
@@ -143,7 +158,80 @@ class _EventsPageState extends State<EventsPage> {
                         )
                       ];
                     },
-                    body: scaffoldBody(result, refetch, variables, fetchMore),
+                    body: (() {
+                      if (result.hasException) {
+                        return SelectableText(result.exception.toString());
+                      }
+
+                      if (result.isLoading && result.data == null) {
+                        return const Text('Loading');
+                      }
+
+                      final List<PostModel> posts = EventsModel.fromJson(
+                              result.data!["getEvents"]["list"])
+                          .toPostsModel();
+
+                      if (posts.isEmpty) {
+                        return const Text('No posts');
+                      }
+
+                      final total = result.data!["getEvents"]["total"];
+                      FetchMoreOptions opts = FetchMoreOptions(
+                          variables: {...variables, "lastId": posts.last.id},
+                          updateQuery:
+                              (previousResultData, fetchMoreResultData) {
+                            final List<dynamic> repos = [
+                              ...previousResultData!['getEvents']['list']
+                                  as List<dynamic>,
+                              ...fetchMoreResultData!["getEvents"]["list"]
+                                  as List<dynamic>
+                            ];
+                            fetchMoreResultData["getEvents"]["list"] = repos;
+                            return fetchMoreResultData;
+                          });
+
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.metrics.pixels >
+                                  0.8 * notification.metrics.maxScrollExtent &&
+                              total > posts.length) {
+                            fetchMore!(opts);
+                          }
+                          return true;
+                        },
+                        child: RefreshIndicator(
+                          onRefresh: () {
+                            return refetch!();
+                          },
+                          child: ListView.builder(
+                              itemCount: posts.length + 1,
+                              itemBuilder: (context, index) {
+                                if (posts.length == index) {
+                                  if (total == posts.length) {
+                                    return const Center(
+                                        child: Text("No More Posts"));
+                                  } else if (result.isLoading) {
+                                    return const Center(
+                                      child: Text("Loading"),
+                                    );
+                                  }
+                                  return Center(
+                                    child: TextButton(
+                                        onPressed: () => fetchMore!(opts),
+                                        child: const Text("Load More")),
+                                  );
+                                } else {
+                                  final PostActions actions =
+                                      eventActions(posts[index], options);
+                                  return PostCard(
+                                    post: posts[index],
+                                    actions: actions,
+                                  );
+                                }
+                              }),
+                        ),
+                      );
+                    }()),
                   ),
                 ),
               ),
@@ -152,84 +240,11 @@ class _EventsPageState extends State<EventsPage> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => NewEvent(
-                            refetch: refetch,
+                            options: options,
                           )));
                 },
                 child: const Icon(Icons.add)),
           );
         });
   }
-}
-
-Widget scaffoldBody(
-    QueryResult result,
-    Future<QueryResult<Object?>?> Function()? refetch,
-    Map<String, dynamic> defaultVariables,
-    FetchMore? fetchMore) {
-  if (result.hasException) {
-    return SelectableText(result.exception.toString());
-  }
-
-  if (result.isLoading && result.data == null) {
-    return const Text('Loading');
-  }
-
-  final List<PostModel> posts =
-      EventsModel.fromJson(result.data!["getEvents"]["list"]).toPostsModel();
-
-  if (posts.isEmpty) {
-    return const Text('No posts');
-  }
-
-  final total = result.data!["getEvents"]["total"];
-  FetchMoreOptions opts = FetchMoreOptions(
-      variables: {...defaultVariables, "lastId": posts.last.id},
-      updateQuery: (previousResultData, fetchMoreResultData) {
-        final List<dynamic> repos = [
-          ...previousResultData!['getEvents']['list'] as List<dynamic>,
-          ...fetchMoreResultData!["getEvents"]["list"] as List<dynamic>
-        ];
-        fetchMoreResultData["getEvents"]["list"] = repos;
-        return fetchMoreResultData;
-      });
-
-  return NotificationListener<ScrollNotification>(
-    onNotification: (notification) {
-      if (notification.metrics.pixels >
-              0.8 * notification.metrics.maxScrollExtent &&
-          total > posts.length) {
-        fetchMore!(opts);
-      }
-      return true;
-    },
-    child: RefreshIndicator(
-      onRefresh: () {
-        return refetch!();
-      },
-      child: ListView.builder(
-          itemCount: posts.length + 1,
-          itemBuilder: (context, index) {
-            if (posts.length == index) {
-              if (total == posts.length) {
-                return const Center(child: Text("No More Posts"));
-              } else if (result.isLoading) {
-                return const Center(
-                  child: Text("Loading"),
-                );
-              }
-              return Center(
-                child: TextButton(
-                    onPressed: () => fetchMore!(opts),
-                    child: const Text("Load More")),
-              );
-            } else {
-              return PostCard(
-                post: posts[index],
-                refetch: refetch,
-                deleteMutationDocument: EventGQL().delete,
-              );
-            }
-          }),
-    ),
-  );
 }

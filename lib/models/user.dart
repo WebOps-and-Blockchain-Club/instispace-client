@@ -58,15 +58,9 @@ class UserModel {
         netops = data["getHome"] != null && data["getHome"]["netops"] != null
             ? NetopsModel.fromJson(data["getHome"]["netops"]).netops
             : null,
-        permissions = [
-          "CREATE_ACCOUNT",
-          "UPDATE_ROLE",
-          "CREATE_TAG",
-          "CREATE_HOSTEL",
-          "VIEW_FEEDBACK",
-          "GET_REPORTS"
-        ];
-  // permissions = data["permissions"];
+        permissions = data["permissions"] != null
+            ? data["permissions"].cast<String>()
+            : [];
 
   List<HomeModel> toHomeModel() {
     List<HomeModel> home = [];
