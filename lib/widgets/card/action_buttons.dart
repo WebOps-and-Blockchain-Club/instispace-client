@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
+import '../../models/comment.dart';
 import '../helpers/navigate.dart';
 import '../../models/actions.dart';
 import '../../models/post.dart';
@@ -95,13 +96,18 @@ class LikePostButton extends StatelessWidget {
 }
 
 class CommentPostButton extends StatelessWidget {
-  final CommentPostModel comment;
-  const CommentPostButton({Key? key, required this.comment}) : super(key: key);
+  final CommentsModel comment;
+  final NavigateAction commentPage;
+  const CommentPostButton(
+      {Key? key, required this.comment, required this.commentPage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        navigate(context, commentPage.to);
+      },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

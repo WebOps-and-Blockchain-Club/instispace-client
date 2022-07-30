@@ -1,3 +1,4 @@
+import 'comment.dart';
 import 'user.dart';
 import 'post.dart';
 import 'tag.dart';
@@ -28,6 +29,7 @@ class NetopModel {
   final CTAModel? cta;
   final List<String> permissions;
   final List<String>? attachements;
+  final CommentsModel comments;
   final String createdAt;
   final CreatedByModel createdBy;
 
@@ -42,6 +44,7 @@ class NetopModel {
       required this.star,
       this.cta,
       this.attachements,
+      required this.comments,
       required this.createdAt,
       required this.createdBy,
       required this.permissions});
@@ -64,6 +67,8 @@ class NetopModel {
         attachements = mergeAttachments(data["photo"], data["attachments"])
             ?.skip(1)
             .toList(),
+        comments = CommentsModel.fromJson(
+            data["comments"] ?? [], data["commentCount"]),
         permissions = data["permissions"].cast<String>(),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
@@ -98,6 +103,7 @@ class NetopModel {
         star: star,
         endTime: endTime,
         tags: tags,
+        comments: comments,
         createdBy: createdBy,
         createdAt: createdAt,
         permissions: permissions + ["SET_REMINDER", "SHARE", "LIKE", "STAR"]);

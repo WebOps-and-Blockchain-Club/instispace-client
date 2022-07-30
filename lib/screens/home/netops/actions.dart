@@ -1,5 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../comment/main.dart';
 import '../../../graphQL/netops.dart';
 import '../../../models/netop.dart';
 import '../../../models/post.dart';
@@ -7,11 +8,13 @@ import 'new_netop.dart';
 
 PostActions netopActions(PostModel post, QueryOptions<Object?> options) {
   return PostActions(
-      edit: netopEditAction(post, options),
-      delete: netopDeleteAction(post, options),
-      like: netopLikeAction(post, options),
-      star: netopStarAction(post, options),
-      report: netopReportAction(post, options));
+    edit: netopEditAction(post, options),
+    delete: netopDeleteAction(post, options),
+    like: netopLikeAction(post, options),
+    star: netopStarAction(post, options),
+    report: netopReportAction(post, options),
+    comment: netopCommentAction(post),
+  );
 }
 
 NavigateAction netopEditAction(PostModel post, QueryOptions<Object?> options) {
@@ -126,4 +129,60 @@ PostAction netopReportAction(PostModel post, QueryOptions<Object?> options) {
         data["getNetops"]["total"] = data["getNetops"]["total"] - 1;
         cache.writeQuery(options.asRequest, data: data);
       });
+}
+
+NavigateAction netopCommentAction(PostModel post) {
+  return NavigateAction(
+      to: CommentsPage(
+    id: post.id,
+    comments: post.comments!,
+    document: NetopGQL.createComment,
+    type: "Netop",
+    updateCache: (cache, result) {
+      var data = cache.readFragment(Fragment(document: gql('''
+                      fragment netopCommentField on Netop {
+                        id
+                        commentCount
+                        comments {
+                          content
+                          id
+                          createdBy {
+                            name
+                            id
+                          }
+                        }
+                      }
+                    ''')).asRequest(idFields: {
+        '__typename': "Netop",
+        'id': post.id,
+      }));
+      final Map<String, dynamic> updated = {
+        "__typename": "Netop",
+        "id": post.id,
+        "commentCount": data!["commentCount"] + 1,
+        "comments": data["comments"] + [result.data!["createCommentNetop"]],
+      };
+      cache.writeFragment(
+        Fragment(document: gql('''
+                      fragment netopCommentField on Netop {
+                        id
+                        commentCount
+                        comments {
+                          content
+                          id
+                          createdBy {
+                            name
+                            id
+                          }
+                        }
+                      }
+                    ''')).asRequest(idFields: {
+          '__typename': "Netop",
+          'id': post.id,
+        }),
+        data: updated,
+        broadcast: false,
+      );
+    },
+  ));
 }

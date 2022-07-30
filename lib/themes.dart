@@ -17,9 +17,8 @@ class Themes {
     // Text Theme
     textTheme: TextTheme(
         headlineSmall: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.bold),
-        titleLarge: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.bold),
+            color: ColorPalette._primary, fontWeight: FontWeight.w600),
+        titleLarge: TextStyle(color: ColorPalette._primary),
         titleMedium: TextStyle(color: ColorPalette._primary),
         titleSmall: TextStyle(
             color: ColorPalette._primary, fontWeight: FontWeight.w500),

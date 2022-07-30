@@ -204,8 +204,11 @@ class _PostCardState extends State<PostCard> {
                           like: post.like!,
                           likeAction: actions.like!,
                         ),
-                      if (post.comment != null)
-                        CommentPostButton(comment: post.comment!),
+                      if (post.comments != null)
+                        CommentPostButton(
+                          comment: post.comments!,
+                          commentPage: actions.comment!,
+                        ),
                       if (post.permissions.contains("SHARE"))
                         SharePostButton(post: post),
                     ],

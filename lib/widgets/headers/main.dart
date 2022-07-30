@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../themes.dart';
+import '../marquee.dart';
 
 class Header extends StatelessWidget {
   final String title;
@@ -13,9 +14,11 @@ class Header extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineSmall,
+        MarqueeWidget(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
         ),
         if (subTitle != null)
           Text(
@@ -45,16 +48,20 @@ class CustomAppBar extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            leading != null ? leading! : const SizedBox(width: 40),
+            leading != null ? leading! : const SizedBox(width: 30),
+            const SizedBox(width: 10),
             Expanded(
               child: Center(
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                child: MarqueeWidget(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                 ),
               ),
             ),
-            action != null ? action! : const SizedBox(width: 40),
+            const SizedBox(width: 10),
+            action != null ? action! : const SizedBox(width: 30),
           ],
         ),
       ),

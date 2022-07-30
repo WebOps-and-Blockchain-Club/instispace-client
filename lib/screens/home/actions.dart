@@ -28,7 +28,8 @@ PostActions homePostActions(String type, PostModel post) {
           delete: homeCardDeleteAction(type, post, options),
           like: netopLikeAction(post, options),
           star: netopStarAction(post, options),
-          report: netopReportAction(post, options));
+          report: netopReportAction(post, options),
+          comment: netopCommentAction(post));
     default:
       return PostActions(
           edit: netopEditAction(post, options),

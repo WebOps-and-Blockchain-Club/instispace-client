@@ -24,6 +24,7 @@ class UserGQL {
                 id
                 name
               }
+              createdAt
             }
             tags {
               id

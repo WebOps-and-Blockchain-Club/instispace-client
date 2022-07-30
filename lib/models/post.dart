@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
+import 'comment.dart';
 import 'hostel.dart';
 import 'tag.dart';
 import 'user.dart';
@@ -20,9 +21,9 @@ class PostModel {
   final TagsModel? tags;
   final HostelsModel? hostels;
   final LikePostModel? like;
-  final CommentPostModel? comment;
   final StarPostModel? star;
   final CTAModel? cta;
+  final CommentsModel? comments;
   final CreatedByModel createdBy;
   final String createdAt;
   final List<String> permissions;
@@ -40,9 +41,9 @@ class PostModel {
       this.tags,
       this.hostels,
       this.like,
-      this.comment,
       this.star,
       this.cta,
+      this.comments,
       required this.createdBy,
       required this.createdAt,
       required this.permissions});
@@ -54,8 +55,15 @@ class PostActions {
   final PostAction? like;
   final PostAction? star;
   final PostAction? report;
+  final NavigateAction? comment;
 
-  PostActions({this.edit, this.delete, this.like, this.star, this.report});
+  PostActions(
+      {this.edit,
+      this.delete,
+      this.like,
+      this.star,
+      this.report,
+      this.comment});
 }
 
 class PostAction {

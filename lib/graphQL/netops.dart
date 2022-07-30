@@ -78,6 +78,7 @@ class NetopGQL {
               id
               roll
             }
+            createdAt
           }
           createdBy {
             id
