@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../hostel/main.dart';
 import 'actions.dart';
 import 'new_event.dart';
-import '../hostelSection/hostel.dart';
 import '../tag/select_tags.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/utils/main.dart';
 import '../../../graphQL/events.dart';
+import '../../../models/user.dart';
 import '../../../models/event.dart';
 import '../../../models/post.dart';
 import '../../../models/tag.dart';
 
 class EventsPage extends StatefulWidget {
+  final UserModel user;
   final GlobalKey<ScaffoldState> scaffoldKey;
-  const EventsPage({Key? key, required this.scaffoldKey}) : super(key: key);
+  const EventsPage({Key? key, required this.user, required this.scaffoldKey})
+      : super(key: key);
 
   @override
   State<EventsPage> createState() => _EventsPageState();
@@ -95,7 +98,8 @@ class _EventsPageState extends State<EventsPage> {
                                   onPressed: () => Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              const HostelHome()))),
+                                              HostelWrapper(
+                                                  user: widget.user)))),
                             );
                           }, childCount: 1),
                         ),

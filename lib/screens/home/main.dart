@@ -114,11 +114,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
             scaffoldKey: scaffoldKey);
 
       case 3:
-        return EventsPage(scaffoldKey: scaffoldKey);
+        return EventsPage(user: user, scaffoldKey: scaffoldKey);
 
       case 4:
-        return NetopsPage(
-            permissions: user.permissions, scaffoldKey: scaffoldKey);
+        return NetopsPage(user: user, scaffoldKey: scaffoldKey);
 
       default:
         return HomePage(

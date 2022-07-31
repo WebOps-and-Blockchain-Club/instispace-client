@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../hostel/main.dart';
 import 'actions.dart';
 import 'new_netop.dart';
-import '../hostelSection/hostel.dart';
 import '../tag/select_tags.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
@@ -11,14 +11,14 @@ import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/utils/main.dart';
 import '../../../graphQL/netops.dart';
 import '../../../models/netop.dart';
+import '../../../models/user.dart';
 import '../../../models/post.dart';
 import '../../../models/tag.dart';
 
 class NetopsPage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final List<String> permissions;
-  const NetopsPage(
-      {Key? key, required this.scaffoldKey, required this.permissions})
+  final UserModel user;
+  const NetopsPage({Key? key, required this.scaffoldKey, required this.user})
       : super(key: key);
 
   @override
@@ -98,7 +98,8 @@ class _NetopsPageState extends State<NetopsPage> {
                                   onPressed: () => Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              const HostelHome()))),
+                                              HostelWrapper(
+                                                  user: widget.user)))),
                             );
                           }, childCount: 1),
                         ),
@@ -238,16 +239,17 @@ class _NetopsPageState extends State<NetopsPage> {
                 ),
               ),
             ),
-            floatingActionButton: widget.permissions.contains("CREATE_NETOP")
-                ? FloatingActionButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => NewNetopPage(
-                                options: options,
-                              )));
-                    },
-                    child: const Icon(Icons.add))
-                : null,
+            floatingActionButton:
+                widget.user.permissions.contains("CREATE_NETOP")
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => NewNetopPage(
+                                    options: options,
+                                  )));
+                        },
+                        child: const Icon(Icons.add))
+                    : null,
           );
         });
   }
