@@ -125,6 +125,22 @@ class NetopGQL {
       reportNetop(description: \$description, NetopId: \$id)
     }
   """;
+
+  static const createComment = """
+    mutation(\$content: String!, \$id: String!, \$images: [Upload!]){
+      createCommentNetop(content: \$content, NetopId: \$id, Images: \$images){
+        id
+        content
+        images
+        createdAt
+        createdBy {
+          id
+          name
+          roll
+        }
+      }
+    }
+  """;
 }
 
 class netopsQuery {

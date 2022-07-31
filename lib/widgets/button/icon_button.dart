@@ -22,11 +22,7 @@ class CustomIconButton extends StatelessWidget {
             color: Colors.white,
           ),
           padding: EdgeInsets.all(size * 1.75),
-          child: Icon(
-            icon,
-            color: const Color(0xFF2f247b),
-            size: size * 6.5,
-          ),
+          child: Icon(icon, size: size * 6.5),
         ),
       ),
     );

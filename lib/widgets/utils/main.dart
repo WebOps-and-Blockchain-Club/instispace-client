@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ContestTabHeader extends SliverPersistentHeaderDelegate {
-  ContestTabHeader(
-    this.searchUI,
-  );
+class SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  SearchBarDelegate({required this.searchUI, this.additionalHeight = 0});
   final Widget searchUI;
+  final double additionalHeight;
 
   @override
   Widget build(
@@ -13,13 +12,13 @@ class ContestTabHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 60.0;
+  double get maxExtent => 60.0 + additionalHeight;
 
   @override
-  double get minExtent => 60.0;
+  double get minExtent => 60.0 + additionalHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
