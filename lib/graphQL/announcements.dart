@@ -1,3 +1,38 @@
+class AnnouncementGQL {
+  static const getAll = """
+    query GetAnnouncements(\$hostelId: String!, \$take: Float!, \$lastId: String!, \$search: String) {
+      getAnnouncements(HostelId: \$hostelId, take: \$take, LastAnnouncementId: \$lastId, search: \$search) {
+        announcementsList {
+          title
+          description
+          endTime
+          id
+          images
+          permissions
+          user {
+            id
+            roll
+            role
+            name
+          }
+          hostels {
+            name
+            id
+          }
+          createdAt
+        }
+        total
+      }
+    }
+  """;
+
+  static const delete = """
+    mutation(\$id: String!){
+      deleteAnnouncement(AnnouncementId: \$id)
+    }
+  """;
+}
+
 class AnnouncementQM {
   String getAnnouncements = """
    query GetAnnouncements(\$hostelId: String!, \$take: Float!, \$lastAnnouncementId: String!, \$search: String) {

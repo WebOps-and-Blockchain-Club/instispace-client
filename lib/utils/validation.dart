@@ -10,5 +10,7 @@ bool isValidRoll(String roll) {
 }
 
 bool isValidNumber(String number) {
-  return RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(number);
+  return RegExp(
+          r'((\+*)((0[ -]*)*|((91 )*))((\d{12})+|(\d{10})+))|\d{5}([- ]*)\d{6}')
+      .hasMatch(number);
 }

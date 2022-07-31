@@ -43,7 +43,7 @@ class AnnouncementModel {
         createdAt = data["createdAt"],
         createdBy = CreatedByModel.fromJson(data["user"]),
         hostels = HostelsModel.fromJson(data["hostels"]).hostels,
-        permissions = ["EDIT", "DELETE"];
+        permissions = data["permissions"].cast<String>();
 
   PostModel toPostModel() {
     return PostModel(

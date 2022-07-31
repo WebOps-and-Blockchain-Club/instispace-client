@@ -24,8 +24,8 @@ class PostModel {
   final StarPostModel? star;
   final CTAModel? cta;
   final CommentsModel? comments;
-  final CreatedByModel createdBy;
-  final String createdAt;
+  final CreatedByModel? createdBy;
+  final String? createdAt;
   final List<String> permissions;
 
   PostModel(
@@ -44,8 +44,8 @@ class PostModel {
       this.star,
       this.cta,
       this.comments,
-      required this.createdBy,
-      required this.createdAt,
+      this.createdBy,
+      this.createdAt,
       required this.permissions});
 }
 

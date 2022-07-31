@@ -12,8 +12,18 @@ class HostelsModel {
 
   String? getId(String? name) {
     String? id;
-    hostels.map((e) => id = e.name == name ? e.id : null);
+    hostels.forEach(((e) {
+      if (e.name == name) id = e.id;
+    }));
     return id;
+  }
+
+  String? getName(String? id) {
+    String? name;
+    hostels.forEach(((e) {
+      if (e.id == id) name = e.name;
+    }));
+    return name;
   }
 }
 

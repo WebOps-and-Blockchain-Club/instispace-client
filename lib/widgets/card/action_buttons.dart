@@ -265,7 +265,6 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                           if (result != null && (!result.hasException)) {
                             widget.delete.updateCache(cache, result);
                             Navigator.pop(context);
-                            Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Post Deleted')),
                             );

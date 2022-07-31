@@ -170,7 +170,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                     validator: (val) {
                       if (val != null &&
                           val.isNotEmpty &&
-                          !isValidNumber("+91$val")) {
+                          (!isValidNumber(val) || val.length != 10)) {
                         return "Please enter a valid number";
                       }
                       return null;

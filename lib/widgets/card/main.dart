@@ -82,9 +82,12 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
             // Posted By & Time
-            SelectableText(
-                'Posted by ${post.createdBy.name}, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago',
-                style: Theme.of(context).textTheme.labelSmall),
+            if ((post.createdBy != null && post.createdAt != null) ||
+                post.subTitle != null)
+              SelectableText(
+                  post.subTitle ??
+                      'Posted by ${post.createdBy!.name}, ${DateTimeFormatModel.fromString(post.createdAt!).toDiffString()} ago',
+                  style: Theme.of(context).textTheme.labelSmall),
             const Divider(),
 
             // Image

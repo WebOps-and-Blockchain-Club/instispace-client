@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
+import '../hostel/main.dart';
 import '../../services/auth.dart';
 import '../../models/user.dart';
 import '../../models/post.dart';
 import '../../widgets/button/icon_button.dart';
 import '../../widgets/card/main.dart';
 import '../../widgets/headers/main.dart';
-import 'hostelSection/hostel.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () => Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        const HostelHome()))),
+                                        HostelWrapper(user: widget.user)))),
                       );
                     }, childCount: 1),
                   ),

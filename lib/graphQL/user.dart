@@ -69,7 +69,7 @@ class UserGQL {
             images
             createdAt
             endTime
-            isHidden
+            permissions
             user {
               id
               name
