@@ -20,41 +20,46 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
-    if (auth.token == null) return LogIn(auth: auth);
+    if (auth.token == null) {
+      return const Scaffold(body: Text('Loading'));
+    } else if (auth.token == "") {
+      return LogIn(auth: auth);
+    } else {
+      return Query(
+          options: QueryOptions(document: gql(UserGQL().getMe)),
+          builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
+            return Scaffold(
+              body: (() {
+                if (result.hasException) {
+                  return SelectableText(result.exception.toString());
+                }
 
-    return Query(
-        options: QueryOptions(document: gql(UserGQL().getMe)),
-        builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
-          return Scaffold(
-            body: (() {
-              if (result.hasException) {
-                return SelectableText(result.exception.toString());
-              }
+                if (result.isLoading) {
+                  return const Text('Loading');
+                }
 
-              if (result.isLoading) {
-                return const Text('Loading');
-              }
+                final UserModel user =
+                    UserModel.fromJson(result.data!["getMe"]);
 
-              final UserModel user = UserModel.fromJson(result.data!["getMe"]);
+                if (user.isNewUser == true) {
+                  return EditProfile(
+                    auth: auth,
+                    user: user,
+                    refetch: refetch,
+                  );
+                } else if (user.isNewUser == false) {
+                  return HomeWrapper(
+                    auth: auth,
+                    user: user,
+                    refetch: refetch,
+                  );
+                }
 
-              if (user.isNewUser == true) {
-                return EditProfile(
-                  auth: auth,
-                  user: user,
-                  refetch: refetch,
-                );
-              } else if (user.isNewUser == false) {
-                return HomeWrapper(
-                  auth: auth,
-                  user: user,
-                  refetch: refetch,
-                );
-              }
-
-              return SelectableText(
-                  "Some error occured ${result.data.toString()}");
-            }()),
-          );
-        });
+                return SelectableText(
+                    "Some error occured ${result.data.toString()}");
+              }()),
+            );
+          });
+    }
   }
 }

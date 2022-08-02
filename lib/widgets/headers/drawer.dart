@@ -251,8 +251,8 @@ class CustomDrawer extends StatelessWidget {
                           leading: const Icon(Icons.logout),
                           horizontalTitleGap: 0,
                           title: const Text("Logout"),
-                          onTap: () =>
-                              logoutAlert(context, () => auth.logout()),
+                          onTap: () => logoutAlert(
+                              context, () => auth.logout(), fcmToken),
                         ),
 
                         Expanded(
@@ -350,7 +350,8 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-Future<dynamic> logoutAlert(BuildContext context, Function callback) {
+Future<dynamic> logoutAlert(
+    BuildContext context, Function callback, String fcmToken) {
   return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -396,7 +397,7 @@ Future<dynamic> logoutAlert(BuildContext context, Function callback) {
                     return CustomElevatedButton(
                       onPressed: () {
                         runMutation({
-                          "fcmToken": "",
+                          "fcmToken": fcmToken,
                         });
                       },
                       text: "Logout",

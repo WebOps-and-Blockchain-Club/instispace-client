@@ -18,7 +18,7 @@ class AuthService extends ChangeNotifier {
 
   loadToken() async {
     await _initAuth();
-    _token = prefs!.getString('token');
+    _token = prefs!.getString('token') ?? "";
     notifyListeners();
   }
 
@@ -46,6 +46,6 @@ class AuthService extends ChangeNotifier {
   _clearToken() async {
     await _initAuth();
     prefs!.remove('token');
-    _token = null;
+    _token = "";
   }
 }

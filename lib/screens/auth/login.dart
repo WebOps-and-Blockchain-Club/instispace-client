@@ -146,7 +146,7 @@ class _LogInState extends State<LogIn> {
 
                           if (isValid) {
                             runMutation({
-                              'fcmToken': "fcmToken",
+                              'fcmToken': fcmToken,
                               'loginInputs': {
                                 "roll": name.text.trim().toLowerCase(),
                                 "pass": pass.text,
