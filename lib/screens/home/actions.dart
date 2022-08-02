@@ -1,20 +1,22 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../graphQL/announcements.dart';
 import '../../graphQL/events.dart';
 import '../../graphQL/netops.dart';
 import '../../graphQL/user.dart';
 import '../../models/post.dart';
+import '../../models/user.dart';
+import '../hostel/announcement/actions.dart';
 import 'events/actions.dart';
 import 'netops/actions.dart';
 
-PostActions homePostActions(String type, PostModel post) {
+PostActions homePostActions(UserModel user, String type, PostModel post) {
   final QueryOptions<Object?> options =
       QueryOptions(document: gql(UserGQL().getMe));
   switch (type) {
     case "Announcements":
-      // TODO: Change it for announcements
       return PostActions(
-          edit: netopEditAction(post, options),
+          edit: editAnnouncementAction(user, post, options),
           delete: homeCardDeleteAction(type, post, options));
     case "Events":
       return PostActions(
@@ -47,8 +49,7 @@ PostAction homeCardDeleteAction(
     document: (() {
       switch (type) {
         case "Announcements":
-          // TODO: Add delete document
-          return "";
+          return AnnouncementGQL.delete;
         case "Events":
           return EventGQL().delete;
         case "Networking & Opportunities":

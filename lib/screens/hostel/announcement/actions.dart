@@ -1,20 +1,35 @@
-import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'new_announcement.dart';
+import '../../../models/announcement.dart';
+import '../../../models/user.dart';
 import '../../../graphQL/announcements.dart';
 import '../../../models/post.dart';
 
-PostActions annoucementActions(PostModel post, QueryOptions<Object?> options) {
+PostActions annoucementActions(
+    UserModel user, PostModel post, QueryOptions<Object?> options) {
   return PostActions(
-    edit: editAnnouncementAction(post, options),
+    edit: editAnnouncementAction(user, post, options),
     delete: deleteAnnouncementAction(post, options),
   );
 }
 
 NavigateAction editAnnouncementAction(
-    PostModel post, QueryOptions<Object?> options) {
-  // TODO:
-  return NavigateAction(to: Container());
+    UserModel user, PostModel post, QueryOptions<Object?> options) {
+  return NavigateAction(
+      to: NewAnnouncementPage(
+          user: user,
+          announcement: AnnouncementModel(
+              id: post.id,
+              title: post.title,
+              description: post.description,
+              attachements: post.attachements,
+              createdAt: post.createdAt!,
+              endTime: post.endTime!,
+              createdBy: post.createdBy!,
+              hostels: post.hostels!,
+              permissions: post.permissions),
+          options: options));
 }
 
 PostAction deleteAnnouncementAction(

@@ -10,6 +10,10 @@ class HostelsModel {
     return hostels.map((e) => e.name).toList();
   }
 
+  List<String> getHostelIds() {
+    return hostels.map((e) => e.id).toList();
+  }
+
   String? getId(String? name) {
     String? id;
     hostels.forEach(((e) {
@@ -24,6 +28,22 @@ class HostelsModel {
       if (e.id == id) name = e.name;
     }));
     return name;
+  }
+
+  bool contains(HostelModel hostel) {
+    bool isContain = false;
+    for (var element in hostels) {
+      if (element.id == hostel.id) isContain = true;
+    }
+    return isContain;
+  }
+
+  void add(HostelModel hostel) {
+    hostels.add(hostel);
+  }
+
+  void remove(HostelModel hostel) {
+    hostels.removeWhere((element) => element.id == hostel.id);
   }
 }
 

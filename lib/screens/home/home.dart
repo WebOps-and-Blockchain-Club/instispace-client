@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
                             shrinkWrap: true,
                             itemCount: home.length,
                             itemBuilder: (context, index) => Section(
+                                user: widget.user,
                                 title: home[index].title,
                                 posts: home[index].posts))),
               ),
@@ -109,7 +110,9 @@ class _HomePageState extends State<HomePage> {
 class Section extends StatefulWidget {
   final String title;
   final List<PostModel> posts;
-  const Section({Key? key, required this.title, required this.posts})
+  final UserModel user;
+  const Section(
+      {Key? key, required this.title, required this.posts, required this.user})
       : super(key: key);
 
   @override
@@ -152,8 +155,8 @@ class _SectionState extends State<Section> {
                   shrinkWrap: true,
                   itemCount: widget.posts.length,
                   itemBuilder: (context, index) {
-                    final PostActions actions =
-                        homePostActions(widget.title, widget.posts[index]);
+                    final PostActions actions = homePostActions(
+                        widget.user, widget.title, widget.posts[index]);
                     return PostCard(
                       post: widget.posts[index],
                       actions: actions,

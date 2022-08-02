@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../shared/hostel_dropdown.dart';
+import 'new_announcement.dart';
 import 'actions.dart';
 import '../../../models/announcement.dart';
 import '../../../graphQL/announcements.dart';
 import '../../../models/user.dart';
-import '../../home/tag/select_tags.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/utils/main.dart';
 import '../../../models/post.dart';
-import '../../../models/tag.dart';
 
 class AnnouncementsPage extends StatefulWidget {
   final UserModel user;
@@ -22,30 +22,21 @@ class AnnouncementsPage extends StatefulWidget {
 
 class _AnnouncementsPageState extends State<AnnouncementsPage> {
   //Variables
-  bool orderByLikes = false;
-  bool isStared = false;
-  late TagsModel selectedTags = TagsModel.fromJson([]);
   String search = "";
-  int skip = 0;
   int take = 10;
+  String? selectedHostel;
 
   late String searchValidationError = "";
 
   //Controllers
   final ScrollController _scrollController = ScrollController();
 
-  setFilters(TagsModel _selectedTags) {
-    setState(() {
-      selectedTags = _selectedTags;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> variables = {
       "take": take,
       "lastId": "",
-      "hostelId": widget.user.hostelId ?? "",
+      "hostelId": widget.user.hostelId ?? (selectedHostel ?? ""),
       "search": search
     };
     final QueryOptions<Object?> options = QueryOptions(
@@ -98,20 +89,26 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                                 }
                               },
                               error: searchValidationError,
-                              onFilterClick: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) => buildSheet(
-                                      context, selectedTags, (value) {
-                                    setFilters(value);
-                                    refetch!();
-                                  }, null),
-                                  isScrollControlled: true,
-                                );
-                              },
                             ),
                           ),
-                        )
+                        ),
+                        if (widget.user.permissions
+                            .contains("GET_ALL_ANNOUNCEMENTS"))
+                          SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                  (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: HostelListDropdown(
+                                value: selectedHostel,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedHostel = value;
+                                  });
+                                },
+                              ),
+                            );
+                          }, childCount: 1))
                       ];
                     },
                     body: (() {
@@ -180,7 +177,8 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                                   );
                                 } else {
                                   final PostActions actions =
-                                      annoucementActions(posts[index], options);
+                                      annoucementActions(
+                                          widget.user, posts[index], options);
                                   //Show hostels in tag card
                                   return PostCard(
                                     post: posts[index],
@@ -195,17 +193,19 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                 ),
               ),
             ),
-            // floatingActionButton:
-            //     widget.user.permissions.contains("CREATE_ANNOUNCEMENT")
-            //         ? FloatingActionButton(
-            //             onPressed: () {
-            //               // Navigator.of(context).push(MaterialPageRoute(
-            //               //     builder: (BuildContext context) => NewEvent(
-            //               //           options: options,
-            //               //         )));
-            //             },
-            //             child: const Icon(Icons.add))
-            //         : null,
+            floatingActionButton:
+                widget.user.permissions.contains("CREATE_ANNOUNCEMENT")
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  NewAnnouncementPage(
+                                    user: widget.user,
+                                    options: options,
+                                  )));
+                        },
+                        child: const Icon(Icons.add))
+                    : null,
           );
         });
   }

@@ -184,6 +184,23 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
 
+            // Hostels
+            if (post.hostels != null && post.hostels!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Wrap(
+                  spacing: 3,
+                  children: post.hostels!
+                      .map((hostel) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 0),
+                            child: Text("#" + hostel.name,
+                                style: Theme.of(context).textTheme.labelLarge),
+                          ))
+                      .toList(),
+                ),
+              ),
+
             // CTA
             if (post.cta != null)
               Padding(

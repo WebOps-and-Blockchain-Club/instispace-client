@@ -26,6 +26,62 @@ class AnnouncementGQL {
     }
   """;
 
+  static const create = """
+    mutation(\$announcementInput: CreateAnnouncementInput!, \$images: [Upload!]) {
+      createAnnouncement(AnnouncementInput: \$announcementInput, Images: \$images) {
+        id
+        title
+        images
+        description
+        createdAt
+        endTime
+        user {
+          id
+          roll
+          name
+          role
+        }
+        hostels {
+          id
+          name
+        }
+        permissions
+      }
+    }
+  """;
+
+  static const edit = """
+    mutation(
+      \$updateAnnouncementInput: EditAnnouncementInput!
+      \$id: String!
+      \$images: [Upload!]
+    ) {
+      editAnnouncement(
+        UpdateAnnouncementInput: \$updateAnnouncementInput
+        AnnouncementId: \$id
+        Images: \$images
+      ) {
+        id
+        title
+        images
+        description
+        createdAt
+        endTime
+        user {
+          id
+          roll
+          name
+          role
+        }
+        hostels {
+          id
+          name
+        }
+        permissions
+      }
+    }
+  """;
+
   static const delete = """
     mutation(\$id: String!){
       deleteAnnouncement(AnnouncementId: \$id)

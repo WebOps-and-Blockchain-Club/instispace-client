@@ -19,7 +19,7 @@ class PostModel {
   final String? time;
   final String? endTime;
   final TagsModel? tags;
-  final HostelsModel? hostels;
+  final List<HostelModel>? hostels;
   final LikePostModel? like;
   final StarPostModel? star;
   final CTAModel? cta;

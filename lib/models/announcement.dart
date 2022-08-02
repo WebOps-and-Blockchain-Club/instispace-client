@@ -21,6 +21,7 @@ class AnnouncementModel {
   final String description;
   final List<String>? attachements;
   final String createdAt;
+  final String endTime;
   final CreatedByModel createdBy;
   final List<HostelModel> hostels;
   final List<String> permissions;
@@ -31,6 +32,7 @@ class AnnouncementModel {
       required this.description,
       this.attachements,
       required this.createdAt,
+      required this.endTime,
       required this.createdBy,
       required this.hostels,
       required this.permissions});
@@ -41,6 +43,7 @@ class AnnouncementModel {
         description = data["description"],
         attachements = data["images"]?.split(" AND "),
         createdAt = data["createdAt"],
+        endTime = data["endTime"],
         createdBy = CreatedByModel.fromJson(data["user"]),
         hostels = HostelsModel.fromJson(data["hostels"]).hostels,
         permissions = data["permissions"].cast<String>();
@@ -52,7 +55,9 @@ class AnnouncementModel {
         description: description,
         attachements: attachements,
         createdBy: createdBy,
+        endTime: endTime,
         createdAt: createdAt,
+        hostels: hostels,
         permissions: permissions);
   }
 }

@@ -54,22 +54,24 @@ class _SearchUserState extends State<SearchUser> {
                   SliverPersistentHeader(
                     pinned: true,
                     floating: true,
-                    delegate: ContestTabHeader(
-                      SearchBar(
+                    delegate: SearchBarDelegate(
+                      additionalHeight: searchValidationError != "" ? 18 : 0,
+                      searchUI: SearchBar(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         onSubmitted: (value) {
                           if (value.isEmpty || value.length >= 4) {
                             setState(() {
                               search.text = value;
+                              searchValidationError = "";
                             });
                           } else {
-                            // setState(() {
-                            //   searchValidationError =
-                            //       "Enter atleast 4 characters";
-                            // });
+                            setState(() {
+                              searchValidationError =
+                                  "Enter atleast 4 characters";
+                            });
                           }
                         },
-                        // searchValidationError: searchValidationError,
+                        error: searchValidationError,
                       ),
                     ),
                   )

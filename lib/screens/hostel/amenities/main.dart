@@ -29,7 +29,7 @@ class _AmenitiesPageState extends State<AmenitiesPage> {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> variables = {
-      "hostelId": widget.user.hostelId ?? "",
+      "hostelId": widget.user.hostelId ?? (selectedHostel ?? ""),
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(AmenitiesGQL.getAll), variables: variables);
