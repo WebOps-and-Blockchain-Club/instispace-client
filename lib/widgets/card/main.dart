@@ -231,7 +231,7 @@ class _PostCardState extends State<PostCard> {
                           like: post.like!,
                           likeAction: actions.like!,
                         ),
-                      if (post.comments != null)
+                      if (post.comments != null && actions.comment != null)
                         CommentPostButton(
                           comment: post.comments!,
                           commentPage: actions.comment!,
