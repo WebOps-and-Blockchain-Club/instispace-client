@@ -60,6 +60,13 @@ class _PostCardState extends State<PostCard> {
                               height: 10,
                               padding: EdgeInsets.zero,
                               child: DeletePostButton(delete: actions.delete!)),
+                        if (post.permissions.contains("RESOLVE") &&
+                            widget.actions.resolve != null)
+                          PopupMenuItem(
+                              height: 10,
+                              padding: EdgeInsets.zero,
+                              child:
+                                  ResolvePostButton(resolve: actions.resolve!)),
                         if (post.permissions.contains("STAR") &&
                             post.star != null &&
                             actions.star != null)

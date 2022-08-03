@@ -9,7 +9,7 @@ import '../../services/auth.dart';
 import '../../widgets/headers/drawer.dart';
 import 'events/events.dart';
 import 'home.dart';
-import 'lostAndFound/LF.dart';
+import 'lost_and_found.dart/main.dart';
 import 'netops/netops.dart';
 import 'queries/main.dart';
 
@@ -101,7 +101,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   Widget body(int index, AuthService auth, UserModel user, scaffoldKey) {
     switch (index) {
       case 0:
-        return const LNFListing();
+        return LostAndFoundPage(user: user, scaffoldKey: scaffoldKey);
 
       case 1:
         return QueriesPage(user: user, scaffoldKey: scaffoldKey);
@@ -141,7 +141,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
         currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_grocery_store),
+            icon: Icon(Icons.travel_explore),
             label: 'L&F',
           ),
           BottomNavigationBarItem(

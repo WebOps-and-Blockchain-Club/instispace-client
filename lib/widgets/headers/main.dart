@@ -74,12 +74,18 @@ class SearchBar extends StatelessWidget {
   final String? error;
   final void Function()? onFilterClick;
   final EdgeInsetsGeometry? padding;
+  final List<ChipModel>? chips;
+  final List<String>? selectedChips;
+  final Function? onChipFilter;
   const SearchBar(
       {Key? key,
       required this.onSubmitted,
       this.error,
       this.onFilterClick,
-      this.padding})
+      this.padding,
+      this.chips,
+      this.selectedChips,
+      this.onChipFilter})
       : super(key: key);
 
   @override
@@ -138,9 +144,49 @@ class SearchBar extends StatelessWidget {
                       .copyWith(color: ColorPalette.palette(context).error),
                 ),
               ),
+            ),
+          if (chips != null && chips!.isNotEmpty && selectedChips != null)
+            SizedBox(
+              height: 22,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  children: List.generate(chips!.length, (index) {
+                    return InkWell(
+                      onTap: () {
+                        selectedChips!.contains(chips![index].id)
+                            ? selectedChips!.remove(chips![index].id)
+                            : selectedChips!.add(chips![index].id);
+                        if (onChipFilter != null) onChipFilter!(selectedChips);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: selectedChips!.contains(chips![index].id)
+                                ? Colors.purple[100]
+                                : Colors.transparent,
+                            border: Border.all(
+                                color: ColorPalette.palette(context).secondary),
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 10),
+                        child: Text(chips![index].name),
+                      ),
+                    );
+                  }),
+                ),
+              ),
             )
         ],
       ),
     );
   }
+}
+
+class ChipModel {
+  final String id;
+  final String name;
+
+  ChipModel({required this.id, required this.name});
 }

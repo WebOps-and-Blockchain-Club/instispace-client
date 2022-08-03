@@ -55,6 +55,7 @@ class PostActions {
   final PostAction? like;
   final PostAction? star;
   final PostAction? report;
+  final PostAction? resolve;
   final NavigateAction? comment;
 
   PostActions(
@@ -63,6 +64,7 @@ class PostActions {
       this.like,
       this.star,
       this.report,
+      this.resolve,
       this.comment});
 }
 

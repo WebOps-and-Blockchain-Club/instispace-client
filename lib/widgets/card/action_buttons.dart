@@ -299,6 +299,82 @@ class _DeletePostButtonState extends State<DeletePostButton> {
   }
 }
 
+class ResolvePostButton extends StatefulWidget {
+  final PostAction resolve;
+  const ResolvePostButton({Key? key, required this.resolve}) : super(key: key);
+
+  @override
+  State<ResolvePostButton> createState() => _ResolvePostButtonState();
+}
+
+class _ResolvePostButtonState extends State<ResolvePostButton> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomFlatIconTextButton(
+      icon: Icons.done_all_outlined,
+      text: "Resolve",
+      onPressed: () => showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(builder: (context, _) {
+              return AlertDialog(
+                titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                actionsPadding: const EdgeInsets.all(10),
+                title: const Text('Resolve', textAlign: TextAlign.center),
+                content: const Text(
+                    "Are you sure you want to resolve this post?",
+                    textAlign: TextAlign.center),
+                actions: <Widget>[
+                  CustomElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Cancel",
+                    color: ColorPalette.palette(context).warning,
+                    type: ButtonType.outlined,
+                  ),
+                  Mutation(
+                      options: MutationOptions(
+                        document: gql(widget.resolve.document),
+                        update: (cache, result) {
+                          if (result != null && (!result.hasException)) {
+                            widget.resolve.updateCache(cache, result);
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Post Resolve')),
+                            );
+                          }
+                        },
+                        onError: (dynamic error) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Failed, server error')),
+                          );
+                        },
+                      ),
+                      builder: (
+                        RunMutation runMutation,
+                        QueryResult? result,
+                      ) {
+                        return CustomElevatedButton(
+                          onPressed: () {
+                            runMutation({"id": widget.resolve.id});
+                          },
+                          text: "Resolve",
+                          isLoading: result!.isLoading,
+                          color: ColorPalette.palette(context).warning,
+                        );
+                      }),
+                ],
+              );
+            });
+          }),
+    );
+  }
+}
+
 class ReportPostButton extends StatefulWidget {
   final PostAction report;
   const ReportPostButton({
