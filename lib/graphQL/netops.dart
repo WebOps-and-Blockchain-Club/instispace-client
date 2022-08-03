@@ -8,9 +8,11 @@ class NetopGQL {
         comments {
           content
           id
+          images
           createdBy {
             name
             id
+            roll
           }
         }
         createdBy {
@@ -73,6 +75,7 @@ class NetopGQL {
           comments {
             content
             id
+            images
             createdBy {
               name
               id

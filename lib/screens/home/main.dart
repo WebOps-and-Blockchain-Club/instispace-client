@@ -11,7 +11,7 @@ import 'events/events.dart';
 import 'home.dart';
 import 'lostAndFound/LF.dart';
 import 'netops/netops.dart';
-import 'queries/query.dart';
+import 'queries/main.dart';
 
 class HomeWrapper extends StatefulWidget {
   final AuthService auth;
@@ -104,7 +104,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
         return const LNFListing();
 
       case 1:
-        return const QueryHome();
+        return QueriesPage(user: user, scaffoldKey: scaffoldKey);
 
       case 2:
         return HomePage(

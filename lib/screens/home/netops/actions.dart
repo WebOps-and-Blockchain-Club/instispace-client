@@ -146,6 +146,7 @@ NavigateAction netopCommentAction(PostModel post) {
                         comments {
                           content
                           id
+                          images
                           createdBy {
                             name
                             id
@@ -170,6 +171,7 @@ NavigateAction netopCommentAction(PostModel post) {
                         comments {
                           content
                           id
+                          images
                           createdBy {
                             name
                             id

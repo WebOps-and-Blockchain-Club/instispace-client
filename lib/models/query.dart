@@ -1,3 +1,5 @@
+import 'comment.dart';
+import 'netop.dart';
 import 'post.dart';
 import 'user.dart';
 import 'actions.dart';
@@ -7,7 +9,7 @@ class QueriesModel {
 
   QueriesModel({required this.queries});
 
-  QueriesModel.fromJson(List<Map<String, dynamic>> data)
+  QueriesModel.fromJson(List<dynamic> data)
       : queries = data.map((e) => QueryModel.fromJson(e)).toList();
 
   List<PostModel> toPostsModel() {
@@ -21,6 +23,7 @@ class QueryModel {
   final String description;
   final List<String>? attachements;
   final LikePostModel like;
+  final CommentsModel comments;
   final CreatedByModel createdBy;
   final String createdAt;
   final List<String> permissions;
@@ -31,6 +34,7 @@ class QueryModel {
       required this.description,
       this.attachements,
       required this.like,
+      required this.comments,
       required this.createdBy,
       required this.createdAt,
       required this.permissions});
@@ -39,14 +43,16 @@ class QueryModel {
       : id = data["id"],
         title = data["title"],
         description = data["content"],
-        attachements = data["photo"]?.split(" AND ").toList(),
         like = LikePostModel(
           count: data["likeCount"],
           isLikedByUser: data["isLiked"],
         ),
+        attachements = mergeAttachments(data["photo"], data["attachments"]),
+        comments = CommentsModel.fromJson(
+            data["comments"] ?? [], data["commentCount"]),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"],
-        permissions = ["EDIT", "DELETE"];
+        permissions = data["permissions"].cast<String>() + ["LIKE"];
 
   Map<String, dynamic> toJson() {
     return {
@@ -69,10 +75,20 @@ class QueryModel {
         description: description,
         attachements: attachements,
         like: like,
+        comments: comments,
         createdBy: createdBy,
         createdAt: createdAt,
         permissions: permissions);
   }
+}
+
+class EditQueryModel {
+  final String id;
+  final String title;
+  final String description;
+
+  EditQueryModel(
+      {required this.id, required this.title, required this.description});
 }
 
 class queryClass {
