@@ -71,17 +71,14 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                   onPressed: () => widget
                                       .scaffoldKey.currentState!
                                       .openDrawer()),
-                              action: CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => (widget.user.hostelId !=
-                                              null ||
-                                          widget.user.permissions
-                                              .contains("HOSTEL_ADMIN"))
-                                      ? CustomIconButton(
-                                          icon: Icons.account_balance_outlined,
-                                          onPressed: () => navigate(context,
-                                              HostelWrapper(user: widget.user)))
-                                      : null),
+                              action: (widget.user.hostelId != null ||
+                                      widget.user.permissions
+                                          .contains("HOSTEL_ADMIN"))
+                                  ? CustomIconButton(
+                                      icon: Icons.account_balance_outlined,
+                                      onPressed: () => navigate(context,
+                                          HostelWrapper(user: widget.user)))
+                                  : null,
                             );
                           }, childCount: 1),
                         ),
@@ -206,35 +203,40 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                 ),
               ),
             ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => NewItemPage(
-                                  category: "Found",
-                                  options: options,
-                                )));
-                      },
-                      child: const Icon(Icons.lightbulb_outline)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) => NewItemPage(
-                                  category: "Lost",
-                                  options: options,
-                                )));
-                      },
-                      child: const Icon(Icons.search)),
-                ),
-              ],
-            ),
+            floatingActionButton:
+                widget.user.permissions.contains("CREATE_ITEM")
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: FloatingActionButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          NewItemPage(
+                                            category: "Found",
+                                            options: options,
+                                          )));
+                                },
+                                child: const Icon(Icons.lightbulb_outline)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: FloatingActionButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          NewItemPage(
+                                            category: "Lost",
+                                            options: options,
+                                          )));
+                                },
+                                child: const Icon(Icons.search)),
+                          ),
+                        ],
+                      )
+                    : null,
           );
         });
   }

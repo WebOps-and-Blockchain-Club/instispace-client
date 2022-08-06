@@ -99,7 +99,8 @@ NavigateAction commentQueryAction(PostModel post) {
       to: CommentsPage(
     id: post.id,
     comments: post.comments!,
-    document: QueryGQL.createComment,
+    document:
+        post.permissions.contains("COMMENT") ? QueryGQL.createComment : null,
     type: "Query",
     updateCache: (cache, result) {
       var data = cache.readFragment(Fragment(document: gql('''

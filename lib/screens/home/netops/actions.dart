@@ -136,7 +136,8 @@ NavigateAction netopCommentAction(PostModel post) {
       to: CommentsPage(
     id: post.id,
     comments: post.comments!,
-    document: NetopGQL.createComment,
+    document:
+        post.permissions.contains("COMMENT") ? NetopGQL.createComment : null,
     type: "Netop",
     updateCache: (cache, result) {
       var data = cache.readFragment(Fragment(document: gql('''

@@ -69,17 +69,14 @@ class _QueriesPageState extends State<QueriesPage> {
                                   onPressed: () => widget
                                       .scaffoldKey.currentState!
                                       .openDrawer()),
-                              action: CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => (widget.user.hostelId !=
-                                              null ||
-                                          widget.user.permissions
-                                              .contains("HOSTEL_ADMIN"))
-                                      ? CustomIconButton(
-                                          icon: Icons.account_balance_outlined,
-                                          onPressed: () => navigate(context,
-                                              HostelWrapper(user: widget.user)))
-                                      : null),
+                              action: (widget.user.hostelId != null ||
+                                      widget.user.permissions
+                                          .contains("HOSTEL_ADMIN"))
+                                  ? CustomIconButton(
+                                      icon: Icons.account_balance_outlined,
+                                      onPressed: () => navigate(context,
+                                          HostelWrapper(user: widget.user)))
+                                  : null,
                             );
                           }, childCount: 1),
                         ),
@@ -191,14 +188,17 @@ class _QueriesPageState extends State<QueriesPage> {
                 ),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => NewQueryPage(
-                            options: options,
-                          )));
-                },
-                child: const Icon(Icons.add)),
+            floatingActionButton:
+                widget.user.permissions.contains("CREATE_QUERY")
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => NewQueryPage(
+                                    options: options,
+                                  )));
+                        },
+                        child: const Icon(Icons.add))
+                    : null,
           );
         });
   }

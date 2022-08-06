@@ -94,17 +94,14 @@ class _NetopsPageState extends State<NetopsPage> {
                                   onPressed: () => widget
                                       .scaffoldKey.currentState!
                                       .openDrawer()),
-                              action: CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => (widget.user.hostelId !=
-                                              null ||
-                                          widget.user.permissions
-                                              .contains("HOSTEL_ADMIN"))
-                                      ? CustomIconButton(
-                                          icon: Icons.account_balance_outlined,
-                                          onPressed: () => navigate(context,
-                                              HostelWrapper(user: widget.user)))
-                                      : null),
+                              action: (widget.user.hostelId != null ||
+                                      widget.user.permissions
+                                          .contains("HOSTEL_ADMIN"))
+                                  ? CustomIconButton(
+                                      icon: Icons.account_balance_outlined,
+                                      onPressed: () => navigate(context,
+                                          HostelWrapper(user: widget.user)))
+                                  : null,
                             );
                           }, childCount: 1),
                         ),

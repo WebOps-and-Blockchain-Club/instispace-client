@@ -94,17 +94,14 @@ class _EventsPageState extends State<EventsPage> {
                                   onPressed: () => widget
                                       .scaffoldKey.currentState!
                                       .openDrawer()),
-                              action: CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => (widget.user.hostelId !=
-                                              null ||
-                                          widget.user.permissions
-                                              .contains("HOSTEL_ADMIN"))
-                                      ? CustomIconButton(
-                                          icon: Icons.account_balance_outlined,
-                                          onPressed: () => navigate(context,
-                                              HostelWrapper(user: widget.user)))
-                                      : null),
+                              action: (widget.user.hostelId != null ||
+                                      widget.user.permissions
+                                          .contains("HOSTEL_ADMIN"))
+                                  ? CustomIconButton(
+                                      icon: Icons.account_balance_outlined,
+                                      onPressed: () => navigate(context,
+                                          HostelWrapper(user: widget.user)))
+                                  : null,
                             );
                           }, childCount: 1),
                         ),
@@ -245,14 +242,17 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => NewEvent(
-                            options: options,
-                          )));
-                },
-                child: const Icon(Icons.add)),
+            floatingActionButton:
+                widget.user.permissions.contains("CREATE_EVENT")
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => NewEvent(
+                                    options: options,
+                                  )));
+                        },
+                        child: const Icon(Icons.add))
+                    : null,
           );
         });
   }
