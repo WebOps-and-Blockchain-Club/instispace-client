@@ -1,3 +1,4 @@
+import 'package:client/screens/home/comment/main.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -64,7 +65,7 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                               children: [
                                 TextSpan(
                                   text:
-                                      "To the accept the report the hide the post permantly, click ",
+                                      "To the accept the report and hide the post permantly, click ",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                                 const WidgetSpan(
@@ -232,7 +233,12 @@ class _ReportCardState extends State<ReportCard> {
         ),
         PostCard(
           post: report.netop ?? report.query!,
-          actions: PostActions(),
+          actions: PostActions(
+              comment: NavigateAction(
+                  to: CommentsPage(
+                      comments: report.netop != null
+                          ? report.netop!.comments!
+                          : report.query!.comments!))),
         ),
         const Padding(
           padding: EdgeInsets.only(bottom: 20.0),

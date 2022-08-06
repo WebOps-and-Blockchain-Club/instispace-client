@@ -40,52 +40,53 @@ class _PostCardState extends State<PostCard> {
                     child: SelectableText(post.title.capitalize(),
                         style: Theme.of(context).textTheme.titleLarge)),
                 // Action Menu
-                PopupMenuButton(
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 3, left: 3),
-                      child: Icon(Icons.more_vert),
-                    ),
-                    itemBuilder: (context) {
-                      return [
-                        if (post.permissions.contains("EDIT") &&
-                            widget.actions.edit != null)
-                          PopupMenuItem(
+                if (post.permissions.contains("EDIT") ||
+                    post.permissions.contains("DELETE") ||
+                    post.permissions.contains("RESOLVE") ||
+                    (post.permissions.contains("STAR") && post.star != null) ||
+                    post.permissions.contains("SET_REMINDER"))
+                  PopupMenuButton(
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 3, left: 3),
+                        child: Icon(Icons.more_vert),
+                      ),
+                      itemBuilder: (context) {
+                        return [
+                          if (post.permissions.contains("EDIT"))
+                            PopupMenuItem(
+                                height: 10,
+                                padding: EdgeInsets.zero,
+                                child:
+                                    EditPostButton(edit: widget.actions.edit)),
+                          if (post.permissions.contains("DELETE"))
+                            PopupMenuItem(
+                                height: 10,
+                                padding: EdgeInsets.zero,
+                                child:
+                                    DeletePostButton(delete: actions.delete)),
+                          if (post.permissions.contains("RESOLVE"))
+                            PopupMenuItem(
+                                height: 10,
+                                padding: EdgeInsets.zero,
+                                child: ResolvePostButton(
+                                    resolve: actions.resolve)),
+                          if (post.permissions.contains("STAR"))
+                            PopupMenuItem(
                               height: 10,
                               padding: EdgeInsets.zero,
-                              child:
-                                  EditPostButton(edit: widget.actions.edit!)),
-                        if (post.permissions.contains("DELETE") &&
-                            widget.actions.delete != null)
-                          PopupMenuItem(
-                              height: 10,
-                              padding: EdgeInsets.zero,
-                              child: DeletePostButton(delete: actions.delete!)),
-                        if (post.permissions.contains("RESOLVE") &&
-                            widget.actions.resolve != null)
-                          PopupMenuItem(
-                              height: 10,
-                              padding: EdgeInsets.zero,
-                              child:
-                                  ResolvePostButton(resolve: actions.resolve!)),
-                        if (post.permissions.contains("STAR") &&
-                            post.star != null &&
-                            actions.star != null)
-                          PopupMenuItem(
-                            height: 10,
-                            padding: EdgeInsets.zero,
-                            child: StarPostButton(
-                              star: post.star!,
-                              starAction: actions.star!,
+                              child: StarPostButton(
+                                star: post.star!,
+                                starAction: actions.star,
+                              ),
                             ),
-                          ),
-                        if (post.permissions.contains("SET_REMINDER"))
-                          PopupMenuItem(
-                            height: 10,
-                            padding: EdgeInsets.zero,
-                            child: SetReminderButton(post: post),
-                          ),
-                      ];
-                    })
+                          if (post.permissions.contains("SET_REMINDER"))
+                            PopupMenuItem(
+                              height: 10,
+                              padding: EdgeInsets.zero,
+                              child: SetReminderButton(post: post),
+                            ),
+                        ];
+                      })
               ],
             ),
             // Posted By & Time
@@ -215,39 +216,41 @@ class _PostCardState extends State<PostCard> {
                   child: CTAButton(cta: post.cta!)),
 
             // Actions
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Wrap(
-                    spacing: 20,
-                    runSpacing: 20,
-                    children: [
-                      if (post.permissions.contains("LIKE") &&
-                          post.like != null &&
-                          actions.like != null)
-                        LikePostButton(
-                          like: post.like!,
-                          likeAction: actions.like!,
-                        ),
-                      if (post.comments != null && actions.comment != null)
-                        CommentPostButton(
-                          comment: post.comments!,
-                          commentPage: actions.comment!,
-                        ),
-                      if (post.permissions.contains("SHARE"))
-                        SharePostButton(post: post),
-                    ],
-                  ),
-                  if (post.permissions.contains("REPORT") &&
-                      actions.report != null)
-                    ReportPostButton(
-                      report: actions.report!,
+            if ((post.permissions.contains("LIKE") && post.like != null) ||
+                (post.comments != null) ||
+                (post.permissions.contains("SHARE")) ||
+                (post.permissions.contains("REPORT")))
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Wrap(
+                      spacing: 20,
+                      runSpacing: 20,
+                      children: [
+                        if (post.permissions.contains("LIKE") &&
+                            post.like != null)
+                          LikePostButton(
+                            like: post.like!,
+                            likeAction: actions.like,
+                          ),
+                        if (post.comments != null)
+                          CommentPostButton(
+                            comment: post.comments!,
+                            commentPage: actions.comment,
+                          ),
+                        if (post.permissions.contains("SHARE"))
+                          SharePostButton(post: post),
+                      ],
                     ),
-                ],
+                    if (post.permissions.contains("REPORT"))
+                      ReportPostButton(
+                        report: actions.report,
+                      ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),

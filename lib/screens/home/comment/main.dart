@@ -10,19 +10,19 @@ import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
 
 class CommentsPage extends StatefulWidget {
-  final String id;
   final CommentsModel comments;
-  final String type;
-  final String document;
-  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)
+  final String? id;
+  final String? type;
+  final String? document;
+  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
       updateCache;
   const CommentsPage(
       {Key? key,
-      required this.id,
       required this.comments,
-      required this.type,
-      required this.document,
-      required this.updateCache})
+      this.id,
+      this.type,
+      this.document,
+      this.updateCache})
       : super(key: key);
 
   @override
@@ -99,105 +99,140 @@ class _CommentsPageState extends State<CommentsPage> {
                     );
                   }),
             ),
-            Mutation(
-                options: MutationOptions(
-                    document: gql(widget.document),
-                    update: (cache, result) {
-                      if (result != null) {
-                        widget.updateCache(cache, result);
-                        setState(() {
-                          comments.add(CommentModel.fromJson(
-                              result.data!["createComment${widget.type}"]));
-                        });
-                        comment.clear();
-                      }
-                    }),
-                builder: (
-                  RunMutation runMutation,
-                  QueryResult? result,
-                ) {
-                  return Container(
-                    color: ColorPalette.palette(context).secondary[50],
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 40,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                  child: Card(
-                                      margin: const EdgeInsets.all(0),
-                                      child: Theme(
-                                        data: ThemeData(
-                                          primarySwatch:
-                                              ColorPalette.palette(context)
-                                                  .primary,
-                                        ),
-                                        child: TextField(
-                                          controller: comment,
-                                          decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: 'Enter your comment',
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 13,
-                                                    horizontal: 10),
-                                          ),
-                                        ),
-                                      ))),
-                              Card(
-                                margin: const EdgeInsets.only(left: 10),
-                                child: InkWell(
-                                  onTap: () {
-                                    if (!(result != null && result.isLoading) &&
-                                        comment.text.isNotEmpty) {
-                                      runMutation({
-                                        "content": comment.text,
-                                        "id": widget.id,
-                                      });
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8),
-                                    child: (result != null && result.isLoading)
-                                        ? const CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          )
-                                        : const Icon(Icons.send),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        if (result != null && result.hasException)
-                          SizedBox(
-                            height: 18,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text(
-                                result.exception.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium!
-                                    .copyWith(
-                                        color: ColorPalette.palette(context)
-                                            .error),
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                  );
-                })
+            if (widget.id != null &&
+                widget.type != null &&
+                widget.document != null &&
+                widget.updateCache != null)
+              CreateComment(
+                  id: widget.id!,
+                  type: widget.type!,
+                  document: widget.document!,
+                  updateCache: widget.updateCache!,
+                  updateComments: (CommentModel comment) {
+                    setState(() {
+                      comments.add(comment);
+                    });
+                  })
           ],
         ),
       ),
     );
+  }
+}
+
+class CreateComment extends StatefulWidget {
+  final String id;
+  final String type;
+  final String document;
+  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)
+      updateCache;
+  final Function updateComments;
+  const CreateComment(
+      {Key? key,
+      required this.id,
+      required this.type,
+      required this.document,
+      required this.updateCache,
+      required this.updateComments})
+      : super(key: key);
+
+  @override
+  State<CreateComment> createState() => _CreateCommentState();
+}
+
+class _CreateCommentState extends State<CreateComment> {
+  final TextEditingController comment = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Mutation(
+        options: MutationOptions(
+            document: gql(widget.document),
+            update: (cache, result) {
+              if (result != null) {
+                widget.updateCache(cache, result);
+                widget.updateComments(CommentModel.fromJson(
+                    result.data!["createComment${widget.type}"]));
+                comment.clear();
+              }
+            }),
+        builder: (
+          RunMutation runMutation,
+          QueryResult? result,
+        ) {
+          return Container(
+            color: ColorPalette.palette(context).secondary[50],
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 40,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                          child: Card(
+                              margin: const EdgeInsets.all(0),
+                              child: Theme(
+                                data: ThemeData(
+                                  primarySwatch:
+                                      ColorPalette.palette(context).primary,
+                                ),
+                                child: TextField(
+                                  controller: comment,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Enter your comment',
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 13, horizontal: 10),
+                                  ),
+                                ),
+                              ))),
+                      Card(
+                        margin: const EdgeInsets.only(left: 10),
+                        child: InkWell(
+                          onTap: () {
+                            if (!(result != null && result.isLoading) &&
+                                comment.text.isNotEmpty) {
+                              runMutation({
+                                "content": comment.text,
+                                "id": widget.id,
+                              });
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: (result != null && result.isLoading)
+                                ? const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  )
+                                : const Icon(Icons.send),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                if (result != null && result.hasException)
+                  SizedBox(
+                    height: 18,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        result.exception.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(
+                                color: ColorPalette.palette(context).error),
+                      ),
+                    ),
+                  )
+              ],
+            ),
+          );
+        });
   }
 }

@@ -53,7 +53,7 @@ class TagButton extends StatelessWidget {
 
 class LikePostButton extends StatelessWidget {
   final LikePostModel like;
-  final PostAction likeAction;
+  final PostAction? likeAction;
   const LikePostButton({Key? key, required this.like, required this.likeAction})
       : super(key: key);
 
@@ -61,10 +61,10 @@ class LikePostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(likeAction.document),
+            document: gql(likeAction != null ? likeAction!.document : ""),
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
-                likeAction.updateCache(cache, result);
+                likeAction!.updateCache(cache, result);
               }
             }),
         builder: (
@@ -73,8 +73,9 @@ class LikePostButton extends StatelessWidget {
         ) =>
             InkWell(
               onTap: () {
-                if (!(result != null && result.isLoading)) {
-                  runMutation({"id": likeAction.id});
+                if (!(result != null && result.isLoading) &&
+                    likeAction != null) {
+                  runMutation({"id": likeAction!.id});
                 }
               },
               child: Row(
@@ -94,7 +95,7 @@ class LikePostButton extends StatelessWidget {
 
 class CommentPostButton extends StatelessWidget {
   final CommentsModel comment;
-  final NavigateAction commentPage;
+  final NavigateAction? commentPage;
   const CommentPostButton(
       {Key? key, required this.comment, required this.commentPage})
       : super(key: key);
@@ -103,7 +104,7 @@ class CommentPostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        navigate(context, commentPage.to);
+        if (commentPage != null) navigate(context, commentPage!.to);
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -120,7 +121,7 @@ class CommentPostButton extends StatelessWidget {
 
 class StarPostButton extends StatefulWidget {
   final StarPostModel star;
-  final PostAction starAction;
+  final PostAction? starAction;
   const StarPostButton({Key? key, required this.star, required this.starAction})
       : super(key: key);
 
@@ -141,13 +142,14 @@ class _StarPostButtonState extends State<StarPostButton> {
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(widget.starAction.document),
+            document: gql(
+                widget.starAction != null ? widget.starAction!.document : ""),
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
                 setState(() {
                   isStarred = !isStarred;
                 });
-                widget.starAction.updateCache(cache, result);
+                widget.starAction!.updateCache(cache, result);
               }
             }),
         builder: (
@@ -158,8 +160,9 @@ class _StarPostButtonState extends State<StarPostButton> {
               icon: isStarred == true ? Icons.star : Icons.star_outline,
               text: "Star",
               onPressed: () {
-                if (!(result != null && result.isLoading)) {
-                  runMutation({"id": widget.starAction.id});
+                if (!(result != null && result.isLoading) &&
+                    widget.starAction != null) {
+                  runMutation({"id": widget.starAction!.id});
                 }
               },
             ));
@@ -205,7 +208,7 @@ class SharePostButton extends StatelessWidget {
 }
 
 class EditPostButton extends StatelessWidget {
-  final NavigateAction edit;
+  final NavigateAction? edit;
   const EditPostButton({Key? key, required this.edit}) : super(key: key);
 
   @override
@@ -214,14 +217,14 @@ class EditPostButton extends StatelessWidget {
       icon: Icons.edit_outlined,
       text: "Edit",
       onPressed: () {
-        navigate(context, edit.to);
+        if (edit != null) navigate(context, edit!.to);
       },
     );
   }
 }
 
 class DeletePostButton extends StatefulWidget {
-  final PostAction delete;
+  final PostAction? delete;
   const DeletePostButton({Key? key, required this.delete}) : super(key: key);
 
   @override
@@ -234,70 +237,74 @@ class _DeletePostButtonState extends State<DeletePostButton> {
     return CustomFlatIconTextButton(
       icon: Icons.delete_outline,
       text: "Delete",
-      onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(builder: (context, _) {
-              return AlertDialog(
-                titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                actionsPadding: const EdgeInsets.all(10),
-                title: const Text('Delete', textAlign: TextAlign.center),
-                content: const Text(
-                    "Are you sure you want to delete this post?",
-                    textAlign: TextAlign.center),
-                actions: <Widget>[
-                  CustomElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Cancel",
-                    color: ColorPalette.palette(context).warning,
-                    type: ButtonType.outlined,
-                  ),
-                  Mutation(
-                      options: MutationOptions(
-                        document: gql(widget.delete.document),
-                        update: (cache, result) {
-                          if (result != null && (!result.hasException)) {
-                            widget.delete.updateCache(cache, result);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Post Deleted')),
-                            );
-                          }
+      onPressed: () => widget.delete != null
+          ? showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return StatefulBuilder(builder: (context, _) {
+                  return AlertDialog(
+                    titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    actionsPadding: const EdgeInsets.all(10),
+                    title: const Text('Delete', textAlign: TextAlign.center),
+                    content: const Text(
+                        "Are you sure you want to delete this post?",
+                        textAlign: TextAlign.center),
+                    actions: <Widget>[
+                      CustomElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
-                        onError: (dynamic error) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Post Deletion Failed')),
-                          );
-                        },
+                        text: "Cancel",
+                        color: ColorPalette.palette(context).warning,
+                        type: ButtonType.outlined,
                       ),
-                      builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                      ) {
-                        return CustomElevatedButton(
-                          onPressed: () {
-                            runMutation({"id": widget.delete.id});
-                          },
-                          text: "Delete",
-                          isLoading: result!.isLoading,
-                          color: ColorPalette.palette(context).warning,
-                        );
-                      }),
-                ],
-              );
-            });
-          }),
+                      Mutation(
+                          options: MutationOptions(
+                            document: gql(widget.delete != null
+                                ? widget.delete!.document
+                                : ""),
+                            update: (cache, result) {
+                              if (result != null && (!result.hasException)) {
+                                widget.delete!.updateCache(cache, result);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Post Deleted')),
+                                );
+                              }
+                            },
+                            onError: (dynamic error) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Post Deletion Failed')),
+                              );
+                            },
+                          ),
+                          builder: (
+                            RunMutation runMutation,
+                            QueryResult? result,
+                          ) {
+                            return CustomElevatedButton(
+                              onPressed: () {
+                                runMutation({"id": widget.delete!.id});
+                              },
+                              text: "Delete",
+                              isLoading: result!.isLoading,
+                              color: ColorPalette.palette(context).warning,
+                            );
+                          }),
+                    ],
+                  );
+                });
+              })
+          : {},
     );
   }
 }
 
 class ResolvePostButton extends StatefulWidget {
-  final PostAction resolve;
+  final PostAction? resolve;
   const ResolvePostButton({Key? key, required this.resolve}) : super(key: key);
 
   @override
@@ -310,70 +317,74 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
     return CustomFlatIconTextButton(
       icon: Icons.done_all_outlined,
       text: "Resolve",
-      onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(builder: (context, _) {
-              return AlertDialog(
-                titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                actionsPadding: const EdgeInsets.all(10),
-                title: const Text('Resolve', textAlign: TextAlign.center),
-                content: const Text(
-                    "Are you sure you want to resolve this post?",
-                    textAlign: TextAlign.center),
-                actions: <Widget>[
-                  CustomElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Cancel",
-                    color: ColorPalette.palette(context).warning,
-                    type: ButtonType.outlined,
-                  ),
-                  Mutation(
-                      options: MutationOptions(
-                        document: gql(widget.resolve.document),
-                        update: (cache, result) {
-                          if (result != null && (!result.hasException)) {
-                            widget.resolve.updateCache(cache, result);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Post Resolve')),
-                            );
-                          }
+      onPressed: () => widget.resolve != null
+          ? showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return StatefulBuilder(builder: (context, _) {
+                  return AlertDialog(
+                    titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    actionsPadding: const EdgeInsets.all(10),
+                    title: const Text('Resolve', textAlign: TextAlign.center),
+                    content: const Text(
+                        "Are you sure you want to resolve this post?",
+                        textAlign: TextAlign.center),
+                    actions: <Widget>[
+                      CustomElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
-                        onError: (dynamic error) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Failed, server error')),
-                          );
-                        },
+                        text: "Cancel",
+                        color: ColorPalette.palette(context).warning,
+                        type: ButtonType.outlined,
                       ),
-                      builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                      ) {
-                        return CustomElevatedButton(
-                          onPressed: () {
-                            runMutation({"id": widget.resolve.id});
-                          },
-                          text: "Resolve",
-                          isLoading: result!.isLoading,
-                          color: ColorPalette.palette(context).warning,
-                        );
-                      }),
-                ],
-              );
-            });
-          }),
+                      Mutation(
+                          options: MutationOptions(
+                            document: gql(widget.resolve != null
+                                ? widget.resolve!.document
+                                : ""),
+                            update: (cache, result) {
+                              if (result != null && (!result.hasException)) {
+                                widget.resolve!.updateCache(cache, result);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Post Resolve')),
+                                );
+                              }
+                            },
+                            onError: (dynamic error) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Failed, server error')),
+                              );
+                            },
+                          ),
+                          builder: (
+                            RunMutation runMutation,
+                            QueryResult? result,
+                          ) {
+                            return CustomElevatedButton(
+                              onPressed: () {
+                                runMutation({"id": widget.resolve!.id});
+                              },
+                              text: "Resolve",
+                              isLoading: result!.isLoading,
+                              color: ColorPalette.palette(context).warning,
+                            );
+                          }),
+                    ],
+                  );
+                });
+              })
+          : {},
     );
   }
 }
 
 class ReportPostButton extends StatefulWidget {
-  final PostAction report;
+  final PostAction? report;
   const ReportPostButton({
     Key? key,
     required this.report,
@@ -387,93 +398,98 @@ class _ReportPostButtonState extends State<ReportPostButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(builder: (context, _) {
-              //Keys
-              final formKey = GlobalKey<FormState>();
+      onTap: () => widget.report != null
+          ? showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return StatefulBuilder(builder: (context, _) {
+                  //Keys
+                  final formKey = GlobalKey<FormState>();
 
-              //Controllers
-              final description = TextEditingController();
+                  //Controllers
+                  final description = TextEditingController();
 
-              return AlertDialog(
-                titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                actionsPadding: const EdgeInsets.all(10),
-                title: const Text('Report', textAlign: TextAlign.center),
-                content: Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: TextFormField(
-                        controller: description,
-                        minLines: 5,
-                        maxLines: 8,
-                        decoration: const InputDecoration(
-                            labelText: "Why do you report this post?"),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter the reason for reporting";
-                          }
-                          return null;
-                        }),
-                  ),
-                ),
-                actions: <Widget>[
-                  CustomElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Cancel",
-                    color: ColorPalette.palette(context).warning,
-                    type: ButtonType.outlined,
-                  ),
-                  Mutation(
-                      options: MutationOptions(
-                        document: gql(widget.report.document),
-                        update: (cache, result) {
-                          if (result != null && (!result.hasException)) {
-                            widget.report.updateCache(cache, result);
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Post reported & necessary action will be taken')),
-                            );
-                          }
-                        },
-                        onError: (dynamic error) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Report Failed: Server Error')),
-                          );
-                        },
+                  return AlertDialog(
+                    titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    actionsPadding: const EdgeInsets.all(10),
+                    title: const Text('Report', textAlign: TextAlign.center),
+                    content: Form(
+                      key: formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                            controller: description,
+                            minLines: 5,
+                            maxLines: 8,
+                            decoration: const InputDecoration(
+                                labelText: "Why do you report this post?"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the reason for reporting";
+                              }
+                              return null;
+                            }),
                       ),
-                      builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                      ) {
-                        return CustomElevatedButton(
-                          onPressed: () {
-                            final isValid = formKey.currentState!.validate();
-                            if (!isValid) return;
-                            runMutation({
-                              "description": description.text,
-                              "id": widget.report.id,
-                              // "id": "8fed3965-dbeb-4102-b506-80a6e6e7bb7"
-                            });
-                          },
-                          text: "Report",
-                          isLoading: result!.isLoading,
-                          color: ColorPalette.palette(context).warning,
-                        );
-                      }),
-                ],
-              );
-            });
-          }),
+                    ),
+                    actions: <Widget>[
+                      CustomElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Cancel",
+                        color: ColorPalette.palette(context).warning,
+                        type: ButtonType.outlined,
+                      ),
+                      Mutation(
+                          options: MutationOptions(
+                            document: gql(widget.report != null
+                                ? widget.report!.document
+                                : ""),
+                            update: (cache, result) {
+                              if (result != null && (!result.hasException)) {
+                                widget.report!.updateCache(cache, result);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Post reported & necessary action will be taken')),
+                                );
+                              }
+                            },
+                            onError: (dynamic error) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Report Failed: Server Error')),
+                              );
+                            },
+                          ),
+                          builder: (
+                            RunMutation runMutation,
+                            QueryResult? result,
+                          ) {
+                            return CustomElevatedButton(
+                              onPressed: () {
+                                final isValid =
+                                    formKey.currentState!.validate();
+                                if (!isValid) return;
+                                runMutation({
+                                  "description": description.text,
+                                  "id": widget.report!.id,
+                                });
+                              },
+                              text: "Report",
+                              isLoading: result!.isLoading,
+                              color: ColorPalette.palette(context).warning,
+                            );
+                          }),
+                    ],
+                  );
+                });
+              })
+          : {},
       child: const Icon(Icons.warning_rounded),
     );
   }
