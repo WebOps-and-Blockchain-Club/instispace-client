@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'new_item.dart';
 import 'actions.dart';
 import '../../hostel/main.dart';
+import '../../../widgets/helpers/navigate.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -72,11 +73,15 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                       .openDrawer()),
                               action: CustomIconButton(
                                   icon: Icons.account_balance_outlined,
-                                  onPressed: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              HostelWrapper(
-                                                  user: widget.user)))),
+                                  onPressed: () => (widget.user.hostelId !=
+                                              null ||
+                                          widget.user.permissions
+                                              .contains("HOSTEL_ADMIN"))
+                                      ? CustomIconButton(
+                                          icon: Icons.account_balance_outlined,
+                                          onPressed: () => navigate(context,
+                                              HostelWrapper(user: widget.user)))
+                                      : null),
                             );
                           }, childCount: 1),
                         ),

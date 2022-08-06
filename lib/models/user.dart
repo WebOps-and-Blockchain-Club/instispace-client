@@ -129,15 +129,3 @@ class User {
       required this.role,
       required this.roll});
 }
-
-// enum UserModelKeyEnum {
-//   id,
-//   name,
-//   ldap,
-//   roll,
-//   role,
-//   isNewUser,
-//   mobile,
-//   interets,
-//   hostel
-// }

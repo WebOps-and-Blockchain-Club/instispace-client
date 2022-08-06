@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
-import '../hostel/main.dart';
-import '../../services/auth.dart';
-import '../../models/user.dart';
-import '../../models/post.dart';
-import '../../widgets/button/icon_button.dart';
-import '../../widgets/card/main.dart';
-import '../../widgets/headers/main.dart';
+import '../../hostel/main.dart';
+import '../../../widgets/helpers/navigate.dart';
+import '../../../services/auth.dart';
+import '../../../models/user.dart';
+import '../../../models/post.dart';
+import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/card/main.dart';
+import '../../../widgets/headers/main.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
@@ -56,12 +57,14 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () => {
                                   widget.scaffoldKey.currentState!.openDrawer()
                                 }),
-                        action: CustomIconButton(
-                            icon: Icons.account_balance_outlined,
-                            onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        HostelWrapper(user: widget.user)))),
+                        action: (widget.user.hostelId != null ||
+                                widget.user.permissions
+                                    .contains("HOSTEL_ADMIN"))
+                            ? CustomIconButton(
+                                icon: Icons.account_balance_outlined,
+                                onPressed: () => navigate(
+                                    context, HostelWrapper(user: widget.user)))
+                            : null,
                       );
                     }, childCount: 1),
                   ),

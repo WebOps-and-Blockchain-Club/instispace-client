@@ -1,14 +1,14 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../../graphQL/announcements.dart';
-import '../../graphQL/events.dart';
-import '../../graphQL/netops.dart';
-import '../../graphQL/user.dart';
-import '../../models/post.dart';
-import '../../models/user.dart';
-import '../hostel/announcement/actions.dart';
-import 'events/actions.dart';
-import 'netops/actions.dart';
+import '../../../graphQL/announcements.dart';
+import '../../../graphQL/events.dart';
+import '../../../graphQL/netops.dart';
+import '../../../graphQL/user.dart';
+import '../../../models/post.dart';
+import '../../../models/user.dart';
+import '../../hostel/announcement/actions.dart';
+import '../events/actions.dart';
+import '../netops/actions.dart';
 
 PostActions homePostActions(UserModel user, String type, PostModel post) {
   final QueryOptions<Object?> options =

@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user.dart';
+import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
 import '../../screens/user/edit_profile.dart';
 import '../../screens/user/search_user.dart';
@@ -16,7 +17,6 @@ import '../../screens/super_user/view_feedback.dart';
 import '../../screens/info/about_us.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
-import '../../screens/home/hostelSection/hostel.dart';
 import '../../themes.dart';
 import '../button/elevated_button.dart';
 
@@ -133,7 +133,8 @@ class CustomDrawer extends StatelessWidget {
                         ),
 
                         // My Hostel
-                        if (user.hostelId != null)
+                        if (user.hostelId != null ||
+                            user.permissions.contains("HOSTEL_ADMIN"))
                           ListTile(
                             leading: const Icon(Icons.account_balance),
                             horizontalTitleGap: 0,
@@ -142,7 +143,7 @@ class CustomDrawer extends StatelessWidget {
                               Navigator.pop(context);
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      const HostelHome()));
+                                      HostelWrapper(user: user)));
                             },
                           ),
 
@@ -376,7 +377,6 @@ Future<dynamic> logoutAlert(
                   options: MutationOptions(
                     document: gql(AuthGQL().logout),
                     onCompleted: (dynamic resultData) async {
-                      HiveStore().reset();
                       Navigator.of(context).pop();
                       callback();
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -8,7 +8,7 @@ import '../../main.dart';
 import '../../services/auth.dart';
 import '../../widgets/headers/drawer.dart';
 import 'events/events.dart';
-import 'home.dart';
+import 'main/home.dart';
 import 'lost_and_found.dart/main.dart';
 import 'netops/netops.dart';
 import 'queries/main.dart';

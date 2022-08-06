@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends ChangeNotifier {
@@ -33,6 +34,7 @@ class AuthService extends ChangeNotifier {
   }
 
   logout() async {
+    HiveStore().reset();
     await _clearToken();
     notifyListeners();
   }

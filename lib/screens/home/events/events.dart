@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/navigate.dart';
 import '../../hostel/main.dart';
 import 'actions.dart';
 import 'new_event.dart';
@@ -95,11 +96,15 @@ class _EventsPageState extends State<EventsPage> {
                                       .openDrawer()),
                               action: CustomIconButton(
                                   icon: Icons.account_balance_outlined,
-                                  onPressed: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              HostelWrapper(
-                                                  user: widget.user)))),
+                                  onPressed: () => (widget.user.hostelId !=
+                                              null ||
+                                          widget.user.permissions
+                                              .contains("HOSTEL_ADMIN"))
+                                      ? CustomIconButton(
+                                          icon: Icons.account_balance_outlined,
+                                          onPressed: () => navigate(context,
+                                              HostelWrapper(user: widget.user)))
+                                      : null),
                             );
                           }, childCount: 1),
                         ),
