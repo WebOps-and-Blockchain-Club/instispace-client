@@ -4,15 +4,15 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
-import '../../models/comment.dart';
-import '../helpers/navigate.dart';
-import '../../models/actions.dart';
-import '../../models/post.dart';
-import '../../models/tag.dart';
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
-import '../tagPage.dart';
+import '../helpers/navigate.dart';
+import '../../screens/home/tag/tag.dart';
+import '../../models/comment.dart';
+import '../../models/actions.dart';
+import '../../models/post.dart';
+import '../../models/tag.dart';
 import '../../utils/string_extension.dart';
 import '../../themes.dart';
 
@@ -40,10 +40,7 @@ class TagButton extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => TagPage(
-                  tagId: tag.id,
-                  tagName: tag.title,
-                )));
+            builder: (BuildContext context) => TagPage(tag: tag)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 0),

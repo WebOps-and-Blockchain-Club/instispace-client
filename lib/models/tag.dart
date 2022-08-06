@@ -1,3 +1,7 @@
+import 'event.dart';
+import 'netop.dart';
+import 'post.dart';
+
 class TagsModel {
   final List<TagModel> tags;
 
@@ -58,14 +62,26 @@ class TagModel {
   final String id;
   final String title;
   final String category;
-  //create callback func const
+  final List<PostModel>? events;
+  final List<PostModel>? netops;
 
-  TagModel({required this.id, required this.title, required this.category});
+  TagModel(
+      {required this.id,
+      required this.title,
+      required this.category,
+      this.events,
+      this.netops});
 
   TagModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
         title = data["title"],
-        category = data["category"];
+        category = data["category"],
+        events = data["events"] != null
+            ? EventsModel.fromJson(data["events"]).toPostsModel()
+            : null,
+        netops = data["netops"] != null
+            ? NetopsModel.fromJson(data["netops"]).toPostsModel()
+            : null;
 
   Map<String, dynamic> toJson() =>
       {"__typename": "Tag", "id": id, "title": title, "category": category};

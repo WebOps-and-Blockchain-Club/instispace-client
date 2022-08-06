@@ -39,7 +39,7 @@ class _SelectTagsState extends State<SelectTags> {
       padding: const EdgeInsets.all(10),
       child: Query(
           options: QueryOptions(
-            document: gql(TagGQL().get),
+            document: gql(TagGQL().getAll),
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
