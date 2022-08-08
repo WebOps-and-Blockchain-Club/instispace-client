@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'new_contact.dart';
 import '../shared/hostel_dropdown.dart';
@@ -28,8 +28,8 @@ class _ContactsPageState extends State<ContactsPage> {
   String? selectedHostel;
 
   Future<void> makePhoneCall(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

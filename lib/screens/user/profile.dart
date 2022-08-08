@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -16,6 +17,21 @@ class Profile extends StatelessWidget {
   const Profile(
       {Key? key, this.user, this.result, this.userDetails, this.refetch})
       : super(key: key);
+
+  _sendInviteMail(String email, String name) async {
+    final Uri _emailLaunchUri =
+        Uri(scheme: 'mailto', path: email, queryParameters: {
+      'subject': 'Your friend is inviting you to InstiSpace App',
+      'body':
+          'Hey $name!\n\nYou can now access the InstiSpace app developed by Webops and Blockchain Club, CFI. InstiSpace is your one-stop destination for all things insti. Everything from insti news to lost-and-found, InstiSpace is your go-to place for networking, connecting, updates, announcements and more.\n\nYou can stay up to date with the happenings in your hostel. You can also find out about various events and opportunities across the insti.\nSo, join me on the app through the link below.\n\nApp Store: https://apps.apple.com/app/instispace-iit-madras/id1619779076\nGoogle Play Store: https://play.google.com/store/apps/details?id=com.cfi.instispace',
+    });
+    if (await canLaunchUrlString(
+        _emailLaunchUri.toString().replaceAll("+", "%20"))) {
+      await launchUrlString(_emailLaunchUri.toString().replaceAll("+", "%20"));
+    } else {
+      throw 'Could not launch ${_emailLaunchUri.toString()}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +185,11 @@ class Profile extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: CustomElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                _sendInviteMail(
+                                    _user.roll! + "@smail.iitm.ac.in",
+                                    _user.ldapName!);
+                              },
                               text: "Invite ${_user.ldapName}",
                             ),
                           )

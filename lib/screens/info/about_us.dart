@@ -1,6 +1,6 @@
 import 'package:client/widgets/headers/main.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../widgets/button/icon_button.dart';
 
@@ -115,7 +115,7 @@ class AboutUsPage extends StatelessWidget {
                 height: 10,
               ),
               GestureDetector(
-                onTap: () => launch('mailto:$email'),
+                onTap: () => launchUrlString('mailto:$email'),
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -179,7 +179,7 @@ class AboutUsPage extends StatelessWidget {
                       const SizedBox(height: 5),
                       const Center(
                         child: Text(
-                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth\nSpecial Mention: Dhanveerraj J M",
+                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth\nSpecial Mention: Dhanveerraj J M\nLogo Designer: Vaidehi Garodia",
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -218,7 +218,7 @@ class AboutUsPage extends StatelessWidget {
                           ),
                           Center(
                             child: GestureDetector(
-                              onTap: () => launch("https://cfi.iitm.ac.in"),
+                              onTap: () => launchUrlString("https://cfi.iitm.ac.in"),
                               child: const Text(
                                 'cfi.iitm.ac.in',
                                 style: TextStyle(color: Colors.blue),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../graphQL/feedback.dart';
 
@@ -25,7 +25,7 @@ class _ViewFeedbackState extends State<ViewFeedback> {
           horizontalTitleGap: 0,
           title: const Text("View Feedbacks"),
           onTap: () {
-            if (link != null) launch(link);
+            if (link != null) launchUrlString(link);
           },
           enabled:
               (result.data != null) && (result.data?["getSheetLink"] != null),
