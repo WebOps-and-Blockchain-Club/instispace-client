@@ -80,4 +80,23 @@ class LostAndFoundGQL {
       resolveItem(ItemId: \$id)
     }
   """;
+
+  static const editFragment = """
+    fragment itemUpdateField on Item {
+      id
+      category
+      name
+      location
+      time
+      images
+      contact
+      createdAt
+      permissions
+      user {
+        id
+        roll
+        name
+      }
+    }
+  """;
 }

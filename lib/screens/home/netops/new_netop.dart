@@ -51,22 +51,23 @@ class _NewNetopPageState extends State<NewNetopPage> {
   String tagError = "";
 
   // Services
+  List<String>? imageUrls;
   final localStorage = LocalStorageService();
 
   Future getNetopData(EditNetopModel? _netop) async {
     if (_netop != null) {
       title.text = _netop.title;
       description.text = _netop.description;
-      // img
-      date.text = _netop.endTime;
-      dateFormated.text = DateTimeFormatModel.fromString(_netop.endTime)
-          .toFormat("MMM dd, yyyy");
-      endTime.text = _netop.endTime;
-      timeFormated.text =
-          DateTimeFormatModel.fromString(_netop.endTime).toFormat("h:mm a");
+      DateTimeFormatModel _time =
+          DateTimeFormatModel.fromString(_netop.endTime);
+      date.text = _time.dateTime.toString();
+      dateFormated.text = _time.toFormat("MMM dd, yyyy");
+      endTime.text = _time.dateTime.toString();
+      timeFormated.text = _time.toFormat("h:mm a");
       if (_netop.cta?.name != null) ctaName.text = _netop.cta!.name;
       if (_netop.cta?.link != null) ctaLink.text = _netop.cta!.link;
       setState(() {
+        imageUrls = _netop.imageUrls;
         selectedTags = _netop.tags;
       });
     } else {
@@ -120,7 +121,15 @@ class _NewNetopPageState extends State<NewNetopPage> {
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
                 if (widget.netop != null) {
-                  // TODO: update the cache value for edit
+                  cache.writeFragment(
+                    Fragment(document: gql(NetopGQL.editFragment))
+                        .asRequest(idFields: {
+                      '__typename': "Netop",
+                      'id': widget.netop!.id,
+                    }),
+                    data: result.data!["editNetop"],
+                    broadcast: false,
+                  );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Post Edited')),
@@ -141,20 +150,6 @@ class _NewNetopPageState extends State<NewNetopPage> {
                 }
               }
             },
-            // onCompleted: (dynamic resultData) {
-            //   if (resultData["createEvent"] == true) {
-            //     widget.refetch!();
-            //     clearData();
-            //     Navigator.pop(context);
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(content: Text('Post Created')),
-            //     );
-            //   } else {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(content: Text('Post Creation Failed')),
-            //     );
-            //   }
-            // },
             onError: (dynamic error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -166,7 +161,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
           QueryResult? result,
         ) {
           return ChangeNotifierProvider(
-            create: (_) => ImagePickerService(),
+            create: (_) => ImagePickerService(noOfImages: 4),
             child: Consumer<ImagePickerService>(
                 builder: (context, imagePickerService, child) {
               return Scaffold(
@@ -306,9 +301,16 @@ class _NewNetopPageState extends State<NewNetopPage> {
                         ),
 
                         // Images & Tags
-                        const LabelText(text: "Image & Tags"),
+                        const LabelText(
+                            text: "Image & Tags (Select maximum of 4 image)"),
                         // Selected Image
-                        imagePickerService.previewImages(),
+                        imagePickerService.previewImages(
+                            imageUrls: imageUrls,
+                            removeImageUrl: (value) {
+                              setState(() {
+                                imageUrls!.removeAt(value);
+                              });
+                            }),
                         // Selected Tags
                         TagsDisplay(
                             tagsModel: selectedTags,
@@ -322,7 +324,11 @@ class _NewNetopPageState extends State<NewNetopPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            imagePickerService.pickImageButton(context),
+                            imagePickerService.pickImageButton(
+                              context: context,
+                              preSelectedNoOfImages:
+                                  imageUrls != null ? imageUrls!.length : 0,
+                            ),
                             const SizedBox(
                               width: 20,
                             ),
@@ -423,8 +429,9 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                         "editData": {
                                           "title": title.text,
                                           "content": description.text,
-                                          "tags": selectedTags.getTagIds(),
+                                          "tagIds": selectedTags.getTagIds(),
                                           "endTime": _dateTime.toISOFormat(),
+                                          "imageUrls": imageUrls,
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },

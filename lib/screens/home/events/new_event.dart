@@ -49,6 +49,7 @@ class _NewEventState extends State<NewEvent> {
   String editEvent = EventGQL().edit;
 
   // Variables
+  List<String>? imageUrls;
   late TagsModel selectedTags = TagsModel.fromJson([]);
   String tagError = "";
 
@@ -57,19 +58,18 @@ class _NewEventState extends State<NewEvent> {
 
   Future getEventData(EditEventModel? _event) async {
     if (_event != null) {
+      DateTimeFormatModel _time = DateTimeFormatModel.fromString(_event.time);
       title.text = _event.title;
       description.text = _event.description;
-      // img
-      date.text = _event.time;
-      dateFormated.text =
-          DateTimeFormatModel.fromString(_event.time).toFormat("MMM dd, yyyy");
-      time.text = _event.time;
-      timeFormated.text =
-          DateTimeFormatModel.fromString(_event.time).toFormat("h:mm a");
+      date.text = _time.dateTime.toString();
+      dateFormated.text = _time.toFormat("MMM dd, yyyy");
+      time.text = _time.dateTime.toString();
+      timeFormated.text = _time.toFormat("h:mm a");
       location.text = _event.location;
       if (_event.cta?.name != null) ctaName.text = _event.cta!.name;
       if (_event.cta?.link != null) ctaLink.text = _event.cta!.link;
       setState(() {
+        imageUrls = _event.imageUrl != null ? [_event.imageUrl!] : null;
         selectedTags = _event.tags;
       });
     } else {
@@ -125,7 +125,15 @@ class _NewEventState extends State<NewEvent> {
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
                 if (widget.event != null) {
-                  // TODO: update the cache value for edit
+                  cache.writeFragment(
+                    Fragment(document: gql(EventGQL.editFragment))
+                        .asRequest(idFields: {
+                      '__typename': "Event",
+                      'id': widget.event!.id,
+                    }),
+                    data: result.data!["editEvent"],
+                    broadcast: false,
+                  );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Event Edited')),
@@ -242,6 +250,7 @@ class _NewEventState extends State<NewEvent> {
                                           .then(
                                         (value) {
                                           if (value != null) {
+                                            print(value);
                                             date.text = value.toString();
                                             DateTimeFormatModel _date =
                                                 DateTimeFormatModel(
@@ -279,9 +288,11 @@ class _NewEventState extends State<NewEvent> {
                                         initialTime: TimeOfDay.now(),
                                       ).then((value) {
                                         if (value != null) {
+                                          print(value);
                                           DateTime _dateTime = DateTime(2021, 1,
                                               1, value.hour, value.minute);
                                           time.text = _dateTime.toString();
+                                          print(_dateTime.toString());
                                           DateTimeFormatModel _time =
                                               DateTimeFormatModel(
                                                   dateTime: _dateTime);
@@ -315,9 +326,16 @@ class _NewEventState extends State<NewEvent> {
                         ),
 
                         // Images & Tags
-                        const LabelText(text: "Image & Tags"),
+                        const LabelText(
+                            text: "Image & Tags (Select maximum of 1 image)"),
                         // Selected Image
-                        imagePickerService.previewImages(),
+                        imagePickerService.previewImages(
+                            imageUrls: imageUrls,
+                            removeImageUrl: (value) {
+                              setState(() {
+                                imageUrls!.removeAt(value);
+                              });
+                            }),
                         // Selected Tags
                         TagsDisplay(
                             tagsModel: selectedTags,
@@ -331,7 +349,11 @@ class _NewEventState extends State<NewEvent> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            imagePickerService.pickImageButton(context),
+                            imagePickerService.pickImageButton(
+                              context: context,
+                              preSelectedNoOfImages:
+                                  imageUrls != null ? imageUrls!.length : 0,
+                            ),
                             const SizedBox(
                               width: 20,
                             ),
@@ -437,6 +459,7 @@ class _NewEventState extends State<NewEvent> {
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                           "location": location.text,
+                                          "imageUrls": imageUrls
                                         },
                                         "id": widget.event!.id,
                                         "image": image,

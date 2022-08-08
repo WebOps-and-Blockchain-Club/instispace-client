@@ -42,7 +42,7 @@ class _PostCardState extends State<PostCard> {
                 // Action Menu
                 if (post.permissions.contains("EDIT") ||
                     post.permissions.contains("DELETE") ||
-                    post.permissions.contains("RESOLVE") ||
+                    post.permissions.contains("RESOLVE_ITEM") ||
                     (post.permissions.contains("STAR") && post.star != null) ||
                     post.permissions.contains("SET_REMINDER"))
                   PopupMenuButton(
@@ -64,7 +64,7 @@ class _PostCardState extends State<PostCard> {
                                 padding: EdgeInsets.zero,
                                 child:
                                     DeletePostButton(delete: actions.delete)),
-                          if (post.permissions.contains("RESOLVE"))
+                          if (post.permissions.contains("RESOLVE_ITEM"))
                             PopupMenuItem(
                                 height: 10,
                                 padding: EdgeInsets.zero,
@@ -99,9 +99,7 @@ class _PostCardState extends State<PostCard> {
             const Divider(),
 
             // Image
-            if (post.imageUrls != null &&
-                post.imageUrls!.isNotEmpty &&
-                post.imageUrls!.length != 10)
+            if (post.imageUrls != null && post.imageUrls!.isNotEmpty)
               Container(
                 constraints: const BoxConstraints(maxHeight: 250),
                 child: Image.network(

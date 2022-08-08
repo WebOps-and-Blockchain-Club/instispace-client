@@ -41,7 +41,8 @@ class AnnouncementModel {
       : id = data["id"],
         title = data["title"],
         description = data["description"],
-        attachements = data["images"]?.split(" AND "),
+        attachements =
+            data["images"] != "" ? data["images"]?.split(" AND ") : null,
         createdAt = data["createdAt"],
         endTime = data["endTime"],
         createdBy = CreatedByModel.fromJson(data["user"]),
@@ -53,6 +54,7 @@ class AnnouncementModel {
         id: id,
         title: title,
         description: description,
+        imageUrls: attachements != null ? [attachements!.first] : [],
         attachements: attachements,
         createdBy: createdBy,
         endTime: endTime,

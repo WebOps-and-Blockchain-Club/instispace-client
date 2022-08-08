@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'lost_and_found.dart';
 import 'actions.dart';
 import 'comment.dart';
 import 'hostel.dart';
@@ -13,6 +14,7 @@ class PostModel {
   final String title;
   final String? subTitle;
   final String description;
+  final LnFDecription? lnFDescription;
   final List<String>? imageUrls;
   final List<String>? attachements;
   final String? location;
@@ -33,6 +35,7 @@ class PostModel {
       required this.title,
       this.subTitle,
       required this.description,
+      this.lnFDescription,
       this.imageUrls,
       this.attachements,
       this.location,

@@ -20,7 +20,10 @@ NavigateAction editQueryAction(PostModel post, QueryOptions<Object?> options) {
   return NavigateAction(
     to: NewQueryPage(
       query: EditQueryModel(
-          id: post.id, title: post.title, description: post.description),
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          attachements: post.attachements),
       options: options,
     ),
   );

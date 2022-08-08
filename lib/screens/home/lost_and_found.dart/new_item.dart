@@ -18,7 +18,7 @@ import '../../../widgets/text/label.dart';
 class NewItemPage extends StatefulWidget {
   final String category;
   final QueryOptions options;
-  final LostAndFoundItemModel? item;
+  final LnFEditModel? item;
   const NewItemPage(
       {Key? key, required this.category, required this.options, this.item})
       : super(key: key);
@@ -43,18 +43,22 @@ class _NewItemPageState extends State<NewItemPage> {
   // Services
   final localStorage = LocalStorageService();
 
-  Future getItemData(LostAndFoundItemModel? _item) async {
+  // Variables
+  List<String>? imageUrls;
+
+  Future getItemData(LnFEditModel? _item) async {
     if (_item != null) {
+      DateTimeFormatModel _time = DateTimeFormatModel.fromString(_item.time);
       title.text = _item.name;
-      // img
-      date.text = _item.time;
-      dateFormated.text =
-          DateTimeFormatModel.fromString(_item.time).toFormat("MMM dd, yyyy");
-      time.text = _item.time;
-      timeFormated.text =
-          DateTimeFormatModel.fromString(_item.time).toFormat("h:mm a");
+      date.text = _time.dateTime.toString();
+      dateFormated.text = _time.toFormat("MMM dd, yyyy");
+      time.text = _time.dateTime.toString();
+      timeFormated.text = _time.toFormat("h:mm a");
       location.text = _item.location;
       contact.text = _item.contact ?? "";
+      setState(() {
+        imageUrls = _item.images;
+      });
     } else {
       var data = await localStorage.getData("new_item");
       if (data != null) {
@@ -100,7 +104,15 @@ class _NewItemPageState extends State<NewItemPage> {
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
                 if (widget.item != null) {
-                  // TODO: update the cache value for edit
+                  cache.writeFragment(
+                    Fragment(document: gql(LostAndFoundGQL.editFragment))
+                        .asRequest(idFields: {
+                      '__typename': "Item",
+                      'id': widget.item!.id,
+                    }),
+                    data: result.data!["editItems"],
+                    broadcast: false,
+                  );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Edited successfull')),
@@ -130,7 +142,7 @@ class _NewItemPageState extends State<NewItemPage> {
           QueryResult? result,
         ) {
           return ChangeNotifierProvider(
-            create: (_) => ImagePickerService(),
+            create: (_) => ImagePickerService(noOfImages: 4),
             child: Consumer<ImagePickerService>(
                 builder: (context, imagePickerService, child) {
               return Scaffold(
@@ -297,13 +309,23 @@ class _NewItemPageState extends State<NewItemPage> {
                         // Images & Tags
                         LabelText(
                             text:
-                                "Add Images (Please add images for better chance of ${widget.category == "Lost" ? "getting back your item" : "the owner finding it"})!"),
+                                "Add Images (Please add images(4 maximum) for better chance of ${widget.category == "Lost" ? "getting back your item" : "the owner finding it"})!"),
                         // Selected Image
-                        imagePickerService.previewImages(),
+                        imagePickerService.previewImages(
+                            imageUrls: imageUrls,
+                            removeImageUrl: (value) {
+                              setState(() {
+                                imageUrls!.removeAt(value);
+                              });
+                            }),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            imagePickerService.pickImageButton(context),
+                            imagePickerService.pickImageButton(
+                              context: context,
+                              preSelectedNoOfImages:
+                                  imageUrls != null ? imageUrls!.length : 0,
+                            ),
                           ],
                         ),
 
@@ -343,6 +365,7 @@ class _NewItemPageState extends State<NewItemPage> {
                                           "time": _dateTime.toISOFormat(),
                                           "location": location.text,
                                           "contact": contact.text,
+                                          "imageUrls": imageUrls,
                                         },
                                         "id": widget.item!.id,
                                         "images": image,

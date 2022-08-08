@@ -85,15 +85,8 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                                   ["permissions"],
                             };
                             cache.writeFragment(
-                              Fragment(document: gql('''
-                                            fragment updateAmenity on Amenity {
-                                              id
-                                              name
-                                              description
-                                              images
-                                              permissions
-                                            }
-                    ''')).asRequest(idFields: {
+                              Fragment(document: gql(AmenitiesGQL.editFragment))
+                                  .asRequest(idFields: {
                                 '__typename': updated['__typename'],
                                 'id': updated['id'],
                               }),

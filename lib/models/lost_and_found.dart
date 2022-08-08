@@ -55,10 +55,56 @@ class LostAndFoundItemModel {
   PostModel toPostModel() {
     return PostModel(
         id: id,
-        title: "[${category.toLowerCase().capitalize()}] $name",
-        description:
-            "At $location on ${DateTimeFormatModel.fromString(time).toFormat("E, MMM dd, yyyy, h:mm a")}. \nPlease contact me at $contact ${category == "LOST" ? "if you find" : "to claim"} the item.",
-        imageUrls: images != null ? [images!.first] : [],
+        title: name,
+        subTitle: category.toLowerCase().capitalize(),
+        description: LnFDecription(
+                location: location,
+                time: time,
+                contact: contact,
+                category: category)
+            .toDescriptionString(),
+        lnFDescription: LnFDecription(
+            location: location,
+            time: time,
+            contact: contact,
+            category: category),
+        imageUrls: images,
         permissions: permissions);
+  }
+}
+
+class LnFEditModel {
+  final String id;
+  final String name;
+  final String category;
+  final String location;
+  final String time;
+  final List<String>? images;
+  final String? contact;
+
+  LnFEditModel(
+      {required this.id,
+      required this.name,
+      required this.category,
+      required this.location,
+      required this.time,
+      this.images,
+      this.contact});
+}
+
+class LnFDecription {
+  final String location;
+  final String time;
+  final String? contact;
+  final String category;
+
+  LnFDecription(
+      {required this.location,
+      required this.time,
+      this.contact,
+      required this.category});
+
+  String toDescriptionString() {
+    return "At $location on ${DateTimeFormatModel.fromString(time).toFormat("E, MMM dd, yyyy, h:mm a")}. \nPlease contact me at $contact ${category == "LOST" ? "if you find" : "to claim"} the item.";
   }
 }

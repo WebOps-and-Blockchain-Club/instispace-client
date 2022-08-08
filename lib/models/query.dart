@@ -73,6 +73,7 @@ class QueryModel {
         id: id,
         title: title,
         description: description,
+        imageUrls: attachements != null ? [attachements!.first] : [],
         attachements: attachements,
         like: like,
         comments: comments,
@@ -86,7 +87,11 @@ class EditQueryModel {
   final String id;
   final String title;
   final String description;
+  final List<String>? attachements;
 
   EditQueryModel(
-      {required this.id, required this.title, required this.description});
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.attachements});
 }

@@ -316,7 +316,7 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
   Widget build(BuildContext context) {
     return CustomFlatIconTextButton(
       icon: Icons.done_all_outlined,
-      text: "Resolve",
+      text: "Item Found/Returned",
       onPressed: () => widget.resolve != null
           ? showDialog(
               context: context,
@@ -326,9 +326,10 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
                     titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                     actionsPadding: const EdgeInsets.all(10),
-                    title: const Text('Resolve', textAlign: TextAlign.center),
+                    title: const Text('Item Found/Returned',
+                        textAlign: TextAlign.center),
                     content: const Text(
-                        "Are you sure you want to resolve this post?",
+                        "Are you sure you want to close this post?",
                         textAlign: TextAlign.center),
                     actions: <Widget>[
                       CustomElevatedButton(
@@ -349,7 +350,7 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
                                 widget.resolve!.updateCache(cache, result);
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Post Resolve')),
+                                  const SnackBar(content: Text('Post Closed')),
                                 );
                               }
                             },

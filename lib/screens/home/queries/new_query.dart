@@ -29,11 +29,16 @@ class _NewQueryPageState extends State<NewQueryPage> {
   final TextEditingController name = TextEditingController();
   final TextEditingController description = TextEditingController();
 
+  List<String>? imageUrls;
+
   @override
   void initState() {
     if (widget.query != null) {
       name.text = widget.query!.title;
       description.text = widget.query!.description;
+      setState(() {
+        imageUrls = widget.query!.attachements;
+      });
     }
     super.initState();
   }
@@ -46,8 +51,15 @@ class _NewQueryPageState extends State<NewQueryPage> {
           update: (cache, result) {
             if (result != null && (!result.hasException)) {
               if (widget.query != null) {
-                // TODO: update cache
-
+                cache.writeFragment(
+                  Fragment(document: gql(QueryGQL.editFragment))
+                      .asRequest(idFields: {
+                    '__typename': "MyQuery",
+                    'id': widget.query!.id,
+                  }),
+                  data: result.data!["editMyQuery"],
+                  broadcast: false,
+                );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Edited Successfully')),
@@ -78,7 +90,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
           QueryResult? result,
         ) {
           return ChangeNotifierProvider(
-            create: (_) => ImagePickerService(),
+            create: (_) => ImagePickerService(noOfImages: 2),
             child: Consumer<ImagePickerService>(
                 builder: (context, imagePickerService, child) {
               return Scaffold(
@@ -143,14 +155,27 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                 ),
 
                                 // Attachements
-                                const LabelText(text: "Attachements"),
+                                const LabelText(
+                                    text:
+                                        "Attachements (Select maximum of 2 image)"),
                                 // Selected Image
-                                imagePickerService.previewImages(),
+                                imagePickerService.previewImages(
+                                    imageUrls: imageUrls,
+                                    removeImageUrl: (value) {
+                                      setState(() {
+                                        imageUrls!.removeAt(value);
+                                      });
+                                    }),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    imagePickerService.pickImageButton(context),
+                                    imagePickerService.pickImageButton(
+                                      context: context,
+                                      preSelectedNoOfImages: imageUrls != null
+                                          ? imageUrls!.length
+                                          : 0,
+                                    ),
                                   ],
                                 ),
 
@@ -182,7 +207,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                             'editMyQuerysData': {
                                               "title": name.text,
                                               "content": description.text,
-                                              "imageUrls": description.text,
+                                              "imageUrls": imageUrls,
                                             },
                                             'attachments': image,
                                             'id': widget.query!.id,

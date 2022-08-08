@@ -25,11 +25,8 @@ class ImagePickerService extends ChangeNotifier {
     _picker ??= ImagePicker();
   }
 
-  void _setImageFileListFromFile(XFile? value) {
-    _imageFileList = value == null ? null : <XFile>[value];
-  }
-
   Future<void> _onImageButtonPressed({
+    required int preSelectedNoOfImages,
     BuildContext? context,
   }) async {
     await _displayPickImageDialog(context!, (ImageSource source) async {
@@ -39,7 +36,16 @@ class ImagePickerService extends ChangeNotifier {
           final List<XFile>? pickedFileList = await _picker!.pickMultiImage(
             imageQuality: quality,
           );
-          _imageFileList = pickedFileList;
+          if (pickedFileList != null &&
+              pickedFileList.length > (noOfImages - preSelectedNoOfImages)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Not allowed to select more that $noOfImages images')),
+            );
+          } else {
+            _imageFileList = (_imageFileList ?? []) + (pickedFileList ?? []);
+          }
         } catch (e) {
           _pickImageError = e;
         }
@@ -49,7 +55,8 @@ class ImagePickerService extends ChangeNotifier {
             source: source,
             imageQuality: quality,
           );
-          _setImageFileListFromFile(pickedFile);
+          _imageFileList = (_imageFileList ?? []) +
+              (pickedFile != null ? <XFile>[pickedFile] : []);
         } catch (e) {
           _pickImageError = e;
         }
@@ -119,40 +126,84 @@ class ImagePickerService extends ChangeNotifier {
   }
 
   Widget previewImages(
-      {EdgeInsetsGeometry padding = const EdgeInsets.only(top: 10)}) {
-    if (_imageFileList != null && _imageFileList!.isNotEmpty) {
+      {EdgeInsetsGeometry padding = const EdgeInsets.only(top: 10),
+      List<String>? imageUrls,
+      Function? removeImageUrl}) {
+    if ((_imageFileList != null && _imageFileList!.isNotEmpty) ||
+        (imageUrls != null && imageUrls.isNotEmpty)) {
       return Padding(
         padding: padding,
         child: SizedBox(
           height: 250,
-          child: ListView.builder(
-              itemCount: _imageFileList!.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.white,
-                          width: MediaQuery.of(context).size.width - 60,
-                          constraints: const BoxConstraints(maxHeight: 250),
-                          child: Image.file(File(_imageFileList![index].path),
-                              fit: BoxFit.fitWidth),
-                        ),
-                        Positioned(
-                            top: 5,
-                            right: 5,
-                            child: CustomIconButton(
-                              icon: Icons.close,
-                              onPressed: () {
-                                _imageFileList!.removeAt(index);
-                                notifyListeners();
-                              },
-                              size: 3,
-                            ))
-                      ],
-                    ),
-                  )),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              if (imageUrls != null && imageUrls.isNotEmpty)
+                ListView.builder(
+                    itemCount: imageUrls.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Stack(
+                            children: [
+                              Container(
+                                color: Colors.white,
+                                width: MediaQuery.of(context).size.width - 60,
+                                constraints:
+                                    const BoxConstraints(maxHeight: 250),
+                                child: Image.network(imageUrls[index],
+                                    fit: BoxFit.fitWidth),
+                              ),
+                              Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: CustomIconButton(
+                                    icon: Icons.close,
+                                    onPressed: () {
+                                      if (removeImageUrl != null) {
+                                        removeImageUrl(index);
+                                      }
+                                    },
+                                    size: 3,
+                                  ))
+                            ],
+                          ),
+                        )),
+              if (_imageFileList != null && _imageFileList!.isNotEmpty)
+                ListView.builder(
+                    itemCount: _imageFileList!.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Stack(
+                            children: [
+                              Container(
+                                color: Colors.white,
+                                width: MediaQuery.of(context).size.width - 60,
+                                constraints:
+                                    const BoxConstraints(maxHeight: 250),
+                                child: Image.file(
+                                    File(_imageFileList![index].path),
+                                    fit: BoxFit.fitWidth),
+                              ),
+                              Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: CustomIconButton(
+                                    icon: Icons.close,
+                                    onPressed: () {
+                                      _imageFileList!.removeAt(index);
+                                      notifyListeners();
+                                    },
+                                    size: 3,
+                                  ))
+                            ],
+                          ),
+                        )),
+            ],
+          ),
         ),
       );
     } else if (_pickImageError != null) {
@@ -165,11 +216,23 @@ class ImagePickerService extends ChangeNotifier {
     }
   }
 
-  Widget pickImageButton(BuildContext context) {
+  Widget pickImageButton(
+      {required BuildContext context, int preSelectedNoOfImages = 0}) {
     _initImagePicker();
     return CustomElevatedButton(
       onPressed: () {
-        _onImageButtonPressed(context: context);
+        if (((_imageFileList != null ? _imageFileList!.length : 0) +
+                preSelectedNoOfImages) >=
+            noOfImages) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Not allowed to select more that $noOfImages images')),
+          );
+        } else {
+          _onImageButtonPressed(
+              preSelectedNoOfImages: preSelectedNoOfImages, context: context);
+        }
       },
       text: "Select Image",
       color: ColorPalette.palette(context).primary,

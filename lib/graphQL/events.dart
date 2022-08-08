@@ -30,7 +30,31 @@ class EventGQL {
   """;
   String edit = """
     mutation(\$editData: editEventInput!, \$id: String!, \$image: [Upload!]){
-      editEvent(EditEventData: \$editData, EventId: \$id, Image: \$image)
+      editEvent(EditEventData: \$editData, EventId: \$id, Image: \$image) {
+        id
+        createdAt
+        title
+        content
+        photo
+        location
+        time
+        likeCount
+        isStared
+        linkName
+        linkToAction
+        permissions
+        tags {
+          title
+          id
+          category
+        }
+        isLiked
+        createdAt
+        createdBy {
+          id
+          name
+        }
+      }
     }
   """;
   String getAll = """
@@ -105,6 +129,34 @@ class EventGQL {
   String toggleStar = """
     mutation(\$id: String!){
       toggleStarEvent(EventId: \$id)
+    }
+  """;
+
+  static const editFragment = """
+    fragment eventUpdateField on Event {
+      id
+      createdAt
+      title
+      content
+      photo
+      location
+      time
+      likeCount
+      isStared
+      linkName
+      linkToAction
+      permissions
+      tags {
+        title
+        id
+        category
+      }
+      isLiked
+      createdAt
+      createdBy {
+        id
+        name
+      }
     }
   """;
 }

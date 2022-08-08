@@ -1,6 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'new_item.dart';
+import '../../../models/lost_and_found.dart';
 import '../../../graphQL/lost_and_found.dart';
 import '../../../models/post.dart';
 
@@ -15,8 +16,16 @@ NavigateAction lostAndFoundEditAction(
     PostModel post, QueryOptions<Object?> options) {
   return NavigateAction(
     to: NewItemPage(
-      category: "",
+      category: post.lnFDescription!.category,
       options: options,
+      item: LnFEditModel(
+          id: post.id,
+          name: post.title,
+          category: post.lnFDescription!.category,
+          location: post.lnFDescription!.location,
+          time: post.lnFDescription!.time,
+          contact: post.lnFDescription!.contact,
+          images: post.imageUrls),
     ),
   );
 }

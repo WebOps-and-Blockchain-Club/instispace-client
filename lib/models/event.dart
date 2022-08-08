@@ -50,7 +50,8 @@ class EventModel {
       : id = data["id"],
         title = data["title"],
         description = data["content"],
-        imageUrl = data["photo"]?.split(" AND ").first,
+        imageUrl =
+            data["photo"] != "" ? data["photo"]?.split(" AND ").first : null,
         location = data["location"],
         time = data["time"],
         tags = TagsModel.fromJson(data["tags"]),

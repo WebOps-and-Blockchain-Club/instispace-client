@@ -58,4 +58,14 @@ class ContactsGQL {
       deleteHostelContact(ContactId: \$id)
     }
   """;
+
+  static const editFragment = """
+    fragment updateContact on Contact {
+      id
+      name
+      type
+      contact
+      permissions
+    }
+  """;
 }

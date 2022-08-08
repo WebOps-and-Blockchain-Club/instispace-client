@@ -90,15 +90,8 @@ class _NewContactPageState extends State<NewContactPage> {
                                   ["permissions"],
                             };
                             cache.writeFragment(
-                              Fragment(document: gql('''
-                                            fragment updateContact on Contact {
-                                              id
-                                              name
-                                              type
-                                              contact
-                                              permissions
-                                            }
-                    ''')).asRequest(idFields: {
+                              Fragment(document: gql(ContactsGQL.editFragment))
+                                  .asRequest(idFields: {
                                 '__typename': updated['__typename'],
                                 'id': updated['id'],
                               }),

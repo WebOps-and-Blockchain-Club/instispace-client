@@ -87,4 +87,19 @@ class AnnouncementGQL {
       deleteAnnouncement(AnnouncementId: \$id)
     }
   """;
+
+  static const editFragment = """
+    fragment editAnnouncement on Announcement {
+      id
+      title
+      description
+      images
+      createdAt
+      permissions
+      hostels {
+        id
+        name
+      }
+    }
+  """;
 }

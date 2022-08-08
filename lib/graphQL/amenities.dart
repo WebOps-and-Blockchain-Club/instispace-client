@@ -55,4 +55,14 @@ class AmenitiesGQL {
       deleteAmenity(AmenityId: \$id)
     }
   """;
+
+  static const editFragment = """
+    fragment amenityUpdateField on Amenity {
+      id
+      name
+      description
+      images
+      permissions
+    }
+  """;
 }

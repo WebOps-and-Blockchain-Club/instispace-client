@@ -43,7 +43,43 @@ class NetopGQL {
 
   static const edit = """
     mutation(\$editData: editNetopsInput!, \$id: String!){
-      editNetop(EditNetopsData: \$editData, NetopId: \$id)
+      editNetop(EditNetopsData: \$editData, NetopId: \$id) {
+        id,
+        content,
+        commentCount
+        comments {
+          content
+          id
+          images
+          createdBy {
+            name
+            id
+            roll
+          }
+        }
+        createdBy {
+          id
+          name
+          roll
+        }
+        linkName
+        linkToAction
+        title
+        isLiked
+        isStared
+        isHidden
+        endTime
+        createdAt
+        tags {
+          category
+          title
+          id
+        }
+        likeCount
+        photo
+        attachments
+        permissions
+      }
     }
   """;
 
@@ -142,6 +178,46 @@ class NetopGQL {
           roll
         }
       }
+    }
+  """;
+
+  static const editFragment = """
+    fragment netopUpdateField on Netop {
+      id,
+      content,
+      commentCount
+      comments {
+        content
+        id
+        images
+        createdBy {
+          name
+          id
+          roll
+        }
+      }
+      createdBy {
+        id
+        name
+        roll
+      }
+      linkName
+      linkToAction
+      title
+      isLiked
+      isStared
+      isHidden
+      endTime
+      createdAt
+      tags {
+        category
+        title
+        id
+      }
+      likeCount
+      photo
+      attachments
+      permissions
     }
   """;
 }

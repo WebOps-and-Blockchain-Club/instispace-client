@@ -43,6 +43,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
   final time = TextEditingController();
   final timeFormated = TextEditingController();
 
+  List<String>? imageUrls;
   late HostelsModel selectedHostels = HostelsModel.fromJson([]);
   String hostelError = "";
 
@@ -51,15 +52,14 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
     if (widget.announcement != null) {
       name.text = widget.announcement!.title;
       description.text = widget.announcement!.description;
-      date.text = widget.announcement!.endTime;
-      dateFormated.text =
-          DateTimeFormatModel.fromString(widget.announcement!.endTime)
-              .toFormat("MMM dd, yyyy");
-      time.text = widget.announcement!.endTime;
-      timeFormated.text =
-          DateTimeFormatModel.fromString(widget.announcement!.endTime)
-              .toFormat("h:mm a");
+      DateTimeFormatModel _time =
+          DateTimeFormatModel.fromString(widget.announcement!.endTime);
+      date.text = _time.dateTime.toString();
+      dateFormated.text = _time.toFormat("MMM dd, yyyy");
+      time.text = _time.dateTime.toString();
+      timeFormated.text = _time.toFormat("h:mm a");
       setState(() {
+        imageUrls = widget.announcement!.attachements;
         selectedHostels = HostelsModel(hostels: widget.announcement!.hostels);
       });
     }
@@ -76,55 +76,13 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
           update: (cache, result) {
             if (result != null && (!result.hasException)) {
               if (widget.announcement != null) {
-                // TODO:
-                final Map<String, dynamic> updated = {
-                  "__typename": "Announcement",
-                  "id": widget.announcement!.id,
-                  "title": result.data!["editAnnouncement"]["title"],
-                  "description": result.data!["editAnnouncement"]
-                      ["description"],
-                  "images": result.data!["editAnnouncement"]["images"],
-                  "createdAt": result.data!["editAnnouncement"]["createdAt"],
-                  "permissions": result.data!["editAnnouncement"]
-                      ["permissions"],
-                };
-                var a = cache.readFragment(Fragment(document: gql('''
-                                            fragment editAnnouncement on Announcement {
-                                              id
-                                              title
-                                              description
-                                              images
-                                              createdAt
-                                              permissions
-                                              hostels {
-                                                id
-                                                name
-                                              }
-                                            }
-                    ''')).asRequest(idFields: {
-                  '__typename': updated['__typename'],
-                  'id': updated['id'],
-                }));
-                print(a);
                 cache.writeFragment(
-                  Fragment(document: gql('''
-                                            fragment editAnnouncement on Announcement {
-                                              id
-                                              title
-                                              description
-                                              images
-                                              createdAt
-                                              permissions
-                                              hostels {
-                                                id
-                                                name
-                                              }
-                                            }
-                    ''')).asRequest(idFields: {
-                    '__typename': updated['__typename'],
-                    'id': updated['id'],
+                  Fragment(document: gql(AnnouncementGQL.editFragment))
+                      .asRequest(idFields: {
+                    '__typename': 'Announcement',
+                    'id': widget.announcement!.id,
                   }),
-                  data: updated,
+                  data: result.data!["editAnnouncement"],
                   broadcast: false,
                 );
                 Navigator.pop(context);
@@ -158,7 +116,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
           QueryResult? result,
         ) {
           return ChangeNotifierProvider(
-            create: (_) => ImagePickerService(),
+            create: (_) => ImagePickerService(noOfImages: 4),
             child: Consumer<ImagePickerService>(
                 builder: (context, imagePickerService, child) {
               return Scaffold(
@@ -323,9 +281,17 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                 ),
 
                                 // Attachements & Tags
-                                const LabelText(text: "Attachements & Hostels"),
+                                const LabelText(
+                                    text:
+                                        "Attachements & Hostels (Select maximum of 4 image)"),
                                 // Selected Image
-                                imagePickerService.previewImages(),
+                                imagePickerService.previewImages(
+                                    imageUrls: imageUrls,
+                                    removeImageUrl: (value) {
+                                      setState(() {
+                                        imageUrls!.removeAt(value);
+                                      });
+                                    }),
                                 // Selected Hostels
                                 HostelsDisplay(
                                     hostelsModel: selectedHostels,
@@ -370,7 +336,12 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                     const SizedBox(
                                       width: 20,
                                     ),
-                                    imagePickerService.pickImageButton(context),
+                                    imagePickerService.pickImageButton(
+                                      context: context,
+                                      preSelectedNoOfImages: imageUrls != null
+                                          ? imageUrls!.length
+                                          : 0,
+                                    ),
                                   ],
                                 ),
 
@@ -417,11 +388,11 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                               "description": description.text,
                                               "endTime":
                                                   _dateTime.toISOFormat(),
-                                              "imageUrls": description.text,
+                                              "imageUrls": imageUrls,
                                               "hostelIds": selectedHostels
                                                   .getHostelIds(),
                                             },
-                                            'image': image,
+                                            'images': image,
                                             'id': widget.announcement!.id,
                                           });
                                         } else {
@@ -434,7 +405,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                               "hostelIds": selectedHostels
                                                   .getHostelIds(),
                                             },
-                                            'image': image,
+                                            'images': image,
                                           });
                                         }
                                       }

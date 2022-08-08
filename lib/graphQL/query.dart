@@ -162,4 +162,36 @@ class QueryGQL {
       }
     }
   """;
+
+  static const editFragment = """
+    fragment queryUpdateField on MyQuery {
+      id
+      createdAt
+      title
+      content
+      photo
+      attachments
+      isHidden
+      likeCount
+      permissions
+      comments {
+        content
+        id
+        images
+        createdAt
+        createdBy {
+          name
+          id
+          roll
+        }
+      }
+      isLiked
+      createdBy {
+        id
+        roll
+        name
+      }
+      commentCount
+    }
+  """;
 }
