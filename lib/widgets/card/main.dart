@@ -5,6 +5,7 @@ import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
 import '../../utils/string_extension.dart';
+import 'description.dart';
 import 'action_buttons.dart';
 import '../../themes.dart';
 
@@ -203,12 +204,16 @@ class _PostCardState extends State<PostCard> {
             // Description
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: SelectableText(
-                post.description.capitalize(),
-                textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+              child: Description(content: post.description.capitalize()),
             ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 10),
+            //   child: SelectableText(
+            //     post.description.capitalize(),
+            //     textAlign: TextAlign.justify,
+            //     style: Theme.of(context).textTheme.bodyMedium,
+            //   ),
+            // ),
 
             // Tags
             if (post.tags != null && post.tags!.tags.isNotEmpty)

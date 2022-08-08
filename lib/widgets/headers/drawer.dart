@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
 import '../../screens/hostel/main.dart';
@@ -274,7 +274,7 @@ class CustomDrawer extends StatelessWidget {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          launch(
+                                          launchUrlString(
                                             'https://cfi.iitm.ac.in/clubs/webops-and-blockchain-club',
                                           );
                                         },
