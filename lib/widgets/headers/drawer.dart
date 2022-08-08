@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
+import '../../screens/notification/main.dart';
 import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
 import '../../screens/user/edit_profile.dart';
@@ -146,6 +147,18 @@ class CustomDrawer extends StatelessWidget {
                                       HostelWrapper(user: user)));
                             },
                           ),
+
+                        ListTile(
+                          leading: const Icon(Icons.notifications),
+                          horizontalTitleGap: 0,
+                          title: const Text("Notifications"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const NotificationPage()));
+                          },
+                        ),
 
                         // Reports
                         if (user.permissions.contains("GET_REPORTS"))
