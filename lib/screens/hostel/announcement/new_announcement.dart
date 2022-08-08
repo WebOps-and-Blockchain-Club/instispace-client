@@ -59,7 +59,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
       time.text = _time.dateTime.toString();
       timeFormated.text = _time.toFormat("h:mm a");
       setState(() {
-        imageUrls = widget.announcement!.attachements;
+        imageUrls = widget.announcement!.images;
         selectedHostels = HostelsModel(hostels: widget.announcement!.hostels);
       });
     }

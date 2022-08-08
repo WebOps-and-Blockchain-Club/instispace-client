@@ -19,7 +19,7 @@ class AnnouncementModel {
   final String id;
   final String title;
   final String description;
-  final List<String>? attachements;
+  final List<String>? images;
   final String createdAt;
   final String endTime;
   final CreatedByModel createdBy;
@@ -30,7 +30,7 @@ class AnnouncementModel {
       {required this.id,
       required this.title,
       required this.description,
-      this.attachements,
+      this.images,
       required this.createdAt,
       required this.endTime,
       required this.createdBy,
@@ -41,8 +41,7 @@ class AnnouncementModel {
       : id = data["id"],
         title = data["title"],
         description = data["description"],
-        attachements =
-            data["images"] != "" ? data["images"]?.split(" AND ") : null,
+        images = data["images"] != "" ? data["images"]?.split(" AND ") : null,
         createdAt = data["createdAt"],
         endTime = data["endTime"],
         createdBy = CreatedByModel.fromJson(data["user"]),
@@ -54,8 +53,7 @@ class AnnouncementModel {
         id: id,
         title: title,
         description: description,
-        imageUrls: attachements != null ? [attachements!.first] : [],
-        attachements: attachements,
+        imageUrls: images,
         createdBy: createdBy,
         endTime: endTime,
         createdAt: createdAt,

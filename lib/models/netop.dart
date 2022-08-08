@@ -21,14 +21,13 @@ class NetopModel {
   final String id;
   final String title;
   final String description;
-  final String? imageUrl;
+  final List<String>? images;
   final String endTime;
   final TagsModel tags;
   final LikePostModel like;
   final StarPostModel star;
   final CTAModel? cta;
   final List<String> permissions;
-  final List<String>? attachements;
   final CommentsModel comments;
   final String createdAt;
   final CreatedByModel createdBy;
@@ -37,13 +36,12 @@ class NetopModel {
       {required this.id,
       required this.title,
       required this.description,
-      this.imageUrl,
+      this.images,
       required this.endTime,
       required this.tags,
       required this.like,
       required this.star,
       this.cta,
-      this.attachements,
       required this.comments,
       required this.createdAt,
       required this.createdBy,
@@ -53,7 +51,7 @@ class NetopModel {
       : id = data["id"],
         title = data["title"],
         description = data["content"],
-        imageUrl = mergeAttachments(data["photo"], data["attachments"])?.first,
+        images = mergeAttachments(data["photo"], data["attachments"]),
         endTime = data["endTime"],
         tags = TagsModel.fromJson(data["tags"]),
         like = LikePostModel(
@@ -64,9 +62,6 @@ class NetopModel {
                 name: data["linkName"] ?? "Click me",
                 link: data["linkToAction"])
             : null,
-        attachements = mergeAttachments(data["photo"], data["attachments"])
-            ?.skip(1)
-            .toList(),
         comments = CommentsModel.fromJson(
             data["comments"] ?? [], data["commentCount"]),
         permissions = data["permissions"].cast<String>(),
@@ -79,7 +74,7 @@ class NetopModel {
       "id": id,
       "title": title,
       "content": description,
-      "photo": imageUrl,
+      "photo": images,
       "endTime": endTime,
       "tags": tags.toJson(),
       "likeCount": like.count,
@@ -97,8 +92,7 @@ class NetopModel {
         id: id,
         title: title,
         description: description,
-        imageUrls: imageUrl != null ? [imageUrl!] : null,
-        attachements: attachements,
+        imageUrls: images,
         like: like,
         star: star,
         endTime: endTime,

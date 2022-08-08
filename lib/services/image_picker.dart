@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:client/widgets/button/elevated_button.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -147,13 +148,24 @@ class ImagePickerService extends ChangeNotifier {
                           margin: const EdgeInsets.only(right: 10),
                           child: Stack(
                             children: [
-                              Container(
-                                color: Colors.white,
+                              SizedBox(
                                 width: MediaQuery.of(context).size.width - 60,
-                                constraints:
-                                    const BoxConstraints(maxHeight: 250),
-                                child: Image.network(imageUrls[index],
-                                    fit: BoxFit.fitWidth),
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrls[index],
+                                  placeholder: (_, __) =>
+                                      const Icon(Icons.image, size: 100),
+                                  errorWidget: (_, __, ___) =>
+                                      const Icon(Icons.image, size: 100),
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                               Positioned(
                                   top: 5,

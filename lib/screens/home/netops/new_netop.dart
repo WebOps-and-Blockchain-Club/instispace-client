@@ -436,7 +436,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                           "linkToAction": ctaLink.text,
                                         },
                                         "id": widget.netop!.id,
-                                        "image": image,
+                                        "images": image,
                                       });
                                     } else {
                                       runMutation({
@@ -448,7 +448,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
-                                        "image": image
+                                        "images": image
                                       });
                                     }
                                   }

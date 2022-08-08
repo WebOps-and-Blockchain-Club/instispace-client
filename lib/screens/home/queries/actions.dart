@@ -23,7 +23,7 @@ NavigateAction editQueryAction(PostModel post, QueryOptions<Object?> options) {
           id: post.id,
           title: post.title,
           description: post.description,
-          attachements: post.attachements),
+          images: post.imageUrls),
       options: options,
     ),
   );

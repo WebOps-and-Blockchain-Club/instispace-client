@@ -23,7 +23,7 @@ NavigateAction editAnnouncementAction(
               id: post.id,
               title: post.title,
               description: post.description,
-              attachements: post.attachements,
+              images: post.imageUrls,
               createdAt: post.createdAt!,
               endTime: post.endTime!,
               createdBy: post.createdBy!,

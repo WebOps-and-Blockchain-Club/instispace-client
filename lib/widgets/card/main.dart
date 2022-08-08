@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
@@ -98,14 +100,44 @@ class _PostCardState extends State<PostCard> {
                   style: Theme.of(context).textTheme.labelSmall),
             const Divider(),
 
-            // Image
             if (post.imageUrls != null && post.imageUrls!.isNotEmpty)
               Container(
-                constraints: const BoxConstraints(maxHeight: 250),
-                child: Image.network(
-                  post.imageUrls!.first,
-                  fit: BoxFit.fitWidth,
-                  semanticLabel: post.title,
+                constraints: const BoxConstraints(maxHeight: 250, minHeight: 0),
+                child: Swiper(
+                  itemBuilder: (BuildContext context, int index) {
+                    return CachedNetworkImage(
+                      imageUrl: post.imageUrls![index],
+                      placeholder: (_, __) =>
+                          const Icon(Icons.image, size: 100),
+                      errorWidget: (_, __, ___) =>
+                          const Icon(Icons.image, size: 100),
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: post.imageUrls!.length,
+                  pagination: SwiperCustomPagination(builder:
+                      (BuildContext context, SwiperPluginConfig config) {
+                    return Positioned(
+                      top: 5,
+                      right: 5,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Text(
+                            '${config.activeIndex + 1}/${post.imageUrls!.length}'),
+                      ),
+                    );
+                  }),
                 ),
               ),
 

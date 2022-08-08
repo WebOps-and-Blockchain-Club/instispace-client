@@ -37,7 +37,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
       name.text = widget.query!.title;
       description.text = widget.query!.description;
       setState(() {
-        imageUrls = widget.query!.attachements;
+        imageUrls = widget.query!.images;
       });
     }
     super.initState();

@@ -21,7 +21,7 @@ class QueryModel {
   final String id;
   final String title;
   final String description;
-  final List<String>? attachements;
+  final List<String>? images;
   final LikePostModel like;
   final CommentsModel comments;
   final CreatedByModel createdBy;
@@ -32,7 +32,7 @@ class QueryModel {
       {required this.id,
       required this.title,
       required this.description,
-      this.attachements,
+      this.images,
       required this.like,
       required this.comments,
       required this.createdBy,
@@ -47,7 +47,7 @@ class QueryModel {
           count: data["likeCount"],
           isLikedByUser: data["isLiked"],
         ),
-        attachements = mergeAttachments(data["photo"], data["attachments"]),
+        images = mergeAttachments(data["photo"], data["attachments"]),
         comments = CommentsModel.fromJson(
             data["comments"] ?? [], data["commentCount"]),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
@@ -60,7 +60,7 @@ class QueryModel {
       "id": id,
       "title": title,
       "content": description,
-      "photo": attachements?.join(" AND "),
+      "photo": images?.join(" AND "),
       "likeCount": like.count,
       "isLiked": like.isLikedByUser,
       "createdAt": createdAt,
@@ -73,8 +73,7 @@ class QueryModel {
         id: id,
         title: title,
         description: description,
-        imageUrls: attachements != null ? [attachements!.first] : [],
-        attachements: attachements,
+        imageUrls: images,
         like: like,
         comments: comments,
         createdBy: createdBy,
@@ -87,11 +86,11 @@ class EditQueryModel {
   final String id;
   final String title;
   final String description;
-  final List<String>? attachements;
+  final List<String>? images;
 
   EditQueryModel(
       {required this.id,
       required this.title,
       required this.description,
-      required this.attachements});
+      required this.images});
 }
