@@ -22,13 +22,11 @@ class _SearchUserState extends State<SearchUser> {
   late String searchValidationError = "";
 
   final TextEditingController search = TextEditingController();
-  final int take = 20;
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> defaultVariables = {
       "search": search.text,
-      "take": take,
-      "skip": 0
     };
     return SafeArea(
       child: Scaffold(
@@ -94,7 +92,7 @@ class _SearchUserState extends State<SearchUser> {
                         }
 
                         final List<dynamic> users = result
-                            .data!["searchLDAPUser"]["list"]
+                            .data!["searchLDAPUser"]
                             .map((_user) => {
                                   "name": _user["name"],
                                   "roll": _user["roll"],
@@ -105,61 +103,16 @@ class _SearchUserState extends State<SearchUser> {
                         if (users.isEmpty) {
                           return const Text('No user');
                         }
-                        final total = result.data!["searchLDAPUser"]["total"];
-                        FetchMoreOptions opts = FetchMoreOptions(
-                            variables: {
-                              ...defaultVariables,
-                              "skip": users.length
-                            },
-                            updateQuery:
-                                (previousResultData, fetchMoreResultData) {
-                              final List<dynamic> repos = [
-                                ...previousResultData!["searchLDAPUser"]["list"]
-                                    as List<dynamic>,
-                                ...fetchMoreResultData!["searchLDAPUser"]
-                                    ["list"] as List<dynamic>
-                              ];
-                              fetchMoreResultData["searchLDAPUser"]["list"] =
-                                  repos;
-                              return fetchMoreResultData;
-                            });
 
-                        return NotificationListener<ScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification.metrics.pixels >
-                                    0.8 *
-                                        notification.metrics.maxScrollExtent &&
-                                total > users.length) {
-                              fetchMore!(opts);
-                            }
-                            return true;
+                        return RefreshIndicator(
+                          onRefresh: () {
+                            return refetch!();
                           },
-                          child: RefreshIndicator(
-                            onRefresh: () {
-                              return refetch!();
-                            },
-                            child: ListView.builder(
-                                itemCount: users.length + 1,
-                                itemBuilder: (context, index) {
-                                  if (users.length == index) {
-                                    if (total == users.length) {
-                                      return const Center(
-                                          child: Text("No More Users"));
-                                    } else if (result.isLoading) {
-                                      return const Center(
-                                        child: Text("Loading"),
-                                      );
-                                    }
-                                    return Center(
-                                      child: TextButton(
-                                          onPressed: () => fetchMore!(opts),
-                                          child: const Text("Load More")),
-                                    );
-                                  } else {
-                                    return UserCard(user: users[index]);
-                                  }
-                                }),
-                          ),
+                          child: ListView.builder(
+                              itemCount: users.length,
+                              itemBuilder: (context, index) {
+                                return UserCard(user: users[index]);
+                              }),
                         );
                       }),
             ),
