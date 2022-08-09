@@ -10,6 +10,8 @@ class UserModel {
   String? ldapName;
   String? roll;
   String? role;
+  String? program;
+  String? department;
   bool isNewUser;
   String? mobile;
   List<TagModel>? interets;
@@ -27,6 +29,8 @@ class UserModel {
       this.roll,
       required this.role,
       required this.isNewUser,
+      this.program,
+      this.department,
       this.mobile,
       this.interets,
       this.hostelName,
@@ -43,6 +47,8 @@ class UserModel {
         roll = data["roll"],
         role = data["role"],
         isNewUser = data["isNewUser"],
+        program = data["program"],
+        department = data["department"],
         mobile = data["mobile"],
         interets = TagsModel.fromJson(data["interest"] ?? []).tags,
         hostelName = data["hostel"] != null ? data["hostel"]["name"] : null,

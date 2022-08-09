@@ -96,6 +96,8 @@ class UserGQL {
           name
           id
         }
+        department
+        program
       }
     }
   """;

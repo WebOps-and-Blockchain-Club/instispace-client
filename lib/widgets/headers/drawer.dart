@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
+import '../../screens/user/e_id_card.dart';
 import '../../screens/notification/main.dart';
 import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
@@ -120,6 +121,19 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
+                        // E ID Card
+                        ListTile(
+                          leading: const Icon(Icons.perm_identity),
+                          horizontalTitleGap: 0,
+                          title: const Text("E-ID Card"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EIDCard(user: user)));
+                          },
+                        ),
+
                         // Search User
                         ListTile(
                           leading: const Icon(Icons.search_outlined),
@@ -148,6 +162,7 @@ class CustomDrawer extends StatelessWidget {
                             },
                           ),
 
+                        // Notifications
                         ListTile(
                           leading: const Icon(Icons.notifications),
                           horizontalTitleGap: 0,
