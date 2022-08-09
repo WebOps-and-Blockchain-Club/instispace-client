@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
 import '../../screens/user/e_id_card.dart';
+import '../../screens/mess/main.dart';
 import '../../screens/notification/main.dart';
 import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
@@ -161,6 +162,9 @@ class CustomDrawer extends StatelessWidget {
                                       HostelWrapper(user: user)));
                             },
                           ),
+
+                        // Mess Menu
+                        const ViewMessMenu(),
 
                         // Notifications
                         ListTile(
