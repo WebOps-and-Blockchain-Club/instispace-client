@@ -12,6 +12,7 @@ import '../../../models/tag.dart';
 import '../../../models/date_time_format.dart';
 import '../../../screens/home/tag/tags_display.dart';
 import '../../../themes.dart';
+import '../../../widgets/form/warning_popup.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -116,6 +117,9 @@ class _NewNetopPageState extends State<NewNetopPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.netop == null) {
+      Future.delayed(Duration.zero, () => showWarningAlert(context));
+    }
     return Mutation(
         options: MutationOptions(
             document: gql(widget.netop != null ? edit : create),

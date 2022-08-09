@@ -9,6 +9,7 @@ import '../../../models/query.dart';
 import '../../../themes.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/form/warning_popup.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/text/label.dart';
 
@@ -46,6 +47,9 @@ class _NewQueryPageState extends State<NewQueryPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.query == null) {
+      Future.delayed(Duration.zero, () => showWarningAlert(context));
+    }
     return Mutation(
         options: MutationOptions(
           document: gql(widget.query != null ? QueryGQL.edit : QueryGQL.create),
