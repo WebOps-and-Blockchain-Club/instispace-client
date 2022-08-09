@@ -49,6 +49,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
   // Variables
   late TagsModel selectedTags = TagsModel.fromJson([]);
   String tagError = "";
+  bool isLoading = false;
 
   // Services
   List<String>? imageUrls;
@@ -425,18 +426,32 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                         await imagePickerService
                                             .getMultipartFiles();
                                     if (widget.netop != null) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      QueryResult? uploadResult =
+                                          await imagePickerService
+                                              .uploadImage();
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       runMutation({
                                         "editData": {
                                           "title": title.text,
                                           "content": description.text,
                                           "tagIds": selectedTags.getTagIds(),
                                           "endTime": _dateTime.toISOFormat(),
-                                          "imageUrls": imageUrls,
+                                          "imageUrls": (imageUrls ?? []) +
+                                              (uploadResult
+                                                      ?.data!["imageUpload"]
+                                                          ["imageUrls"]
+                                                      ?.cast<String>() ??
+                                                  []),
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
                                         "id": widget.netop!.id,
-                                        "images": image,
+                                        // "image": image,
                                       });
                                     } else {
                                       runMutation({
@@ -448,13 +463,13 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
-                                        "images": image
+                                        "image": image
                                       });
                                     }
                                   }
                                 },
                                 text: "Save",
-                                isLoading: result!.isLoading,
+                                isLoading: result!.isLoading || isLoading,
                               ))
                             ],
                           ),

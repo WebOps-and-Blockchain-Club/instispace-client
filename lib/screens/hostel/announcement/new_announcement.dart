@@ -46,6 +46,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
   List<String>? imageUrls;
   late HostelsModel selectedHostels = HostelsModel.fromJson([]);
   String hostelError = "";
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -382,17 +383,31 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                             await imagePickerService
                                                 .getMultipartFiles();
                                         if (widget.announcement != null) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          QueryResult? uploadResult =
+                                              await imagePickerService
+                                                  .uploadImage();
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                           runMutation({
                                             'updateAnnouncementInput': {
                                               "title": name.text,
                                               "description": description.text,
                                               "endTime":
                                                   _dateTime.toISOFormat(),
-                                              "imageUrls": imageUrls,
+                                              "imageUrls": (imageUrls ?? []) +
+                                                  (uploadResult
+                                                          ?.data!["imageUpload"]
+                                                              ["imageUrls"]
+                                                          ?.cast<String>() ??
+                                                      []),
                                               "hostelIds": selectedHostels
                                                   .getHostelIds(),
                                             },
-                                            'images': image,
+                                            // 'images': image,
                                             'id': widget.announcement!.id,
                                           });
                                         } else {
@@ -413,7 +428,7 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                     text: widget.announcement != null
                                         ? "Edit Announcement"
                                         : "Create Announcement",
-                                    isLoading: result!.isLoading,
+                                    isLoading: result!.isLoading || isLoading,
                                   ),
                                 )
                               ],

@@ -42,8 +42,8 @@ class NetopGQL {
   """;
 
   static const edit = """
-    mutation(\$editData: editNetopsInput!, \$id: String!){
-      editNetop(EditNetopsData: \$editData, NetopId: \$id) {
+    mutation(\$editData: editNetopsInput!, \$id: String!, \$image: [Upload!]){
+      editNetop(EditNetopsData: \$editData, NetopId: \$id, Image: \$image) {
         id,
         content,
         commentCount

@@ -61,13 +61,17 @@ class LostAndFoundItemModel {
                 location: location,
                 time: time,
                 contact: contact,
-                category: category)
+                category: category,
+                email:
+                    "${createdBy.roll!}${(createdBy.role == "USER" || createdBy.role == "MODERATOR") ? "@smail.iitm.ac.in" : ""}")
             .toDescriptionString(),
         lnFDescription: LnFDecription(
             location: location,
             time: time,
             contact: contact,
-            category: category),
+            category: category,
+            email:
+                "${createdBy.roll!}${(createdBy.role == "USER" || createdBy.role == "MODERATOR") ? "@smail.iitm.ac.in" : ""}"),
         imageUrls: images,
         permissions: permissions);
   }
@@ -97,14 +101,16 @@ class LnFDecription {
   final String time;
   final String? contact;
   final String category;
+  final String email;
 
   LnFDecription(
       {required this.location,
       required this.time,
       this.contact,
-      required this.category});
+      required this.category,
+      required this.email});
 
   String toDescriptionString() {
-    return "At $location on ${DateTimeFormatModel.fromString(time).toFormat("E, MMM dd, yyyy, h:mm a")}. \nPlease contact me at $contact ${category == "LOST" ? "if you find" : "to claim"} the item.";
+    return "At $location on ${DateTimeFormatModel.fromString(time).toFormat("E, MMM dd, yyyy, h:mm a")}. \nPlease contact me at ${contact ?? email} ${category == "LOST" ? "if you find" : "to claim"} the item.";
   }
 }

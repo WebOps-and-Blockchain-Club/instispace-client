@@ -58,7 +58,7 @@ class AboutUsPage extends StatelessWidget {
       },
       {
         "content":
-            "We hope you have a great time using our app. Any feed is much appreciated.",
+            "We hope you have a great time using our app. Any feedback is much appreciated.",
         "style": styleNormal
       },
     ];
@@ -179,7 +179,7 @@ class AboutUsPage extends StatelessWidget {
                       const SizedBox(height: 5),
                       const Center(
                         child: Text(
-                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth\nSpecial Mention: Dhanveerraj J M\nLogo Designer: Vaidehi Garodia",
+                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth\nSpecial Mention: Dhanveerraj J M\nLogo Designed by: Vaidehi Garodia",
                           textAlign: TextAlign.center,
                         ),
                       ),

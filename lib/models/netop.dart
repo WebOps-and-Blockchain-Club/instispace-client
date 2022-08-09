@@ -95,6 +95,7 @@ class NetopModel {
         imageUrls: images,
         like: like,
         star: star,
+        cta: cta,
         endTime: endTime,
         tags: tags,
         comments: comments,

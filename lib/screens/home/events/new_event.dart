@@ -52,6 +52,7 @@ class _NewEventState extends State<NewEvent> {
   List<String>? imageUrls;
   late TagsModel selectedTags = TagsModel.fromJson([]);
   String tagError = "";
+  bool isLoading = false;
 
   // Services
   final localStorage = LocalStorageService();
@@ -450,6 +451,15 @@ class _NewEventState extends State<NewEvent> {
                                         await imagePickerService
                                             .getMultipartFiles();
                                     if (widget.event != null) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      QueryResult? uploadResult =
+                                          await imagePickerService
+                                              .uploadImage();
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       runMutation({
                                         "editData": {
                                           "content": description.text,
@@ -459,10 +469,15 @@ class _NewEventState extends State<NewEvent> {
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                           "location": location.text,
-                                          "imageUrls": imageUrls
+                                          "imageUrls": (imageUrls ?? []) +
+                                              (uploadResult
+                                                      ?.data!["imageUpload"]
+                                                          ["imageUrls"]
+                                                      ?.cast<String>() ??
+                                                  []),
                                         },
                                         "id": widget.event!.id,
-                                        "image": image,
+                                        // "image": image,
                                       });
                                     } else {
                                       runMutation({
@@ -481,7 +496,7 @@ class _NewEventState extends State<NewEvent> {
                                   }
                                 },
                                 text: "Save",
-                                isLoading: result!.isLoading,
+                                isLoading: result!.isLoading || isLoading,
                               ))
                             ],
                           ),

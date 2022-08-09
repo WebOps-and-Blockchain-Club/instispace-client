@@ -66,7 +66,7 @@ PostAction homeCardDeleteAction(
             i < data["getMe"]["getHome"]["announcements"].length;
             i++) {
           if (data["getMe"]["getHome"]["announcements"][i]["id"] != post.id) {
-            newData = [newData] + data["getMe"]["getHome"]["announcements"][i];
+            newData = newData + [data["getMe"]["getHome"]["announcements"][i]];
           }
         }
         data["getMe"]["getHome"]["announcements"] = newData;
@@ -75,7 +75,7 @@ PostAction homeCardDeleteAction(
         dynamic newData = [];
         for (var i = 0; i < data["getMe"]["getHome"]["events"].length; i++) {
           if (data["getMe"]["getHome"]["events"][i]["id"] != post.id) {
-            newData = [newData] + data["getMe"]["getHome"]["events"][i];
+            newData = newData + [data["getMe"]["getHome"]["events"][i]];
           }
         }
         data["getMe"]["getHome"]["events"] = newData;
@@ -84,7 +84,7 @@ PostAction homeCardDeleteAction(
         dynamic newData = [];
         for (var i = 0; i < data["getMe"]["getHome"]["netops"].length; i++) {
           if (data["getMe"]["getHome"]["netops"][i]["id"] != post.id) {
-            newData = [newData] + data["getMe"]["getHome"]["netops"][i];
+            newData = newData + [data["getMe"]["getHome"]["netops"][i]];
           }
         }
         data["getMe"]["getHome"]["netops"] = newData;

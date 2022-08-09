@@ -53,7 +53,7 @@ PostAction tagCardDeleteAction(
         dynamic newData = [];
         for (var i = 0; i < data["getTag"]["events"].length; i++) {
           if (data["getTag"]["events"][i]["id"] != post.id) {
-            newData = [newData] + data["getTag"]["events"][i];
+            newData = newData + [data["getTag"]["events"][i]];
           }
         }
         data["getTag"]["events"] = newData;
@@ -62,7 +62,7 @@ PostAction tagCardDeleteAction(
         dynamic newData = [];
         for (var i = 0; i < data["getTag"]["netops"].length; i++) {
           if (data["getTag"]["netops"][i]["id"] != post.id) {
-            newData = [newData] + data["getTag"]["netops"][i];
+            newData = newData + [data["getTag"]["netops"][i]];
           }
         }
         data["getTag"]["netops"] = newData;

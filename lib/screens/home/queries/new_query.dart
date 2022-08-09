@@ -30,6 +30,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
   final TextEditingController description = TextEditingController();
 
   List<String>? imageUrls;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -203,13 +204,27 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                             await imagePickerService
                                                 .getMultipartFiles();
                                         if (widget.query != null) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          QueryResult? uploadResult =
+                                              await imagePickerService
+                                                  .uploadImage();
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                           runMutation({
                                             'editMyQuerysData': {
                                               "title": name.text,
                                               "content": description.text,
-                                              "imageUrls": imageUrls,
+                                              "imageUrls": (imageUrls ?? []) +
+                                                  (uploadResult
+                                                          ?.data!["imageUpload"]
+                                                              ["imageUrls"]
+                                                          ?.cast<String>() ??
+                                                      []),
                                             },
-                                            'attachments': image,
+                                            // 'images': image,
                                             'id': widget.query!.id,
                                           });
                                         } else {
@@ -218,7 +233,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                               "title": name.text,
                                               "content": description.text,
                                             },
-                                            'attachments': image,
+                                            'images': image,
                                           });
                                         }
                                       }
@@ -226,7 +241,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                     text: widget.query != null
                                         ? "Edit Query"
                                         : "Create Query",
-                                    isLoading: result!.isLoading,
+                                    isLoading: result!.isLoading || isLoading,
                                   ),
                                 )
                               ],

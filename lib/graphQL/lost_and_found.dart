@@ -27,6 +27,7 @@ class LostAndFoundGQL {
             id
             roll
             name
+            role
           }
         }
       }
@@ -49,6 +50,7 @@ class LostAndFoundGQL {
           id
           roll
           name
+          role
         }
       }
     }
@@ -70,6 +72,7 @@ class LostAndFoundGQL {
           id
           roll
           name
+          role
         }
       }
     }
@@ -96,6 +99,7 @@ class LostAndFoundGQL {
         id
         roll
         name
+        role
       }
     }
   """;

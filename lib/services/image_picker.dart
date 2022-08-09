@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:client/widgets/button/elevated_button.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http_parser/http_parser.dart';
 
 import 'package:client/widgets/button/icon_button.dart';
@@ -8,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../graphQL/image_upload.dart';
 import '../themes.dart';
+import 'client.dart';
 
 class ImagePickerService extends ChangeNotifier {
   final int noOfImages;
@@ -124,6 +127,18 @@ class ImagePickerService extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  Future<QueryResult?> uploadImage() async {
+    List<MultipartFile>? image = await getMultipartFiles();
+    final _options = MutationOptions(
+      document: gql(ImageGQL.upload),
+      variables: <String, dynamic>{
+        'image': image,
+      },
+    );
+    QueryResult result = await uploadClient().mutate(_options);
+    return result;
   }
 
   Widget previewImages(

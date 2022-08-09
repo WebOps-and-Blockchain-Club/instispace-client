@@ -23,3 +23,10 @@ ValueNotifier<GraphQLClient> client(String? token) {
     link: link,
   ));
 }
+
+GraphQLClient uploadClient() {
+  return (GraphQLClient(
+    cache: GraphQLCache(store: HiveStore()),
+    link: httpLink,
+  ));
+}

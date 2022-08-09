@@ -40,7 +40,6 @@ class _QueriesPageState extends State<QueriesPage> {
     final Map<String, dynamic> variables = {
       "take": take,
       "lastId": "",
-      "orderByLikes": true,
       "search": search
     };
     final QueryOptions<Object?> options =

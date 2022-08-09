@@ -47,10 +47,10 @@ class QueryGQL {
   """;
 
   static const create = """
-    mutation(\$createQuerysInput: createQuerysInput!, \$attachments: [Upload!]) {
+    mutation(\$createQuerysInput: createQuerysInput!, \$images: [Upload!]) {
       createMyQuery(
         createQuerysInput: \$createQuerysInput
-        Attachments: \$attachments
+        Images: \$images
       ) {
         id
         createdAt
@@ -87,12 +87,12 @@ class QueryGQL {
     mutation(
       \$id: String!
       \$editMyQuerysData: editQuerysInput!
-      \$attachments: [Upload!]
+      \$images: [Upload!]
     ) {
       editMyQuery(
         MyQueryId: \$id
         EditMyQuerysData: \$editMyQuerysData
-        Attachments: \$attachments
+        Image: \$images
       ) {
         id
         createdAt

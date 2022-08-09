@@ -10,6 +10,7 @@ import '../../../models/lost_and_found.dart';
 import '../../../models/date_time_format.dart';
 import '../../../themes.dart';
 import '../../../utils/validation.dart';
+import '../../../widgets/form/warning_popup.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -45,6 +46,7 @@ class _NewItemPageState extends State<NewItemPage> {
 
   // Variables
   List<String>? imageUrls;
+  bool isLoading = false;
 
   Future getItemData(LnFEditModel? _item) async {
     if (_item != null) {
@@ -208,7 +210,9 @@ class _NewItemPageState extends State<NewItemPage> {
                                               context: context,
                                               initialDate: DateTime.now()
                                                   .add(const Duration(days: 7)),
-                                              firstDate: DateTime.now(),
+                                              firstDate: DateTime.now()
+                                                  .subtract(
+                                                      const Duration(days: 7)),
                                               lastDate: DateTime.now().add(
                                                   const Duration(days: 30 * 5)))
                                           .then(
@@ -359,16 +363,30 @@ class _NewItemPageState extends State<NewItemPage> {
                                         await imagePickerService
                                             .getMultipartFiles();
                                     if (widget.item != null) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      QueryResult? uploadResult =
+                                          await imagePickerService
+                                              .uploadImage();
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       runMutation({
                                         "editItemInput": {
                                           "name": title.text,
                                           "time": _dateTime.toISOFormat(),
                                           "location": location.text,
                                           "contact": contact.text,
-                                          "imageUrls": imageUrls,
+                                          "imageUrls": (imageUrls ?? []) +
+                                              (uploadResult
+                                                      ?.data!["imageUpload"]
+                                                          ["imageUrls"]
+                                                      ?.cast<String>() ??
+                                                  []),
                                         },
                                         "id": widget.item!.id,
-                                        "images": image,
+                                        // "images": image,
                                       });
                                     } else {
                                       runMutation({
@@ -386,7 +404,7 @@ class _NewItemPageState extends State<NewItemPage> {
                                   }
                                 },
                                 text: "Submit",
-                                isLoading: result!.isLoading,
+                                isLoading: result!.isLoading || isLoading,
                               ))
                             ],
                           ),
