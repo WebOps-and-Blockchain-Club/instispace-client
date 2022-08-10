@@ -112,14 +112,14 @@ class _NewNetopPageState extends State<NewNetopPage> {
   @override
   void initState() {
     getNetopData(widget.netop);
+    if (widget.netop == null) {
+      Future.delayed(Duration.zero, () => showWarningAlert(context));
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.netop == null) {
-      Future.delayed(Duration.zero, () => showWarningAlert(context));
-    }
     return Mutation(
         options: MutationOptions(
             document: gql(widget.netop != null ? edit : create),

@@ -38,6 +38,9 @@ class _NewQueryPageState extends State<NewQueryPage> {
     if (widget.query != null) {
       name.text = widget.query!.title;
       description.text = widget.query!.description;
+      if (widget.query == null) {
+        Future.delayed(Duration.zero, () => showWarningAlert(context));
+      }
       setState(() {
         imageUrls = widget.query!.images;
       });
@@ -47,9 +50,6 @@ class _NewQueryPageState extends State<NewQueryPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.query == null) {
-      Future.delayed(Duration.zero, () => showWarningAlert(context));
-    }
     return Mutation(
         options: MutationOptions(
           document: gql(widget.query != null ? QueryGQL.edit : QueryGQL.create),

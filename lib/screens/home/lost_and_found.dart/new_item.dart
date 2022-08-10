@@ -93,14 +93,14 @@ class _NewItemPageState extends State<NewItemPage> {
   @override
   void initState() {
     getItemData(widget.item);
+    if (widget.item == null) {
+      Future.delayed(Duration.zero, () => showWarningAlert(context));
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.item == null) {
-      Future.delayed(Duration.zero, () => showWarningAlert(context));
-    }
     return Mutation(
         options: MutationOptions(
             document: gql(widget.item != null

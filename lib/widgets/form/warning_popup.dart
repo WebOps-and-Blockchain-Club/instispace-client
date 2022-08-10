@@ -10,10 +10,10 @@ void showWarningAlert(BuildContext context) {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-            contentPadding:
-                const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 0),
-            actionsPadding:
-                const EdgeInsets.only(right: 15, left: 15, bottom: 10),
+            titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            actionsPadding: const EdgeInsets.all(10),
+            title: const Text('Warning', textAlign: TextAlign.center),
             content: RichText(
               text: TextSpan(
                 children: [

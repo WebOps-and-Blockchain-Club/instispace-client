@@ -217,6 +217,7 @@ class EditPostButton extends StatelessWidget {
       icon: Icons.edit_outlined,
       text: "Edit",
       onPressed: () {
+        Navigator.of(context).pop();
         if (edit != null) navigate(context, edit!.to);
       },
     );
@@ -237,8 +238,10 @@ class _DeletePostButtonState extends State<DeletePostButton> {
     return CustomFlatIconTextButton(
       icon: Icons.delete_outline,
       text: "Delete",
-      onPressed: () => widget.delete != null
-          ? showDialog(
+      onPressed: () {
+        Navigator.of(context).pop();
+        if (widget.delete != null) {
+          showDialog(
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(builder: (context, _) {
@@ -297,8 +300,9 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                     ],
                   );
                 });
-              })
-          : {},
+              });
+        }
+      },
     );
   }
 }
@@ -317,8 +321,10 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
     return CustomFlatIconTextButton(
       icon: Icons.done_all_outlined,
       text: "Item Found/Returned",
-      onPressed: () => widget.resolve != null
-          ? showDialog(
+      onPressed: () {
+        Navigator.of(context).pop();
+        if (widget.resolve != null) {
+          showDialog(
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(builder: (context, _) {
@@ -378,8 +384,9 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
                     ],
                   );
                 });
-              })
-          : {},
+              });
+        }
+      },
     );
   }
 }
