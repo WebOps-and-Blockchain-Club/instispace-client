@@ -5,6 +5,8 @@ import '../../../models/tag.dart';
 import '../../../graphQL/tag.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../themes.dart';
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 
 class SelectTags extends StatefulWidget {
   final TagsModel selectedTags;
@@ -43,11 +45,11 @@ class _SelectTagsState extends State<SelectTags> {
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
-              return Text(result.exception.toString());
+              return Error(error: result.exception.toString());
             }
 
-            if (result.isLoading) {
-              return const Text('Loading');
+            if (result.isLoading && result.data == null) {
+              return const Loading();
             }
 
             final List<CategoryModel> categorys =
@@ -57,7 +59,7 @@ class _SelectTagsState extends State<SelectTags> {
             }
 
             if (categorys.isEmpty) {
-              return const Text('No Tags found');
+              return const Error(message: "No Tags Found", error: "");
             }
 
             return Column(

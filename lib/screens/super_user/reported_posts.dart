@@ -1,7 +1,8 @@
-import 'package:client/screens/home/comment/main.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../home/comment/main.dart';
+import '../../widgets/helpers/error.dart';
 import '../../models/post.dart';
 import '../../models/date_time_format.dart';
 import '../../models/report.dart';
@@ -172,7 +173,9 @@ class _ReportCardState extends State<ReportCard> {
                       },
                       onError: (dynamic error) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Update Failed')),
+                          SnackBar(
+                              content:
+                                  Text(formatErrorMessage(error.toString()))),
                         );
                       },
                     ),

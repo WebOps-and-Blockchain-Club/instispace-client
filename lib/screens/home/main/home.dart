@@ -10,6 +10,7 @@ import '../../../models/post.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/headers/main.dart';
+import '../../../widgets/helpers/error.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: (home == null || home.isEmpty)
-                        ? const Text("No Posts")
+                        ? const Error(error: "No Posts")
                         : ListView.builder(
                             shrinkWrap: true,
                             itemCount: home.length,
@@ -98,13 +99,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          HiveStore().reset();
-          auth.logout();
-        },
-        child: const Icon(Icons.logout),
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import 'new_contact.dart';
 import '../shared/hostel_dropdown.dart';
 import '../../../widgets/card/action_buttons.dart';
@@ -107,11 +109,11 @@ class _ContactsPageState extends State<ContactsPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final ContactsModel contacts =
@@ -121,7 +123,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           contacts.search(search);
 
                       if (contactsF.isEmpty) {
-                        return const Text('No contacts');
+                        return const Error(message: "No Contacts", error: "");
                       }
 
                       return RefreshIndicator(

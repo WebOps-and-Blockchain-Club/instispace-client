@@ -3,6 +3,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 HttpLink httpLink = HttpLink(
   'https://instispace.iitm.ac.in/api/graphql',
+  defaultHeaders: {
+    "apikey": "",
+  },
 );
 
 ValueNotifier<GraphQLClient> client(String? token) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../themes.dart';
+import '../../widgets/helpers/error.dart';
 import '../../graphQL/super_user.dart';
 import '../../utils/validation.dart';
 import '../../widgets/button/elevated_button.dart';
@@ -81,13 +82,7 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
                           ),
                         ),
                         if (result != null && result.hasException)
-                          SelectableText(result.exception.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      color:
-                                          ColorPalette.palette(context).error)),
+                          ErrorText(error: result.exception.toString()),
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: CustomElevatedButton(

@@ -8,6 +8,7 @@ import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
 import '../../models/user.dart';
 import '../../themes.dart';
+import '../../widgets/helpers/error.dart';
 
 class EditPassword extends StatefulWidget {
   final AuthService auth;
@@ -156,13 +157,7 @@ class _EditPasswordState extends State<EditPassword> {
                             ),
 
                             if (result != null && result.hasException)
-                              SelectableText(result.exception.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: ColorPalette.palette(context)
-                                              .error)),
+                              ErrorText(error: result.exception.toString()),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

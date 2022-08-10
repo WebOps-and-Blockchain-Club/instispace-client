@@ -7,6 +7,7 @@ import '../../../models/amenities.dart';
 import '../../../models/user.dart';
 import '../../../models/hostel.dart';
 import '../../../themes.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
@@ -115,8 +116,9 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                       },
                       onError: (dynamic error) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Creation Failed, Server Error')),
+                          SnackBar(
+                              content:
+                                  Text(formatErrorMessage(error.toString()))),
                         );
                       },
                     ),
@@ -186,15 +188,6 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                                 },
                                 error: hostelError,
                               ),
-
-                            if (result != null && result.hasException)
-                              SelectableText(result.exception.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: ColorPalette.palette(context)
-                                              .error)),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

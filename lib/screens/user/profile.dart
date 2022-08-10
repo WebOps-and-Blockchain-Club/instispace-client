@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../widgets/helpers/loading.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
 import '../../models/user.dart';
 import '../../themes.dart';
+import '../../widgets/helpers/error.dart';
 
 class Profile extends StatelessWidget {
   final UserModel? user;
@@ -49,7 +51,9 @@ class Profile extends StatelessWidget {
                           icon: Icons.arrow_back,
                           onPressed: () => Navigator.of(context).pop(),
                         )),
-                    SelectableText(result!.exception.toString()),
+                    ErrorText(
+                      error: result!.exception.toString(),
+                    ),
                   ],
                 );
               }
@@ -62,7 +66,7 @@ class Profile extends StatelessWidget {
                           icon: Icons.arrow_back,
                           onPressed: () => Navigator.of(context).pop(),
                         )),
-                    const Text("Loading"),
+                    const Loading(),
                   ],
                 );
               }

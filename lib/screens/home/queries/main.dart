@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/helpers/navigate.dart';
 import '../../hostel/main.dart';
 import 'actions.dart';
@@ -110,11 +112,11 @@ class _QueriesPageState extends State<QueriesPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts = QueriesModel.fromJson(
@@ -122,7 +124,8 @@ class _QueriesPageState extends State<QueriesPage> {
                           .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(
+                            message: "No Queries Found", error: "");
                       }
 
                       final total = result.data!["getMyQuerys"]["total"];

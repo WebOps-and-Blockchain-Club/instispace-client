@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../graphQL/auth.dart';
 import '../../../models/hostel.dart';
 import '../../../widgets/button/elevated_button.dart';
@@ -41,18 +43,18 @@ class _SelectHostelsState extends State<SelectHostels> {
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
-              return Text(result.exception.toString());
+              return Error(error: result.exception.toString());
             }
 
-            if (result.isLoading) {
-              return const Text('Loading');
+            if (result.isLoading && result.data == null) {
+              return const Loading();
             }
 
             final List<HostelModel> hostels =
                 HostelsModel.fromJson(result.data!["getHostels"]).hostels;
 
             if (hostels.isEmpty) {
-              return const Text('No Hostels found');
+              return const Error(message: "No Hostels Found", error: "");
             }
 
             return Column(

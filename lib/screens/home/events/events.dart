@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/helpers/navigate.dart';
 import '../../hostel/main.dart';
 import 'actions.dart';
@@ -166,11 +168,11 @@ class _EventsPageState extends State<EventsPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts = EventsModel.fromJson(
@@ -178,7 +180,7 @@ class _EventsPageState extends State<EventsPage> {
                           .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(error: "No Posts");
                       }
 
                       final total = result.data!["getEvents"]["total"];

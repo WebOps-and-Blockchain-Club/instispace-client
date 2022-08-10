@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
 import '../../../widgets/helpers/navigate.dart';
 import '../../hostel/main.dart';
 import 'actions.dart';
 import 'new_netop.dart';
 import '../tag/select_tags.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -166,11 +168,11 @@ class _NetopsPageState extends State<NetopsPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts = NetopsModel.fromJson(
@@ -178,7 +180,7 @@ class _NetopsPageState extends State<NetopsPage> {
                           .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(error: "No Posts");
                       }
 
                       final total = result.data!["getNetops"]["total"];

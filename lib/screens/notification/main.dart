@@ -3,6 +3,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../graphQL/notification.dart';
 import '../../themes.dart';
+import '../../widgets/helpers/error.dart';
+import '../../widgets/helpers/loading.dart';
 import '../../widgets/button/elevated_button.dart';
 import '../../widgets/button/icon_button.dart';
 import '../../widgets/form/dropdown_button.dart';
@@ -42,7 +44,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     onRefresh: () => refetch!(),
                     child: (() {
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       return EditNotification(result: result);
@@ -155,7 +157,8 @@ class _EditNotificationState extends State<EditNotification> {
                 },
               ),
               if (mutationResult != null && mutationResult.hasException)
-                SelectableText(mutationResult.exception.toString(),
+                SelectableText(
+                    formatErrorMessage(mutationResult.exception.toString()),
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium

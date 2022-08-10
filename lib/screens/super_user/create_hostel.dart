@@ -6,6 +6,7 @@ import '../../themes.dart';
 import '../../widgets/button/elevated_button.dart';
 import '../../widgets/button/icon_button.dart';
 import '../../widgets/headers/main.dart';
+import '../../widgets/helpers/error.dart';
 import '../../widgets/text/label.dart';
 
 class CreateHostelPage extends StatefulWidget {
@@ -82,13 +83,7 @@ class _CreateHostelPageState extends State<CreateHostelPage> {
                             ),
 
                             if (result != null && result.hasException)
-                              SelectableText(result.exception.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: ColorPalette.palette(context)
-                                              .error)),
+                              ErrorText(error: result.exception.toString()),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

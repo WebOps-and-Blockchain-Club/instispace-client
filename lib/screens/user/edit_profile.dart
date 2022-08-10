@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/user.dart';
 import '../../utils/validation.dart';
+import '../../widgets/helpers/error.dart';
 import 'edit_password.dart';
 import '../../../graphQL/auth.dart';
 import '../../../models/hostel.dart';
@@ -232,9 +233,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 ),
 
                 if (result != null && result.hasException)
-                  SelectableText(result.exception.toString(),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: ColorPalette.palette(context).error)),
+                  ErrorText(error: result.exception.toString()),
 
                 Padding(
                   padding: const EdgeInsets.only(top: 10),

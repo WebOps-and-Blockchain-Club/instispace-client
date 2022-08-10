@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../themes.dart';
 import '../../graphQL/feedback.dart';
+import '../../widgets/helpers/error.dart';
 import '../../widgets/form/rating_input.dart';
 import '../../widgets/text/label.dart';
 import '../../widgets/button/elevated_button.dart';
@@ -157,7 +158,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             ),
 
                             if (result != null && result.hasException)
-                              SelectableText(result.exception.toString(),
+                              SelectableText(
+                                  formatErrorMessage(
+                                      result.exception.toString()),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import '../shared/hostel_dropdown.dart';
 import 'new_announcement.dart';
 import 'actions.dart';
@@ -113,11 +115,11 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts = AnnouncementsModel.fromJson(
@@ -126,7 +128,8 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                           .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(
+                            message: "No Announcements", error: "");
                       }
 
                       final total = result.data!["getAnnouncements"]["total"];
@@ -179,7 +182,6 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                                   final PostActions actions =
                                       annoucementActions(
                                           widget.user, posts[index], options);
-                                  //Show hostels in tag card
                                   return PostCard(
                                     post: posts[index],
                                     actions: actions,

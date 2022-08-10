@@ -1,3 +1,4 @@
+import 'package:client/widgets/helpers/error.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -131,12 +132,7 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                     if (result != null && result.hasException)
-                      SelectableText(result.exception.toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color: ColorPalette.palette(context).error)),
+                      ErrorText(error: result.exception.toString()),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: CustomElevatedButton(

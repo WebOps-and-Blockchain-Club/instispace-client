@@ -10,6 +10,7 @@ import '../../../models/lost_and_found.dart';
 import '../../../models/date_time_format.dart';
 import '../../../themes.dart';
 import '../../../utils/validation.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/form/warning_popup.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/elevated_button.dart';
@@ -138,8 +139,7 @@ class _NewItemPageState extends State<NewItemPage> {
             },
             onError: (dynamic error) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Post Creation Failed, Server Error')),
+                SnackBar(content: Text(formatErrorMessage(error.toString()))),
               );
             }),
         builder: (

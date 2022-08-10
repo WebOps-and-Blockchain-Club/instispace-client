@@ -8,6 +8,7 @@ import '../../../models/date_time_format.dart';
 import '../../../themes.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/headers/main.dart';
+import '../../../widgets/helpers/error.dart';
 
 class CommentsPage extends StatefulWidget {
   final CommentsModel comments;
@@ -221,7 +222,7 @@ class _CreateCommentState extends State<CreateComment> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
-                        result.exception.toString(),
+                        formatErrorMessage(result.exception.toString()),
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium!

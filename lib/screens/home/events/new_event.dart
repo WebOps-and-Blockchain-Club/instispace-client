@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/helpers/error.dart';
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
 import '../../../graphQL/events.dart';
@@ -155,8 +156,7 @@ class _NewEventState extends State<NewEvent> {
             },
             onError: (dynamic error) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Post Creation Failed, Server Error')),
+                SnackBar(content: Text(formatErrorMessage(error.toString()))),
               );
             }),
         builder: (

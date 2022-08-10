@@ -7,6 +7,8 @@ import '../../../models/post.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/headers/main.dart';
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import 'actions.dart';
 
 class TagPage extends StatefulWidget {
@@ -45,18 +47,18 @@ class _TagPageState extends State<TagPage> {
                     onRefresh: () => refetch!(),
                     child: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final TagModel tag =
                           TagModel.fromJson(result.data!["getTag"]);
 
                       if (tag.events == null && tag.netops == null) {
-                        return const Text('No posts');
+                        return const Error(error: "No Posts");
                       }
 
                       return ListView(

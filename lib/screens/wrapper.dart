@@ -3,6 +3,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../models/user.dart';
 import '../services/auth.dart';
+import '../../widgets/helpers/error.dart';
+import '../../widgets/helpers/loading.dart';
 import '../../graphQL/user.dart';
 import 'auth/login.dart';
 import 'home/main.dart';
@@ -31,11 +33,13 @@ class _WrapperState extends State<Wrapper> {
             return Scaffold(
               body: (() {
                 if (result.hasException) {
-                  return SelectableText(result.exception.toString());
+                  return Error(error: result.exception.toString());
                 }
 
                 if (result.isLoading) {
-                  return const Text('Loading');
+                  return const Loading(
+                    message: "Connecting to InstiSpace...",
+                  );
                 }
 
                 final UserModel user =
@@ -55,8 +59,7 @@ class _WrapperState extends State<Wrapper> {
                   );
                 }
 
-                return SelectableText(
-                    "Some error occured ${result.data.toString()}");
+                return Error(error: result.data.toString());
               }()),
             );
           });

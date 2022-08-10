@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import 'new_amenity.dart';
 import 'actions.dart';
 import '../shared/hostel_dropdown.dart';
@@ -93,11 +95,11 @@ class _AmenitiesPageState extends State<AmenitiesPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts =
@@ -105,7 +107,8 @@ class _AmenitiesPageState extends State<AmenitiesPage> {
                               .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(
+                            message: "No Amenities Found", error: "");
                       }
 
                       return RefreshIndicator(

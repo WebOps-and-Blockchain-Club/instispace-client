@@ -4,6 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'new_item.dart';
 import 'actions.dart';
 import '../../hostel/main.dart';
+import '../../../widgets/helpers/loading.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/helpers/navigate.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/card/main.dart';
@@ -124,11 +126,11 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                     },
                     body: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return Error(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Text('Loading');
+                        return const Loading();
                       }
 
                       final List<PostModel> posts =
@@ -137,7 +139,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                               .toPostsModel();
 
                       if (posts.isEmpty) {
-                        return const Text('No posts');
+                        return const Error(error: "No Posts");
                       }
 
                       final total = result.data!["getItems"]["total"];
