@@ -25,7 +25,9 @@ class _ViewFeedbackState extends State<ViewFeedback> {
           horizontalTitleGap: 0,
           title: const Text("View Feedbacks"),
           onTap: () {
-            if (link != null) launchUrlString(link);
+            if (link != null) {
+              launchUrlString(link, mode: LaunchMode.externalApplication);
+            }
           },
           enabled:
               (result.data != null) && (result.data?["getSheetLink"] != null),

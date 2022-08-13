@@ -42,7 +42,7 @@ class _QueriesPageState extends State<QueriesPage> {
     final Map<String, dynamic> variables = {
       "take": take,
       "lastId": "",
-      "search": search
+      "search": search.trim()
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(QueryGQL.getAll), variables: variables);

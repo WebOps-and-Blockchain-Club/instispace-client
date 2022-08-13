@@ -24,7 +24,7 @@ class AboutUsPage extends StatelessWidget {
       {"content": "Events:\n", "style": styleBold},
       {
         "content":
-            "Find all the happenings around the institute. From sports to culturals to technicals, you’ll find everything here.\n\n",
+            "Find all the happenings around the institute. From sports to culture to technicals, you’ll find everything here.\n\n",
         "style": styleNormal
       },
       {"content": "Networking:\n", "style": styleBold},
@@ -36,7 +36,7 @@ class AboutUsPage extends StatelessWidget {
       {"content": "My Hostel:\n", "style": styleBold},
       {
         "content":
-            "Find all updates and announcements in your hostel. You can also find the important contacts as well as the amenities available in the hostel.\n\n",
+            "Find all updates and announcements in your hostel. You can also find the essential contacts and amenities available in the hostel.\n\n",
         "style": styleNormal
       },
       {"content": "Queries:\n", "style": styleBold},
@@ -179,7 +179,7 @@ class AboutUsPage extends StatelessWidget {
                       const SizedBox(height: 5),
                       const Center(
                         child: Text(
-                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth\nSpecial Mention: Dhanveerraj J M\nLogo Designed by: Vaidehi Garodia",
+                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth, Dhanveerraj J M, Vaidehi Garodia\n\n2022 - 2023:\nGanesh S, Gudipudi Rasagnya, Harsh Trivedi, Jaydeep Kotadiya",
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -218,7 +218,9 @@ class AboutUsPage extends StatelessWidget {
                           ),
                           Center(
                             child: GestureDetector(
-                              onTap: () => launchUrlString("https://cfi.iitm.ac.in"),
+                              onTap: () => launchUrlString(
+                                  "https://cfi.iitm.ac.in",
+                                  mode: LaunchMode.externalApplication),
                               child: const Text(
                                 'cfi.iitm.ac.in',
                                 style: TextStyle(color: Colors.blue),

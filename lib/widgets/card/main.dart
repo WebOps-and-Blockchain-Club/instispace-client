@@ -5,7 +5,7 @@ import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
 import '../../utils/string_extension.dart';
-import '../imageView.dart';
+import 'image_view.dart';
 import 'description.dart';
 import 'action_buttons.dart';
 import '../../themes.dart';
@@ -108,6 +108,7 @@ class _PostCardState extends State<PostCard> {
                 child: Swiper(
                   onTap: (index) =>
                       openImageView(context, index, post.imageUrls!),
+                  loop: post.imageUrls!.length != 1,
                   itemBuilder: (BuildContext context, int index) {
                     return CachedNetworkImage(
                       imageUrl: post.imageUrls![index],

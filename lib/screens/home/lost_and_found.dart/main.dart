@@ -45,7 +45,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
       "take": take,
       "lastId": "",
       "itemsFilter": itemFilter,
-      "search": search
+      "search": search.trim()
     };
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(LostAndFoundGQL.getAll), variables: variables);
@@ -221,7 +221,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                             options: options,
                                           )));
                                 },
-                                child: const Icon(Icons.lightbulb_outline)),
+                                child: const Icon(Icons.lightbulb)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -234,7 +234,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                             options: options,
                                           )));
                                 },
-                                child: const Icon(Icons.search)),
+                                child: const Icon(Icons.lightbulb_outlined)),
                           ),
                         ],
                       )

@@ -9,8 +9,17 @@ class AmenitiesModel {
   AmenitiesModel.fromJson(List<dynamic> data)
       : amenities = data.map((e) => AmenityModel.fromJson(e)).toList();
 
-  List<PostModel> toPostsModel() {
-    return amenities.map((e) => e.toPostModel()).toList();
+  List<PostModel> toPostsModel(String key) {
+    List<AmenityModel> _amenities = [];
+    amenities.forEach(((e) {
+      if (key == "" ||
+          (e.hostel.name + e.title + e.description)
+              .toLowerCase()
+              .contains(key.toLowerCase())) {
+        _amenities.add(e);
+      }
+    }));
+    return _amenities.map((e) => e.toPostModel()).toList();
   }
 }
 

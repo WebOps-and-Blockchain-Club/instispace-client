@@ -39,8 +39,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   List<String> getRole(role) {
     switch (role) {
       case "ADMIN":
-        return ["SECRETORY", "HAS", "LEADS", "HOSTEL_SEC"];
-      case "SECRETORY":
+        return ["SECRETARY", "HAS", "LEADS", "HOSTEL_SEC"];
+      case "SECRETARY":
         return ["LEADS"];
       case "HAS":
         return ["HOSTEL_SEC"];

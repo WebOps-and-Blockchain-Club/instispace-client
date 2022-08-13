@@ -25,7 +25,9 @@ class _MessMenuState extends State<ViewMessMenu> {
           horizontalTitleGap: 0,
           title: const Text("View Mess Menu"),
           onTap: () {
-            if (link != null) launchUrlString(link);
+            if (link != null) {
+              launchUrlString(link, mode: LaunchMode.externalApplication);
+            }
           },
           enabled:
               (result.data != null) && (result.data?["getMessMenu"] != null),

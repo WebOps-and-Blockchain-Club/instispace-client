@@ -24,7 +24,8 @@ class CTAButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return url_launcher.Link(
       target: url_launcher.LinkTarget.blank,
-      uri: Uri.parse(cta.link),
+      uri: Uri.parse(
+          cta.link.contains("http") ? cta.link : "http://" + cta.link),
       builder: (context, followLink) => CustomElevatedButton(
           onPressed: followLink, text: cta.name.capitalize()),
     );
@@ -200,7 +201,7 @@ class SharePostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Share.share("*${post.time}* \n${post.description}");
+        await Share.share("*${post.title}* \n${post.description}");
       },
       child: const Icon(Icons.share),
     );

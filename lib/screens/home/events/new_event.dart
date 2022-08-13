@@ -251,7 +251,6 @@ class _NewEventState extends State<NewEvent> {
                                           .then(
                                         (value) {
                                           if (value != null) {
-                                            print(value);
                                             date.text = value.toString();
                                             DateTimeFormatModel _date =
                                                 DateTimeFormatModel(
@@ -289,11 +288,9 @@ class _NewEventState extends State<NewEvent> {
                                         initialTime: TimeOfDay.now(),
                                       ).then((value) {
                                         if (value != null) {
-                                          print(value);
                                           DateTime _dateTime = DateTime(2021, 1,
                                               1, value.hour, value.minute);
                                           time.text = _dateTime.toString();
-                                          print(_dateTime.toString());
                                           DateTimeFormatModel _time =
                                               DateTimeFormatModel(
                                                   dateTime: _dateTime);
@@ -460,6 +457,10 @@ class _NewEventState extends State<NewEvent> {
                                       setState(() {
                                         isLoading = false;
                                       });
+                                      print(imageUrls);
+                                      print(uploadResult?.data?["imageUpload"]
+                                          ["imageUrls"]);
+
                                       runMutation({
                                         "editData": {
                                           "content": description.text,

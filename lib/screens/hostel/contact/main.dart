@@ -83,7 +83,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               onSubmitted: (value) {
                                 setState(() {
-                                  search = value;
+                                  search = value.trim();
                                 });
                               },
                             ),

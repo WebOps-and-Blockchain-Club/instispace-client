@@ -80,7 +80,7 @@ class _LogInState extends State<LogIn> {
                                 'assets/logo/primary_with_text.png')),
                       ),
                     ),
-                    const LabelText(text: "Log In with LDAP"),
+                    const LabelText(text: "Login with LDAP"),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: TextFormField(

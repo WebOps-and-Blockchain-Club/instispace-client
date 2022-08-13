@@ -168,7 +168,7 @@ class _NewItemPageState extends State<NewItemPage> {
                         /// Info
                         LabelText(
                             text:
-                                "What did you ${widget.category.toLowerCase()}?"),
+                                "What did you ${widget.category == "LOST" ? "lost" : "find"}?"),
                         // Title
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
@@ -211,8 +211,7 @@ class _NewItemPageState extends State<NewItemPage> {
                                   },
                                   onTap: () => showDatePicker(
                                               context: context,
-                                              initialDate: DateTime.now()
-                                                  .add(const Duration(days: 7)),
+                                              initialDate: DateTime.now(),
                                               firstDate: DateTime.now()
                                                   .subtract(
                                                       const Duration(days: 7)),

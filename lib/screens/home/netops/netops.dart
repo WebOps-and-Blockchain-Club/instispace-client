@@ -68,7 +68,7 @@ class _NetopsPageState extends State<NetopsPage> {
         "tags": selectedTags.getTagIds(),
         "isStared": isStared
       },
-      "search": search
+      "search": search.trim()
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(NetopGQL.getAll), variables: variables);

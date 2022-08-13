@@ -67,8 +67,8 @@ class EditNotification extends StatefulWidget {
 class _EditNotificationState extends State<EditNotification> {
   String? netop = "Notify only Followed Tags";
   String? event = "Notify only Followed Tags";
-  String? lnf = "Notify Me";
-  String? query = "Notify Me";
+  String? lnf = "Don't Notify Me";
+  String? query = "Don't Notify Me";
   Map<String, String> prefsType1 = {
     "Notify All": "FORALL",
     "Notify only Followed Tags": "FOLLOWED_TAGS",

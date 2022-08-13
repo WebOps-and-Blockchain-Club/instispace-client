@@ -26,7 +26,7 @@ class _SearchUserState extends State<SearchUser> {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> defaultVariables = {
-      "search": search.text,
+      "search": search.text.trim(),
     };
     return SafeArea(
       child: Scaffold(

@@ -16,7 +16,7 @@ class Error extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SvgPicture.asset(getAsset(error),
+          child: SvgPicture.asset(getAsset(error, message),
               height: 250, semanticsLabel: 'A red up arrow'),
         ),
         ErrorText(error: error, message: message)
@@ -44,8 +44,9 @@ class ErrorText extends StatelessWidget {
   }
 }
 
-String getAsset(String error) {
-  if (error.contains("No Posts")) {
+String getAsset(String error, String? message) {
+  if (error.contains("No Posts") ||
+      (message != null && message.contains("No"))) {
     return "assets/illustrations/no_data.svg";
   } else if (error.contains("Failed host lookup")) {
     return "assets/illustrations/network_error.svg";

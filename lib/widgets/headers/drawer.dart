@@ -68,13 +68,13 @@ class CustomDrawer extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "InsitSpace",
+                                      "INSTI SPACE",
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineSmall,
                                     ),
                                     Text(
-                                      "Everything Insti",
+                                      "EVERYTHING INSTI",
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium
@@ -279,6 +279,20 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
+                        // Terms of Service
+                        ListTile(
+                          leading: const Icon(Icons.info_outline),
+                          horizontalTitleGap: 0,
+                          title: const Text("Terms of Service"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            launchUrlString(
+                              'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub',
+                              mode: LaunchMode.externalApplication,
+                            );
+                          },
+                        ),
+
                         // Logout Button
                         ListTile(
                           leading: const Icon(Icons.logout),
@@ -307,8 +321,9 @@ class CustomDrawer extends StatelessWidget {
                                       GestureDetector(
                                         onTap: () {
                                           launchUrlString(
-                                            'https://cfi.iitm.ac.in/clubs/webops-and-blockchain-club',
-                                          );
+                                              'https://cfi.iitm.ac.in/clubs/webops-and-blockchain-club',
+                                              mode: LaunchMode
+                                                  .externalApplication);
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(6),

@@ -13,7 +13,7 @@ void showWarningAlert(BuildContext context) {
             titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
             contentPadding: const EdgeInsets.symmetric(horizontal: 20),
             actionsPadding: const EdgeInsets.all(10),
-            title: const Text('Warning', textAlign: TextAlign.center),
+            title: const Text('Hang On', textAlign: TextAlign.center),
             content: RichText(
               text: TextSpan(
                 children: [
@@ -28,7 +28,8 @@ void showWarningAlert(BuildContext context) {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         launchUrlString(
-                            'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub');
+                            'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub',
+                            mode: LaunchMode.externalApplication);
                       },
                   ),
                 ],

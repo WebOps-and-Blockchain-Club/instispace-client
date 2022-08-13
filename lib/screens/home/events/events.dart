@@ -68,7 +68,7 @@ class _EventsPageState extends State<EventsPage> {
         "tags": selectedTags.getTagIds(),
         "isStared": isStared
       },
-      "search": search
+      "search": search.trim()
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(EventGQL().getAll), variables: variables);

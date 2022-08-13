@@ -1,9 +1,10 @@
-import 'package:client/utils/validation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
+
+import '../../utils/validation.dart';
 
 class Description extends StatelessWidget {
   final String content;
@@ -14,22 +15,27 @@ class Description extends StatelessWidget {
     return SelectableText.rich(
       TextSpan(
         children: content.split(" ").map((_data) {
-          if (isValidEmail(_data)) {
+          if (isValidEmail(_data.trim())) {
             return TextSpan(
                 text: _data + " ",
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => launchUrl(Uri(scheme: 'mailto', path: _data)),
                 style: const TextStyle(color: Color(0xFF0000EE)));
           }
-          if (isURL(_data)) {
+          if (isURL(_data.trim())) {
             return TextSpan(
                 text: _data + " ",
                 recognizer: TapGestureRecognizer()
-                  ..onTap = () =>
-                      launchUrlString(_data, mode: LaunchMode.inAppWebView),
+                  ..onTap = () {
+                    _data.contains("http")
+                        ? launchUrlString(_data,
+                            mode: LaunchMode.externalApplication)
+                        : launchUrlString("http://" + _data,
+                            mode: LaunchMode.externalApplication);
+                  },
                 style: const TextStyle(color: Color(0xFF0000EE)));
           }
-          if (isValidNumber(_data)) {
+          if (isValidNumber(_data.trim())) {
             return TextSpan(
                 text: _data + " ",
                 recognizer: TapGestureRecognizer()

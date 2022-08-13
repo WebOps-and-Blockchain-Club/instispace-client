@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(top: 10),
                         child: Header(
                             title: "Hi ${widget.user.name}",
-                            subTitle: "Get InstiSpace feeds here"),
+                            subTitle: "Get InstiSpace feed here"),
                       );
                     }, childCount: 1),
                   ),

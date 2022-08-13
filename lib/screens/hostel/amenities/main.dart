@@ -104,7 +104,7 @@ class _AmenitiesPageState extends State<AmenitiesPage> {
 
                       final List<PostModel> posts =
                           AmenitiesModel.fromJson(result.data!["getAmenities"])
-                              .toPostsModel();
+                              .toPostsModel(search);
 
                       if (posts.isEmpty) {
                         return const Error(
