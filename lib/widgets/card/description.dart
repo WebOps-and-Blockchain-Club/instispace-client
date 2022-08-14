@@ -24,13 +24,13 @@ class Description extends StatelessWidget {
           }
           if (isURL(_data.trim())) {
             return TextSpan(
-                text: _data + " ",
+                text: _data.toLowerCase() + " ",
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     _data.contains("http")
-                        ? launchUrlString(_data,
+                        ? launchUrlString(_data.trim().toLowerCase(),
                             mode: LaunchMode.externalApplication)
-                        : launchUrlString("http://" + _data,
+                        : launchUrlString("http://" + _data.trim().toLowerCase(),
                             mode: LaunchMode.externalApplication);
                   },
                 style: const TextStyle(color: Color(0xFF0000EE)));
