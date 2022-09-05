@@ -126,7 +126,7 @@ class _EventsPageState extends State<EventsPage> {
                                 } else {
                                   setState(() {
                                     searchValidationError =
-                                        "Enter atleast 4 characters";
+                                        "Enter at least 4 characters";
                                   });
                                 }
                               },

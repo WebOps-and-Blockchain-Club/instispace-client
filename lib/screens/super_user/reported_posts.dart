@@ -66,7 +66,7 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                               children: [
                                 TextSpan(
                                   text:
-                                      "To the accept the report and hide the post permantly, click ",
+                                      "To accept the report and hide the post permanently, click ",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                                 const WidgetSpan(
@@ -74,7 +74,7 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                                 ),
                                 TextSpan(
                                   text:
-                                      "\nTo reject the report and make the visible back again click ",
+                                      "\nTo reject the report and make the post visible again click ",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                                 const WidgetSpan(

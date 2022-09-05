@@ -109,7 +109,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
                             const LabelText(
                                 text:
-                                    "How likely is that would you recommend the app your friends?"),
+                                    "How likely is that would you recommend the app to your friends?"),
                             RatingInput(
                               value: rating3,
                               onChange: (value) {

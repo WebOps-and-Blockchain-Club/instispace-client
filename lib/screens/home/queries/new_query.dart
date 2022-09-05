@@ -162,7 +162,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                 // Attachements
                                 const LabelText(
                                     text:
-                                        "Attachements (Select maximum of 2 image)"),
+                                        "Attachements (Select maximum of 2 images)"),
                                 // Selected Image
                                 imagePickerService.previewImages(
                                     imageUrls: imageUrls,

@@ -282,10 +282,10 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                   ],
                                 ),
 
-                                // Attachements & Tags
+                                // Attachments & Tags
                                 const LabelText(
                                     text:
-                                        "Attachements & Hostels (Select maximum of 4 image)"),
+                                        "Attachments & Hostels (Select maximum of 4 images)"),
                                 // Selected Image
                                 imagePickerService.previewImages(
                                     imageUrls: imageUrls,
