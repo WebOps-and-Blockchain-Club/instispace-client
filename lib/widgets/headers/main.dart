@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../themes.dart';
@@ -77,7 +78,8 @@ class SearchBar extends StatelessWidget {
   final List<ChipModel>? chips;
   final List<String>? selectedChips;
   final Function? onChipFilter;
-  const SearchBar(
+
+  SearchBar(
       {Key? key,
       required this.onSubmitted,
       this.error,
@@ -87,6 +89,8 @@ class SearchBar extends StatelessWidget {
       this.selectedChips,
       this.onChipFilter})
       : super(key: key);
+
+  final _debouncer = Debouncer();
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +119,11 @@ class SearchBar extends StatelessWidget {
                                 hintText: 'What are you looking for?',
                                 prefixIcon: Icon(Icons.search, size: 25)),
                             onSubmitted: onSubmitted,
+                            onChanged: (value) {
+                              _debouncer.run(() {
+                                onSubmitted(value);
+                              });
+                            },
                           ),
                         ))),
                 if (onFilterClick != null)
@@ -189,4 +198,20 @@ class ChipModel {
   final String name;
 
   ChipModel({required this.id, required this.name});
+}
+
+class Debouncer {
+  int? seconds;
+  VoidCallback? action;
+  Timer? timer;
+
+  run(VoidCallback action) {
+    if (null != timer) {
+      timer!.cancel();
+    }
+    timer = Timer(
+      Duration(seconds: seconds ?? 2),
+      action,
+    );
+  }
 }

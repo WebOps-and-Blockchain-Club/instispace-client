@@ -57,7 +57,6 @@ class _SearchUserState extends State<SearchUser> {
                     delegate: SearchBarDelegate(
                       additionalHeight: searchValidationError != "" ? 18 : 0,
                       searchUI: SearchBar(
-                        historyKey: "search-users",
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         onSubmitted: (value) {
                           if (value.isEmpty || value.length >= 4) {
