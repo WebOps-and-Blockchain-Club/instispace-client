@@ -81,7 +81,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text(
-                                    'Account Created and mail is seny to the respective email id')),
+                                    'Account Created and mail is sent to the respective email id')),
                           );
                         }
                       },

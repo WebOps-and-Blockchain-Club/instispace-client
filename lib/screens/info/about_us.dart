@@ -179,7 +179,7 @@ class AboutUsPage extends StatelessWidget {
                       const SizedBox(height: 5),
                       const Center(
                         child: Text(
-                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth, Dhanveerraj J M, Vaidehi Garodia\n\n2022 - 2023:\nGanesh S, Gudipudi Rasagnya, Harsh Trivedi, Jaydeep Kotadiya",
+                          "2021 - 2022:\nJanith M S, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan, Sneha Reddy, Yatharth, Dhanveerraj J M, Vaidehi Garodia\n\n2022 - 2023:\nGanesh S, Rasagnya, Harsh Trivedi, Jaydeep Kotadiya",
                           textAlign: TextAlign.center,
                         ),
                       ),

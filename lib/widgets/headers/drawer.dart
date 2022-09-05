@@ -69,13 +69,13 @@ class CustomDrawer extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "INSTI SPACE",
+                                      "InstiSpace",
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineSmall,
                                     ),
                                     Text(
-                                      "EVERYTHING INSTI",
+                                      "Everything Insti",
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleMedium

@@ -67,7 +67,7 @@ class _SearchUserState extends State<SearchUser> {
                           } else {
                             setState(() {
                               searchValidationError =
-                                  "Enter atleast 4 characters";
+                                  "Enter at least 4 characters";
                             });
                           }
                         },
@@ -78,7 +78,7 @@ class _SearchUserState extends State<SearchUser> {
                 ];
               },
               body: (search.text == "")
-                  ? const Text("Enter the  string to search")
+                  ? const Text("Enter the string to search")
                   : Query(
                       options: QueryOptions(
                           document: gql(UserGQL().searchUser),
