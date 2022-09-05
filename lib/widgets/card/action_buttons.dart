@@ -1,9 +1,11 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
+import '../../models/date_time_format.dart';
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
@@ -202,7 +204,28 @@ class SharePostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await Share.share("*${post.title}* \n${post.description}");
+        List<String> images = [];
+        if (post.imageUrls != null && post.imageUrls!.isNotEmpty) {
+          for (var i = 0; i < post.imageUrls!.length; i++) {
+            final cache = DefaultCacheManager();
+            final file = await cache.getSingleFile(post.imageUrls![i]);
+            images.add(file.path);
+          }
+        }
+        String subject = post.title;
+        String text = "${post.title}\n${post.description}";
+        if (post.time != null && post.time != "") {
+          text = text +
+              "\n Date: ${DateTimeFormatModel.fromString(post.time!).toFormat()}";
+        }
+        if (post.location != null && post.location != "") {
+          text = text + "\n Location: ${post.location}";
+        }
+        if (images.isNotEmpty) {
+          await Share.shareFiles(images, text: text, subject: subject);
+        } else {
+          await Share.share(text, subject: subject);
+        }
       },
       child: const Icon(Icons.share),
     );
