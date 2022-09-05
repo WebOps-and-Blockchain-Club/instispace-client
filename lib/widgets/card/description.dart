@@ -22,7 +22,7 @@ class Description extends StatelessWidget {
                   ..onTap = () => launchUrl(Uri(scheme: 'mailto', path: _data)),
                 style: const TextStyle(color: Color(0xFF0000EE)));
           }
-          if (isURL(_data.trim())) {
+          if (isURL(_data.trim().toLowerCase())) {
             return TextSpan(
                 text: _data.toLowerCase() + " ",
                 recognizer: TapGestureRecognizer()
@@ -30,7 +30,8 @@ class Description extends StatelessWidget {
                     _data.contains("http")
                         ? launchUrlString(_data.trim().toLowerCase(),
                             mode: LaunchMode.externalApplication)
-                        : launchUrlString("http://" + _data.trim().toLowerCase(),
+                        : launchUrlString(
+                            "http://" + _data.trim().toLowerCase(),
                             mode: LaunchMode.externalApplication);
                   },
                 style: const TextStyle(color: Color(0xFF0000EE)));

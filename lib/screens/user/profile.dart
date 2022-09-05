@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../widgets/helpers/loading.dart';
 import '../../../widgets/button/elevated_button.dart';
@@ -29,18 +29,15 @@ class Profile extends StatelessWidget {
 
   _sendInviteMail(String email, String name) async {
     final Uri _emailLaunchUri = Uri(
-        scheme: 'mailto',
-        path: email,
-        query: encodeQueryParameters({
-          'subject': 'Your friend is inviting you to InstiSpace App',
-          'body':
-              'Hey $name!\n\nYou can now access the InstiSpace app developed by Webops and Blockchain Club, CFI. InstiSpace is your one-stop destination for all things insti. Everything from insti news to lost-and-found, InstiSpace is your go-to place for networking, connecting, updates, announcements and more.\n\nYou can stay up to date with the happenings in your hostel. You can also find out about various events and opportunities across the insti.\nSo, join me on the app through the link below.\n\nApp Store: https://apps.apple.com/app/instispace-iit-madras/id1619779076\nGoogle Play Store: https://play.google.com/store/apps/details?id=com.cfi.instispace',
-        }));
-    if (await canLaunchUrl(_emailLaunchUri)) {
-      await launchUrl(_emailLaunchUri);
-    } else {
-      throw 'Could not launch ${_emailLaunchUri.toString()}';
-    }
+      scheme: 'mailto',
+      path: email,
+      query: encodeQueryParameters({
+        'subject': 'Your friend is inviting you to InstiSpace App',
+        'body':
+            'Hey $name!\n\nYou can now access the InstiSpace app developed by Webops and Blockchain Club, CFI. InstiSpace is your one-stop destination for all things insti. Everything from insti news to lost-and-found, InstiSpace is your go-to place for networking, connecting, updates, announcements and more.\n\nYou can stay up to date with the happenings in your hostel. You can also find out about various events and opportunities across the insti.\nSo, join me on the app through the link below.\n\nApp Store: https://apps.apple.com/app/instispace-iit-madras/id1619779076\nGoogle Play Store: https://play.google.com/store/apps/details?id=com.cfi.instispace',
+      }),
+    );
+    await launchUrlString(_emailLaunchUri.toString());
   }
 
   @override
