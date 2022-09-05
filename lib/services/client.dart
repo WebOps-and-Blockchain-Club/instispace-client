@@ -22,9 +22,14 @@ ValueNotifier<GraphQLClient> client(String? token) {
   }
 
   return ValueNotifier<GraphQLClient>(GraphQLClient(
-    cache: GraphQLCache(store: HiveStore()),
-    link: link,
-  ));
+      cache: GraphQLCache(store: HiveStore()),
+      link: link,
+      defaultPolicies: DefaultPolicies(
+          query: Policies(
+        fetch: FetchPolicy.cacheAndNetwork,
+        error: ErrorPolicy.none,
+        cacheReread: CacheRereadPolicy.mergeOptimistic,
+      ))));
 }
 
 GraphQLClient uploadClient() {
