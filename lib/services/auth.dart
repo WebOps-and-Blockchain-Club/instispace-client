@@ -47,7 +47,7 @@ class AuthService extends ChangeNotifier {
 
   _clearToken() async {
     await _initAuth();
-    prefs!.remove('token');
+    prefs!.clear();
     _token = "";
   }
 }
