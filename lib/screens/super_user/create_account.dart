@@ -146,8 +146,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   builder: (QueryResult queryResult,
                                       {fetchMore, refetch}) {
                                     if (queryResult.hasException) {
-                                      return SelectableText(
-                                          queryResult.exception.toString());
+                                      return ErrorText(
+                                          error:
+                                              queryResult.exception.toString());
                                     }
 
                                     if (queryResult.isLoading) {

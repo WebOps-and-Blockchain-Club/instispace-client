@@ -47,8 +47,8 @@ class _CreateTagPageState extends State<CreateTagPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: (() {
                         if (queryResult.hasException) {
-                          return SelectableText(
-                              queryResult.exception.toString());
+                          return ErrorText(
+                              error: queryResult.exception.toString());
                         }
 
                         if (queryResult.isLoading) {

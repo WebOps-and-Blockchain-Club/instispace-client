@@ -1,4 +1,3 @@
-import 'package:client/widgets/helpers/error.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -7,6 +6,7 @@ import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
 import '../../utils/validation.dart';
+import '../../widgets/helpers/error.dart';
 import '../../widgets/button/elevated_button.dart';
 import '../../widgets/text/label.dart';
 

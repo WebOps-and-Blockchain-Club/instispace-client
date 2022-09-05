@@ -5,6 +5,7 @@ import '../../../graphQL/auth.dart';
 import '../../../models/hostel.dart';
 import '../../../themes.dart';
 import '../../../widgets/form/dropdown_button.dart';
+import '../../../widgets/helpers/error.dart';
 import '../../../widgets/text/label.dart';
 
 class HostelListDropdown extends StatelessWidget {
@@ -27,7 +28,7 @@ class HostelListDropdown extends StatelessWidget {
             ),
             builder: (QueryResult queryResult, {fetchMore, refetch}) {
               if (queryResult.hasException) {
-                return SelectableText(queryResult.exception.toString());
+                return ErrorText(error: queryResult.exception.toString());
               }
 
               if (queryResult.isLoading) {

@@ -158,15 +158,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                             ),
 
                             if (result != null && result.hasException)
-                              SelectableText(
-                                  formatErrorMessage(
-                                      result.exception.toString()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          color: ColorPalette.palette(context)
-                                              .error)),
+                              ErrorText(error: result.exception.toString()),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

@@ -7,6 +7,7 @@ import 'package:url_launcher/link.dart' as url_launcher;
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
+import '../helpers/error.dart';
 import '../helpers/navigate.dart';
 import '../../screens/home/tag/tag.dart';
 import '../../models/comment.dart';
@@ -280,8 +281,9 @@ class _DeletePostButtonState extends State<DeletePostButton> {
                             onError: (dynamic error) {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Post Deletion Failed')),
+                                SnackBar(
+                                    content: Text(
+                                        formatErrorMessage(error.toString()))),
                               );
                             },
                           ),
@@ -364,8 +366,9 @@ class _ResolvePostButtonState extends State<ResolvePostButton> {
                             onError: (dynamic error) {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Failed, server error')),
+                                SnackBar(
+                                    content: Text(
+                                        formatErrorMessage(error.toString()))),
                               );
                             },
                           ),
@@ -469,9 +472,9 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                             onError: (dynamic error) {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Report Failed: Server Error')),
+                                SnackBar(
+                                    content: Text(
+                                        formatErrorMessage(error.toString()))),
                               );
                             },
                           ),

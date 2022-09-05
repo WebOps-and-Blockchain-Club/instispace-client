@@ -76,7 +76,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
   Widget scaffoldBody(QueryResult queryResult,
       Future<QueryResult<Object?>?> Function()? refetch) {
     if (queryResult.hasException) {
-      return SelectableText(queryResult.exception.toString());
+      return Error(error: queryResult.exception.toString());
     }
 
     if (queryResult.isLoading) {

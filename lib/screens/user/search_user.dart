@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../widgets/helpers/error.dart';
+import '../../widgets/helpers/loading.dart';
 import 'get_user.dart';
 import '../../widgets/button/icon_button.dart';
 import '../../widgets/headers/main.dart';
@@ -55,6 +57,7 @@ class _SearchUserState extends State<SearchUser> {
                     delegate: SearchBarDelegate(
                       additionalHeight: searchValidationError != "" ? 18 : 0,
                       searchUI: SearchBar(
+                        historyKey: "search-users",
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         onSubmitted: (value) {
                           if (value.isEmpty || value.length >= 4) {
@@ -84,11 +87,11 @@ class _SearchUserState extends State<SearchUser> {
                       builder: (QueryResult result,
                           {FetchMore? fetchMore, refetch}) {
                         if (result.hasException) {
-                          return SelectableText(result.exception.toString());
+                          return Error(error: result.exception.toString());
                         }
 
                         if (result.isLoading && result.data == null) {
-                          return const Text('Loading');
+                          return const Loading();
                         }
 
                         final List<dynamic> users = result
@@ -101,7 +104,10 @@ class _SearchUserState extends State<SearchUser> {
                             .toList();
 
                         if (users.isEmpty) {
-                          return const Text('No user');
+                          return const Error(
+                            message: "No Users",
+                            error: "",
+                          );
                         }
 
                         return RefreshIndicator(

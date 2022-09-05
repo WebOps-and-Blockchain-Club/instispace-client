@@ -22,6 +22,7 @@ import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
 import '../button/elevated_button.dart';
+import '../helpers/error.dart';
 
 class CustomDrawer extends StatelessWidget {
   final AuthService auth;
@@ -433,7 +434,9 @@ Future<dynamic> logoutAlert(
                     onError: (dynamic error) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Post Deletion Failed')),
+                        SnackBar(
+                            content:
+                                Text(formatErrorMessage(error.toString()))),
                       );
                     },
                   ),

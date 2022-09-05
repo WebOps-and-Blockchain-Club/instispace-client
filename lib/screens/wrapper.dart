@@ -23,7 +23,10 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
     if (auth.token == null) {
-      return const Scaffold(body: Text('Loading'));
+      return const Scaffold(
+          body: Loading(
+        message: "Connecting to InstiSpace...",
+      ));
     } else if (auth.token == "") {
       return LogIn(auth: auth);
     } else {

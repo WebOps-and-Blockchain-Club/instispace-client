@@ -43,7 +43,7 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                     onRefresh: () => refetch!(),
                     child: (() {
                       if (result.hasException) {
-                        return SelectableText(result.exception.toString());
+                        return ErrorText(error: result.exception.toString());
                       }
 
                       if (result.isLoading && result.data == null) {

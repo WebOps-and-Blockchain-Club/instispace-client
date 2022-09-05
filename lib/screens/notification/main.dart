@@ -157,12 +157,8 @@ class _EditNotificationState extends State<EditNotification> {
                 },
               ),
               if (mutationResult != null && mutationResult.hasException)
-                SelectableText(
-                    formatErrorMessage(mutationResult.exception.toString()),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: ColorPalette.palette(context).error)),
+                ErrorText(error: mutationResult.exception.toString()),
+
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: CustomElevatedButton(
