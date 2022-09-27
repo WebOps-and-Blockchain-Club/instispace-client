@@ -159,12 +159,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
   Widget body(int index, AuthService auth, UserModel user, scaffoldKey) {
     switch (index) {
       case 0:
-        return LostAndFoundPage(
-            user: user, scaffoldKey: scaffoldKey, scrollTo: scrollTo);
+        return LostAndFoundPage(user: user, scaffoldKey: scaffoldKey);
 
       case 1:
-        return QueriesPage(
-            user: user, scaffoldKey: scaffoldKey, scrollTo: scrollTo);
+        return QueriesPage(user: user, scaffoldKey: scaffoldKey);
 
       case 2:
         return HomePage(
@@ -174,12 +172,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
             scaffoldKey: scaffoldKey);
 
       case 3:
-        return EventsPage(
-            user: user, scaffoldKey: scaffoldKey, scrollTo: scrollTo);
+        return EventsPage(user: user, scaffoldKey: scaffoldKey);
 
       case 4:
-        return NetopsPage(
-            user: user, scaffoldKey: scaffoldKey, scrollTo: scrollTo);
+        return NetopsPage(user: user, scaffoldKey: scaffoldKey);
 
       default:
         return HomePage(

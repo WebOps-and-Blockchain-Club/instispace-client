@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -29,8 +30,10 @@ class _WrapperState extends State<Wrapper> {
         message: "Connecting to InstiSpace...",
       ));
     } else if (auth.newUserOnApp == true) {
+      FirebaseMessaging.instance.deleteToken();
       return SplashScreen(auth: auth);
     } else if (auth.token == "") {
+      FirebaseMessaging.instance.deleteToken();
       return LogIn(auth: auth);
     } else {
       return Query(
@@ -52,6 +55,7 @@ class _WrapperState extends State<Wrapper> {
                     UserModel.fromJson(result.data!["getMe"]);
 
                 if (user.isNewUser == true) {
+                  FirebaseMessaging.instance.deleteToken();
                   return EditProfile(
                     auth: auth,
                     user: user,
