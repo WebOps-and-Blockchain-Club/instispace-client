@@ -39,7 +39,7 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
       "take": take,
       "lastId": "",
       "hostelId": widget.user.hostelId ?? (selectedHostel ?? ""),
-      "search": search.trim()
+      "filters": {"search": search.trim()},
     };
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(AnnouncementGQL.getAll), variables: variables);

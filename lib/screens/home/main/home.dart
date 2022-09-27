@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthService auth = widget.auth;
     final List<HomeModel>? home = widget.user.toHomeModel();
     return Scaffold(
       body: SafeArea(

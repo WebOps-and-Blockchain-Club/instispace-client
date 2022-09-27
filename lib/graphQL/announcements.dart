@@ -1,7 +1,17 @@
 class AnnouncementGQL {
   static const getAll = """
-    query GetAnnouncements(\$hostelId: String!, \$take: Float!, \$lastId: String!, \$search: String) {
-      getAnnouncements(HostelId: \$hostelId, take: \$take, LastAnnouncementId: \$lastId, search: \$search) {
+    query GetAnnouncements(
+      \$take: Float!
+      \$lastId: String!
+      \$hostelId: String
+      \$filters: FilteringConditions
+    ) {
+      getAnnouncements(
+        take: \$take
+        LastAnnouncementId: \$lastId
+        HostelId: \$hostelId
+        Filters: \$filters
+      ) {
         announcementsList {
           title
           description
