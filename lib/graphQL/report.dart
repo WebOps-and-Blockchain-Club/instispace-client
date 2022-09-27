@@ -2,16 +2,7 @@ class ReportGQL {
   String get = """
     query {
       getReports {
-        description
-        id
-        status
-        createdBy {
-          name
-          id
-          roll
-        }
-        createdAt
-        netop {
+        netops {
           id
           content
           commentCount
@@ -48,8 +39,19 @@ class ReportGQL {
           likeCount
           photo
           attachments
+          status
+          reports {
+            description
+            id
+            createdBy {
+              name
+              id
+              roll
+            }
+            createdAt
+          }
         }
-        query {
+        queries {
           id
           createdAt
           title
@@ -61,6 +63,7 @@ class ReportGQL {
           permissions
           isLiked
           commentCount
+          status
           createdBy {
             id
             roll
@@ -77,14 +80,30 @@ class ReportGQL {
               name
             }
           }
+          reports {
+            description
+            id
+            createdBy {
+              name
+              id
+              roll
+            }
+            createdAt
+          }
         }
       }
     }
   """;
 
-  String resolveReport = """
-    mutation(\$status: String!, \$resolveReportId: String!){
-      resolveReport(status: \$status, id: \$resolveReportId)
+  static const resolveNetopReport = """
+    mutation ResolveNetopReport(\$status: String!, \$id: String!){
+      resolveNetopReport(status: \$status, id: \$id)
+    }
+  """;
+
+  static const resolveMyQueryReport = """
+    mutation ResolveMyQueryReport(\$status: String!, \$id: String!){
+      resolveMyQueryReport(status: \$status, id: \$id)
     }
   """;
 
@@ -92,6 +111,14 @@ class ReportGQL {
     fragment reportStatusField on Report {
       id
       status
+    }
+  """;
+
+  static const getReportReasons = """
+    query GetReportReasons {
+      getReportReasons {
+        reason
+      }
     }
   """;
 }

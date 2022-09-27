@@ -4,7 +4,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
+import '../../graphQL/report.dart';
 import '../../models/date_time_format.dart';
+import '../helpers/loading.dart';
 import '../utils/image_cache_path.dart';
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
@@ -430,7 +432,178 @@ class _ReportPostButtonState extends State<ReportPostButton> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => widget.report != null
-          ? showDialog(
+          ? showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => Navigator.of(context).pop(),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: DraggableScrollableSheet(
+                      initialChildSize: 0.7,
+                      minChildSize: 0.5,
+                      maxChildSize: 0.8,
+                      builder: (_, controller) => Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(20)),
+                          ),
+                          child: Report(
+                            report: widget.report,
+                            controller: controller,
+                          )),
+                    ),
+                  ),
+                );
+              })
+          : {},
+      child: const Icon(Icons.warning_rounded),
+    );
+  }
+}
+
+class Report extends StatefulWidget {
+  final PostAction? report;
+  final ScrollController controller;
+
+  const Report({Key? key, required this.report, required this.controller})
+      : super(key: key);
+
+  @override
+  State<Report> createState() => _ReportState();
+}
+
+class _ReportState extends State<Report> {
+  String? description;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Query(
+          options: QueryOptions(document: gql(ReportGQL.getReportReasons)),
+          builder: (QueryResult result, {fetchMore, refetch}) {
+            if (result.isLoading && result.data == null) {
+              return const Loading();
+            }
+
+            final List<String> reasons = result.data!["getReportReasons"]
+                .map((_data) => _data["reason"])
+                .toList()
+                .cast<String>();
+
+            if (reasons.isEmpty) {
+              return const Error(message: "No Report Reasons Found", error: "");
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  child: Text(
+                    "Why do you report this post?",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                      controller: widget.controller,
+                      itemCount: reasons.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, i) {
+                        return ListTile(
+                          dense: true,
+                          onTap: () {
+                            setState(() {
+                              description = reasons[i];
+                            });
+                          },
+                          leading: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Radio<String>(
+                              value: reasons[i],
+                              groupValue: description,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  description = value;
+                                });
+                              },
+                            ),
+                          ),
+                          title: Text(
+                            reasons[i],
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        );
+                      }),
+                ),
+                Mutation(
+                    options: MutationOptions(
+                      document: gql(
+                          widget.report != null ? widget.report!.document : ""),
+                      update: (cache, result) {
+                        if (result != null && (!result.hasException)) {
+                          widget.report!.updateCache(cache, result);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Post reported & necessary action will be taken')),
+                          );
+                        }
+                      },
+                      onError: (dynamic error) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text(formatErrorMessage(error.toString()))),
+                        );
+                      },
+                    ),
+                    builder: (
+                      RunMutation runMutation,
+                      QueryResult? result,
+                    ) {
+                      return CustomElevatedButton(
+                        onPressed: () {
+                          final isValid =
+                              description != null && description!.isNotEmpty;
+                          if (!isValid) return;
+                          runMutation({
+                            "reportPostInput": {
+                              "description": description,
+                            },
+                            "id": widget.report!.id,
+                          });
+                        },
+                        text: "Report",
+                        isLoading: result!.isLoading,
+                        color: ColorPalette.palette(context).warning,
+                      );
+                    }),
+              ],
+            );
+          }),
+    );
+  }
+}
+
+/**
+ *  runMutation({
+                                  "reportPostInput": {
+                                    "description": description ?? "",
+                                  },
+                                  "id": widget.report!.id,
+                                });
+ */
+/**
+ *           ? showDialog(
               context: context,
               builder: (BuildContext context) {
                 return StatefulBuilder(builder: (context, _) {
@@ -519,9 +692,4 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                     ],
                   );
                 });
-              })
-          : {},
-      child: const Icon(Icons.warning_rounded),
-    );
-  }
-}
+ */

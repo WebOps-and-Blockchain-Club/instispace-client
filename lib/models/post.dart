@@ -6,6 +6,7 @@ import 'lost_and_found.dart';
 import 'actions.dart';
 import 'comment.dart';
 import 'hostel.dart';
+import 'report.dart';
 import 'tag.dart';
 import 'user.dart';
 
@@ -20,6 +21,7 @@ class PostModel {
   final String? location;
   final String? time;
   final String? endTime;
+  final String? status;
   final TagsModel? tags;
   final List<HostelModel>? hostels;
   final LikePostModel? like;
@@ -29,6 +31,7 @@ class PostModel {
   final CreatedByModel? createdBy;
   final String? createdAt;
   final List<String> permissions;
+  final List<ReportModel>? reports;
 
   PostModel(
       {required this.id,
@@ -41,6 +44,7 @@ class PostModel {
       this.location,
       this.time,
       this.endTime,
+      this.status,
       this.tags,
       this.hostels,
       this.like,
@@ -49,7 +53,8 @@ class PostModel {
       this.comments,
       this.createdBy,
       this.createdAt,
-      required this.permissions});
+      required this.permissions,
+      this.reports});
 }
 
 class PostActions {

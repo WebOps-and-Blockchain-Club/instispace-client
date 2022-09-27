@@ -1,3 +1,4 @@
+import 'report.dart';
 import 'comment.dart';
 import 'netop.dart';
 import 'post.dart';
@@ -22,22 +23,26 @@ class QueryModel {
   final String title;
   final String description;
   final List<String>? images;
+  final String status;
   final LikePostModel like;
   final CommentsModel comments;
   final CreatedByModel createdBy;
   final String createdAt;
   final List<String> permissions;
+  final List<ReportModel>? reports;
 
   QueryModel(
       {required this.id,
       required this.title,
       required this.description,
       this.images,
+      required this.status,
       required this.like,
       required this.comments,
       required this.createdBy,
       required this.createdAt,
-      required this.permissions});
+      required this.permissions,
+      this.reports});
 
   QueryModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
@@ -48,11 +53,19 @@ class QueryModel {
           isLikedByUser: data["isLiked"],
         ),
         images = mergeAttachments(data["photo"], data["attachments"]),
+        status = data["status"],
         comments = CommentsModel.fromJson(
             data["comments"] ?? [], data["commentCount"]),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"],
-        permissions = data["permissions"].cast<String>() + ["LIKE"];
+        permissions = data["permissions"].cast<String>() + ["LIKE"],
+        // ignore: prefer_null_aware_operators
+        reports = data["reports"] != null
+            ? data["reports"]
+                .map((e) => ReportModel.fromJson(e))
+                .toList()
+                .cast<ReportModel>()
+            : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -74,11 +87,13 @@ class QueryModel {
         title: title,
         description: description,
         imageUrls: images,
+        status: status,
         like: like,
         comments: comments,
         createdBy: createdBy,
         createdAt: createdAt,
-        permissions: permissions);
+        permissions: permissions,
+        reports: reports);
   }
 }
 

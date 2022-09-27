@@ -1,4 +1,5 @@
 import 'comment.dart';
+import 'report.dart';
 import 'user.dart';
 import 'post.dart';
 import 'tag.dart';
@@ -23,6 +24,7 @@ class NetopModel {
   final String description;
   final List<String>? images;
   final String endTime;
+  final String status;
   final TagsModel tags;
   final LikePostModel like;
   final StarPostModel star;
@@ -31,6 +33,7 @@ class NetopModel {
   final CommentsModel comments;
   final String createdAt;
   final CreatedByModel createdBy;
+  final List<ReportModel>? reports;
 
   NetopModel(
       {required this.id,
@@ -38,6 +41,7 @@ class NetopModel {
       required this.description,
       this.images,
       required this.endTime,
+      required this.status,
       required this.tags,
       required this.like,
       required this.star,
@@ -45,7 +49,8 @@ class NetopModel {
       required this.comments,
       required this.createdAt,
       required this.createdBy,
-      required this.permissions});
+      required this.permissions,
+      this.reports});
 
   NetopModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
@@ -53,6 +58,7 @@ class NetopModel {
         description = data["content"],
         images = mergeAttachments(data["photo"], data["attachments"]),
         endTime = data["endTime"],
+        status = data["status"],
         tags = TagsModel.fromJson(data["tags"]),
         like = LikePostModel(
             count: data["likeCount"], isLikedByUser: data["isLiked"]),
@@ -66,7 +72,14 @@ class NetopModel {
             data["comments"] ?? [], data["commentCount"]),
         permissions = data["permissions"].cast<String>(),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
-        createdAt = data["createdAt"];
+        createdAt = data["createdAt"],
+        // ignore: prefer_null_aware_operators
+        reports = data["reports"] != null
+            ? data["reports"]
+                .map((e) => ReportModel.fromJson(e))
+                .toList()
+                .cast<ReportModel>()
+            : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -93,6 +106,7 @@ class NetopModel {
         title: title,
         description: description,
         imageUrls: images,
+        status: status,
         like: like,
         star: star,
         cta: cta,
@@ -101,7 +115,8 @@ class NetopModel {
         comments: comments,
         createdBy: createdBy,
         createdAt: createdAt,
-        permissions: permissions + ["SET_REMINDER", "SHARE", "LIKE", "STAR"]);
+        permissions: permissions + ["SET_REMINDER", "SHARE", "LIKE", "STAR"],
+        reports: reports);
   }
 }
 
