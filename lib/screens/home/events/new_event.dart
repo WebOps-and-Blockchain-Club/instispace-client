@@ -1,13 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/validation.dart';
 import '../../../widgets/helpers/error.dart';
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
+import '../../../graphQL/utils.dart';
 import '../../../graphQL/events.dart';
 import '../../../models/event.dart';
 import '../../../models/tag.dart';
@@ -189,6 +189,9 @@ class _NewEventState extends State<NewEvent> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: title,
+                            maxLength: 40,
+                            minLines: 1,
+                            maxLines: null,
                             decoration:
                                 const InputDecoration(labelText: "Title"),
                             validator: (value) {
@@ -202,18 +205,21 @@ class _NewEventState extends State<NewEvent> {
                         // Description
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: description,
-                            minLines: 3,
-                            maxLines: 8,
-                            decoration:
-                                const InputDecoration(labelText: "Description"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the description of the post";
-                              }
-                              return null;
-                            },
+                          child: SingleChildScrollView(
+                            child: TextFormField(
+                              controller: description,
+                              maxLength: 3000,
+                              minLines: 3,
+                              maxLines: 8,
+                              decoration: const InputDecoration(
+                                  labelText: "Description"),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the description of the post";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
 
@@ -304,28 +310,109 @@ class _NewEventState extends State<NewEvent> {
 
                         // Location
                         Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: location,
-                            decoration: InputDecoration(
-                              labelText: "Location",
-                              prefixIcon: const Icon(Icons.location_on_outlined,
-                                  size: 20),
-                              prefixIconConstraints:
-                                  Themes.inputIconConstraints,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the location of the post";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Query(
+                              options: QueryOptions(
+                                  document: gql(UtilsGQL.getLocation)),
+                              builder: (result, {fetchMore, refetch}) {
+                                return LayoutBuilder(
+                                    builder: (context, constraints) {
+                                  return RawAutocomplete(
+                                    optionsBuilder:
+                                        (TextEditingValue location) {
+                                      if (location.text == '' ||
+                                          location.text.length < 3) {
+                                        return const Iterable<String>.empty();
+                                      } else {
+                                        List<String> matches = <String>[];
+                                        if (result.data != null &&
+                                            result.data!["getLocations"] !=
+                                                null) {
+                                          matches.addAll(result
+                                              .data!["getLocations"]
+                                              .cast<String>());
+                                        }
+
+                                        matches.retainWhere((s) {
+                                          return s.toLowerCase().contains(
+                                              location.text.toLowerCase());
+                                        });
+                                        return matches;
+                                      }
+                                    },
+                                    fieldViewBuilder: (BuildContext context,
+                                        TextEditingController location,
+                                        FocusNode focusNode,
+                                        VoidCallback onFieldSubmitted) {
+                                      if (widget.event != null) {
+                                        location.text = widget.event!.location;
+                                      }
+                                      return TextFormField(
+                                        controller: location,
+                                        maxLength: 50,
+                                        minLines: 1,
+                                        maxLines: null,
+                                        decoration: InputDecoration(
+                                          labelText: "Location",
+                                          prefixIcon: const Icon(
+                                              Icons.location_on_outlined,
+                                              size: 20),
+                                          prefixIconConstraints:
+                                              Themes.inputIconConstraints,
+                                        ),
+                                        focusNode: focusNode,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Enter the location of the post";
+                                          }
+                                          return null;
+                                        },
+                                      );
+                                    },
+                                    optionsViewBuilder: (BuildContext context,
+                                        void Function(String) onSelected,
+                                        Iterable<String> options) {
+                                      return Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Material(
+                                            color: ColorPalette.palette(context)
+                                                .secondary[50],
+                                            child: SizedBox(
+                                              height: 250,
+                                              width: constraints.biggest.width,
+                                              child: ListView.builder(
+                                                itemCount: options.length,
+                                                itemBuilder: (context, index) {
+                                                  final opt =
+                                                      options.elementAt(index);
+
+                                                  return GestureDetector(
+                                                      onTap: () {
+                                                        location.text = opt;
+                                                        onSelected(opt);
+                                                      },
+                                                      child: Card(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10.0),
+                                                          child: Text(opt),
+                                                        ),
+                                                      ));
+                                                },
+                                              ),
+                                            )),
+                                      );
+                                    },
+                                  );
+                                });
+                              },
+                            )),
 
                         // Images & Tags
                         const LabelText(
-                            text: "Image & Tags (Select maximum of 1 image)"),
+                            text:
+                                "Image & Tags (Select maximum of 1 image & 7 tags)"),
                         // Selected Image
                         imagePickerService.previewImages(
                             imageUrls: imageUrls,
@@ -385,6 +472,9 @@ class _NewEventState extends State<NewEvent> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: ctaName,
+                            maxLength: 25,
+                            minLines: 1,
+                            maxLines: null,
                             decoration: InputDecoration(
                               labelText: "Display Text",
                               prefixIcon:
@@ -392,18 +482,40 @@ class _NewEventState extends State<NewEvent> {
                               prefixIconConstraints:
                                   Themes.inputIconConstraints,
                             ),
+                            validator: (value) {
+                              if (ctaLink.text.isNotEmpty &&
+                                  value != null &&
+                                  value.isEmpty) {
+                                return "Enter the link display text";
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: ctaLink,
+                            minLines: 1,
+                            maxLines: null,
                             decoration: InputDecoration(
                               labelText: "Link",
                               prefixIcon: const Icon(Icons.link, size: 20),
                               prefixIconConstraints:
                                   Themes.inputIconConstraints,
                             ),
+                            validator: (value) {
+                              if (value != null &&
+                                  value.isNotEmpty &&
+                                  !isValidUrl(value)) {
+                                return "Please enter a valid url";
+                              } else if (ctaName.text.isNotEmpty &&
+                                  value != null &&
+                                  value.isEmpty) {
+                                return "Enter the Link or remove the display text url";
+                              }
+                              return null;
+                            },
                           ),
                         ),
 
@@ -426,6 +538,11 @@ class _NewEventState extends State<NewEvent> {
                                     setState(() {
                                       tagError = "Tags not selected";
                                     });
+                                  } else if (selectedTags.tags.length > 7) {
+                                    setState(() {
+                                      tagError =
+                                          "Not allowed to select more than 7 tags";
+                                    });
                                   } else if (tagError.isNotEmpty &&
                                       selectedTags.tags.isNotEmpty) {
                                     setState(() {
@@ -434,7 +551,8 @@ class _NewEventState extends State<NewEvent> {
                                   }
                                   final isValid =
                                       formKey.currentState!.validate() &&
-                                          selectedTags.tags.isNotEmpty;
+                                          selectedTags.tags.isNotEmpty &&
+                                          selectedTags.tags.length <= 7;
                                   FocusScope.of(context).unfocus();
 
                                   DateTimeFormatModel _dateTime =
@@ -444,23 +562,34 @@ class _NewEventState extends State<NewEvent> {
                                               time.text.split(" ").last);
 
                                   if (isValid) {
-                                    List<MultipartFile>? image =
-                                        await imagePickerService
-                                            .getMultipartFiles();
-                                    if (widget.event != null) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      QueryResult? uploadResult =
-                                          await imagePickerService
-                                              .uploadImage();
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    List<String> uploadResult;
+                                    try {
+                                      uploadResult = await imagePickerService
+                                          .uploadImage();
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              const Text('Image Upload Failed'),
+                                          backgroundColor:
+                                              Theme.of(context).errorColor,
+                                        ),
+                                      );
                                       setState(() {
                                         isLoading = false;
                                       });
-                                      print(imageUrls);
-                                      print(uploadResult?.data?["imageUpload"]
-                                          ["imageUrls"]);
+                                      return;
+                                    }
 
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+
+                                    if (widget.event != null) {
                                       runMutation({
                                         "editData": {
                                           "content": description.text,
@@ -470,15 +599,10 @@ class _NewEventState extends State<NewEvent> {
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                           "location": location.text,
-                                          "imageUrls": (imageUrls ?? []) +
-                                              (uploadResult
-                                                      ?.data!["imageUpload"]
-                                                          ["imageUrls"]
-                                                      ?.cast<String>() ??
-                                                  []),
+                                          "imageUrls":
+                                              (imageUrls ?? []) + uploadResult,
                                         },
                                         "id": widget.event!.id,
-                                        // "image": image,
                                       });
                                     } else {
                                       runMutation({
@@ -490,8 +614,8 @@ class _NewEventState extends State<NewEvent> {
                                           "time": _dateTime.toISOFormat(),
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
+                                          "imageUrls": uploadResult,
                                         },
-                                        "image": image
                                       });
                                     }
                                   }

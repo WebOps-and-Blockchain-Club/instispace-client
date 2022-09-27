@@ -44,6 +44,7 @@ class TagGQL {
           endTime
           createdAt
           permissions
+          status
           tags {
             category
             title

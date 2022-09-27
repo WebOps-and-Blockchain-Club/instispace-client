@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/user.dart';
 import '../../utils/validation.dart';
 import '../../widgets/helpers/error.dart';
+import '../../widgets/helpers/loading.dart';
 import 'edit_password.dart';
 import '../../../graphQL/auth.dart';
 import '../../../models/hostel.dart';
@@ -80,7 +81,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
     }
 
     if (queryResult.isLoading) {
-      return const Text('Loading');
+      return const Loading();
     }
 
     List<String> hostels =

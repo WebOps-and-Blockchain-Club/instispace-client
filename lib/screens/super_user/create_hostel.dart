@@ -66,6 +66,7 @@ class _CreateHostelPageState extends State<CreateHostelPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: name,
+                                maxLength: 20,
                                 decoration: InputDecoration(
                                   labelText: "Hostel Name",
                                   prefixIcon: const Icon(Icons.account_balance,

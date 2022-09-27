@@ -1,7 +1,7 @@
 class NetopGQL {
   static const create = """
-    mutation(\$newData: createNetopsInput!, \$attachments: [Upload!], \$image: [Upload!]){
-      createNetop(NewNetopData: \$newData, Attachments: \$attachments, Image: \$image) {
+    mutation(\$newData: CreateNetopsInput!){
+      createNetop(NewNetopData: \$newData) {
         id,
         content,
         commentCount
@@ -27,6 +27,7 @@ class NetopGQL {
         isStared
         isHidden
         endTime
+        status
         createdAt
         tags {
           category
@@ -42,8 +43,8 @@ class NetopGQL {
   """;
 
   static const edit = """
-    mutation(\$editData: editNetopsInput!, \$id: String!, \$image: [Upload!]){
-      editNetop(EditNetopsData: \$editData, NetopId: \$id, Image: \$image) {
+    mutation(\$editData: EditNetopsInput!, \$id: String!){
+      editNetop(EditNetopsData: \$editData, NetopId: \$id) {
         id,
         content,
         commentCount
@@ -66,6 +67,7 @@ class NetopGQL {
         linkToAction
         title
         isLiked
+        status
         isStared
         isHidden
         endTime
@@ -93,16 +95,14 @@ class NetopGQL {
     query(
       \$take: Float!
       \$lastId: String!
-      \$filteringCondition: fileringConditions
-      \$orderByLikes: Boolean
-      \$search: String
+      \$filters: FilteringConditions
+      \$sort: OrderInput
     ) {
       getNetops(
         take: \$take
         LastNetopId: \$lastId
-        FileringCondition: \$filteringCondition
-        OrderByLikes: \$orderByLikes
-        search: \$search
+        Filters: \$filters
+        Sort: \$sort
       ) {
         netopList {
           id
@@ -131,6 +131,7 @@ class NetopGQL {
           isStared
           isHidden
           endTime
+          status
           createdAt
           permissions
           tags {
@@ -160,8 +161,8 @@ class NetopGQL {
   """;
 
   static const report = """
-    mutation(\$description: String!, \$id: String!){
-      reportNetop(description: \$description, NetopId: \$id)
+    mutation(\$reportPostInput: ReportPostInput!, \$id: String!){
+      reportNetop(ReportPostInput: \$reportPostInput, NetopId: \$id)
     }
   """;
 
@@ -204,6 +205,7 @@ class NetopGQL {
       linkName
       linkToAction
       title
+      status
       isLiked
       isStared
       isHidden

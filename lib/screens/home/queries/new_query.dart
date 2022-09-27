@@ -127,6 +127,9 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                   padding: const EdgeInsets.only(top: 10),
                                   child: TextFormField(
                                     controller: name,
+                                    maxLength: 40,
+                                    minLines: 1,
+                                    maxLines: null,
                                     decoration: const InputDecoration(
                                       labelText: "Title",
                                     ),
@@ -145,6 +148,7 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                   padding: const EdgeInsets.only(top: 10),
                                   child: TextFormField(
                                     controller: description,
+                                    maxLength: 3000,
                                     minLines: 3,
                                     maxLines: 8,
                                     decoration: const InputDecoration(
@@ -194,31 +198,40 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                       FocusScope.of(context).unfocus();
 
                                       if (isValid) {
-                                        List<MultipartFile>? image =
-                                            await imagePickerService
-                                                .getMultipartFiles();
-                                        if (widget.query != null) {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          QueryResult? uploadResult =
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        List<String> uploadResult;
+                                        try {
+                                          uploadResult =
                                               await imagePickerService
                                                   .uploadImage();
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: const Text(
+                                                  'Image Upload Failed'),
+                                              backgroundColor:
+                                                  Theme.of(context).errorColor,
+                                            ),
+                                          );
                                           setState(() {
                                             isLoading = false;
                                           });
+                                          return;
+                                        }
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        if (widget.query != null) {
                                           runMutation({
                                             'editMyQuerysData': {
                                               "title": name.text,
                                               "content": description.text,
                                               "imageUrls": (imageUrls ?? []) +
-                                                  (uploadResult
-                                                          ?.data!["imageUpload"]
-                                                              ["imageUrls"]
-                                                          ?.cast<String>() ??
-                                                      []),
+                                                  uploadResult,
                                             },
-                                            // 'images': image,
                                             'id': widget.query!.id,
                                           });
                                         } else {
@@ -226,8 +239,8 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                             'createQuerysInput': {
                                               "title": name.text,
                                               "content": description.text,
+                                              "imageUrls": uploadResult,
                                             },
-                                            'images': image,
                                           });
                                         }
                                       }

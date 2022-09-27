@@ -1,7 +1,9 @@
+import 'package:validators/validators.dart';
+
 bool isValidEmail(String email) {
-  return RegExp(
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-      .hasMatch(email);
+  return isEmail(email) &&
+      email.split("@")[0].length <= 64 &&
+      email.split("@")[1].length <= 255;
 }
 
 bool isValidRoll(String roll) {
@@ -16,7 +18,5 @@ bool isValidNumber(String number) {
 }
 
 bool isValidUrl(String string) {
-  return RegExp(
-          r'/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/')
-      .hasMatch(string);
+  return isURL(string.trim().toLowerCase()) && string.length <= 1000;
 }

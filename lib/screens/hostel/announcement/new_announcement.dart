@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import '../shared/hostels_display.dart';
@@ -150,6 +149,9 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                   padding: const EdgeInsets.only(top: 10),
                                   child: TextFormField(
                                     controller: name,
+                                    maxLength: 40,
+                                    minLines: 1,
+                                    maxLines: null,
                                     decoration: const InputDecoration(
                                       labelText: "Title",
                                     ),
@@ -169,8 +171,9 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                   padding: const EdgeInsets.only(top: 10),
                                   child: TextFormField(
                                     controller: description,
+                                    maxLength: 3000,
                                     minLines: 3,
-                                    maxLines: 8,
+                                    maxLines: null,
                                     decoration: const InputDecoration(
                                       labelText: "Description",
                                     ),
@@ -370,19 +373,33 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                                   time.text.split(" ").last);
 
                                       if (isValid) {
-                                        List<MultipartFile>? image =
-                                            await imagePickerService
-                                                .getMultipartFiles();
-                                        if (widget.announcement != null) {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          QueryResult? uploadResult =
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        List<String> uploadResult;
+                                        try {
+                                          uploadResult =
                                               await imagePickerService
                                                   .uploadImage();
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: const Text(
+                                                  'Image Upload Failed'),
+                                              backgroundColor:
+                                                  Theme.of(context).errorColor,
+                                            ),
+                                          );
                                           setState(() {
                                             isLoading = false;
                                           });
+                                          return;
+                                        }
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        if (widget.announcement != null) {
                                           runMutation({
                                             'updateAnnouncementInput': {
                                               "title": name.text,
@@ -390,15 +407,10 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                               "endTime":
                                                   _dateTime.toISOFormat(),
                                               "imageUrls": (imageUrls ?? []) +
-                                                  (uploadResult
-                                                          ?.data!["imageUpload"]
-                                                              ["imageUrls"]
-                                                          ?.cast<String>() ??
-                                                      []),
+                                                  uploadResult,
                                               "hostelIds": selectedHostels
                                                   .getHostelIds(),
                                             },
-                                            // 'images': image,
                                             'id': widget.announcement!.id,
                                           });
                                         } else {
@@ -410,8 +422,8 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                                   _dateTime.toISOFormat(),
                                               "hostelIds": selectedHostels
                                                   .getHostelIds(),
+                                              "imageUrls": uploadResult,
                                             },
-                                            'images': image,
                                           });
                                         }
                                       }

@@ -14,6 +14,7 @@ class UserGQL {
             isStared
             linkName
             endTime
+            status
             createdAt
             linkToAction
             permissions
@@ -86,6 +87,7 @@ class UserGQL {
           category
         }
         name
+        ldapName
         roll
         role
         photo
@@ -123,6 +125,8 @@ class UserGQL {
           category
         }
         name
+        photo
+        ldapName
         roll
         role
         isNewUser

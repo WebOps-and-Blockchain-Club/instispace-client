@@ -8,6 +8,7 @@ import '../../widgets/button/icon_button.dart';
 import '../../widgets/form/dropdown_button.dart';
 import '../../widgets/headers/main.dart';
 import '../../widgets/helpers/error.dart';
+import '../../widgets/helpers/loading.dart';
 import '../../widgets/text/label.dart';
 
 class CreateTagPage extends StatefulWidget {
@@ -47,12 +48,11 @@ class _CreateTagPageState extends State<CreateTagPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: (() {
                         if (queryResult.hasException) {
-                          return ErrorText(
-                              error: queryResult.exception.toString());
+                          return Error(error: queryResult.exception.toString());
                         }
 
                         if (queryResult.isLoading) {
-                          return const Text('Loading');
+                          return const Loading();
                         }
                         List<String>? categories = [];
                         for (var i = 0;
@@ -113,6 +113,9 @@ class _CreateTagPageState extends State<CreateTagPage> {
                                       padding: const EdgeInsets.only(top: 10),
                                       child: TextFormField(
                                         controller: name,
+                                        maxLength: 20,
+                                        minLines: 1,
+                                        maxLines: null,
                                         decoration: const InputDecoration(
                                             labelText: "Tag Name"),
                                         validator: (value) {

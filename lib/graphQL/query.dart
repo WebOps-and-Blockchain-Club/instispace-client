@@ -3,14 +3,14 @@ class QueryGQL {
     query(
       \$lastId: String!
       \$take: Float!
-      \$search: String
-      \$orderByLikes: Boolean
+      \$sort: OrderInput
+      \$filters: FilteringConditions
     ) {
       getMyQuerys(
         lastEventId: \$lastId
         take: \$take
-        search: \$search
-        OrderByLikes: \$orderByLikes
+        Sort: \$sort
+        Filters: \$filters
       ) {
         queryList {
           id
@@ -18,6 +18,7 @@ class QueryGQL {
           title
           content
           photo
+          status
           attachments
           likeCount
           isHidden
@@ -47,17 +48,15 @@ class QueryGQL {
   """;
 
   static const create = """
-    mutation(\$createQuerysInput: createQuerysInput!, \$images: [Upload!]) {
-      createMyQuery(
-        createQuerysInput: \$createQuerysInput
-        Images: \$images
-      ) {
+    mutation(\$createQuerysInput: createQuerysInput!) {
+      createMyQuery(createQuerysInput: \$createQuerysInput) {
         id
         createdAt
         title
         content
         photo
         attachments
+        status
         isHidden
         likeCount
         permissions
@@ -87,12 +86,10 @@ class QueryGQL {
     mutation(
       \$id: String!
       \$editMyQuerysData: editQuerysInput!
-      \$images: [Upload!]
     ) {
       editMyQuery(
         MyQueryId: \$id
         EditMyQuerysData: \$editMyQuerysData
-        Image: \$images
       ) {
         id
         createdAt
@@ -102,6 +99,7 @@ class QueryGQL {
         attachments
         isHidden
         likeCount
+        status
         permissions
         comments {
           content
@@ -138,8 +136,8 @@ class QueryGQL {
   """;
 
   static const report = """
-    mutation(\$description: String!, \$id: String!){
-      reportMyQuery(description: \$description, MyQueryId: \$id)
+    mutation(\$reportPostInput: ReportPostInput!, \$id: String!){
+      reportMyQuery(ReportMyQueryInput: \$reportPostInput, MyQueryId: \$id)
     }
   """;
 
@@ -171,6 +169,7 @@ class QueryGQL {
       content
       photo
       attachments
+      status
       isHidden
       likeCount
       permissions

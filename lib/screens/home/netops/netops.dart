@@ -63,12 +63,16 @@ class _NetopsPageState extends State<NetopsPage> {
     final Map<String, dynamic> variables = {
       "take": take,
       "lastId": "",
-      "orderByLikes": orderByLikes,
-      "filteringCondition": {
-        "tags": selectedTags.getTagIds(),
-        "isStared": isStared
+      "sort": {
+        "byLikes": orderByLikes ? true : null,
+        "stared": null,
+        "byComments": null
       },
-      "search": search.trim()
+      "filters": {
+        "search": search.trim(),
+        "tags": selectedTags.getTagIds(),
+        "isStared": isStared ? true : null
+      },
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(NetopGQL.getAll), variables: variables);

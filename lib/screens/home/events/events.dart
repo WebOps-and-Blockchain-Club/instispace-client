@@ -63,12 +63,12 @@ class _EventsPageState extends State<EventsPage> {
     final Map<String, dynamic> variables = {
       "take": take,
       "lastId": "",
-      "orderByLikes": orderByLikes,
-      "filteringCondition": {
+      "sort": {"byLikes": orderByLikes ? true : null, "stared": null},
+      "filters": {
+        "search": search.trim(),
         "tags": selectedTags.getTagIds(),
-        "isStared": isStared
+        "isStared": isStared ? true : null
       },
-      "search": search.trim()
     };
     final QueryOptions<Object?> options =
         QueryOptions(document: gql(EventGQL().getAll), variables: variables);

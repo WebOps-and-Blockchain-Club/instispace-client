@@ -45,7 +45,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
       "take": take,
       "lastId": "",
       "itemsFilter": itemFilter,
-      "search": search.trim()
+      "filters": {"search": search.trim()}
     };
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(LostAndFoundGQL.getAll), variables: variables);

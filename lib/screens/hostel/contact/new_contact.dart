@@ -143,6 +143,9 @@ class _NewContactPageState extends State<NewContactPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: name,
+                                maxLength: 40,
+                                minLines: 1,
+                                maxLines: null,
                                 decoration: InputDecoration(
                                   labelText: "Contact person name",
                                   prefixIcon:
@@ -166,6 +169,9 @@ class _NewContactPageState extends State<NewContactPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: role,
+                                maxLength: 40,
+                                minLines: 1,
+                                maxLines: null,
                                 decoration: InputDecoration(
                                   labelText: "Contact person role",
                                   prefixIcon:
@@ -189,6 +195,9 @@ class _NewContactPageState extends State<NewContactPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: mobile,
+                                maxLength: 10,
+                                minLines: 1,
+                                maxLines: null,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
                                   labelText: "Contact person number",

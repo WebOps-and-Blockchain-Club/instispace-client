@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import '../../../services/image_picker.dart';
@@ -18,6 +17,7 @@ import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/text/label.dart';
+import '../../../utils/validation.dart';
 import '../tag/select_tags.dart';
 
 class NewNetopPage extends StatefulWidget {
@@ -191,6 +191,9 @@ class _NewNetopPageState extends State<NewNetopPage> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: title,
+                            maxLength: 40,
+                            minLines: 1,
+                            maxLines: null,
                             decoration:
                                 const InputDecoration(labelText: "Title"),
                             validator: (value) {
@@ -204,18 +207,21 @@ class _NewNetopPageState extends State<NewNetopPage> {
                         // Description
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: description,
-                            minLines: 3,
-                            maxLines: 8,
-                            decoration:
-                                const InputDecoration(labelText: "Description"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the description of the post";
-                              }
-                              return null;
-                            },
+                          child: SingleChildScrollView(
+                            child: TextFormField(
+                              controller: description,
+                              maxLength: 3000,
+                              minLines: 3,
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                  labelText: "Description"),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the description of the post";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
 
@@ -307,7 +313,8 @@ class _NewNetopPageState extends State<NewNetopPage> {
 
                         // Images & Tags
                         const LabelText(
-                            text: "Image & Tags (Select maximum of 4 image)"),
+                            text:
+                                "Image & Tags (Select maximum of 4 images & 7 tags)"),
                         // Selected Image
                         imagePickerService.previewImages(
                             imageUrls: imageUrls,
@@ -367,6 +374,9 @@ class _NewNetopPageState extends State<NewNetopPage> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: ctaName,
+                            maxLength: 25,
+                            minLines: 1,
+                            maxLines: null,
                             decoration: InputDecoration(
                               labelText: "Display Text",
                               prefixIcon:
@@ -374,18 +384,40 @@ class _NewNetopPageState extends State<NewNetopPage> {
                               prefixIconConstraints:
                                   Themes.inputIconConstraints,
                             ),
+                            validator: (value) {
+                              if (ctaLink.text.isNotEmpty &&
+                                  value != null &&
+                                  value.isEmpty) {
+                                return "Enter the link display text";
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: ctaLink,
+                            minLines: 1,
+                            maxLines: null,
                             decoration: InputDecoration(
                               labelText: "Link",
                               prefixIcon: const Icon(Icons.link, size: 20),
                               prefixIconConstraints:
                                   Themes.inputIconConstraints,
                             ),
+                            validator: (value) {
+                              if (value != null &&
+                                  value.isNotEmpty &&
+                                  !isValidUrl(value)) {
+                                return "Please enter a valid url";
+                              } else if (ctaName.text.isNotEmpty &&
+                                  value != null &&
+                                  value.isEmpty) {
+                                return "Enter the Link or remove the display text url";
+                              }
+                              return null;
+                            },
                           ),
                         ),
 
@@ -408,6 +440,12 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                     setState(() {
                                       tagError = "Tags not selected";
                                     });
+                                  } else if (selectedTags.tags.length > 7) {
+                                    setState(() {
+                                      tagError =
+                                          "Not allowed to select more than 7 tags";
+                                    });
+                                    return;
                                   } else if (tagError.isNotEmpty &&
                                       selectedTags.tags.isNotEmpty) {
                                     setState(() {
@@ -416,7 +454,8 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                   }
                                   final isValid =
                                       formKey.currentState!.validate() &&
-                                          selectedTags.tags.isNotEmpty;
+                                          selectedTags.tags.isNotEmpty &&
+                                          selectedTags.tags.length <= 7;
                                   FocusScope.of(context).unfocus();
 
                                   DateTimeFormatModel _dateTime =
@@ -426,31 +465,40 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                               endTime.text.split(" ").last);
 
                                   if (isValid) {
-                                    List<MultipartFile>? image =
-                                        await imagePickerService
-                                            .getMultipartFiles();
-                                    if (widget.netop != null) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      QueryResult? uploadResult =
-                                          await imagePickerService
-                                              .uploadImage();
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    List<String> uploadResult;
+                                    try {
+                                      uploadResult = await imagePickerService
+                                          .uploadImage();
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              const Text('Image Upload Failed'),
+                                          backgroundColor:
+                                              Theme.of(context).errorColor,
+                                        ),
+                                      );
                                       setState(() {
                                         isLoading = false;
                                       });
+                                      return;
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    if (widget.netop != null) {
                                       runMutation({
                                         "editData": {
                                           "title": title.text,
                                           "content": description.text,
                                           "tagIds": selectedTags.getTagIds(),
                                           "endTime": _dateTime.toISOFormat(),
-                                          "imageUrls": (imageUrls ?? []) +
-                                              (uploadResult
-                                                      ?.data!["imageUpload"]
-                                                          ["imageUrls"]
-                                                      ?.cast<String>() ??
-                                                  []),
+                                          "imageUrls":
+                                              (imageUrls ?? []) + uploadResult,
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
@@ -464,10 +512,11 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                           "content": description.text,
                                           "tags": selectedTags.getTagIds(),
                                           "endTime": _dateTime.toISOFormat(),
+                                          "imageUrls": uploadResult,
                                           "linkName": ctaName.text,
                                           "linkToAction": ctaLink.text,
                                         },
-                                        "image": image
+                                        // "image": image
                                       });
                                     }
                                   }

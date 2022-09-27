@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart' as http;
 
 HttpLink httpLink = HttpLink(
-  'https://instispace.iitm.ac.in/api/graphql',
+  'https://instispace.iitm.ac.in/beta/api/graphql',
   defaultHeaders: {
     "apikey": "",
   },
@@ -32,9 +33,13 @@ ValueNotifier<GraphQLClient> client(String? token) {
       ))));
 }
 
-GraphQLClient uploadClient() {
-  return (GraphQLClient(
-    cache: GraphQLCache(store: HiveStore()),
-    link: httpLink,
-  ));
+http.MultipartRequest uploadClient() {
+  var headers = {
+    "apikey": "",
+  };
+  var request = http.MultipartRequest(
+      'POST', Uri.parse("https://instispace.iitm.ac.in/upload/"));
+  request.headers.addAll(headers);
+
+  return request;
 }

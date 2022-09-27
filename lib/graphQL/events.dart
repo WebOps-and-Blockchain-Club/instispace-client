@@ -1,7 +1,7 @@
 class EventGQL {
   String create = """
-    mutation(\$newData: createEventInput!, \$image: [Upload!]){
-      createEvent(NewEventData: \$newData, Image: \$image) {
+    mutation(\$newData: createEventInput!){
+      createEvent(NewEventData: \$newData) {
         id
         createdAt
         title
@@ -29,8 +29,8 @@ class EventGQL {
     }
   """;
   String edit = """
-    mutation(\$editData: editEventInput!, \$id: String!, \$image: [Upload!]){
-      editEvent(EditEventData: \$editData, EventId: \$id, Image: \$image) {
+    mutation(\$editData: editEventInput!, \$id: String!){
+      editEvent(EditEventData: \$editData, EventId: \$id) {
         id
         createdAt
         title
@@ -58,8 +58,8 @@ class EventGQL {
     }
   """;
   String getAll = """
-    query(\$take: Float!, \$lastId: String!, \$orderByLikes: Boolean, \$filteringCondition: fileringConditions,\$search: String){
-      getEvents(take: \$take, lastEventId: \$lastId, OrderByLikes: \$orderByLikes, FileringCondition: \$filteringCondition, search: \$search) {
+    query(\$take: Float!, \$lastId: String!, \$sort: OrderInput, \$filters: FilteringConditions){
+      getEvents(take: \$take, lastEventId: \$lastId, Sort: \$sort, Filters: \$filters) {
         list {
           id
           createdAt

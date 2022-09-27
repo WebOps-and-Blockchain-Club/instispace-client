@@ -27,8 +27,8 @@ class AnnouncementGQL {
   """;
 
   static const create = """
-    mutation(\$announcementInput: CreateAnnouncementInput!, \$images: [Upload!]) {
-      createAnnouncement(AnnouncementInput: \$announcementInput, Images: \$images) {
+    mutation(\$announcementInput: CreateAnnouncementInput!) {
+      createAnnouncement(AnnouncementInput: \$announcementInput) {
         id
         title
         images
@@ -54,12 +54,10 @@ class AnnouncementGQL {
     mutation(
       \$updateAnnouncementInput: EditAnnouncementInput!
       \$id: String!
-      \$images: [Upload!]
     ) {
       editAnnouncement(
         UpdateAnnouncementInput: \$updateAnnouncementInput
         AnnouncementId: \$id
-        Images: \$images
       ) {
         id
         title

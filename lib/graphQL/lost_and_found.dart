@@ -4,13 +4,13 @@ class LostAndFoundGQL {
       \$take: Float!
       \$lastId: String!
       \$itemsFilter: [Category!]!
-      \$search: String
+      \$filters: FilteringConditions
     ) {
       getItems(
         take: \$take
         LastItemId: \$lastId
         ItemsFilter: \$itemsFilter
-        search: \$search
+        Filters: \$filters
       ) {
         total
         itemsList {
@@ -35,8 +35,8 @@ class LostAndFoundGQL {
   """;
 
   static const create = """
-    mutation(\$itemInput: ItemInput!, \$images: [Upload!]) {
-      createItem(ItemInput: \$itemInput, Images: \$images) {
+    mutation(\$itemInput: ItemInput!) {
+      createItem(ItemInput: \$itemInput) {
         id
         category
         name
@@ -57,8 +57,8 @@ class LostAndFoundGQL {
   """;
 
   static const edit = """
-    mutation(\$editItemInput: EditItemInput!, \$id: String!, \$images: [Upload!]) {
-      editItems(EditItemInput: \$editItemInput, ItemId: \$id, Images: \$images) {
+    mutation(\$editItemInput: EditItemInput!, \$id: String!) {
+      editItems(EditItemInput: \$editItemInput, ItemId: \$id) {
         id
         category
         name

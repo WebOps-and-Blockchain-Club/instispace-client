@@ -6,7 +6,6 @@ import '../../../graphQL/amenities.dart';
 import '../../../models/amenities.dart';
 import '../../../models/user.dart';
 import '../../../models/hostel.dart';
-import '../../../themes.dart';
 import '../../../widgets/helpers/error.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -139,12 +138,11 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: name,
-                                decoration: InputDecoration(
+                                maxLength: 40,
+                                minLines: 1,
+                                maxLines: null,
+                                decoration: const InputDecoration(
                                   labelText: "Amenity name",
-                                  prefixIcon:
-                                      const Icon(Icons.person, size: 20),
-                                  prefixIconConstraints:
-                                      Themes.inputIconConstraints,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -161,12 +159,11 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 controller: description,
-                                decoration: InputDecoration(
+                                maxLength: 3000,
+                                minLines: 3,
+                                maxLines: null,
+                                decoration: const InputDecoration(
                                   labelText: "Amenity Description",
-                                  prefixIcon:
-                                      const Icon(Icons.person, size: 20),
-                                  prefixIconConstraints:
-                                      Themes.inputIconConstraints,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {

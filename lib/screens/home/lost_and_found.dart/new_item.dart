@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
+import '../../../graphQL/utils.dart';
 import '../../../graphQL/lost_and_found.dart';
 import '../../../models/lost_and_found.dart';
 import '../../../models/date_time_format.dart';
@@ -174,6 +174,9 @@ class _NewItemPageState extends State<NewItemPage> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: title,
+                            maxLength: 40,
+                            minLines: 1,
+                            maxLines: null,
                             decoration: const InputDecoration(
                                 labelText: "Name of the item"),
                             validator: (value) {
@@ -274,24 +277,104 @@ class _NewItemPageState extends State<NewItemPage> {
                         // Location
                         const LabelText(text: "Where?"),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: location,
-                            decoration: InputDecoration(
-                              labelText: "Location",
-                              prefixIcon: const Icon(Icons.location_on_outlined,
-                                  size: 20),
-                              prefixIconConstraints:
-                                  Themes.inputIconConstraints,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the location ";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Query(
+                              options: QueryOptions(
+                                  document: gql(UtilsGQL.getLocation)),
+                              builder: (result, {fetchMore, refetch}) {
+                                return LayoutBuilder(
+                                    builder: (context, constraints) {
+                                  return RawAutocomplete(
+                                    optionsBuilder:
+                                        (TextEditingValue location) {
+                                      if (location.text == '' ||
+                                          location.text.length < 3) {
+                                        return const Iterable<String>.empty();
+                                      } else {
+                                        List<String> matches = <String>[];
+                                        if (result.data != null &&
+                                            result.data!["getLocations"] !=
+                                                null) {
+                                          matches.addAll(result
+                                              .data!["getLocations"]
+                                              .cast<String>());
+                                        }
+
+                                        matches.retainWhere((s) {
+                                          return s.toLowerCase().contains(
+                                              location.text.toLowerCase());
+                                        });
+                                        return matches;
+                                      }
+                                    },
+                                    fieldViewBuilder: (BuildContext context,
+                                        TextEditingController location,
+                                        FocusNode focusNode,
+                                        VoidCallback onFieldSubmitted) {
+                                      if (widget.item != null) {
+                                        location.text = widget.item!.location;
+                                      }
+                                      return TextFormField(
+                                        controller: location,
+                                        maxLength: 50,
+                                        minLines: 1,
+                                        maxLines: null,
+                                        decoration: InputDecoration(
+                                          labelText: "Location",
+                                          prefixIcon: const Icon(
+                                              Icons.location_on_outlined,
+                                              size: 20),
+                                          prefixIconConstraints:
+                                              Themes.inputIconConstraints,
+                                        ),
+                                        focusNode: focusNode,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Enter the location of the post";
+                                          }
+                                          return null;
+                                        },
+                                      );
+                                    },
+                                    optionsViewBuilder: (BuildContext context,
+                                        void Function(String) onSelected,
+                                        Iterable<String> options) {
+                                      return Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Material(
+                                            color: ColorPalette.palette(context)
+                                                .secondary[50],
+                                            child: SizedBox(
+                                              height: 250,
+                                              width: constraints.biggest.width,
+                                              child: ListView.builder(
+                                                itemCount: options.length,
+                                                itemBuilder: (context, index) {
+                                                  final opt =
+                                                      options.elementAt(index);
+
+                                                  return GestureDetector(
+                                                      onTap: () {
+                                                        location.text = opt;
+                                                        onSelected(opt);
+                                                      },
+                                                      child: Card(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10.0),
+                                                          child: Text(opt),
+                                                        ),
+                                                      ));
+                                                },
+                                              ),
+                                            )),
+                                      );
+                                    },
+                                  );
+                                });
+                              },
+                            )),
 
                         // Contact
                         const LabelText(text: "How to reach you? (Optional)"),
@@ -299,6 +382,7 @@ class _NewItemPageState extends State<NewItemPage> {
                           padding: const EdgeInsets.only(top: 10),
                           child: TextFormField(
                             controller: contact,
+                            maxLength: 10,
                             decoration: const InputDecoration(
                                 labelText: "Contact number"),
                             validator: (val) {
@@ -361,34 +445,42 @@ class _NewItemPageState extends State<NewItemPage> {
                                               time.text.split(" ").last);
 
                                   if (isValid) {
-                                    List<MultipartFile>? image =
-                                        await imagePickerService
-                                            .getMultipartFiles();
-                                    if (widget.item != null) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      QueryResult? uploadResult =
-                                          await imagePickerService
-                                              .uploadImage();
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    List<String> uploadResult;
+                                    try {
+                                      uploadResult = await imagePickerService
+                                          .uploadImage();
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              const Text('Image Upload Failed'),
+                                          backgroundColor:
+                                              Theme.of(context).errorColor,
+                                        ),
+                                      );
                                       setState(() {
                                         isLoading = false;
                                       });
+                                      return;
+                                    }
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    if (widget.item != null) {
                                       runMutation({
                                         "editItemInput": {
                                           "name": title.text,
                                           "time": _dateTime.toISOFormat(),
                                           "location": location.text,
                                           "contact": contact.text,
-                                          "imageUrls": (imageUrls ?? []) +
-                                              (uploadResult
-                                                      ?.data!["imageUpload"]
-                                                          ["imageUrls"]
-                                                      ?.cast<String>() ??
-                                                  []),
+                                          "imageUrls":
+                                              (imageUrls ?? []) + uploadResult,
                                         },
                                         "id": widget.item!.id,
-                                        // "images": image,
                                       });
                                     } else {
                                       runMutation({
@@ -399,8 +491,8 @@ class _NewItemPageState extends State<NewItemPage> {
                                           "category":
                                               widget.category.toUpperCase(),
                                           "contact": contact.text,
+                                          "imageUrls": uploadResult,
                                         },
-                                        "images": image
                                       });
                                     }
                                   }
