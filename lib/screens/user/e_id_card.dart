@@ -73,8 +73,7 @@ class _EIDCardState extends State<EIDCard> {
                           maxHeight: 160,
                           minHeight: 160),
                       child: CachedNetworkImage(
-                        imageUrl:
-                            'https://photos.iitm.ac.in/byroll.php?roll=${widget.user.roll!.toUpperCase()}',
+                        imageUrl: widget.user.photo,
                         placeholder: (_, __) =>
                             const CircularProgressIndicator(),
                         errorWidget: (_, __, ___) =>

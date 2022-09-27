@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../widgets/card/image_view.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../../widgets/button/elevated_button.dart';
 import '../../../widgets/button/icon_button.dart';
@@ -10,6 +11,7 @@ import '../../../widgets/headers/main.dart';
 import '../../models/user.dart';
 import '../../themes.dart';
 import '../../widgets/helpers/error.dart';
+import '../../widgets/utils/image_cache_path.dart';
 
 class Profile extends StatelessWidget {
   final UserModel? user;
@@ -81,6 +83,7 @@ class Profile extends StatelessWidget {
                           role: "",
                           roll: userDetails!["roll"],
                           ldapName: userDetails!["name"],
+                          photo: userDetails!["photo"]!,
                           isNewUser: true,
                           permissions: [])
                       : UserModel.fromJson(result!.data!["getUser"]))
@@ -94,21 +97,26 @@ class Profile extends StatelessWidget {
                       onPressed: () => Navigator.of(context).pop(),
                     )),
                 const SizedBox(height: 20),
-                CachedNetworkImage(
-                  imageUrl:
-                      'https://photos.iitm.ac.in/byroll.php?roll=${_user.roll?.toUpperCase()}',
-                  placeholder: (_, __) =>
-                      const Icon(Icons.account_circle_rounded, size: 100),
-                  errorWidget: (_, __, ___) =>
-                      const Icon(Icons.account_circle_rounded, size: 100),
-                  imageBuilder: (context, imageProvider) => Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.contain,
+                GestureDetector(
+                  onTap: () async {
+                    List<String> images = await imageCachePath([_user.photo]);
+                    openImageView(context, 0, images);
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: _user.photo,
+                    placeholder: (_, __) =>
+                        const Icon(Icons.account_circle_rounded, size: 100),
+                    errorWidget: (_, __, ___) =>
+                        const Icon(Icons.account_circle_rounded, size: 100),
+                    imageBuilder: (context, imageProvider) => Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),

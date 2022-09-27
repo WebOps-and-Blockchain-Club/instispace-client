@@ -10,6 +10,7 @@ class UserModel {
   String? ldapName;
   String? roll;
   String? role;
+  String photo;
   String? program;
   String? department;
   bool isNewUser;
@@ -28,6 +29,7 @@ class UserModel {
       this.ldapName,
       this.roll,
       required this.role,
+      required this.photo,
       required this.isNewUser,
       this.program,
       this.department,
@@ -46,6 +48,7 @@ class UserModel {
         ldapName = data["ldapName"] ?? "",
         roll = data["roll"],
         role = data["role"],
+        photo = data["photo"],
         isNewUser = data["isNewUser"],
         program = data["program"],
         department = data["department"],

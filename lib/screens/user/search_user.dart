@@ -93,14 +93,15 @@ class _SearchUserState extends State<SearchUser> {
                           return const Loading();
                         }
 
-                        final List<dynamic> users = result
-                            .data!["searchLDAPUser"]
-                            .map((_user) => {
-                                  "name": _user["name"],
-                                  "roll": _user["roll"],
-                                  "department": _user["department"]
-                                })
-                            .toList();
+                        final List<dynamic> users =
+                            result.data!["searchLDAPUser"]
+                                .map((_user) => {
+                                      "name": _user["name"],
+                                      "roll": _user["roll"],
+                                      "department": _user["department"],
+                                      "photo": _user["photo"]
+                                    })
+                                .toList();
 
                         if (users.isEmpty) {
                           return const Error(
@@ -139,8 +140,7 @@ class UserCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: ListTile(
           leading: CachedNetworkImage(
-            imageUrl:
-                'https://photos.iitm.ac.in/byroll.php?roll=${user["roll"]?.toUpperCase()}',
+            imageUrl: user["photo"],
             placeholder: (_, __) => const SizedBox(
               child: CircularProgressIndicator(),
               width: 30,
@@ -160,7 +160,11 @@ class UserCard extends StatelessWidget {
               "${(user["roll"] as String).toUpperCase()}\n${user["department"]}"),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => GetUser(
-                    userDetails: {"roll": user["roll"]!, "name": user["name"]!},
+                    userDetails: {
+                      "roll": user["roll"]!,
+                      "name": user["name"]!,
+                      "photo": user["photo"]
+                    },
                   ))),
         ),
       ),

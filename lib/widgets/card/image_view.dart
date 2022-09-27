@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -65,17 +65,18 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
             ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                "${currentIndex + 1} of ${widget.galleryItems.length}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 17.0,
-                  decoration: null,
+            if (widget.galleryItems.length > 1)
+              Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "${currentIndex + 1} of ${widget.galleryItems.length}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17.0,
+                    decoration: null,
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),
@@ -85,7 +86,7 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final String item = widget.galleryItems[index];
     return PhotoViewGalleryPageOptions(
-      imageProvider: CachedNetworkImageProvider(item),
+      imageProvider: FileImage(File(item)),
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,

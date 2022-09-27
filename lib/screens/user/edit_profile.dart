@@ -122,8 +122,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                     )),
                 const SizedBox(height: 20),
                 CachedNetworkImage(
-                  imageUrl:
-                      'https://photos.iitm.ac.in/byroll.php?roll=${widget.user.roll?.toUpperCase()}',
+                  imageUrl: widget.user.photo,
                   placeholder: (_, __) =>
                       const Icon(Icons.account_circle_rounded, size: 100),
                   errorWidget: (_, __, ___) =>

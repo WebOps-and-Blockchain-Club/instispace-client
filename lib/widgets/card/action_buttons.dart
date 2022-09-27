@@ -1,11 +1,11 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
 
 import '../../models/date_time_format.dart';
+import '../utils/image_cache_path.dart';
 import '../addToCal.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
@@ -206,11 +206,7 @@ class SharePostButton extends StatelessWidget {
       onTap: () async {
         List<String> images = [];
         if (post.imageUrls != null && post.imageUrls!.isNotEmpty) {
-          for (var i = 0; i < post.imageUrls!.length; i++) {
-            final cache = DefaultCacheManager();
-            final file = await cache.getSingleFile(post.imageUrls![i]);
-            images.add(file.path);
-          }
+          images = await imageCachePath(post.imageUrls!);
         }
         String subject = post.title;
         String text = "${post.title}\n${post.description}";

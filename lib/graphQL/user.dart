@@ -88,6 +88,7 @@ class UserGQL {
         name
         roll
         role
+        photo
         isNewUser
         id
         mobile
@@ -108,6 +109,7 @@ class UserGQL {
         roll
         name
         department
+        photo
       }
     }
   """;
