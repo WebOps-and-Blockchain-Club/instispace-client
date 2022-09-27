@@ -168,48 +168,44 @@ class _CreateCommentState extends State<CreateComment> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  height: 40,
+                IntrinsicHeight(
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                          child: Card(
-                              margin: const EdgeInsets.all(0),
-                              child: Theme(
-                                data: ThemeData(
-                                  primarySwatch:
-                                      ColorPalette.palette(context).primary,
-                                ),
-                                child: TextField(
-                                  controller: comment,
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Enter your comment',
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 13, horizontal: 10),
-                                  ),
-                                ),
-                              ))),
-                      Card(
-                        margin: const EdgeInsets.only(left: 10),
-                        child: InkWell(
-                          onTap: () {
-                            if (!(result != null && result.isLoading) &&
-                                comment.text.isNotEmpty) {
-                              runMutation({
-                                "content": comment.text,
-                                "id": widget.id,
-                              });
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: (result != null && result.isLoading)
-                                ? const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  )
-                                : const Icon(Icons.send),
+                          child: TextField(
+                        controller: comment,
+                        maxLength: 3000,
+                        minLines: 1,
+                        maxLines: null,
+                        decoration: InputDecoration(
+                          border: Themes.borderNone,
+                          hintText: 'Enter your comment',
+                        ),
+                      )),
+                      SizedBox(
+                        height: 40,
+                        child: Card(
+                          margin: const EdgeInsets.only(left: 10),
+                          child: InkWell(
+                            onTap: () {
+                              if (!(result != null && result.isLoading) &&
+                                  comment.text.isNotEmpty) {
+                                runMutation({
+                                  "content": comment.text,
+                                  "id": widget.id,
+                                });
+                              }
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: (result != null && result.isLoading)
+                                  ? const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    )
+                                  : const Icon(Icons.send),
+                            ),
                           ),
                         ),
                       )
@@ -217,17 +213,11 @@ class _CreateCommentState extends State<CreateComment> {
                   ),
                 ),
                 if (result != null && result.hasException)
-                  SizedBox(
-                    height: 18,
+                  IntrinsicHeight(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        formatErrorMessage(result.exception.toString()),
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(
-                                color: ColorPalette.palette(context).error),
+                      child: ErrorText(
+                        error: formatErrorMessage(result.exception.toString()),
                       ),
                     ),
                   )

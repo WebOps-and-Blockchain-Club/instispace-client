@@ -9,6 +9,7 @@ import '../../../widgets/card/main.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/loading.dart';
 import '../../../widgets/helpers/error.dart';
+import '../../../widgets/section/main.dart';
 import 'actions.dart';
 
 class TagPage extends StatefulWidget {
@@ -57,7 +58,10 @@ class _TagPageState extends State<TagPage> {
                       final TagModel tag =
                           TagModel.fromJson(result.data!["getTag"]);
 
-                      if (tag.events == null && tag.netops == null) {
+                      if ((tag.events == null ||
+                              (tag.events != null && tag.events!.isEmpty)) &&
+                          (tag.netops == null ||
+                              (tag.events != null && tag.events!.isEmpty))) {
                         return const Error(error: "No Posts");
                       }
 
@@ -66,15 +70,37 @@ class _TagPageState extends State<TagPage> {
                           if (tag.events != null && tag.events!.isNotEmpty)
                             Section(
                               title: "Events",
-                              posts: tag.events!,
-                              options: options,
+                              child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: tag.events!.length,
+                                  itemBuilder: (context, index) {
+                                    final PostActions actions = tagPostActions(
+                                        "Events", tag.events![index], options);
+                                    return PostCard(
+                                      post: tag.events![index],
+                                      actions: actions,
+                                    );
+                                  }),
                             ),
                           if (tag.netops != null && tag.netops!.isNotEmpty)
                             Section(
                               title: "Networking & Opportunities",
-                              posts: tag.netops!,
-                              options: options,
-                            )
+                              child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: tag.netops!.length,
+                                  itemBuilder: (context, index) {
+                                    final PostActions actions = tagPostActions(
+                                        "Networking & Opportunities",
+                                        tag.netops![index],
+                                        options);
+                                    return PostCard(
+                                      post: tag.netops![index],
+                                      actions: actions,
+                                    );
+                                  }),
+                            ),
                         ],
                       );
                     }())),
@@ -82,70 +108,5 @@ class _TagPageState extends State<TagPage> {
             ),
           );
         });
-  }
-}
-
-class Section extends StatefulWidget {
-  final String title;
-  final List<PostModel> posts;
-  final QueryOptions<Object?> options;
-  const Section(
-      {Key? key,
-      required this.title,
-      required this.posts,
-      required this.options})
-      : super(key: key);
-
-  @override
-  State<Section> createState() => _SectionState();
-}
-
-class _SectionState extends State<Section> {
-  bool isMinimized = false;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: InkWell(
-            onTap: () => setState(() {
-              isMinimized = !isMinimized;
-            }),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                isMinimized
-                    ? const Icon(Icons.arrow_drop_down)
-                    : const Icon(Icons.arrow_drop_up)
-              ],
-            ),
-          ),
-        ),
-        if (!isMinimized)
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: widget.posts.length,
-                  itemBuilder: (context, index) {
-                    final PostActions actions = tagPostActions(
-                        widget.title, widget.posts[index], widget.options);
-                    return PostCard(
-                      post: widget.posts[index],
-                      actions: actions,
-                    );
-                  }),
-            ),
-          ),
-      ],
-    );
   }
 }

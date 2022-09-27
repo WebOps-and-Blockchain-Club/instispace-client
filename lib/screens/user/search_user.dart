@@ -30,98 +30,101 @@ class _SearchUserState extends State<SearchUser> {
     final Map<String, dynamic> defaultVariables = {
       "search": search.text.trim(),
     };
-    return SafeArea(
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: NestedScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      return CustomAppBar(
-                          title: "Find People",
-                          leading: CustomIconButton(
-                            icon: Icons.arrow_back,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ));
-                    }, childCount: 1),
-                  ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    floating: true,
-                    delegate: SearchBarDelegate(
-                      additionalHeight: searchValidationError != "" ? 18 : 0,
-                      searchUI: SearchBar(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        onSubmitted: (value) {
-                          if (value.isEmpty || value.length >= 4) {
-                            setState(() {
-                              search.text = value;
-                              searchValidationError = "";
-                            });
-                          } else {
-                            setState(() {
-                              searchValidationError =
-                                  "Enter at least 4 characters";
-                            });
-                          }
-                        },
-                        error: searchValidationError,
-                      ),
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: NestedScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return CustomAppBar(
+                        title: "Find People",
+                        leading: CustomIconButton(
+                          icon: Icons.arrow_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ));
+                  }, childCount: 1),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  floating: true,
+                  delegate: SearchBarDelegate(
+                    additionalHeight: searchValidationError != "" ? 18 : 0,
+                    searchUI: SearchBar(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      onSubmitted: (value) {
+                        if (value.isEmpty || value.length >= 4) {
+                          setState(() {
+                            search.text = value;
+                            searchValidationError = "";
+                          });
+                        } else {
+                          setState(() {
+                            searchValidationError =
+                                "Enter at least 4 characters";
+                          });
+                        }
+                      },
+                      error: searchValidationError,
                     ),
-                  )
-                ];
-              },
-              body: (search.text == "")
-                  ? const Text("Enter the string to search")
-                  : Query(
-                      options: QueryOptions(
-                          document: gql(UserGQL().searchUser),
-                          variables: defaultVariables),
-                      builder: (QueryResult result,
-                          {FetchMore? fetchMore, refetch}) {
-                        if (result.hasException) {
-                          return Error(error: result.exception.toString());
-                        }
+                  ),
+                )
+              ];
+            },
+            body: (search.text == "")
+                ? const Text("Enter the string to search")
+                : Query(
+                    options: QueryOptions(
+                        document: gql(UserGQL().searchUser),
+                        variables: defaultVariables),
+                    builder: (QueryResult result,
+                        {FetchMore? fetchMore, refetch}) {
+                      return RefreshIndicator(
+                        onRefresh: () {
+                          return refetch!();
+                        },
+                        child: Stack(children: [
+                          ListView(),
+                          (() {
+                            if (result.hasException) {
+                              return Error(error: result.exception.toString());
+                            }
 
-                        if (result.isLoading && result.data == null) {
-                          return const Loading();
-                        }
+                            if (result.isLoading && result.data == null) {
+                              return const Loading();
+                            }
 
-                        final List<dynamic> users =
-                            result.data!["searchLDAPUser"]
-                                .map((_user) => {
-                                      "name": _user["name"],
-                                      "roll": _user["roll"],
-                                      "department": _user["department"],
-                                      "photo": _user["photo"]
-                                    })
-                                .toList();
+                            final List<dynamic> users =
+                                result.data!["searchLDAPUser"]
+                                    .map((_user) => {
+                                          "name": _user["name"],
+                                          "roll": _user["roll"],
+                                          "department": _user["department"],
+                                          "photo": _user["photo"]
+                                        })
+                                    .toList();
 
-                        if (users.isEmpty) {
-                          return const Error(
-                            message: "No Users",
-                            error: "",
-                          );
-                        }
+                            if (users.isEmpty) {
+                              return const Error(
+                                message: "No Users",
+                                error: "",
+                              );
+                            }
 
-                        return RefreshIndicator(
-                          onRefresh: () {
-                            return refetch!();
-                          },
-                          child: ListView.builder(
-                              itemCount: users.length,
-                              itemBuilder: (context, index) {
-                                return UserCard(user: users[index]);
-                              }),
-                        );
-                      }),
-            ),
+                            return ListView.builder(
+                                itemCount: users.length,
+                                itemBuilder: (context, index) {
+                                  return UserCard(user: users[index]);
+                                });
+                          }())
+                        ]),
+                      );
+                    }),
           ),
         ),
       ),

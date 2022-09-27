@@ -47,7 +47,6 @@ class Description extends StatelessWidget {
         }).toList(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
-      textAlign: TextAlign.justify,
     );
   }
 }

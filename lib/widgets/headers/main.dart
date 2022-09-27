@@ -70,7 +70,7 @@ class CustomAppBar extends StatelessWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
+class SearchBar extends StatefulWidget {
   final void Function(String) onSubmitted;
   final String? error;
   final void Function()? onFilterClick;
@@ -78,8 +78,7 @@ class SearchBar extends StatelessWidget {
   final List<ChipModel>? chips;
   final List<String>? selectedChips;
   final Function? onChipFilter;
-
-  SearchBar(
+  const SearchBar(
       {Key? key,
       required this.onSubmitted,
       this.error,
@@ -90,13 +89,19 @@ class SearchBar extends StatelessWidget {
       this.onChipFilter})
       : super(key: key);
 
+  @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
   final _debouncer = Debouncer();
+  final search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: ColorPalette.palette(context).secondary[50],
-      padding: padding,
+      padding: widget.padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -114,23 +119,37 @@ class SearchBar extends StatelessWidget {
                                 ColorPalette.palette(context).primary,
                           ),
                           child: TextField(
-                            decoration: const InputDecoration(
+                            maxLength: 50,
+                            controller: search,
+                            decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'What are you looking for?',
-                                prefixIcon: Icon(Icons.search, size: 25)),
-                            onSubmitted: onSubmitted,
+                                prefixIcon: const Icon(Icons.search, size: 25),
+                                suffixIcon: search.text == ""
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () {
+                                          search.clear();
+                                          widget.onSubmitted("");
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          size: 25,
+                                        )),
+                                counterText: ""),
+                            onSubmitted: widget.onSubmitted,
                             onChanged: (value) {
                               _debouncer.run(() {
-                                onSubmitted(value);
+                                widget.onSubmitted(value);
                               });
                             },
                           ),
                         ))),
-                if (onFilterClick != null)
+                if (widget.onFilterClick != null)
                   Card(
                     margin: const EdgeInsets.only(left: 10),
                     child: InkWell(
-                      onTap: onFilterClick,
+                      onTap: widget.onFilterClick,
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
                         child: Icon(Icons.filter_alt_outlined),
@@ -140,13 +159,13 @@ class SearchBar extends StatelessWidget {
               ],
             ),
           ),
-          if (error != null && error != "")
+          if (widget.error != null && widget.error != "")
             SizedBox(
               height: 18,
               child: Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
-                  error!,
+                  widget.error!,
                   style: Theme.of(context)
                       .textTheme
                       .labelMedium!
@@ -154,7 +173,9 @@ class SearchBar extends StatelessWidget {
                 ),
               ),
             ),
-          if (chips != null && chips!.isNotEmpty && selectedChips != null)
+          if (widget.chips != null &&
+              widget.chips!.isNotEmpty &&
+              widget.selectedChips != null)
             SizedBox(
               height: 22,
               child: Padding(
@@ -162,17 +183,22 @@ class SearchBar extends StatelessWidget {
                 child: Wrap(
                   spacing: 5,
                   runSpacing: 5,
-                  children: List.generate(chips!.length, (index) {
+                  children: List.generate(widget.chips!.length, (index) {
                     return InkWell(
                       onTap: () {
-                        selectedChips!.contains(chips![index].id)
-                            ? selectedChips!.remove(chips![index].id)
-                            : selectedChips!.add(chips![index].id);
-                        if (onChipFilter != null) onChipFilter!(selectedChips);
+                        widget.selectedChips!.contains(widget.chips![index].id)
+                            ? widget.selectedChips!
+                                .remove(widget.chips![index].id)
+                            : widget.selectedChips!
+                                .add(widget.chips![index].id);
+                        if (widget.onChipFilter != null) {
+                          widget.onChipFilter!(widget.selectedChips);
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: selectedChips!.contains(chips![index].id)
+                            color: widget.selectedChips!
+                                    .contains(widget.chips![index].id)
                                 ? Colors.purple[100]
                                 : Colors.transparent,
                             border: Border.all(
@@ -180,7 +206,7 @@ class SearchBar extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8)),
                         padding: const EdgeInsets.symmetric(
                             vertical: 2, horizontal: 10),
-                        child: Text(chips![index].name),
+                        child: Text(widget.chips![index].name),
                       ),
                     );
                   }),

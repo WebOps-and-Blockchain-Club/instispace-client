@@ -62,9 +62,9 @@ class _LogInState extends State<LogIn> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return SafeArea(
-            child: Scaffold(
-                body: Padding(
+          return Scaffold(
+              body: SafeArea(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Form(
                 key: formKey,
@@ -157,8 +157,8 @@ class _LogInState extends State<LogIn> {
                   ],
                 ),
               ),
-            )),
-          );
+            ),
+          ));
         });
   }
 }
