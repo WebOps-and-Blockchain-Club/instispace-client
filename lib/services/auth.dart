@@ -5,16 +5,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService extends ChangeNotifier {
   SharedPreferences? prefs;
   String? _token;
+  bool? _newUserOnApp;
   String? get token => _token;
+  bool? get newUserOnApp => _newUserOnApp;
 
   AuthService() {
     notifyListeners();
     _token = null;
+    _newUserOnApp = null;
     loadToken();
+    getNewUserOnApp();
   }
 
   _initAuth() async {
     prefs ??= await SharedPreferences.getInstance();
+  }
+
+  getNewUserOnApp() async {
+    await _initAuth();
+    _newUserOnApp = prefs!.getBool("appOpenedBefore") ?? true;
+  }
+
+  setNewUserOnApp(bool val) async {
+    await _initAuth();
+    prefs!.setBool("appOpenedBefore", val);
+    _newUserOnApp = val;
+    notifyListeners();
   }
 
   loadToken() async {
@@ -48,6 +64,7 @@ class AuthService extends ChangeNotifier {
   _clearToken() async {
     await _initAuth();
     prefs!.clear();
+    setNewUserOnApp(false);
     _token = "";
   }
 }
