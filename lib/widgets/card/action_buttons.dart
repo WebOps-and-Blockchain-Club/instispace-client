@@ -1,14 +1,16 @@
-import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../graphQL/report.dart';
 import '../../models/date_time_format.dart';
 import '../helpers/loading.dart';
 import '../utils/image_cache_path.dart';
-import '../addToCal.dart';
+import '../../main.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
 import '../helpers/error.dart';
@@ -20,6 +22,7 @@ import '../../models/post.dart';
 import '../../models/tag.dart';
 import '../../utils/string_extension.dart';
 import '../../themes.dart';
+import '../text/label.dart';
 
 class CTAButton extends StatelessWidget {
   final CTAModel cta;
@@ -185,14 +188,165 @@ class SetReminderButton extends StatelessWidget {
       icon: Icons.calendar_month,
       text: "Set Reminder",
       onPressed: () => {
-        Add2Calendar.addEvent2Cal(
-          buildEvent(
-              title: post.title,
-              startDate: DateTime.parse(post.time!),
-              description: post.description,
-              endDate: DateTime.parse(post.time!).add(const Duration(hours: 1)),
-              location: post.location!),
-        ),
+        Navigator.of(context).pop(),
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(builder: (context, _) {
+                final date = TextEditingController();
+                final dateFormated = TextEditingController();
+                final time = TextEditingController();
+                final timeFormated = TextEditingController();
+                final formKey = GlobalKey<FormState>();
+                setReminderData() {
+                  if (post.time != null) {
+                    DateTimeFormatModel _time =
+                        DateTimeFormatModel.fromString(post.time!);
+                    date.text = _time.dateTime.toString();
+                    dateFormated.text = _time.toFormat("MMM dd, yyyy");
+                    time.text = _time.dateTime.toString();
+                    timeFormated.text = _time.toFormat("h:mm a");
+                  }
+                }
+
+                setReminderData();
+
+                return AlertDialog(
+                  titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  actionsPadding: const EdgeInsets.all(10),
+                  title: const Text('Reminder', textAlign: TextAlign.center),
+                  content: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        //date and time
+                        const LabelText(text: "Time & Location"),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                              controller: dateFormated,
+                              decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                      Icons.calendar_month_outlined,
+                                      size: 20),
+                                  prefixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  labelText: "Event Date"),
+                              readOnly: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the event date of the post";
+                                }
+                                return null;
+                              },
+                              onTap: () => showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now()
+                                              .add(const Duration(days: 7)),
+                                          firstDate: DateTime.now(),
+                                          lastDate: DateTime.now().add(
+                                              const Duration(days: 30 * 5)))
+                                      .then(
+                                    (value) {
+                                      if (value != null) {
+                                        date.text = value.toString();
+                                        DateTimeFormatModel _date =
+                                            DateTimeFormatModel(
+                                                dateTime: value);
+                                        dateFormated.text =
+                                            _date.toFormat("MMM dd, yyyy");
+                                      }
+                                    },
+                                  )),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                              controller: timeFormated,
+                              decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                      Icons.access_time_outlined,
+                                      size: 20),
+                                  prefixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  labelText: "Event Time"),
+                              readOnly: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the event time of the post";
+                                }
+                                return null;
+                              },
+                              onTap: () => showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.now(),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      DateTime _dateTime = DateTime(
+                                          2021, 1, 1, value.hour, value.minute);
+                                      time.text = _dateTime.toString();
+                                      DateTimeFormatModel _time =
+                                          DateTimeFormatModel(
+                                              dateTime: _dateTime);
+                                      timeFormated.text =
+                                          _time.toFormat("h:mm a");
+                                    }
+                                  })),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //...........
+                  actions: <Widget>[
+                    CustomElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        tz.initializeTimeZones();
+                        print(
+                            "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
+                        await flutterLocalNotificationsPlugin.zonedSchedule(
+                            1,
+                            post.title,
+                            post.description,
+                            // tz.TZDateTime.now(tz.local)
+                            //     .add(const Duration(seconds: 5)),
+                            tz.TZDateTime.parse(tz.local,
+                                "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}"),
+                            const NotificationDetails(
+                              android: AndroidNotificationDetails(
+                                'High_importance_channel',
+                                'High Importance Notifications',
+                                channelDescription:
+                                    'This channel is used for important notifications.',
+                                color: Color(0xFF2F247B),
+                                playSound: true,
+                                icon: '@mipmap/ic_launcher',
+                              ),
+                              iOS: IOSNotificationDetails(
+                                sound: 'default.wav',
+                                presentAlert: true,
+                                presentBadge: true,
+                                presentSound: true,
+                              ),
+                            ),
+                            androidAllowWhileIdle: true,
+                            uiLocalNotificationDateInterpretation:
+                                UILocalNotificationDateInterpretation
+                                    .absoluteTime);
+                      },
+                      text: "Set",
+                      color: ColorPalette.palette(context).warning,
+                      type: ButtonType.outlined,
+                    ),
+                  ],
+                );
+              });
+            })
       },
     );
   }
