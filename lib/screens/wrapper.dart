@@ -6,6 +6,7 @@ import '../services/auth.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../graphQL/user.dart';
+import 'splash/main.dart';
 import 'auth/login.dart';
 import 'home/main.dart';
 import 'user/edit_profile.dart';
@@ -22,11 +23,13 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
-    if (auth.token == null) {
+    if (auth.token == null || auth.newUserOnApp == null) {
       return const Scaffold(
           body: Loading(
         message: "Connecting to InstiSpace...",
       ));
+    } else if (auth.newUserOnApp == true) {
+      return SplashScreen(auth: auth);
     } else if (auth.token == "") {
       return LogIn(auth: auth);
     } else {
