@@ -9,7 +9,7 @@ HttpLink httpLink = HttpLink(
   },
 );
 
-ValueNotifier<GraphQLClient> client(String? token) {
+GraphQLClient graphQLClient(String? token) {
   Link link;
 
   if (token != null && token.isNotEmpty) {
@@ -21,8 +21,7 @@ ValueNotifier<GraphQLClient> client(String? token) {
   } else {
     link = httpLink;
   }
-
-  return ValueNotifier<GraphQLClient>(GraphQLClient(
+  return GraphQLClient(
       cache: GraphQLCache(store: HiveStore()),
       link: link,
       defaultPolicies: DefaultPolicies(
@@ -30,7 +29,11 @@ ValueNotifier<GraphQLClient> client(String? token) {
         fetch: FetchPolicy.cacheAndNetwork,
         error: ErrorPolicy.none,
         cacheReread: CacheRereadPolicy.mergeOptimistic,
-      ))));
+      )));
+}
+
+ValueNotifier<GraphQLClient> client(String? token) {
+  return ValueNotifier<GraphQLClient>(graphQLClient(token));
 }
 
 http.MultipartRequest uploadClient() {

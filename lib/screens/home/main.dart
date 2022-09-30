@@ -1,14 +1,14 @@
-import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user.dart';
-import '../../main.dart';
 import '../../services/auth.dart';
+import '../../services/client.dart';
+import '../../services/notification.dart';
 import '../../widgets/headers/drawer.dart';
+import '../../graphQL/auth.dart';
 import '../hostel/main.dart';
 import '/widgets/helpers/navigate.dart';
 import 'events/events.dart';
@@ -32,9 +32,9 @@ class HomeWrapper extends StatefulWidget {
 
 class _HomeWrapperState extends State<HomeWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final LocalNotificationService service = LocalNotificationService();
 
   int _selectedIndex = 2;
-  String? scrollTo;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -51,107 +51,25 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
   }
 
-  Future<Uint8List> _getByteArrayFromUrl(String url) async {
-    final http.Response response = await http.get(Uri.parse(url));
-    return response.bodyBytes;
-  }
-
   @override
   void initState() {
     getToken();
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-      if (notification != null && android != null) {
-        BigPictureStyleInformation? bigPictureStyleInformation;
-        if (message.data["image"] != null) {
-          final ByteArrayAndroidBitmap bigPicture = ByteArrayAndroidBitmap(
-              await _getByteArrayFromUrl(message.data["image"]));
-          bigPictureStyleInformation = BigPictureStyleInformation(bigPicture,
-              contentTitle: notification.title,
-              htmlFormatContentTitle: true,
-              summaryText: notification.body,
-              htmlFormatSummaryText: true);
-        }
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(channel.id, channel.name,
-                  channelDescription: channel.description,
-                  color: const Color(0xFF2F247B),
-                  playSound: true,
-                  icon: '@mipmap/ic_launcher',
-                  styleInformation: bigPictureStyleInformation),
-              iOS: const IOSNotificationDetails(
-                sound: 'default.wav',
-                presentAlert: true,
-                presentBadge: true,
-                presentSound: true,
-              ),
-            ));
-      }
+    FirebaseMessaging.onMessage.listen(service.showFirebaseNotification);
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newFcmToken) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+      final _options = MutationOptions(
+        document: gql(AuthGQL.updateFCMToken),
+        variables: <String, dynamic>{
+          'fcmToken': newFcmToken,
+        },
+      );
+      graphQLClient(token).mutate(_options);
     });
 
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {
-      if (message != null) {
-        setState(() {
-          switch (message.data["route"]) {
-            case "EVENT":
-              _selectedIndex = 3;
-              scrollTo = message.data["id"];
-              break;
-            case "NETOP":
-              _selectedIndex = 4;
-              scrollTo = message.data["id"];
-              break;
-            case "QUERY":
-              _selectedIndex = 1;
-              scrollTo = message.data["id"];
-              break;
-            case "LnF":
-              _selectedIndex = 0;
-              scrollTo = message.data["id"];
-              break;
-            case "HOSTEL":
-              navigate(context, HostelWrapper(user: widget.user));
-              break;
-            default:
-          }
-        });
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      setState(() {
-        switch (message.data["route"]) {
-          case "EVENT":
-            _selectedIndex = 3;
-            scrollTo = message.data["id"];
-            break;
-          case "NETOP":
-            _selectedIndex = 4;
-            scrollTo = message.data["id"];
-            break;
-          case "QUERY":
-            _selectedIndex = 1;
-            scrollTo = message.data["id"];
-            break;
-          case "LnF":
-            _selectedIndex = 0;
-            scrollTo = message.data["id"];
-            break;
-          case "HOSTEL":
-            navigate(context, HostelWrapper(user: widget.user));
-            break;
-          default:
-        }
-      });
-    });
+    listenToNotification();
 
     super.initState();
   }
@@ -222,5 +140,38 @@ class _HomeWrapperState extends State<HomeWrapper> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void listenToNotification() async {
+    String? payload;
+    service.onNotificationClick.stream.listen((String? _payload) {
+      payload = _payload;
+    });
+    if (payload == null || payload!.isEmpty) {
+      var details = await service.details();
+      payload = details?.payload;
+    }
+    if (payload != null && payload!.isNotEmpty) {
+      setState(() {
+        switch (payload) {
+          case "EVENT":
+            _selectedIndex = 3;
+            break;
+          case "NETOP":
+            _selectedIndex = 4;
+            break;
+          case "QUERY":
+            _selectedIndex = 1;
+            break;
+          case "LnF":
+            _selectedIndex = 0;
+            break;
+          case "HOSTEL":
+            navigate(context, HostelWrapper(user: widget.user));
+            break;
+          default:
+        }
+      });
+    }
   }
 }

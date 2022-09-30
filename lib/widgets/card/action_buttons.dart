@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 import '../../graphQL/report.dart';
 import '../../models/date_time_format.dart';
+import '../../services/notification.dart';
 import '../helpers/loading.dart';
 import '../utils/image_cache_path.dart';
-import '../../main.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
 import '../helpers/error.dart';
@@ -198,6 +195,8 @@ class SetReminderButton extends StatelessWidget {
                 final time = TextEditingController();
                 final timeFormated = TextEditingController();
                 final formKey = GlobalKey<FormState>();
+                final LocalNotificationService service =
+                    LocalNotificationService();
                 setReminderData() {
                   if (post.time != null) {
                     DateTimeFormatModel _time =
@@ -301,43 +300,16 @@ class SetReminderButton extends StatelessWidget {
                       ],
                     ),
                   ),
-                  //...........
                   actions: <Widget>[
                     CustomElevatedButton(
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        tz.initializeTimeZones();
-                        print(
-                            "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
-                        await flutterLocalNotificationsPlugin.zonedSchedule(
-                            1,
-                            post.title,
-                            post.description,
-                            // tz.TZDateTime.now(tz.local)
-                            //     .add(const Duration(seconds: 5)),
-                            tz.TZDateTime.parse(tz.local,
-                                "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}"),
-                            const NotificationDetails(
-                              android: AndroidNotificationDetails(
-                                'High_importance_channel',
-                                'High Importance Notifications',
-                                channelDescription:
-                                    'This channel is used for important notifications.',
-                                color: Color(0xFF2F247B),
-                                playSound: true,
-                                icon: '@mipmap/ic_launcher',
-                              ),
-                              iOS: IOSNotificationDetails(
-                                sound: 'default.wav',
-                                presentAlert: true,
-                                presentBadge: true,
-                                presentSound: true,
-                              ),
-                            ),
-                            androidAllowWhileIdle: true,
-                            uiLocalNotificationDateInterpretation:
-                                UILocalNotificationDateInterpretation
-                                    .absoluteTime);
+                        await service.scheduleNotification(
+                            id: 1,
+                            title: post.title,
+                            description: post.description,
+                            time:
+                                "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
                       },
                       text: "Set",
                       color: ColorPalette.palette(context).warning,

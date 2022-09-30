@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../services/auth.dart';
 import '../../themes.dart';
 
 class Error extends StatelessWidget {
@@ -56,11 +57,11 @@ String getAsset(String error, String? message) {
 }
 
 String formatErrorMessage(String error) {
-  print(error);
   if (error.contains("Failed host lookup")) {
     return "No network connection";
   } else if (error.contains(
       "Access denied! You need to be authorized to perform this action!")) {
+    AuthService().logout();
     return "Login to continue";
   } else if (error
       .contains("Access denied! You don't have permission for this action!")) {

@@ -15,6 +15,12 @@ class AuthGQL {
     }
   """;
 
+  static const updateFCMToken = """
+    mutation(\$fcmToken: String!){
+      updateFCMToken(fcmToken: \$fcmToken)
+    }
+  """;
+
   String updateUser = """
     mutation(\$userInput: UserInput!){
       updateUser(UserInput: \$userInput)

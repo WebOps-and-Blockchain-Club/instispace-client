@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,7 @@ class AuthService extends ChangeNotifier {
   loadToken() async {
     await _initAuth();
     _token = prefs!.getString('token') ?? "";
+    if (_token == "") FirebaseMessaging.instance.deleteToken();
     notifyListeners();
   }
 
@@ -51,6 +53,7 @@ class AuthService extends ChangeNotifier {
 
   logout() async {
     HiveStore().reset();
+    FirebaseMessaging.instance.deleteToken();
     await _clearToken();
     notifyListeners();
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -8,37 +7,14 @@ import 'package:provider/provider.dart';
 import 'screens/wrapper.dart';
 import 'services/auth.dart';
 import 'services/client.dart';
+import 'services/notification.dart';
 import 'themes.dart';
-
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'High_importance_channel',
-  'High Importance Notifications',
-  description: 'This channel is used for important notifications.',
-  importance: Importance.max,
-  playSound: true,
-  enableVibration: true,
-);
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
-const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
-
-const IOSInitializationSettings initializationSettingsIOS =
-    IOSInitializationSettings(
-  requestSoundPermission: false,
-  requestBadgePermission: false,
-  requestAlertPermission: false,
-);
-
-const InitializationSettings initializationSettings = InitializationSettings(
-  android: initializationSettingsAndroid,
-  iOS: initializationSettingsIOS,
-);
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
+  LocalNotificationService service = LocalNotificationService();
+  service.showFirebaseNotification(message);
 }
 
 Future<void> main() async {
@@ -47,10 +23,6 @@ Future<void> main() async {
   await Firebase.initializeApp();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,

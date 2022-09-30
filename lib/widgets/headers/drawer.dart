@@ -280,6 +280,20 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
+                        if (user.role != "USER")
+                          ListTile(
+                            leading:
+                                const Icon(Icons.insert_drive_file_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text("Super User's Guide"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              launchUrlString(
+                                  "https://docs.google.com/document/d/e/2PACX-1vS8PkBeAZnlrIgyWaxchCdd2_I9hf7KwzwXCIv4MLO6NwRZbvEhVKMYWtjliZvk1EKW2RvoJcnpifJp/pub",
+                                  mode: LaunchMode.externalApplication);
+                            },
+                          ),
+
                         // Terms of Service
                         ListTile(
                           leading: const Icon(Icons.info_outline),
