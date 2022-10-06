@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../widgets/helpers/loading.dart';
@@ -31,7 +32,7 @@ class _QueriesPageState extends State<QueriesPage> {
   String search = "";
   int skip = 0;
   int take = 10;
-
+  bool _showFab = true;
   late String searchValidationError = "";
 
   //Controllers
@@ -145,13 +146,22 @@ class _QueriesPageState extends State<QueriesPage> {
                             return fetchMoreResultData;
                           });
 
-                      return NotificationListener<ScrollNotification>(
+                      return NotificationListener<UserScrollNotification>(
                         onNotification: (notification) {
                           if (notification.metrics.pixels >
                                   0.8 * notification.metrics.maxScrollExtent &&
                               total > posts.length) {
                             fetchMore!(opts);
                           }
+                          final ScrollDirection direction =
+                              notification.direction;
+                          setState(() {
+                            if (direction == ScrollDirection.reverse) {
+                              _showFab = false;
+                            } else if (direction == ScrollDirection.forward) {
+                              _showFab = true;
+                            }
+                          });
                           return true;
                         },
                         child: RefreshIndicator(
@@ -191,8 +201,13 @@ class _QueriesPageState extends State<QueriesPage> {
                 ),
               ),
             ),
-            floatingActionButton:
-                widget.user.permissions.contains("CREATE_QUERY")
+            floatingActionButton: AnimatedSlide(
+              duration: Duration(milliseconds: 300),
+              offset: _showFab ? Offset.zero : Offset(0, 2),
+              child: AnimatedOpacity(
+                duration: Duration(milliseconds: 300),
+                opacity: _showFab ? 1 : 0,
+                child: widget.user.permissions.contains("CREATE_QUERY")
                     ? FloatingActionButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -202,6 +217,8 @@ class _QueriesPageState extends State<QueriesPage> {
                         },
                         child: const Icon(Icons.add))
                     : null,
+              ),
+            ),
           );
         });
   }
