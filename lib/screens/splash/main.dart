@@ -47,10 +47,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   onPressed: () {
                     widget.auth.setNewUserOnApp(false);
                   },
-                  icon: const Text(
-                    'Skip',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  iconSize: 35,
+                  icon: const Text('Skip', style: TextStyle(fontSize: 16)),
                 )
               ]
             : null,
@@ -90,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: const [
                             Text(
-                              'Login',
+                              'Proceed',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
