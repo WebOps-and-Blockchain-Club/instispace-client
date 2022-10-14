@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'new_item.dart';
@@ -205,40 +206,40 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                 ),
               ),
             ),
-            floatingActionButton:
-                widget.user.permissions.contains("CREATE_ITEM")
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NewItemPage(
-                                            category: "Found",
-                                            options: options,
-                                          )));
-                                },
-                                child: const Icon(Icons.lightbulb)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NewItemPage(
-                                            category: "Lost",
-                                            options: options,
-                                          )));
-                                },
-                                child: const Icon(Icons.lightbulb_outlined)),
-                          ),
-                        ],
+            floatingActionButton: widget.user.permissions
+                    .contains("CREATE_ITEM")
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: FloatingActionButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      NewItemPage(
+                                        category: "Found",
+                                        options: options,
+                                      )));
+                            },
+                            child: const Icon(Icons.lightbulb)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => NewItemPage(
+                                      category: "Lost",
+                                      options: options,
+                                    )));
+                          },
+                          child: Image.asset('lost_icon.png'),
+                        ),
                       )
-                    : null,
+                    ],
+                  )
+                : null,
           );
         });
   }

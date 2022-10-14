@@ -115,7 +115,23 @@ class UserGQL {
       }
     }
   """;
-
+  String getSuperUsers = """
+  query{
+    getSuperUsers(
+      roles: [
+        UserRole.ADMIN,
+        UserRole.LEADS,
+        UserRole.MODERATOR,
+        UserRole.HAS,
+        UserRole.HOSTEL_SEC
+        ],
+      take: 25){
+      roll
+      name
+      role
+    }
+  }
+""";
   String getUser = """
     query(\$getUserInput: GetUserInput!) {
       getUser(GetUserInput: \$getUserInput) {
