@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../widgets/helpers/loading.dart';
@@ -42,6 +43,7 @@ class _EventsPageState extends State<EventsPage> {
   String search = "";
   int skip = 0;
   int take = 10;
+  bool _showFab = true;
 
   late String searchValidationError = "";
 
@@ -198,13 +200,24 @@ class _EventsPageState extends State<EventsPage> {
                             return fetchMoreResultData;
                           });
 
-                      return NotificationListener<ScrollNotification>(
+                      return NotificationListener<UserScrollNotification>(
                         onNotification: (notification) {
                           if (notification.metrics.pixels >
                                   0.8 * notification.metrics.maxScrollExtent &&
                               total > posts.length) {
                             fetchMore!(opts);
                           }
+
+                          final ScrollDirection direction =
+                              notification.direction;
+                          setState(() {
+                            if (direction == ScrollDirection.reverse) {
+                              _showFab = false;
+                            } else if (direction == ScrollDirection.forward) {
+                              _showFab = true;
+                            }
+                          });
+
                           return true;
                         },
                         child: RefreshIndicator(
@@ -244,8 +257,13 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ),
             ),
-            floatingActionButton:
-                widget.user.permissions.contains("CREATE_EVENT")
+            floatingActionButton: AnimatedSlide(
+              duration: const Duration(milliseconds: 300),
+              offset: _showFab ? Offset.zero : const Offset(0, 2),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: _showFab ? 1 : 0,
+                child: widget.user.permissions.contains("CREATE_EVENT")
                     ? FloatingActionButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -255,6 +273,8 @@ class _EventsPageState extends State<EventsPage> {
                         },
                         child: const Icon(Icons.add))
                     : null,
+              ),
+            ),
           );
         });
   }

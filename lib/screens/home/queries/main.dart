@@ -202,10 +202,10 @@ class _QueriesPageState extends State<QueriesPage> {
               ),
             ),
             floatingActionButton: AnimatedSlide(
-              duration: Duration(milliseconds: 300),
-              offset: _showFab ? Offset.zero : Offset(0, 2),
+              duration: const Duration(milliseconds: 300),
+              offset: _showFab ? Offset.zero : const Offset(0, 2),
               child: AnimatedOpacity(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 opacity: _showFab ? 1 : 0,
                 child: widget.user.permissions.contains("CREATE_QUERY")
                     ? FloatingActionButton(

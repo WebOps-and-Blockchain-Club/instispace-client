@@ -19,7 +19,7 @@ void showWarningAlert(BuildContext context) {
                 children: [
                   TextSpan(
                     text:
-                        'Your activity is traced on your LDAP account, so please avoid posting any inappropriate content here, as detailed in our ',
+                        'Please avoid posting any inappropriate content here, since your activity is traced on your account, as detailed in ',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   TextSpan(
