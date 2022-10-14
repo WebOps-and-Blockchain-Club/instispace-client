@@ -12,12 +12,16 @@ import '../../models/user.dart';
 import '../../themes.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/utils/image_cache_path.dart';
+import './edit_profile.dart';
+import '../../services/auth.dart';
 
 class Profile extends StatelessWidget {
   final UserModel? user;
   final QueryResult? result;
   final Map<String, String>? userDetails;
+  final AuthService auth = AuthService();
   final Future<QueryResult<Object?>?> Function()? refetch;
+
   Profile({Key? key, this.user, this.result, this.userDetails, this.refetch})
       : super(key: key);
 
@@ -75,15 +79,29 @@ class Profile extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return CustomAppBar(
-                          title: _user == null
-                              ? ""
-                              : _user.name == null
-                                  ? _user.ldapName!
-                                  : _user.name!,
-                          leading: CustomIconButton(
-                            icon: Icons.arrow_back,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ));
+                        title: _user == null
+                            ? ""
+                            : _user.name == null
+                                ? _user.ldapName!
+                                : _user.name!,
+                        leading: CustomIconButton(
+                          icon: Icons.arrow_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        action: CustomIconButton(
+                          icon: Icons.edit,
+                          onPressed: () {
+                            //Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile(
+                                          auth: auth,
+                                          user: user!,
+                                        )));
+                          },
+                        ),
+                      );
                     }, childCount: 1),
                   ),
                 ];

@@ -109,19 +109,6 @@ class CustomDrawer extends StatelessWidget {
                         ),
 
                         // Edit Profile
-                        ListTile(
-                          leading: const Icon(Icons.edit),
-                          horizontalTitleGap: 0,
-                          title: const Text("Edit Profile"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => EditProfile(
-                                      auth: auth,
-                                      user: user,
-                                    )));
-                          },
-                        ),
 
                         // E ID Card
                         ListTile(
