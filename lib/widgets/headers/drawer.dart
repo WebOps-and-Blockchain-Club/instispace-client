@@ -108,79 +108,6 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
-                        // Edit Profile
-
-                        // E ID Card
-                        ListTile(
-                          leading: const Icon(Icons.perm_identity),
-                          horizontalTitleGap: 0,
-                          title: const Text("E-ID Card"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EIDCard(user: user)));
-                          },
-                        ),
-
-                        // Search User
-                        ListTile(
-                          leading: const Icon(Icons.search_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Find People"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const SearchUser()));
-                          },
-                        ),
-
-                        // My Hostel
-                        if (user.hostelId != null ||
-                            user.permissions.contains("HOSTEL_ADMIN"))
-                          ListTile(
-                            leading: const Icon(Icons.account_balance),
-                            horizontalTitleGap: 0,
-                            title: const Text("My Hostel"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      HostelWrapper(user: user)));
-                            },
-                          ),
-
-                        // Mess Menu
-                        const ViewMessMenu(),
-
-                        // Notifications
-                        ListTile(
-                          leading: const Icon(Icons.notifications),
-                          horizontalTitleGap: 0,
-                          title: const Text("Notifications"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const NotificationPage()));
-                          },
-                        ),
-
-                        // Reports
-                        if (user.permissions.contains("GET_REPORTS"))
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("View Reported Posts"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const ReportedPostPage()));
-                            },
-                          ),
-
                         // Create Account
                         if (user.permissions.contains("CREATE_ACCOUNT"))
                           ListTile(
@@ -196,21 +123,6 @@ class CustomDrawer extends StatelessWidget {
                                       )));
                             },
                           ),
-
-                        // Create Tag
-                        if (user.permissions.contains("CREATE_TAG"))
-                          ListTile(
-                            leading: const Icon(Icons.add_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text('Create Tag'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CreateTagPage()));
-                            },
-                          ),
-
                         // Create Hostel
                         if (user.permissions.contains("CREATE_HOSTEL"))
                           ListTile(
@@ -224,7 +136,6 @@ class CustomDrawer extends StatelessWidget {
                                       const CreateHostelPage()));
                             },
                           ),
-
                         // Update Role
                         if (user.permissions.contains("UPDATE_ROLE"))
                           ListTile(
@@ -238,6 +149,72 @@ class CustomDrawer extends StatelessWidget {
                                       const UpdateRolePage()));
                             },
                           ),
+                        // Reports
+                        if (user.permissions.contains("GET_REPORTS"))
+                          ListTile(
+                            leading: const Icon(Icons.account_circle_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text("View Reported Posts"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const ReportedPostPage()));
+                            },
+                          ),
+                        // Create Tag
+                        if (user.permissions.contains("CREATE_TAG"))
+                          ListTile(
+                            leading: const Icon(Icons.add_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text('Create Tag'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const CreateTagPage()));
+                            },
+                          ),
+                        // Search User
+                        ListTile(
+                          leading: const Icon(Icons.search_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Find People"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const SearchUser()));
+                          },
+                        ),
+
+                        // E ID Card
+                        ListTile(
+                          leading: const Icon(Icons.perm_identity),
+                          horizontalTitleGap: 0,
+                          title: const Text("E-ID Card"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EIDCard(user: user)));
+                          },
+                        ),
+
+                        // Mess Menu
+                        const ViewMessMenu(),
+                        // Notifications
+                        ListTile(
+                          leading: const Icon(Icons.notifications),
+                          horizontalTitleGap: 0,
+                          title: const Text("Notifications"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const NotificationPage()));
+                          },
+                        ),
 
                         // Feedback
                         user.permissions.contains("VIEW_FEEDBACK")

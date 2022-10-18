@@ -160,6 +160,7 @@ class Profile extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
+                        const SizedBox(height: 5),
                         Center(
                           child: Text(
                             _user.roll!.toUpperCase(),
@@ -172,6 +173,20 @@ class Profile extends StatelessWidget {
                                     fontWeight: FontWeight.w500),
                           ),
                         ),
+                        const SizedBox(height: 5),
+                        if (_user.role != "USER")
+                          Center(
+                            child: Text(
+                              'Role : ${_user.role!}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                      color:
+                                          ColorPalette.palette(context).primary,
+                                      fontWeight: FontWeight.w500),
+                            ),
+                          ),
                         const SizedBox(height: 20),
                         if (_user.interets != null &&
                             _user.interets!.isNotEmpty)
