@@ -50,6 +50,13 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
 
   @override
   void initState() {
+    if (widget.user.role == "HOSTEL_SEC") {
+      setState(() {
+        selectedHostels = HostelsModel(hostels: [
+          HostelModel(id: widget.user.hostelId!, name: widget.user.hostelName!)
+        ]);
+      });
+    }
     if (widget.announcement != null) {
       name.text = widget.announcement!.title;
       description.text = widget.announcement!.description;
@@ -298,11 +305,12 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                       });
                                     }),
                                 // Selected Hostels
-                                HostelsDisplay(
-                                    hostelsModel: selectedHostels,
-                                    onDelete: (value) => setState(() {
-                                          selectedHostels = value;
-                                        })),
+                                if (widget.user.role != "HOSTEL_SEC")
+                                  HostelsDisplay(
+                                      hostelsModel: selectedHostels,
+                                      onDelete: (value) => setState(() {
+                                            selectedHostels = value;
+                                          })),
                                 if (hostelError.isNotEmpty)
                                   Text(hostelError,
                                       style: Theme.of(context)
@@ -316,31 +324,33 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    CustomElevatedButton(
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              buildSheet(
-                                            context,
-                                            selectedHostels,
-                                            (value) {
-                                              setState(() {
-                                                selectedHostels = value;
-                                              });
-                                            },
-                                          ),
-                                          isScrollControlled: true,
-                                        );
-                                      },
-                                      text: "Select Hostels",
-                                      color:
-                                          ColorPalette.palette(context).primary,
-                                      type: ButtonType.outlined,
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
+                                    if (widget.user.role != "HOSTEL_SEC")
+                                      CustomElevatedButton(
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                buildSheet(
+                                              context,
+                                              selectedHostels,
+                                              (value) {
+                                                setState(() {
+                                                  selectedHostels = value;
+                                                });
+                                              },
+                                            ),
+                                            isScrollControlled: true,
+                                          );
+                                        },
+                                        text: "Select Hostels",
+                                        color: ColorPalette.palette(context)
+                                            .primary,
+                                        type: ButtonType.outlined,
+                                      ),
+                                    if (widget.user.role != "HOSTEL_SEC")
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
                                     imagePickerService.pickImageButton(
                                       context: context,
                                       preSelectedNoOfImages: imageUrls != null

@@ -252,8 +252,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                   },
                                   onTap: () => showDatePicker(
                                               context: context,
-                                              initialDate: DateTime.now()
-                                                  .add(const Duration(days: 7)),
+                                              initialDate: DateTime.now(),
                                               firstDate: DateTime.now(),
                                               lastDate: DateTime.now().add(
                                                   const Duration(days: 30 * 5)))
@@ -521,7 +520,7 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                     }
                                   }
                                 },
-                                text: "Save",
+                                text: "Post Netop",
                                 isLoading: result!.isLoading || isLoading,
                               ))
                             ],

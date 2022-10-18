@@ -115,7 +115,7 @@ class NetopModel {
         comments: comments,
         createdBy: createdBy,
         createdAt: createdAt,
-        permissions: permissions + ["SET_REMINDER", "SHARE", "LIKE", "STAR"],
+        permissions: permissions + ["SHARE", "LIKE", "STAR"],
         reports: reports);
   }
 }
