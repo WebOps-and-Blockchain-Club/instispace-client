@@ -230,7 +230,7 @@ class CustomDrawer extends StatelessWidget {
                           ListTile(
                             leading: const Icon(Icons.upgrade),
                             horizontalTitleGap: 0,
-                            title: const Text('Update Role'),
+                            title: const Text('Appoint Moderator'),
                             onTap: () {
                               Navigator.pop(context);
                               Navigator.of(context).push(MaterialPageRoute(

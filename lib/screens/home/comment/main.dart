@@ -179,15 +179,7 @@ class _CreateCommentState extends State<CreateComment> {
                         minLines: 1,
                         maxLines: null,
                         decoration: InputDecoration(
-                          border: Themes.borderNone,
-                          hintText: 'Enter your comment',
-                        ),
-                      )),
-                      SizedBox(
-                        height: 40,
-                        child: Card(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: InkWell(
+                          suffixIcon: InkWell(
                             onTap: () {
                               if (!(result != null && result.isLoading) &&
                                   comment.text.isNotEmpty) {
@@ -207,8 +199,15 @@ class _CreateCommentState extends State<CreateComment> {
                                   : const Icon(Icons.send),
                             ),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          hintText: 'Enter your comment',
                         ),
-                      )
+                      )),
                     ],
                   ),
                 ),
