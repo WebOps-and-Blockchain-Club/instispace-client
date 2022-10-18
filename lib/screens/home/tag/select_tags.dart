@@ -55,7 +55,7 @@ class _SelectTagsState extends State<SelectTags> {
             final List<CategoryModel> categorys =
                 TagsModel.fromJson(result.data!["getTags"]).getCategorysModel();
             if (widget.additionalCategory != null) {
-              categorys.add(widget.additionalCategory!);
+              categorys.insert(0, widget.additionalCategory!);
             }
 
             if (categorys.isEmpty) {
