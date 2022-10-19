@@ -7,6 +7,7 @@ import '../../../models/comment.dart';
 import '../../../models/date_time_format.dart';
 import '../../../themes.dart';
 import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/card/description.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/error.dart';
 
@@ -84,11 +85,7 @@ class _CommentsPageState extends State<CommentsPage> {
                               ),
 
                             // Description
-                            SelectableText(
-                              commet.content,
-                              textAlign: TextAlign.justify,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                            Description(content: commet.content),
 
                             // Posted By & Time
                             SelectableText(

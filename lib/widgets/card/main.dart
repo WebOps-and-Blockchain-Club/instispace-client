@@ -211,7 +211,7 @@ class _PostCardState extends State<PostCard> {
             // Description
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Description(content: post.description.capitalize()),
+              child: Description(content: post.description),
             ),
             // Padding(
             //   padding: const EdgeInsets.only(top: 10),
