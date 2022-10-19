@@ -108,18 +108,83 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
-                        // Edit Profile
+                        // Create Account
+                        if (user.permissions.contains("CREATE_ACCOUNT"))
+                          ListTile(
+                            leading: const Icon(Icons.addchart_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text('Create Accounts'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      CreateAccountPage(
+                                        role: user.role!,
+                                      )));
+                            },
+                          ),
+                        // Create Hostel
+                        if (user.permissions.contains("CREATE_HOSTEL"))
+                          ListTile(
+                            leading: const Icon(Icons.account_balance_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text("Create Hostel"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const CreateHostelPage()));
+                            },
+                          ),
+                        // Update Role
+                        if (user.permissions.contains("UPDATE_ROLE"))
+                          ListTile(
+                            leading: const Icon(Icons.upgrade),
+                            horizontalTitleGap: 0,
+                            title: const Text('Appoint Moderator'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const UpdateRolePage()));
+                            },
+                          ),
+                        // Reports
+                        if (user.permissions.contains("GET_REPORTS"))
+                          ListTile(
+                            leading: const Icon(Icons.account_circle_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text("View Reported Posts"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const ReportedPostPage()));
+                            },
+                          ),
+                        // Create Tag
+                        if (user.permissions.contains("CREATE_TAG"))
+                          ListTile(
+                            leading: const Icon(Icons.add_outlined),
+                            horizontalTitleGap: 0,
+                            title: const Text('Create Tag'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const CreateTagPage()));
+                            },
+                          ),
+                        // Search User
                         ListTile(
-                          leading: const Icon(Icons.edit),
+                          leading: const Icon(Icons.search_outlined),
                           horizontalTitleGap: 0,
-                          title: const Text("Edit Profile"),
+                          title: const Text("Find People"),
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => EditProfile(
-                                      auth: auth,
-                                      user: user,
-                                    )));
+                                builder: (BuildContext context) =>
+                                    const SearchUser()));
                           },
                         ),
 
@@ -136,37 +201,8 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
-                        // Search User
-                        ListTile(
-                          leading: const Icon(Icons.search_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Find People"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const SearchUser()));
-                          },
-                        ),
-
-                        // My Hostel
-                        if (user.hostelId != null ||
-                            user.permissions.contains("HOSTEL_ADMIN"))
-                          ListTile(
-                            leading: const Icon(Icons.account_balance),
-                            horizontalTitleGap: 0,
-                            title: const Text("My Hostel"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      HostelWrapper(user: user)));
-                            },
-                          ),
-
                         // Mess Menu
                         const ViewMessMenu(),
-
                         // Notifications
                         ListTile(
                           leading: const Icon(Icons.notifications),
@@ -179,78 +215,6 @@ class CustomDrawer extends StatelessWidget {
                                     const NotificationPage()));
                           },
                         ),
-
-                        // Reports
-                        if (user.permissions.contains("GET_REPORTS"))
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("View Reported Posts"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const ReportedPostPage()));
-                            },
-                          ),
-
-                        // Create Account
-                        if (user.permissions.contains("CREATE_ACCOUNT"))
-                          ListTile(
-                            leading: const Icon(Icons.addchart_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text('Create Accounts'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      CreateAccountPage(
-                                        role: user.role!,
-                                      )));
-                            },
-                          ),
-
-                        // Create Tag
-                        if (user.permissions.contains("CREATE_TAG"))
-                          ListTile(
-                            leading: const Icon(Icons.add_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text('Create Tag'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CreateTagPage()));
-                            },
-                          ),
-
-                        // Create Hostel
-                        if (user.permissions.contains("CREATE_HOSTEL"))
-                          ListTile(
-                            leading: const Icon(Icons.account_balance_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("Create Hostel"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CreateHostelPage()));
-                            },
-                          ),
-
-                        // Update Role
-                        if (user.permissions.contains("UPDATE_ROLE"))
-                          ListTile(
-                            leading: const Icon(Icons.upgrade),
-                            horizontalTitleGap: 0,
-                            title: const Text('Update Role'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const UpdateRolePage()));
-                            },
-                          ),
 
                         // Feedback
                         user.permissions.contains("VIEW_FEEDBACK")

@@ -12,12 +12,16 @@ import '../../models/user.dart';
 import '../../themes.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/utils/image_cache_path.dart';
+import './edit_profile.dart';
+import '../../services/auth.dart';
 
 class Profile extends StatelessWidget {
   final UserModel? user;
   final QueryResult? result;
   final Map<String, String>? userDetails;
+  final AuthService auth = AuthService();
   final Future<QueryResult<Object?>?> Function()? refetch;
+
   Profile({Key? key, this.user, this.result, this.userDetails, this.refetch})
       : super(key: key);
 
@@ -75,15 +79,29 @@ class Profile extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return CustomAppBar(
-                          title: _user == null
-                              ? ""
-                              : _user.name == null
-                                  ? _user.ldapName!
-                                  : _user.name!,
-                          leading: CustomIconButton(
-                            icon: Icons.arrow_back,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ));
+                        title: _user == null
+                            ? ""
+                            : _user.name == null
+                                ? _user.ldapName!
+                                : _user.name!,
+                        leading: CustomIconButton(
+                          icon: Icons.arrow_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        action: CustomIconButton(
+                          icon: Icons.edit,
+                          onPressed: () {
+                            //Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile(
+                                          auth: auth,
+                                          user: user!,
+                                        )));
+                          },
+                        ),
+                      );
                     }, childCount: 1),
                   ),
                 ];
@@ -142,6 +160,7 @@ class Profile extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
+                        const SizedBox(height: 5),
                         Center(
                           child: Text(
                             _user.roll!.toUpperCase(),
@@ -154,6 +173,20 @@ class Profile extends StatelessWidget {
                                     fontWeight: FontWeight.w500),
                           ),
                         ),
+                        const SizedBox(height: 5),
+                        if (_user.role != "USER")
+                          Center(
+                            child: Text(
+                              'Role : ${_user.role!}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                      color:
+                                          ColorPalette.palette(context).primary,
+                                      fontWeight: FontWeight.w500),
+                            ),
+                          ),
                         const SizedBox(height: 20),
                         if (_user.interets != null &&
                             _user.interets!.isNotEmpty)
@@ -171,7 +204,7 @@ class Profile extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15.0),
                                   child: Text(
-                                    "Followed Tags",
+                                    "Tags you wish to follow",
                                     style:
                                         Theme.of(context).textTheme.titleMedium,
                                     textAlign: TextAlign.center,

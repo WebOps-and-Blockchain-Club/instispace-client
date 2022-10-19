@@ -31,7 +31,7 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
             if (resultData["updateRole"] == true) {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Role Updated')),
+                const SnackBar(content: Text('Moderator Appointed')),
               );
             }
           },
@@ -44,7 +44,7 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
             child: Scaffold(
                 appBar: AppBar(
                     title: CustomAppBar(
-                        title: "Update Role",
+                        title: "Appoint Moderator",
                         leading: CustomIconButton(
                           icon: Icons.arrow_back,
                           onPressed: () {
@@ -98,7 +98,7 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
                                 });
                               }
                             },
-                            text: "Update Role",
+                            text: "Appoint Moderator",
                             isLoading: result!.isLoading,
                           ),
                         )

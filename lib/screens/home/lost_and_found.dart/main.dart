@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'new_item.dart';
@@ -33,7 +34,7 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
   int skip = 0;
   int take = 10;
   List<String> itemFilter = ["LOST", "FOUND"];
-
+  bool _showFab = true;
   late String searchValidationError = "";
 
   //Controllers
@@ -158,13 +159,23 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                             return fetchMoreResultData;
                           });
 
-                      return NotificationListener<ScrollNotification>(
+                      return NotificationListener<UserScrollNotification>(
                         onNotification: (notification) {
                           if (notification.metrics.pixels >
                                   0.8 * notification.metrics.maxScrollExtent &&
                               total > posts.length) {
                             fetchMore!(opts);
                           }
+
+                          final ScrollDirection direction =
+                              notification.direction;
+                          setState(() {
+                            if (direction == ScrollDirection.reverse) {
+                              _showFab = false;
+                            } else if (direction == ScrollDirection.forward) {
+                              _showFab = true;
+                            }
+                          });
                           return true;
                         },
                         child: RefreshIndicator(
@@ -205,8 +216,13 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                 ),
               ),
             ),
-            floatingActionButton:
-                widget.user.permissions.contains("CREATE_ITEM")
+            floatingActionButton: AnimatedSlide(
+              duration: const Duration(milliseconds: 700),
+              offset: _showFab ? Offset.zero : const Offset(0, 2),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 700),
+                opacity: _showFab ? 1 : 0,
+                child: widget.user.permissions.contains("CREATE_ITEM")
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
@@ -239,6 +255,8 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                         ],
                       )
                     : null,
+              ),
+            ),
           );
         });
   }

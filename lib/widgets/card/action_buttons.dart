@@ -88,8 +88,8 @@ class LikePostButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(like.isLikedByUser == true
-                      ? Icons.thumb_up_alt
-                      : Icons.thumb_up_alt_outlined),
+                      ? Icons.favorite
+                      : Icons.favorite_border),
                   const SizedBox(width: 5),
                   Text(like.count.toString(),
                       style: Theme.of(context).textTheme.labelLarge)
@@ -162,15 +162,18 @@ class _StarPostButtonState extends State<StarPostButton> {
           RunMutation runMutation,
           QueryResult? result,
         ) =>
-            CustomFlatIconTextButton(
-              icon: isStarred == true ? Icons.star : Icons.star_outline,
-              text: "Star",
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 if (!(result != null && result.isLoading) &&
                     widget.starAction != null) {
                   runMutation({"id": widget.starAction!.id});
                 }
               },
+              child: Icon(
+                isStarred == true
+                    ? Icons.bookmark_outlined
+                    : Icons.bookmark_border,
+              ),
             ));
   }
 }
@@ -181,11 +184,9 @@ class SetReminderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomFlatIconTextButton(
-      icon: Icons.calendar_month,
-      text: "Set Reminder",
-      onPressed: () => {
-        Navigator.of(context).pop(),
+    return InkWell(
+      child: const Icon(Icons.alarm_add),
+      onTap: () => {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -242,8 +243,7 @@ class SetReminderButton extends StatelessWidget {
                               },
                               onTap: () => showDatePicker(
                                           context: context,
-                                          initialDate: DateTime.now()
-                                              .add(const Duration(days: 7)),
+                                          initialDate: DateTime.now(),
                                           firstDate: DateTime.now(),
                                           lastDate: DateTime.now().add(
                                               const Duration(days: 30 * 5)))
@@ -311,7 +311,7 @@ class SetReminderButton extends StatelessWidget {
                             time:
                                 "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
                       },
-                      text: "Set",
+                      text: "Set Reminder",
                       color: ColorPalette.palette(context).warning,
                       type: ButtonType.outlined,
                     ),

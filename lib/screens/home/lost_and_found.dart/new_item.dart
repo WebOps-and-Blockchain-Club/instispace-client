@@ -218,9 +218,8 @@ class _NewItemPageState extends State<NewItemPage> {
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime.now()
                                                   .subtract(
-                                                      const Duration(days: 7)),
-                                              lastDate: DateTime.now().add(
-                                                  const Duration(days: 30 * 5)))
+                                                      const Duration(days: 14)),
+                                              lastDate: DateTime.now())
                                           .then(
                                         (value) {
                                           if (value != null) {

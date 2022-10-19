@@ -250,8 +250,7 @@ class _NewEventState extends State<NewEvent> {
                                   },
                                   onTap: () => showDatePicker(
                                               context: context,
-                                              initialDate: DateTime.now()
-                                                  .add(const Duration(days: 7)),
+                                              initialDate: DateTime.now(),
                                               firstDate: DateTime.now(),
                                               lastDate: DateTime.now().add(
                                                   const Duration(days: 30 * 5)))
@@ -622,7 +621,7 @@ class _NewEventState extends State<NewEvent> {
                                     }
                                   }
                                 },
-                                text: "Save",
+                                text: "Post Event",
                                 isLoading: result!.isLoading || isLoading,
                               ))
                             ],
