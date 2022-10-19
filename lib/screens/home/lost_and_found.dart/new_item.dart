@@ -41,6 +41,7 @@ class _NewItemPageState extends State<NewItemPage> {
   final timeFormated = TextEditingController();
   final location = TextEditingController();
   final contact = TextEditingController();
+  final focusNode = FocusNode();
 
   // Services
   final localStorage = LocalStorageService();
@@ -217,9 +218,8 @@ class _NewItemPageState extends State<NewItemPage> {
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime.now()
                                                   .subtract(
-                                                      const Duration(days: 7)),
-                                              lastDate: DateTime.now().add(
-                                                  const Duration(days: 30 * 5)))
+                                                      const Duration(days: 14)),
+                                              lastDate: DateTime.now())
                                           .then(
                                         (value) {
                                           if (value != null) {
@@ -286,9 +286,9 @@ class _NewItemPageState extends State<NewItemPage> {
                                     builder: (context, constraints) {
                                   return RawAutocomplete(
                                     optionsBuilder:
-                                        (TextEditingValue location) {
-                                      if (location.text == '' ||
-                                          location.text.length < 3) {
+                                        (TextEditingValue _location) {
+                                      if (_location.text == '' ||
+                                          _location.text.length < 3) {
                                         return const Iterable<String>.empty();
                                       } else {
                                         List<String> matches = <String>[];
@@ -302,20 +302,17 @@ class _NewItemPageState extends State<NewItemPage> {
 
                                         matches.retainWhere((s) {
                                           return s.toLowerCase().contains(
-                                              location.text.toLowerCase());
+                                              _location.text.toLowerCase());
                                         });
                                         return matches;
                                       }
                                     },
                                     fieldViewBuilder: (BuildContext context,
-                                        TextEditingController location,
+                                        TextEditingController _location,
                                         FocusNode focusNode,
                                         VoidCallback onFieldSubmitted) {
-                                      if (widget.item != null) {
-                                        location.text = widget.item!.location;
-                                      }
                                       return TextFormField(
-                                        controller: location,
+                                        controller: _location,
                                         maxLength: 50,
                                         minLines: 1,
                                         maxLines: null,
@@ -355,7 +352,6 @@ class _NewItemPageState extends State<NewItemPage> {
 
                                                   return GestureDetector(
                                                       onTap: () {
-                                                        location.text = opt;
                                                         onSelected(opt);
                                                       },
                                                       child: Card(
@@ -371,6 +367,11 @@ class _NewItemPageState extends State<NewItemPage> {
                                             )),
                                       );
                                     },
+                                    onSelected: (String option) {
+                                      location.text = option;
+                                    },
+                                    textEditingController: location,
+                                    focusNode: focusNode,
                                   );
                                 });
                               },

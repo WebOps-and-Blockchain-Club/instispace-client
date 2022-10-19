@@ -7,6 +7,7 @@ import '../../../models/comment.dart';
 import '../../../models/date_time_format.dart';
 import '../../../themes.dart';
 import '../../../widgets/button/icon_button.dart';
+import '../../../widgets/card/description.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/error.dart';
 
@@ -84,11 +85,7 @@ class _CommentsPageState extends State<CommentsPage> {
                               ),
 
                             // Description
-                            SelectableText(
-                              commet.content,
-                              textAlign: TextAlign.justify,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                            Description(content: commet.content),
 
                             // Posted By & Time
                             SelectableText(
@@ -179,15 +176,7 @@ class _CreateCommentState extends State<CreateComment> {
                         minLines: 1,
                         maxLines: null,
                         decoration: InputDecoration(
-                          border: Themes.borderNone,
-                          hintText: 'Enter your comment',
-                        ),
-                      )),
-                      SizedBox(
-                        height: 40,
-                        child: Card(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: InkWell(
+                          suffixIcon: InkWell(
                             onTap: () {
                               if (!(result != null && result.isLoading) &&
                                   comment.text.isNotEmpty) {
@@ -207,8 +196,15 @@ class _CreateCommentState extends State<CreateComment> {
                                   : const Icon(Icons.send),
                             ),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none),
+                          hintText: 'Enter your comment',
                         ),
-                      )
+                      )),
                     ],
                   ),
                 ),

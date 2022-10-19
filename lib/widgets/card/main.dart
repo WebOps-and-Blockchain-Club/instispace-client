@@ -47,9 +47,7 @@ class _PostCardState extends State<PostCard> {
                 // Action Menu
                 if (post.permissions.contains("EDIT") ||
                     post.permissions.contains("DELETE") ||
-                    post.permissions.contains("RESOLVE_ITEM") ||
-                    (post.permissions.contains("STAR") && post.star != null) ||
-                    post.permissions.contains("SET_REMINDER"))
+                    post.permissions.contains("RESOLVE_ITEM"))
                   PopupMenuButton(
                       child: const Padding(
                         padding: EdgeInsets.only(top: 3, left: 3),
@@ -75,21 +73,6 @@ class _PostCardState extends State<PostCard> {
                                 padding: EdgeInsets.zero,
                                 child: ResolvePostButton(
                                     resolve: actions.resolve)),
-                          if (post.permissions.contains("STAR"))
-                            PopupMenuItem(
-                              height: 10,
-                              padding: EdgeInsets.zero,
-                              child: StarPostButton(
-                                star: post.star!,
-                                starAction: actions.star,
-                              ),
-                            ),
-                          if (post.permissions.contains("SET_REMINDER"))
-                            PopupMenuItem(
-                              height: 10,
-                              padding: EdgeInsets.zero,
-                              child: SetReminderButton(post: post),
-                            ),
                         ];
                       })
               ],
@@ -211,7 +194,7 @@ class _PostCardState extends State<PostCard> {
             // Description
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Description(content: post.description.capitalize()),
+              child: Description(content: post.description),
             ),
             // Padding(
             //   padding: const EdgeInsets.only(top: 10),
@@ -261,7 +244,9 @@ class _PostCardState extends State<PostCard> {
             if ((post.permissions.contains("LIKE") && post.like != null) ||
                 (post.comments != null) ||
                 (post.permissions.contains("SHARE")) ||
-                (post.permissions.contains("REPORT")))
+                (post.permissions.contains("REPORT")) ||
+                (post.permissions.contains("STAR")) ||
+                (post.permissions.contains("SET_REMINDER")))
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
@@ -284,6 +269,16 @@ class _PostCardState extends State<PostCard> {
                           ),
                         if (post.permissions.contains("SHARE"))
                           SharePostButton(post: post),
+                        if (post.permissions.contains("STAR") &&
+                            post.star != null)
+                          StarPostButton(
+                            star: post.star!,
+                            starAction: actions.star,
+                          ),
+                        if (post.permissions.contains("SET_REMINDER"))
+                          SetReminderButton(
+                            post: post,
+                          ),
                       ],
                     ),
                     if (post.permissions.contains("REPORT"))
