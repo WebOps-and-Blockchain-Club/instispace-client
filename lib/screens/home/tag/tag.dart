@@ -61,7 +61,7 @@ class _TagPageState extends State<TagPage> {
                       if ((tag.events == null ||
                               (tag.events != null && tag.events!.isEmpty)) &&
                           (tag.netops == null ||
-                              (tag.events != null && tag.events!.isEmpty))) {
+                              (tag.netops != null && tag.netops!.isEmpty))) {
                         return const Error(error: "No Posts");
                       }
 
