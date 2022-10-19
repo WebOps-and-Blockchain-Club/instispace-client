@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_links/uni_links.dart';
 
 import '../../models/user.dart';
 import '../../services/auth.dart';
@@ -12,6 +13,7 @@ import '../../graphQL/auth.dart';
 import '../hostel/main.dart';
 import '/widgets/helpers/navigate.dart';
 import 'events/events.dart';
+import 'events/event.dart';
 import 'main/home.dart';
 import 'lost_and_found.dart/main.dart';
 import 'netops/netops.dart';
@@ -70,6 +72,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
 
     listenToNotification();
+
+    listenToDeepLink();
 
     super.initState();
   }
@@ -172,6 +176,26 @@ class _HomeWrapperState extends State<HomeWrapper> {
           default:
         }
       });
+    }
+  }
+
+  void listenToDeepLink() async {
+    final initialLink = await getInitialLink();
+
+    if (initialLink != null && initialLink.isNotEmpty) {
+      final path = initialLink.split("instispace.app").last;
+
+      final type = path.split("/")[1].toLowerCase();
+      final id = path.split("/")[2];
+
+      if (type != "" && type.isNotEmpty && id != "" && id.isNotEmpty) {
+        switch (type) {
+          case "event":
+            navigate(context, EventPage(id: id));
+            break;
+          default:
+        }
+      }
     }
   }
 }
