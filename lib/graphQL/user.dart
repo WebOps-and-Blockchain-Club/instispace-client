@@ -116,21 +116,21 @@ class UserGQL {
     }
   """;
   String getSuperUsers = """
-  query{
-    getSuperUsers(
-      roles: [
-        UserRole.ADMIN,
-        UserRole.LEADS,
-        UserRole.MODERATOR,
-        UserRole.HAS,
-        UserRole.HOSTEL_SEC
-        ],
-      take: 25){
-      roll
-      name
-      role
+  query(\$take: Float!, \$lastUserId: String!, \$rolesFilter: [UserRole!]!){
+  getSuperUsers(take: \$take, LastUserId: \$lastUserId, RolesFilter: \$rolesFilter) {
+    usersList {
+      roll,
+      name,
+      role,
+      id,
+      isNewUser,
+      photo,
+      department,
     }
+    total
   }
+}
+
 """;
   String getUser = """
     query(\$getUserInput: GetUserInput!) {
