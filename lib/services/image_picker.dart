@@ -29,6 +29,10 @@ class ImagePickerService extends ChangeNotifier {
     _picker ??= ImagePicker();
   }
 
+  void clearPreview() {
+    _imageFileList = null;
+  }
+
   Future<void> _onImageButtonPressed({
     required int preSelectedNoOfImages,
     BuildContext? context,
@@ -295,7 +299,7 @@ class ImagePickerService extends ChangeNotifier {
         }
       },
       color: ColorPalette.palette(context).primary,
-      icon: const Icon(Icons.camera_alt_rounded, size: 23),
+      icon: const Icon(Icons.camera_alt_rounded),
     );
   }
 }

@@ -142,11 +142,9 @@ class QueryGQL {
   """;
 
   static const createComment = """
-    mutation(\$content: String!, \$id: String!, \$images: [Upload!]) {
+    mutation(\$commentData: CommentInput!, \$id: String!) {
       createCommentQuery(
-        content: \$content
-        MyQueryId: \$id
-        Images: \$images
+        CommentData: \$commentData, MyQueryId: \$id
       ) {
         id
         content
