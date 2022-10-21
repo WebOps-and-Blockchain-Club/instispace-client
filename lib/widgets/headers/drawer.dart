@@ -8,7 +8,6 @@ import '../../screens/mess/main.dart';
 import '../../screens/notification/main.dart';
 import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
-import '../../screens/user/edit_profile.dart';
 import '../../screens/user/search_user.dart';
 import '../../screens/super_user/reported_posts.dart';
 import '../../screens/super_user/create_account.dart';
@@ -18,6 +17,7 @@ import '../../screens/super_user/update_role.dart';
 import '../../screens/info/feedback.dart';
 import '../../screens/super_user/view_feedback.dart';
 import '../../screens/info/about_us.dart';
+import '../../screens/super_user/super_user_list.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -215,6 +215,20 @@ class CustomDrawer extends StatelessWidget {
                                     const NotificationPage()));
                           },
                         ),
+
+                        if (user.role == "ADMIN" ||
+                            user.role == "HAS" ||
+                            user.role == "SECRETARY")
+                          ListTile(
+                              leading: const Icon(Icons.list),
+                              horizontalTitleGap: 0,
+                              title: const Text('Super User List'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const SuperUserList()));
+                              }),
 
                         // Feedback
                         user.permissions.contains("VIEW_FEEDBACK")

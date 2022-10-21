@@ -88,19 +88,21 @@ class Profile extends StatelessWidget {
                           icon: Icons.arrow_back,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
-                        action: CustomIconButton(
-                          icon: Icons.edit,
-                          onPressed: () {
-                            //Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfile(
-                                          auth: auth,
-                                          user: user!,
-                                        )));
-                          },
-                        ),
+                        action: user != null
+                            ? CustomIconButton(
+                                icon: Icons.edit,
+                                onPressed: () {
+                                  //Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditProfile(
+                                                auth: auth,
+                                                user: user!,
+                                              )));
+                                },
+                              )
+                            : Container(),
                       );
                     }, childCount: 1),
                   ),

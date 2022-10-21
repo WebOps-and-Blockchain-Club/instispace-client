@@ -44,6 +44,7 @@ class _NewEventState extends State<NewEvent> {
   final location = TextEditingController();
   final ctaName = TextEditingController();
   final ctaLink = TextEditingController();
+  final focusNode = FocusNode();
 
   // Graphql
   String createEvent = EventGQL().create;
@@ -318,9 +319,9 @@ class _NewEventState extends State<NewEvent> {
                                     builder: (context, constraints) {
                                   return RawAutocomplete(
                                     optionsBuilder:
-                                        (TextEditingValue location) {
-                                      if (location.text == '' ||
-                                          location.text.length < 3) {
+                                        (TextEditingValue _location) {
+                                      if (_location.text == '' ||
+                                          _location.text.length < 3) {
                                         return const Iterable<String>.empty();
                                       } else {
                                         List<String> matches = <String>[];
@@ -334,20 +335,17 @@ class _NewEventState extends State<NewEvent> {
 
                                         matches.retainWhere((s) {
                                           return s.toLowerCase().contains(
-                                              location.text.toLowerCase());
+                                              _location.text.toLowerCase());
                                         });
                                         return matches;
                                       }
                                     },
                                     fieldViewBuilder: (BuildContext context,
-                                        TextEditingController location,
+                                        TextEditingController _location,
                                         FocusNode focusNode,
                                         VoidCallback onFieldSubmitted) {
-                                      if (widget.event != null) {
-                                        location.text = widget.event!.location;
-                                      }
                                       return TextFormField(
-                                        controller: location,
+                                        controller: _location,
                                         maxLength: 50,
                                         minLines: 1,
                                         maxLines: null,
@@ -387,7 +385,6 @@ class _NewEventState extends State<NewEvent> {
 
                                                   return GestureDetector(
                                                       onTap: () {
-                                                        location.text = opt;
                                                         onSelected(opt);
                                                       },
                                                       child: Card(
@@ -403,6 +400,11 @@ class _NewEventState extends State<NewEvent> {
                                             )),
                                       );
                                     },
+                                    onSelected: (String option) {
+                                      location.text = option;
+                                    },
+                                    textEditingController: location,
+                                    focusNode: focusNode,
                                   );
                                 });
                               },

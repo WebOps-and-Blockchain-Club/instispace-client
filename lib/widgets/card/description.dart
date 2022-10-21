@@ -12,41 +12,53 @@ class Description extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> _dataArr = content.split("\n");
     return SelectableText.rich(
       TextSpan(
-        children: content.split(" ").map((_data) {
-          if (isValidEmail(_data.trim())) {
+        children: _dataArr.map((_data) {
+          if (_data.contains(RegExp(r'\s'))) {
+            List<String> _dataArr2 = _data.split(RegExp(r'\s'));
             return TextSpan(
-                text: _data + " ",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => launchUrl(Uri(scheme: 'mailto', path: _data)),
-                style: const TextStyle(color: Color(0xFF0000EE)));
+                children: [..._dataArr2, _dataArr.last == _data ? "" : "\n"]
+                    .map((_data2) => textWidget(_data2, " "))
+                    .toList());
+          } else {
+            return textWidget(_data.trim(), _dataArr.last == _data ? "" : "\n");
           }
-          if (isURL(_data.trim().toLowerCase())) {
-            return TextSpan(
-                text: _data.toLowerCase() + " ",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    _data.contains("http")
-                        ? launchUrlString(_data.trim().toLowerCase(),
-                            mode: LaunchMode.externalApplication)
-                        : launchUrlString(
-                            "http://" + _data.trim().toLowerCase(),
-                            mode: LaunchMode.externalApplication);
-                  },
-                style: const TextStyle(color: Color(0xFF0000EE)));
-          }
-          if (isValidNumber(_data.trim())) {
-            return TextSpan(
-                text: _data + " ",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () => launchUrl(Uri(scheme: 'tel', path: _data)),
-                style: const TextStyle(color: Color(0xFF0000EE)));
-          }
-          return TextSpan(text: _data + " ");
         }).toList(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
+  }
+
+  TextSpan textWidget(String _data, String _sec) {
+    if (isValidEmail(_data)) {
+      return TextSpan(
+          text: _data + _sec,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => launchUrl(Uri(scheme: 'mailto', path: _data)),
+          style: const TextStyle(color: Color(0xFF0000EE)));
+    }
+    if (isURL(_data)) {
+      return TextSpan(
+          text: _data + _sec,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              _data.contains("http")
+                  ? launchUrlString(_data.trim(),
+                      mode: LaunchMode.externalApplication)
+                  : launchUrlString("http://" + _data.trim(),
+                      mode: LaunchMode.externalApplication);
+            },
+          style: const TextStyle(color: Color(0xFF0000EE)));
+    }
+    if (isValidNumber(_data)) {
+      return TextSpan(
+          text: _data + _sec,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => launchUrl(Uri(scheme: 'tel', path: _data)),
+          style: const TextStyle(color: Color(0xFF0000EE)));
+    }
+    return TextSpan(text: _data + _sec);
   }
 }
