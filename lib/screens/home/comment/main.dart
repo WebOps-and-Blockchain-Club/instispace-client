@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:client/services/image_picker.dart';
+import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/comment.dart';
 import '../../../models/date_time_format.dart';
@@ -17,14 +20,15 @@ class CommentsPage extends StatefulWidget {
   final String? document;
   final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
       updateCache;
-  const CommentsPage(
-      {Key? key,
-      required this.comments,
-      this.id,
-      this.type,
-      this.document,
-      this.updateCache})
-      : super(key: key);
+
+  const CommentsPage({
+    Key? key,
+    required this.comments,
+    this.id,
+    this.type,
+    this.document,
+    this.updateCache,
+  }) : super(key: key);
 
   @override
   State<CommentsPage> createState() => _CommentsPageState();
@@ -143,6 +147,7 @@ class CreateComment extends StatefulWidget {
 
 class _CreateCommentState extends State<CreateComment> {
   final TextEditingController comment = TextEditingController();
+  List<String>? imageUrls;
 
   @override
   Widget build(BuildContext context) {
@@ -161,68 +166,95 @@ class _CreateCommentState extends State<CreateComment> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return Container(
-            color: ColorPalette.palette(context).secondary[50],
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IntrinsicHeight(
-                  child: Row(
+          return ChangeNotifierProvider(
+              create: (_) => ImagePickerService(noOfImages: 4),
+              child: Consumer<ImagePickerService>(
+                  builder: (context, imagePickerService, child) {
+                return Container(
+                  color: ColorPalette.palette(context).secondary[50],
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                          child: TextField(
-                        controller: comment,
-                        maxLength: 3000,
-                        minLines: 1,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          suffixIcon: InkWell(
-                            onTap: () {
-                              if (!(result != null && result.isLoading) &&
-                                  comment.text.isNotEmpty) {
-                                runMutation({
-                                  "content": comment.text,
-                                  "id": widget.id,
-                                });
-                              }
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: (result != null && result.isLoading)
-                                  ? const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    )
-                                  : const Icon(Icons.send),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    imagePickerService.previewImages(
+                                        imageUrls: imageUrls,
+                                        removeImageUrl: (value) {
+                                          setState(() {
+                                            imageUrls!.removeAt(value);
+                                          });
+                                        }),
+                                    const SizedBox(height: 10),
+                                    TextField(
+                              controller: comment,
+                              maxLength: 3000,
+                              minLines: 1,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                    prefixIcon:
+                                        imagePickerService.pickImageIconButton(
+                                      context: context,
+                                      preSelectedNoOfImages:
+                                          imageUrls != null ? imageUrls!.length : 0,
+                                    ),
+                                    suffixIcon: InkWell(
+                                      onTap: () {
+                                        if (!(result != null && result.isLoading) &&
+                                            comment.text.isNotEmpty) {
+                                          runMutation({
+                                            "content": comment.text,
+                                            "id": widget.id,
+                                          });
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        child: (result != null && result.isLoading)
+                                            ? const CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              )
+                                            : const Icon(Icons.send,
+                                        size: 23),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none),
+                                    hintText: 'Enter your comment',
+                              ),
+                            ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ),
+                      if (result != null && result.hasException)
+                        IntrinsicHeight(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: ErrorText(
+                              error: formatErrorMessage(
+                                  result.exception.toString()),
                             ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none),
-                          hintText: 'Enter your comment',
-                        ),
-                      )),
+                        )
                     ],
                   ),
-                ),
-                if (result != null && result.hasException)
-                  IntrinsicHeight(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: ErrorText(
-                        error: formatErrorMessage(result.exception.toString()),
-                      ),
-                    ),
-                  )
-              ],
-            ),
-          );
+                );
+              }));
         });
   }
 }
