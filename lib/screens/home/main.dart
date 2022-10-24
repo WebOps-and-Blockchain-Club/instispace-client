@@ -74,45 +74,23 @@ class _HomeWrapperState extends State<HomeWrapper> {
     super.initState();
   }
 
-  Widget body(int index, AuthService auth, UserModel user, scaffoldKey) {
-    switch (index) {
-      case 0:
-        return LostAndFoundPage(user: user, scaffoldKey: scaffoldKey);
-
-      case 1:
-        return QueriesPage(user: user, scaffoldKey: scaffoldKey);
-
-      case 2:
-        return HomePage(
-            auth: auth,
-            user: user,
-            refetch: widget.refetch,
-            scaffoldKey: scaffoldKey);
-
-      case 3:
-        return EventsPage(user: user, scaffoldKey: scaffoldKey);
-
-      case 4:
-        return NetopsPage(user: user, scaffoldKey: scaffoldKey);
-
-      default:
-        return HomePage(
-            auth: widget.auth,
-            user: user,
-            refetch: widget.refetch,
-            scaffoldKey: scaffoldKey);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       drawer: CustomDrawer(
           auth: widget.auth, user: widget.user, fcmToken: fcmToken!),
-      body: Center(
-        child: body(_selectedIndex, widget.auth, widget.user, _scaffoldKey),
-      ),
+      body: IndexedStack(index: _selectedIndex, children: [
+        LostAndFoundPage(user: widget.user, scaffoldKey: _scaffoldKey),
+        QueriesPage(user: widget.user, scaffoldKey: _scaffoldKey),
+        HomePage(
+            auth: widget.auth,
+            user: widget.user,
+            refetch: widget.refetch,
+            scaffoldKey: _scaffoldKey),
+        EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
+        NetopsPage(user: widget.user, scaffoldKey: _scaffoldKey),
+      ]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[

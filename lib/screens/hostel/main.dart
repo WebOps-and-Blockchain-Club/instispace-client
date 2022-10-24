@@ -25,22 +25,6 @@ class _HostelWrapperState extends State<HostelWrapper> {
     });
   }
 
-  Widget body(int index, UserModel user) {
-    switch (index) {
-      case 0:
-        return AmenitiesPage(user: user);
-
-      case 1:
-        return AnnouncementsPage(user: user);
-
-      case 2:
-        return ContactsPage(user: user);
-
-      default:
-        return AnnouncementsPage(user: user);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,8 +38,13 @@ class _HostelWrapperState extends State<HostelWrapper> {
                 },
               )),
           automaticallyImplyLeading: false),
-      body: Center(
-        child: body(_selectedIndex, widget.user),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          AmenitiesPage(user: widget.user),
+          AnnouncementsPage(user: widget.user),
+          ContactsPage(user: widget.user),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
