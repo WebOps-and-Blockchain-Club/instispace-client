@@ -34,11 +34,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final LocalNotificationService service = LocalNotificationService();
 
-  int _selectedIndex = 2;
+  List<int> tappedIndex = [2];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      tappedIndex = [...tappedIndex, index];
     });
   }
 
@@ -76,46 +76,59 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: CustomDrawer(
-          auth: widget.auth, user: widget.user, fcmToken: fcmToken!),
-      body: IndexedStack(index: _selectedIndex, children: [
-        LostAndFoundPage(user: widget.user, scaffoldKey: _scaffoldKey),
-        QueriesPage(user: widget.user, scaffoldKey: _scaffoldKey),
-        HomePage(
-            auth: widget.auth,
-            user: widget.user,
-            refetch: widget.refetch,
-            scaffoldKey: _scaffoldKey),
-        EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
-        NetopsPage(user: widget.user, scaffoldKey: _scaffoldKey),
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.travel_explore),
-            label: 'L&F',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.query_stats_rounded),
-            label: 'Queries',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.connect_without_contact_sharp),
-            label: 'NetOps',
-          ),
-        ],
-        onTap: _onItemTapped,
+    final _selectedIndex = tappedIndex.last;
+    return WillPopScope(
+      onWillPop: () async {
+        if (tappedIndex.length == 1) {
+          return true;
+        } else {
+          setState(() {
+            tappedIndex.removeLast();
+          });
+          return false;
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: CustomDrawer(
+            auth: widget.auth, user: widget.user, fcmToken: fcmToken!),
+        body: IndexedStack(index: _selectedIndex, children: [
+          LostAndFoundPage(user: widget.user, scaffoldKey: _scaffoldKey),
+          QueriesPage(user: widget.user, scaffoldKey: _scaffoldKey),
+          HomePage(
+              auth: widget.auth,
+              user: widget.user,
+              refetch: widget.refetch,
+              scaffoldKey: _scaffoldKey),
+          EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
+          NetopsPage(user: widget.user, scaffoldKey: _scaffoldKey),
+        ]),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.travel_explore),
+              label: 'L&F',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.query_stats_rounded),
+              label: 'Queries',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event),
+              label: 'Events',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.connect_without_contact_sharp),
+              label: 'NetOps',
+            ),
+          ],
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -133,16 +146,16 @@ class _HomeWrapperState extends State<HomeWrapper> {
       setState(() {
         switch (payload) {
           case "EVENT":
-            _selectedIndex = 3;
+            _onItemTapped(3);
             break;
           case "NETOP":
-            _selectedIndex = 4;
+            _onItemTapped(4);
             break;
           case "QUERY":
-            _selectedIndex = 1;
+            _onItemTapped(1);
             break;
           case "LnF":
-            _selectedIndex = 0;
+            _onItemTapped(0);
             break;
           case "HOSTEL":
             navigate(context, HostelWrapper(user: widget.user));

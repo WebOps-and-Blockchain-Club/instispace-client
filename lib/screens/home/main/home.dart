@@ -36,64 +36,77 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<HomeModel>? home = widget.user.toHomeModel();
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: RefreshIndicator(
-            onRefresh: () => widget.refetch!(),
-            child: NestedScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      return CustomAppBar(
-                        title: "InstiSpace",
-                        leading: CustomIconButton(
-                            icon: Icons.menu,
-                            onPressed: () => {
-                                  widget.scaffoldKey.currentState!.openDrawer()
-                                }),
-                        action: (widget.user.hostelId != null ||
-                                widget.user.permissions
-                                    .contains("HOSTEL_ADMIN"))
-                            ? CustomIconButton(
-                                icon: Icons.account_balance_outlined,
-                                onPressed: () => navigate(
-                                    context, HostelWrapper(user: widget.user)))
-                            : null,
-                      );
-                    }, childCount: 1),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Header(
-                            title: "Hi ${widget.user.name}",
-                            subTitle: "Get InstiSpace feed here"),
-                      );
-                    }, childCount: 1),
-                  ),
-                ];
-              },
-              body: RefreshIndicator(
-                onRefresh: () => widget.refetch!(),
-                child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: (home == null || home.isEmpty)
-                        ? const Error(error: "No Posts")
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: home.length,
-                            itemBuilder: (context, index) => Section(
-                                user: widget.user,
-                                title: home[index].title,
-                                posts: home[index].posts))),
+    return WillPopScope(
+      onWillPop: () async {
+        if (_scrollController.offset != 0.0) {
+          _scrollController.animateTo(0.0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeIn);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: RefreshIndicator(
+              onRefresh: () => widget.refetch!(),
+              child: NestedScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        return CustomAppBar(
+                          title: "InstiSpace",
+                          leading: CustomIconButton(
+                              icon: Icons.menu,
+                              onPressed: () => {
+                                    widget.scaffoldKey.currentState!
+                                        .openDrawer()
+                                  }),
+                          action: (widget.user.hostelId != null ||
+                                  widget.user.permissions
+                                      .contains("HOSTEL_ADMIN"))
+                              ? CustomIconButton(
+                                  icon: Icons.account_balance_outlined,
+                                  onPressed: () => navigate(context,
+                                      HostelWrapper(user: widget.user)))
+                              : null,
+                        );
+                      }, childCount: 1),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Header(
+                              title: "Hi ${widget.user.name}",
+                              subTitle: "Get InstiSpace feed here"),
+                        );
+                      }, childCount: 1),
+                    ),
+                  ];
+                },
+                body: RefreshIndicator(
+                  onRefresh: () => widget.refetch!(),
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: (home == null || home.isEmpty)
+                          ? const Error(error: "No Posts")
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: home.length,
+                              itemBuilder: (context, index) => Section(
+                                  user: widget.user,
+                                  title: home[index].title,
+                                  posts: home[index].posts))),
+                ),
               ),
             ),
           ),
