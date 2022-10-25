@@ -316,6 +316,10 @@ class SetReminderButton extends StatelessWidget {
                             description: post.description,
                             time:
                                 "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Reminder set Successfully')),
+                        );
                       },
                       text: "Set Reminder",
                       color: ColorPalette.palette(context).warning,
