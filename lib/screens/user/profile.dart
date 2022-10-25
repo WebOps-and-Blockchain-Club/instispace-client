@@ -206,7 +206,7 @@ class Profile extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15.0),
                                   child: Text(
-                                    "Tags you wish to follow",
+                                    "Followed tags",
                                     style:
                                         Theme.of(context).textTheme.titleMedium,
                                     textAlign: TextAlign.center,
