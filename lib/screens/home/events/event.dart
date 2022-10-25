@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../graphQL/events.dart';
 import '../../../models/event.dart';
+
 import '../../../widgets/page/post.dart';
 import 'actions.dart';
 

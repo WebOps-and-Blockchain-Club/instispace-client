@@ -345,6 +345,7 @@ class SharePostButton extends StatelessWidget {
         if (post.location != null && post.location != "") {
           text = text + "\n Location: ${post.location}";
         }
+        text = text + "\n instispace.app/query/${post.id}";
         if (images.isNotEmpty) {
           await Share.shareFiles(images, text: text, subject: subject);
         } else {

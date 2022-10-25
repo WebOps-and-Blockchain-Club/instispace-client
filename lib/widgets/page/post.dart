@@ -55,10 +55,10 @@ class _PostPageState extends State<PostPage> {
                             return Error(error: result.exception.toString());
                           }
 
-                          if (result.isLoading && result.data == null) {
+                          if (result.isLoading && result.data != null) {
                             return const Loading();
                           }
-
+                          print("Result : ${result}");
                           final PostModel post =
                               widget.toPostsModel(result.data);
 

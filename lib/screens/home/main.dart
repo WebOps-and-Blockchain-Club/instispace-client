@@ -14,6 +14,7 @@ import '../hostel/main.dart';
 import '/widgets/helpers/navigate.dart';
 import 'events/events.dart';
 import 'events/event.dart';
+import 'queries/query.dart';
 import 'main/home.dart';
 import 'lost_and_found.dart/main.dart';
 import 'netops/netops.dart';
@@ -180,8 +181,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
   }
 
   void listenToDeepLink() async {
+    //print("listening to deep link");
     final initialLink = await getInitialLink();
-
+    print("listening to deep link");
+    print("deep link : ${initialLink}");
+    print("query");
     if (initialLink != null && initialLink.isNotEmpty) {
       final path = initialLink.split("instispace.app").last;
 
@@ -192,6 +196,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
         switch (type) {
           case "event":
             navigate(context, EventPage(id: id));
+            break;
+          case "query":
+            navigate(context, QueryPage(id: id));
             break;
           default:
         }
