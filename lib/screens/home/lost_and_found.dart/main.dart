@@ -229,15 +229,18 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NewItemPage(
-                                            category: "Found",
-                                            options: options,
-                                          )));
-                                },
-                                child: const Icon(Icons.lightbulb)),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        NewItemPage(
+                                          category: "Found",
+                                          options: options,
+                                        )));
+                              },
+                              child: const Image(
+                                  image: AssetImage(
+                                      'assets/illustrations/report_found-modified-colour.png')),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
@@ -250,7 +253,9 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                             options: options,
                                           )));
                                 },
-                                child: const Icon(Icons.lightbulb_outlined)),
+                                child: const Image(
+                                    image: AssetImage(
+                                        'assets/illustrations/report_lost-modified-colour.png'))),
                           ),
                         ],
                       )
