@@ -83,10 +83,17 @@ class Themes {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         clipBehavior: Clip.antiAlias),
 
+    // ListTile Theme
     listTileTheme: ListTileThemeData(
         horizontalTitleGap: 0,
         iconColor: ColorPalette._primary,
         textColor: ColorPalette._primary),
+
+    //ExpansionTile Theme
+    expansionTileTheme: ExpansionTileThemeData(
+        iconColor: ColorPalette._primary,
+        collapsedIconColor: ColorPalette._primary,
+        childrenPadding: const EdgeInsets.only(left: 30)),
 
     // Icon Theme
     iconTheme: IconThemeData(color: ColorPalette._primary),
