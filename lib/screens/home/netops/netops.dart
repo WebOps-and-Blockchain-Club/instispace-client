@@ -132,7 +132,7 @@ class _NetopsPageState extends State<NetopsPage> {
                                 } else {
                                   setState(() {
                                     searchValidationError =
-                                        "Enter atleast 4 characters";
+                                        "Enter at least 4 characters";
                                   });
                                 }
                               },

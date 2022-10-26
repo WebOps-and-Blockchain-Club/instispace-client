@@ -193,7 +193,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 ),
 
                 // Tags
-                const LabelText(text: "Select Tags"),
+                const LabelText(text: "Tags you wish to follow"),
                 // Selected Tags
                 TagsDisplay(
                     tagsModel: selectedTags,

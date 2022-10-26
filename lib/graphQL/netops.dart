@@ -167,8 +167,8 @@ class NetopGQL {
   """;
 
   static const createComment = """
-    mutation(\$content: String!, \$id: String!, \$images: [Upload!]){
-      createCommentNetop(content: \$content, NetopId: \$id, Images: \$images){
+    mutation(\$commentData: CommentInput!, \$id: String!){
+      createCommentNetop(CommentData: \$commentData, NetopId: \$id){
         id
         content
         images
