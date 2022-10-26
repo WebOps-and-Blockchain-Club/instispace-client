@@ -43,7 +43,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       case "SECRETARY":
         return ["LEADS"];
       case "HAS":
-        return ["HOSTEL_SEC"];
+        return ["LEADS", "HOSTEL_SEC"];
       default:
         return [];
     }
