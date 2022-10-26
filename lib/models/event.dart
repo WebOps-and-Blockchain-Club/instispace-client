@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'post.dart';
 import 'actions.dart';
 import 'tag.dart';
@@ -73,19 +74,21 @@ class EventModel {
 
   PostModel toPostModel() {
     return PostModel(
-        id: id,
-        title: title,
-        description: description,
-        imageUrls: imageUrl != null ? [imageUrl!].toList() : null,
-        location: location,
-        time: time,
-        tags: tags,
-        like: like,
-        star: star,
-        cta: cta,
-        createdBy: createdBy,
-        createdAt: createdAt,
-        permissions: permissions + ["SHARE", "SET_REMINDER", "STAR", "LIKE"]);
+      id: id,
+      title: title,
+      description: description,
+      imageUrls: imageUrl != null ? [imageUrl!].toList() : null,
+      location: location,
+      time: time,
+      tags: tags,
+      like: like,
+      star: star,
+      cta: cta,
+      createdBy: createdBy,
+      createdAt: createdAt,
+      permissions: permissions + ["SHARE", "SET_REMINDER", "STAR", "LIKE"],
+      shareLink: "${shareBaseLink}event/$id",
+    );
   }
 }
 

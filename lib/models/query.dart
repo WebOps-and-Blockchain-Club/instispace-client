@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'report.dart';
 import 'comment.dart';
 import 'netop.dart';
@@ -93,6 +94,7 @@ class QueryModel {
         createdBy: createdBy,
         createdAt: createdAt,
         permissions: permissions,
+        shareLink: "${shareBaseLink}query/$id",
         reports: reports);
   }
 }

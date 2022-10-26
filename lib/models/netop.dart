@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'comment.dart';
 import 'report.dart';
 import 'user.dart';
@@ -116,6 +117,7 @@ class NetopModel {
         createdBy: createdBy,
         createdAt: createdAt,
         permissions: permissions + ["SHARE", "LIKE", "STAR"],
+        shareLink: "${shareBaseLink}netop/$id",
         reports: reports);
   }
 }
