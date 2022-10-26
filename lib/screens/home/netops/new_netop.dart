@@ -11,6 +11,7 @@ import '../../../models/tag.dart';
 import '../../../models/date_time_format.dart';
 import '../../../screens/home/tag/tags_display.dart';
 import '../../../themes.dart';
+import '../../../widgets/buttom_sheet/main.dart';
 import '../../../widgets/helpers/error.dart';
 import '../../../widgets/form/warning_popup.dart';
 import '../../../widgets/headers/main.dart';
@@ -348,15 +349,16 @@ class _NewNetopPageState extends State<NewNetopPage> {
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (BuildContext context) => buildSheet(
-                                    context,
-                                    selectedTags,
-                                    (value) {
-                                      setState(() {
-                                        selectedTags = value;
-                                      });
-                                    },
-                                    null,
-                                  ),
+                                      context,
+                                      (controller) => SelectTags(
+                                            selectedTags: selectedTags,
+                                            controller: controller,
+                                            callback: (value) {
+                                              setState(() {
+                                                selectedTags = value;
+                                              });
+                                            },
+                                          )),
                                   isScrollControlled: true,
                                 );
                               },

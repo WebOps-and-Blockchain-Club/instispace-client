@@ -114,35 +114,3 @@ class _SelectHostelsState extends State<SelectHostels> {
     );
   }
 }
-
-Widget buildSheet(
-    BuildContext context, HostelsModel selectedHostels, Function? callback) {
-  return makeDimissible(
-    context: context,
-    child: DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.8,
-      builder: (_, controller) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: SelectHostels(
-            selectedHostels: selectedHostels,
-            controller: controller,
-            callback: callback,
-          )),
-    ),
-  );
-}
-
-Widget makeDimissible({required Widget child, required BuildContext context}) =>
-    GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).pop(),
-      child: GestureDetector(
-        onTap: () {},
-        child: child,
-      ),
-    );

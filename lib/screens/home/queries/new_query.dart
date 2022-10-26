@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import '../../../graphQL/query.dart';
@@ -146,20 +145,22 @@ class _NewQueryPageState extends State<NewQueryPage> {
                                 const LabelText(text: "Query Description"),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),
-                                  child: TextFormField(
-                                    controller: description,
-                                    maxLength: 3000,
-                                    minLines: 3,
-                                    maxLines: 8,
-                                    decoration: const InputDecoration(
-                                      labelText: "Description",
+                                  child: SingleChildScrollView(
+                                    child: TextFormField(
+                                      controller: description,
+                                      maxLength: 3000,
+                                      minLines: 3,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                        labelText: "Description",
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "Enter the query description";
+                                        }
+                                        return null;
+                                      },
                                     ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Enter the query description";
-                                      }
-                                      return null;
-                                    },
                                   ),
                                 ),
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../widgets/buttom_sheet/main.dart';
 import '../../../widgets/helpers/loading.dart';
 import '../../../widgets/helpers/error.dart';
 import '../../../widgets/helpers/navigate.dart';
@@ -143,23 +144,29 @@ class _EventsPageState extends State<EventsPage> {
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (BuildContext context) => buildSheet(
-                                    context,
-                                    selectedTags,
-                                    (value) {
-                                      setFilters(value);
-                                      refetch!();
-                                    },
-                                    CategoryModel(category: "Custom", tags: [
-                                      TagModel(
-                                          id: "isStared",
-                                          title: "Pinned",
-                                          category: "Custom"),
-                                      TagModel(
-                                          id: "orderByLikes",
-                                          title: "Likes: High to Low",
-                                          category: "Custom")
-                                    ]),
-                                  ),
+                                      context,
+                                      (controller) => SelectTags(
+                                            selectedTags: selectedTags,
+                                            controller: controller,
+                                            callback: (value) {
+                                              setState(() {
+                                                selectedTags = value;
+                                              });
+                                            },
+                                            additionalCategory: CategoryModel(
+                                                category: "Custom",
+                                                tags: [
+                                                  TagModel(
+                                                      id: "isStared",
+                                                      title: "Saved",
+                                                      category: "Custom"),
+                                                  TagModel(
+                                                      id: "orderByLikes",
+                                                      title:
+                                                          "Likes: High to Low",
+                                                      category: "Custom")
+                                                ]),
+                                          )),
                                   isScrollControlled: true,
                                 );
                               },

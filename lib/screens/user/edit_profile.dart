@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/user.dart';
 import '../../utils/validation.dart';
+import '../../widgets/buttom_sheet/main.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/helpers/loading.dart';
 import 'edit_password.dart';
@@ -213,15 +214,15 @@ class _EditProfileUserState extends State<EditProfileUser> {
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) => buildSheet(
-                            context,
-                            selectedTags,
-                            (value) {
-                              setState(() {
-                                selectedTags = value;
-                              });
-                            },
-                            null,
-                          ),
+                              context,
+                              (controller) => SelectTags(
+                                  selectedTags: selectedTags,
+                                  controller: controller,
+                                  callback: (val) {
+                                    setState(() {
+                                      selectedTags = val;
+                                    });
+                                  })),
                           isScrollControlled: true,
                         );
                       },
