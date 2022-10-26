@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
 import '../../hostel/main.dart';
@@ -15,7 +14,7 @@ import '../../../widgets/helpers/error.dart';
 class HomePage extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  final Future<QueryResult<Object?>?> Function()? refetch;
+  final Future<void> Function() refetch;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomePage(
@@ -41,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: RefreshIndicator(
-            onRefresh: () => widget.refetch!(),
+            onRefresh: () => widget.refetch(),
             child: NestedScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               controller: _scrollController,
@@ -82,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 ];
               },
               body: RefreshIndicator(
-                onRefresh: () => widget.refetch!(),
+                onRefresh: () => widget.refetch(),
                 child: Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: (home == null || home.isEmpty)

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:uni_links/uni_links.dart';
 
+import '../config.dart';
 import '../models/user.dart';
 import '../services/auth.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../graphQL/user.dart';
+import '../services/notification.dart';
 import 'splash/main.dart';
 import 'auth/login.dart';
 import 'home/main.dart';
@@ -20,6 +23,17 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+  final LocalNotificationService service = LocalNotificationService();
+  String? navigatePath;
+
+  @override
+  void initState() {
+    listenToNotification();
+    listenToDeepLink();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
@@ -61,7 +75,11 @@ class _WrapperState extends State<Wrapper> {
                   return HomeWrapper(
                     auth: auth,
                     user: user,
-                    refetch: refetch,
+                    refetch: () async {
+                      navigatePath = null;
+                      refetch!();
+                    },
+                    navigatePath: navigatePath,
                   );
                 }
 
@@ -69,6 +87,32 @@ class _WrapperState extends State<Wrapper> {
               }()),
             );
           });
+    }
+  }
+
+  Future<String?> listenToNotification() async {
+    String? path;
+    service.onNotificationClick.stream.listen((String? _payload) {
+      path = _payload;
+    });
+    if (path == null || path!.isEmpty) {
+      var details = await service.details();
+      path = details?.payload;
+      if (path != null && path!.isNotEmpty) {
+        navigatePath = path;
+      }
+    }
+    return path;
+  }
+
+  void listenToDeepLink() async {
+    final initialLink = await getInitialLink();
+
+    if (initialLink != null && initialLink.isNotEmpty) {
+      final path = initialLink.split(shareBaseLink).last;
+      if (path.isNotEmpty) {
+        navigatePath = path;
+      }
     }
   }
 }

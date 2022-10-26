@@ -2,7 +2,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
 
 import '../../models/user.dart';
 import '../../services/auth.dart';
@@ -10,23 +9,31 @@ import '../../services/client.dart';
 import '../../services/notification.dart';
 import '../../widgets/headers/drawer.dart';
 import '../../graphQL/auth.dart';
+import '../super_user/reported_posts.dart';
 import '../hostel/main.dart';
 import '/widgets/helpers/navigate.dart';
 import 'events/events.dart';
 import 'events/event.dart';
+import 'netops/netop.dart';
 import 'queries/query.dart';
 import 'main/home.dart';
 import 'lost_and_found.dart/main.dart';
+import 'lost_and_found.dart/lost_and_found.dart';
 import 'netops/netops.dart';
 import 'queries/main.dart';
 
 class HomeWrapper extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  final Future<QueryResult<Object?>?> Function()? refetch;
+  final String? navigatePath;
+  final Future<void> Function() refetch;
 
   const HomeWrapper(
-      {Key? key, required this.auth, required this.user, required this.refetch})
+      {Key? key,
+      required this.auth,
+      required this.user,
+      required this.refetch,
+      required this.navigatePath})
       : super(key: key);
 
   @override
@@ -72,9 +79,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
       graphQLClient(token).mutate(_options);
     });
 
-    listenToNotification();
-
-    listenToDeepLink();
+    if (widget.navigatePath != null && widget.navigatePath!.isNotEmpty) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => navigateToPath(widget.navigatePath!));
+    }
 
     super.initState();
   }
@@ -147,61 +155,31 @@ class _HomeWrapperState extends State<HomeWrapper> {
     );
   }
 
-  void listenToNotification() async {
-    String? payload;
-    service.onNotificationClick.stream.listen((String? _payload) {
-      payload = _payload;
-    });
-    if (payload == null || payload!.isEmpty) {
-      var details = await service.details();
-      payload = details?.payload;
-    }
-    if (payload != null && payload!.isNotEmpty) {
-      setState(() {
-        switch (payload) {
-          case "EVENT":
-            _selectedIndex = 3;
-            break;
-          case "NETOP":
-            _selectedIndex = 4;
-            break;
-          case "QUERY":
-            _selectedIndex = 1;
-            break;
-          case "LnF":
-            _selectedIndex = 0;
-            break;
-          case "HOSTEL":
-            navigate(context, HostelWrapper(user: widget.user));
-            break;
-          default:
-        }
-      });
-    }
-  }
+  void navigateToPath(String path) {
+    final type = path.split("/")[0].toLowerCase();
+    final id = path.split("/")[1];
 
-  void listenToDeepLink() async {
-    //print("listening to deep link");
-    final initialLink = await getInitialLink();
-    print("listening to deep link");
-    print("deep link : ${initialLink}");
-    print("query");
-    if (initialLink != null && initialLink.isNotEmpty) {
-      final path = initialLink.split("instispace.app").last;
-
-      final type = path.split("/")[1].toLowerCase();
-      final id = path.split("/")[2];
-
-      if (type != "" && type.isNotEmpty && id != "" && id.isNotEmpty) {
-        switch (type) {
-          case "event":
-            navigate(context, EventPage(id: id));
-            break;
-          case "query":
-            navigate(context, QueryPage(id: id));
-            break;
-          default:
-        }
+    if (type != "" && type.isNotEmpty && id != "" && id.isNotEmpty) {
+      switch (type) {
+        case "event":
+          navigate(context, EventPage(id: id));
+          break;
+        case "netop":
+          navigate(context, NetopPage(id: id));
+          break;
+        case "query":
+          navigate(context, QueryPage(id: id));
+          break;
+        case "lostnfound":
+          navigate(context, LostnFoundPage(id: id));
+          break;
+        case "hostel":
+          navigate(context, HostelWrapper(user: widget.user));
+          break;
+        case "admin/reports":
+          navigate(context, const ReportedPostPage());
+          break;
+        default:
       }
     }
   }
