@@ -91,6 +91,50 @@ class NetopGQL {
     }
   """;
 
+  static const get = """
+    query(\$id: String!){
+      getNetop(NetopId: \$id) {
+        id
+        content
+        commentCount
+        comments {
+          content
+          id
+          images
+          createdBy {
+            name
+            id
+            roll
+          }
+          createdAt
+        }
+        createdBy {
+          id
+          name
+          roll
+        }
+        linkName
+        linkToAction
+        title
+        isLiked
+        isStared
+        isHidden
+        endTime
+        status
+        createdAt
+        permissions
+        tags {
+          category
+          title
+          id
+        }
+        likeCount
+        photo
+        attachments
+      }
+    }
+  """;
+
   static const getAll = """
     query(
       \$take: Float!

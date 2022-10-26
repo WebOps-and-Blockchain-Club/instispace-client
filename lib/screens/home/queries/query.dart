@@ -1,13 +1,10 @@
-import 'package:client/models/query.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import '../events/actions.dart';
+
+import 'actions.dart';
 import '../../../models/query.dart';
-import '../../../models/event.dart';
 import '../../../widgets/page/post.dart';
 import '../../../graphQL/query.dart';
-import 'actions.dart';
 
 class QueryPage extends StatefulWidget {
   final String id;
@@ -22,13 +19,12 @@ class _QueryPageState extends State<QueryPage> {
   Widget build(BuildContext context) {
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(QueryGQL().get), variables: {"myQueryId": widget.id});
-    //print(options);
     return PostPage(
       header: "Query",
       queryOptions: options,
       toPostsModel: (data) =>
           QueryModel.fromJson(data!["getMyQuery"]).toPostModel(),
-      actions: (post) => eventActions(post, options),
+      actions: (post) => queryActions(post, options),
     );
   }
 }

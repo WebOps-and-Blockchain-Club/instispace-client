@@ -32,46 +32,44 @@ class _PostPageState extends State<PostPage> {
         options: widget.queryOptions,
         builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
           return Scaffold(
-            appBar: AppBar(
-                title: CustomAppBar(
-                    title: widget.header,
-                    leading: CustomIconButton(
-                      icon: Icons.arrow_back,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )),
-                automaticallyImplyLeading: false),
-            body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: RefreshIndicator(
+              appBar: AppBar(
+                  title: CustomAppBar(
+                      title: widget.header,
+                      leading: CustomIconButton(
+                        icon: Icons.arrow_back,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )),
+                  automaticallyImplyLeading: false),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: RefreshIndicator(
                     onRefresh: () => refetch!(),
-                    child: Stack(
-                      children: [
-                        ListView(),
-                        (() {
-                          if (result.hasException) {
-                            return Error(error: result.exception.toString());
-                          }
+                    child: () {
+                      if (result.hasException) {
+                        return Error(error: result.exception.toString());
+                      }
 
-                          if (result.isLoading && result.data != null) {
-                            return const Loading();
-                          }
-                          print("Result : ${result}");
-                          final PostModel post =
-                              widget.toPostsModel(result.data);
+                      if (result.isLoading && result.data == null) {
+                        return const Loading();
+                      }
 
-                          return PostCard(
+                      final PostModel post = widget.toPostsModel(result.data);
+
+                      return ListView(
+                        children: [
+                          PostCard(
                             post: post,
                             actions: widget.actions(post),
-                          );
-                        }())
-                      ],
-                    )),
-              ),
-            ),
-          );
+                          ),
+                        ],
+                      );
+                    }(),
+                  ),
+                ),
+              ));
         });
   }
 }
