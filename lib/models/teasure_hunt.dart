@@ -15,10 +15,13 @@ class GroupModel {
       this.questions});
 
   GroupModel.fromJson(Map<String, dynamic> data)
-      : id = data["id"],
-        name = data["name"],
-        code = data["code"],
-        users = data["users"]?.map((e) => UserModel.fromJson(e)).toList(),
+      : id = data["group"]["id"],
+        name = data["group"]["name"],
+        code = data["group"]["code"],
+        users = data["group"]["users"]
+            ?.map((e) => UserModel.fromJson(e))
+            .toList()
+            .cast<UserModel>(),
         questions = data["questions"] != null
             ? QuestionsModel.fromJson(data["questions"]).questions
             : null;
@@ -49,7 +52,9 @@ class QuestionModel {
       : id = data["id"],
         description = data["description"],
         image = data["images"],
-        submission = SubmissionModel.fromJson(data["submission"]);
+        submission = data["submission"] != null
+            ? SubmissionModel.fromJson(data["submission"])
+            : null;
 }
 
 class SubmissionModel {
@@ -69,7 +74,7 @@ class SubmissionModel {
   SubmissionModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
         description = data["description"],
-        images = data["image"],
-        createdBy = CreatedByModel.fromJson(data["createdBy"]),
+        images = data["images"],
+        createdBy = CreatedByModel.fromJson(data["submittedBy"]),
         createdAt = data["createdAt"];
 }

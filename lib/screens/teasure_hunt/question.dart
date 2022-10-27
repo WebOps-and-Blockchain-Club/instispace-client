@@ -84,7 +84,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
         ),
       ),
     );
-    ;
   }
 }
 
@@ -189,12 +188,36 @@ class _AddSubmissionState extends State<AddSubmission> {
         options: MutationOptions(
             document: gql(addSubmission),
             update: (cache, result) {
-              if (result != null) {
-                // TODO:
-                // widget.updateCache(cache, result);
-                // widget.updateComments(CommentModel.fromJson(
-                //     result.data!["createComment${widget.type}"]));
-                // comment.clear();
+              if (result != null && result.data!["addSubmission"] != null) {
+                final Map<String, dynamic> updated = {
+                  "__typename": "question",
+                  "id": widget.id,
+                  "submission": result.data!["addSubmission"],
+                };
+                cache.writeFragment(
+                  Fragment(document: gql('''
+                      fragment questionSubmissionField on question {
+                        id
+                        submission {
+                          id
+                          description
+                          images
+                          createdAt
+                          submittedBy {
+                            id
+                            roll
+                            name
+                            role
+                          }
+                        }
+                      }
+                    ''')).asRequest(idFields: {
+                    '__typename': "question",
+                    'id': widget.id,
+                  }),
+                  data: updated,
+                  broadcast: false,
+                );
               }
             }),
         builder: (
@@ -205,16 +228,29 @@ class _AddSubmissionState extends State<AddSubmission> {
               create: (_) => ImagePickerService(noOfImages: 1),
               child: Consumer<ImagePickerService>(
                   builder: (context, imagePickerService, child) {
-                // TODO:
-                // if (result != null &&
-                //     result.data != null &&
-                //     result.data!["createComment${widget.type}"] != null) {
-                //   imagePickerService.clearPreview();
-                // }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: SingleChildScrollView(
+                        child: TextFormField(
+                          controller: comment,
+                          maxLength: 3000,
+                          minLines: 3,
+                          maxLines: null,
+                          decoration:
+                              const InputDecoration(labelText: "Comment"),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Enter the comment for submission";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
                     imagePickerService.previewImages(),
                     imagePickerService.pickImageButton(
                       context: context,
@@ -237,12 +273,11 @@ class _AddSubmissionState extends State<AddSubmission> {
                         if (!(result != null && result.isLoading) &&
                             comment.text.isNotEmpty) {
                           runMutation({
-                            // TODO: Submission Input Object
-                            // "commentData": {
-                            //   "content": comment.text,
-                            //   "imageUrls": uploadResult
-                            // },
-                            // "id": widget.id,
+                            "submissionData": {
+                              "description": comment.text,
+                              "imageUrls": uploadResult
+                            },
+                            "questionId": widget.id,
                           });
                         }
                       },

@@ -122,9 +122,7 @@ class _JoinGroupState extends State<JoinGroup> {
                         FocusScope.of(context).unfocus();
 
                         if (isValid) {
-                          runMutation({
-                            // TODO: Enter input object
-                          });
+                          runMutation({"groupCode": name.text});
                         }
                       },
                       text: "Join Group",
@@ -211,7 +209,7 @@ class _CreateGroupState extends State<CreateGroup> {
 
                         if (isValid) {
                           runMutation({
-                            // TODO: Enter input object
+                            "groupData": {"name": name.text},
                           });
                         }
                       },
