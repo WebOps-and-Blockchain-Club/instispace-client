@@ -42,8 +42,7 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
               if (group == null) {
                 return GroupPage(refetch: refetch);
               } else {
-                return QuestionsPage(
-                    questions: group.questions ?? [], refetch: refetch);
+                return QuestionsPage(group: group, refetch: refetch);
               }
             }()),
           );

@@ -15,11 +15,10 @@ import '../../widgets/card/description.dart';
 import '../../widgets/card/image.dart';
 
 class QuestionsPage extends StatefulWidget {
-  final List<QuestionModel> questions;
+  final GroupModel group;
   final Future<QueryResult<Object?>?> Function()? refetch;
 
-  const QuestionsPage(
-      {Key? key, required this.questions, required this.refetch})
+  const QuestionsPage({Key? key, required this.group, required this.refetch})
       : super(key: key);
 
   @override
@@ -63,7 +62,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 ];
               },
               body: (() {
-                final List<QuestionModel> questions = widget.questions;
+                final List<QuestionModel> questions =
+                    widget.group.questions ?? [];
 
                 if (questions.isEmpty) {
                   return const Error(error: "", message: "No Questions");

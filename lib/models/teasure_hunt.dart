@@ -4,6 +4,10 @@ class GroupModel {
   String id;
   String name;
   String code;
+  String startTime;
+  String endTime;
+  int minMembers;
+  int maxMembers;
   List<UserModel>? users;
   List<QuestionModel>? questions;
 
@@ -11,6 +15,10 @@ class GroupModel {
       {required this.id,
       required this.name,
       required this.code,
+      required this.startTime,
+      required this.endTime,
+      required this.minMembers,
+      required this.maxMembers,
       this.users,
       this.questions});
 
@@ -18,6 +26,10 @@ class GroupModel {
       : id = data["group"]["id"],
         name = data["group"]["name"],
         code = data["group"]["code"],
+        minMembers = 3,
+        maxMembers = 10,
+        startTime = data["startTime"],
+        endTime = data["endTime"],
         users = data["group"]["users"]
             ?.map((e) => UserModel.fromJson(e))
             .toList()
