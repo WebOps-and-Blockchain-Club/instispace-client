@@ -1,3 +1,4 @@
+import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -71,12 +72,37 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
                 return RefreshIndicator(
                   onRefresh: () => widget.refetch!(),
-                  child: ListView.builder(
-                      itemCount: questions.length,
-                      itemBuilder: (context, index) {
-                        return QuestionCard(
-                            index: index, question: questions[index]);
-                      }),
+                  child: Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.group.name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          Text(
+                            "(${widget.group.code})",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    color:
+                                        ColorPalette.palette(context).primary),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: questions.length,
+                            itemBuilder: (context, index) {
+                              return QuestionCard(
+                                  index: index, question: questions[index]);
+                            }),
+                      ),
+                    ],
+                  ),
                 );
               }()),
             ),
