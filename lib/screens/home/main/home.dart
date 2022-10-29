@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        floatingActionButton: !widget.user.permissions.contains("TEASURE_HUNT")
+        floatingActionButton: widget.user.permissions.contains("TREASURE_HUNT")
             ? FloatingActionButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(

@@ -1,10 +1,8 @@
-import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../widgets/helpers/error.dart';
-import '../../../widgets/helpers/navigate.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../graphQL/teasure_hunt.dart';
@@ -14,6 +12,8 @@ import '../../services/image_picker.dart';
 import '../../widgets/button/elevated_button.dart';
 import '../../widgets/card/description.dart';
 import '../../widgets/card/image.dart';
+import '../../themes.dart';
+import 'group.dart';
 
 class QuestionsPage extends StatefulWidget {
   final GroupModel group;
@@ -32,6 +32,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<QuestionModel> questions = widget.group.questions ?? [];
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -51,25 +52,20 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         leading: CustomIconButton(
                             icon: Icons.arrow_back,
                             onPressed: () {
-                              Navigator.of(context);
+                              Navigator.of(context).pop();
                             }),
-                        // TODO: Create Leave Group Button
-                        action: CustomIconButton(
-                            icon: Icons.logout,
-                            onPressed: () => navigate(context, Container())),
+                        action: (DateTimeFormatModel.fromString(
+                                        widget.group.startTime)
+                                    .toDiffInSeconds() <=
+                                0)
+                            ? null
+                            : LeaveGroup(refetch: widget.refetch),
                       );
                     }, childCount: 1),
                   ),
                 ];
               },
               body: (() {
-                final List<QuestionModel> questions =
-                    widget.group.questions ?? [];
-
-                if (questions.isEmpty) {
-                  return const Error(error: "", message: "No Questions");
-                }
-
                 return RefreshIndicator(
                   onRefresh: () => widget.refetch!(),
                   child: Column(
@@ -77,12 +73,16 @@ class _QuestionsPageState extends State<QuestionsPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
+                          SelectableText(
                             widget.group.name,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Text(
-                            "(${widget.group.code})",
+                          SelectableText(
+                            "Group Code: ${widget.group.code}",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SelectableText(
+                            "(Use the code to invite your friends)",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -90,17 +90,47 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                     color:
                                         ColorPalette.palette(context).primary),
                           ),
+                          const SizedBox(height: 10),
+                          if (DateTimeFormatModel.fromString(
+                                      widget.group.startTime)
+                                  .toDiffInSeconds() >
+                              0)
+                            SelectableText(
+                              "Teasure Starts At: ${DateTimeFormatModel.fromString(widget.group.startTime).toFormat()}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          if (questions.isNotEmpty)
+                            SelectableText(
+                              "Teasure Ends in: ${DateTimeFormatModel.fromString(widget.group.endTime).toDiffString(abs: true)}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          if (!(widget.group.users != null &&
+                              widget.group.minMembers != null &&
+                              (widget.group.minMembers! <=
+                                  widget.group.users!.length)))
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: SelectableText(
+                                "Minimum of ${widget.group.minMembers} is required to start the teasure hunt",
+                                style: Theme.of(context).textTheme.titleLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Expanded(
-                        child: ListView.builder(
-                            itemCount: questions.length,
-                            itemBuilder: (context, index) {
-                              return QuestionCard(
-                                  index: index, question: questions[index]);
-                            }),
-                      ),
+                      if (questions.isNotEmpty)
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: questions.length,
+                              itemBuilder: (context, index) {
+                                return QuestionCard(
+                                  index: index,
+                                  question: questions[index],
+                                  refetch: widget.refetch,
+                                );
+                              }),
+                        ),
                     ],
                   ),
                 );
@@ -116,7 +146,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
 class QuestionCard extends StatefulWidget {
   final int index;
   final QuestionModel question;
-  const QuestionCard({Key? key, required this.index, required this.question})
+  final Future<QueryResult<Object?>?> Function()? refetch;
+  const QuestionCard(
+      {Key? key, required this.index, required this.question, this.refetch})
       : super(key: key);
 
   @override
@@ -162,7 +194,10 @@ class _QuestionCardState extends State<QuestionCard> {
             if (question.submission == null)
               Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: AddSubmission(id: question.id)),
+                  child: AddSubmission(
+                    id: question.id,
+                    refetch: widget.refetch,
+                  )),
 
             // View Submission
             if (question.submission != null)
@@ -198,7 +233,9 @@ class _QuestionCardState extends State<QuestionCard> {
 
 class AddSubmission extends StatefulWidget {
   final String id;
-  const AddSubmission({Key? key, required this.id}) : super(key: key);
+  final Future<QueryResult<Object?>?> Function()? refetch;
+  const AddSubmission({Key? key, required this.id, this.refetch})
+      : super(key: key);
 
   @override
   State<AddSubmission> createState() => _AddSubmissionState();
@@ -207,22 +244,25 @@ class AddSubmission extends StatefulWidget {
 class _AddSubmissionState extends State<AddSubmission> {
   final TextEditingController comment = TextEditingController();
   final addSubmission = TeasureHuntGQL.addSubmission;
+  bool imageUploadLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(addSubmission),
-            update: (cache, result) {
-              if (result != null && result.data!["addSubmission"] != null) {
-                final Map<String, dynamic> updated = {
-                  "__typename": "question",
-                  "id": widget.id,
-                  "submission": result.data!["addSubmission"],
-                };
-                cache.writeFragment(
-                  Fragment(document: gql('''
-                      fragment questionSubmissionField on question {
+          document: gql(addSubmission),
+          update: (cache, result) {
+            if (result != null &&
+                result.data != null &&
+                result.data!["addSubmission"] != null) {
+              final Map<String, dynamic> updated = {
+                "__typename": "Question",
+                "id": widget.id,
+                "submission": result.data!["addSubmission"],
+              };
+              cache.writeFragment(
+                Fragment(document: gql('''
+                      fragment questionSubmissionField on Question {
                         id
                         submission {
                           id
@@ -238,14 +278,34 @@ class _AddSubmissionState extends State<AddSubmission> {
                         }
                       }
                     ''')).asRequest(idFields: {
-                    '__typename': "question",
-                    'id': widget.id,
-                  }),
-                  data: updated,
-                  broadcast: false,
-                );
-              }
-            }),
+                  '__typename': "Question",
+                  'id': widget.id,
+                }),
+                data: updated,
+                broadcast: false,
+              );
+            }
+          },
+          onError: (error) {
+            if (error.toString().contains("Invalid Time")) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Oops! Time Over")),
+              );
+              widget.refetch!();
+            } else if (error.toString().contains("Already answered")) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content:
+                        Text("Submission is been made by another team member")),
+              );
+              widget.refetch!();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(formatErrorMessage(error.toString()))),
+              );
+            }
+          },
+        ),
         builder: (
           RunMutation runMutation,
           QueryResult? result,
@@ -284,8 +344,15 @@ class _AddSubmissionState extends State<AddSubmission> {
                     CustomElevatedButton(
                       onPressed: () async {
                         List<String> uploadResult;
+
                         try {
+                          setState(() {
+                            imageUploadLoading = true;
+                          });
                           uploadResult = await imagePickerService.uploadImage();
+                          setState(() {
+                            imageUploadLoading = false;
+                          });
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -308,18 +375,19 @@ class _AddSubmissionState extends State<AddSubmission> {
                         }
                       },
                       text: "Add Submission",
-                      isLoading: result != null && result.isLoading,
+                      isLoading: (result != null && result.isLoading) ||
+                          imageUploadLoading,
                     ),
-                    if (result != null && result.hasException)
-                      IntrinsicHeight(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: ErrorText(
-                            error:
-                                formatErrorMessage(result.exception.toString()),
-                          ),
-                        ),
-                      )
+                    // if (result != null && result.hasException)
+                    //   IntrinsicHeight(
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.only(top: 4.0),
+                    //       child: ErrorText(
+                    //         error:
+                    //             formatErrorMessage(result.exception.toString()),
+                    //       ),
+                    //     ),
+                    //   )
                   ],
                 );
               }));

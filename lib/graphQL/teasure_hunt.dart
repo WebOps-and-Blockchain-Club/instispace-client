@@ -16,7 +16,10 @@ class TeasureHuntGQL {
   """;
 
   static String leaveGroup = """
-""";
+    mutation {
+      leaveGroup
+    }
+  """;
 
   static String fetchGroup = """
     query {
@@ -55,6 +58,8 @@ class TeasureHuntGQL {
         }
         startTime
         endTime
+        minMembers
+        maxMembers
       }
     }
   """;

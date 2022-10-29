@@ -71,11 +71,29 @@ class _JoinGroupState extends State<JoinGroup> {
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-          document: gql(joinGroup),
-          onCompleted: (dynamic resultData) {
-            widget.refetch!();
-          },
-        ),
+            document: gql(joinGroup),
+            onCompleted: (dynamic resultData) {
+              if (resultData["joinGroup"] == true) {
+                widget.refetch!();
+              }
+            },
+            onError: (error) {
+              if (error.toString().contains("Invalid Group Code")) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Invalid Group Code")),
+                );
+              } else if (error.toString().contains("Memeber Limit Exceeded")) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content:
+                          Text("Not Allowed to join, group limit exceeded")),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(formatErrorMessage(error.toString()))),
+                );
+              }
+            }),
         builder: (
           RunMutation runMutation,
           QueryResult? result,
@@ -159,7 +177,14 @@ class _CreateGroupState extends State<CreateGroup> {
         options: MutationOptions(
           document: gql(createGroup),
           onCompleted: (dynamic resultData) {
-            widget.refetch!();
+            if (resultData["createGroup"] != null) {
+              widget.refetch!();
+            }
+          },
+          onError: (error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(formatErrorMessage(error.toString()))),
+            );
           },
         ),
         builder: (
@@ -221,6 +246,51 @@ class _CreateGroupState extends State<CreateGroup> {
               ),
             ),
           );
+        });
+  }
+}
+
+class LeaveGroup extends StatefulWidget {
+  final Future<QueryResult<Object?>?> Function()? refetch;
+
+  const LeaveGroup({Key? key, required this.refetch}) : super(key: key);
+
+  @override
+  State<LeaveGroup> createState() => _LeaveGroupState();
+}
+
+class _LeaveGroupState extends State<LeaveGroup> {
+  final formKey = GlobalKey<FormState>();
+
+  final leaveGroup = TeasureHuntGQL.leaveGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    return Mutation(
+        options: MutationOptions(
+          document: gql(leaveGroup),
+          onCompleted: (dynamic resultData) {
+            widget.refetch!();
+          },
+          onError: (error) {
+            if (error.toString().contains("Admin not allowed to leave group")) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text("Admin not allowed to leave group")),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(formatErrorMessage(error.toString()))),
+              );
+            }
+          },
+        ),
+        builder: (
+          RunMutation runMutation,
+          QueryResult? result,
+        ) {
+          return CustomIconButton(
+              icon: Icons.logout, onPressed: () => {runMutation({})});
         });
   }
 }

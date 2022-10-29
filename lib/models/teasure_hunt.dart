@@ -6,8 +6,8 @@ class GroupModel {
   String code;
   String startTime;
   String endTime;
-  int minMembers;
-  int maxMembers;
+  int? minMembers;
+  int? maxMembers;
   List<UserModel>? users;
   List<QuestionModel>? questions;
 
@@ -26,8 +26,8 @@ class GroupModel {
       : id = data["group"]["id"],
         name = data["group"]["name"],
         code = data["group"]["code"],
-        minMembers = 3,
-        maxMembers = 10,
+        minMembers = data["minMembers"],
+        maxMembers = data["maxMembers"],
         startTime = data["startTime"],
         endTime = data["endTime"],
         users = data["group"]["users"]
