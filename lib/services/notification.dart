@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -63,7 +64,7 @@ class LocalNotificationService {
       required String description,
       required String payload,
       String? image}) async {
-    initialise();
+    await initialise();
     BigPictureStyleInformation? bigPictureStyleInformation;
     if (image != null) {
       final ByteArrayAndroidBitmap bigPicture =
@@ -86,7 +87,8 @@ class LocalNotificationService {
             color: const Color(0xFF2F247B),
             playSound: true,
             icon: '@mipmap/ic_launcher',
-            styleInformation: bigPictureStyleInformation),
+            styleInformation: bigPictureStyleInformation ??
+                BigTextStyleInformation(description)),
         iOS: const IOSNotificationDetails(
           sound: 'default.wav',
           presentAlert: true,
@@ -106,7 +108,7 @@ class LocalNotificationService {
       return;
     }
     showNotification(
-        id: 0,
+        id: message.data["id"] ?? Random().nextInt(1000),
         title: message.data["title"],
         description: message.data["body"],
         payload: message.data["route"],
@@ -114,14 +116,13 @@ class LocalNotificationService {
   }
 
   Future<void> scheduleNotification(
-      {required int id,
-      required String title,
+      {required String title,
       required String description,
       required String time}) async {
     tz.initializeTimeZones();
 
     await _localNotificationService.zonedSchedule(
-        id,
+        Random().nextInt(1000),
         title,
         description,
         tz.TZDateTime.parse(tz.local, time),

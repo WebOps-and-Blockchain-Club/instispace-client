@@ -310,7 +310,6 @@ class SetReminderButton extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).pop();
                         await service.scheduleNotification(
-                            id: 1,
                             title: post.title,
                             description: post.description,
                             time:

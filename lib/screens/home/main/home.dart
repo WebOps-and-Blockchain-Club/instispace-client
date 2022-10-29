@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: RefreshIndicator(
-              onRefresh: () => widget.refetch!(),
+              onRefresh: () => widget.refetch(),
               child: NestedScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   ];
                 },
                 body: RefreshIndicator(
-                  onRefresh: () => widget.refetch!(),
+                  onRefresh: () => widget.refetch(),
                   child: Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: (home == null || home.isEmpty)
