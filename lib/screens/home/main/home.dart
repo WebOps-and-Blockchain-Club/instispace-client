@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
 import '../../teasure_hunt/main.dart';
@@ -16,7 +15,7 @@ import '../../../widgets/helpers/error.dart';
 class HomePage extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  final Future<QueryResult<Object?>?> Function()? refetch;
+  final Future<void> Function() refetch;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomePage(

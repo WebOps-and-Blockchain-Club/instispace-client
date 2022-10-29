@@ -22,6 +22,7 @@ class PostModel {
   final String? time;
   final String? endTime;
   final String? status;
+  final String? shareLink;
   final TagsModel? tags;
   final List<HostelModel>? hostels;
   final LikePostModel? like;
@@ -45,6 +46,7 @@ class PostModel {
       this.time,
       this.endTime,
       this.status,
+      this.shareLink,
       this.tags,
       this.hostels,
       this.like,

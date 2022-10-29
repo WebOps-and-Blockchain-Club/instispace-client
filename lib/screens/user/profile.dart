@@ -57,7 +57,7 @@ class Profile extends StatelessWidget {
       _user = (user == null && result != null)
           ? ((result!.data!["getUser"] == null && userDetails != null)
               ? UserModel(
-                  role: "",
+                  role: "USER",
                   roll: userDetails!["roll"],
                   ldapName: userDetails!["name"],
                   photo: userDetails!["photo"]!,

@@ -103,12 +103,14 @@ class EventGQL {
         isStared
         linkName
         linkToAction
+        permissions
         tags {
           title
           id
           category
         }
         isLiked
+        createdAt
         createdBy {
           id
           name

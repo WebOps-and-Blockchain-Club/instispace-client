@@ -1,4 +1,26 @@
 class LostAndFoundGQL {
+  static const get = """
+    query(\$id: String!){
+      getItem(ItemId: \$id) {
+        id
+        category
+        name
+        location
+        time
+        images
+        contact
+        createdAt
+        permissions
+        user {
+          id
+          roll
+          name
+          role
+        }
+      }
+    }
+  """;
+
   static const getAll = """
     query(
       \$take: Float!

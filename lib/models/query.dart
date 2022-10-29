@@ -1,3 +1,4 @@
+import '../config.dart';
 import 'report.dart';
 import 'comment.dart';
 import 'netop.dart';
@@ -58,7 +59,7 @@ class QueryModel {
             data["comments"] ?? [], data["commentCount"]),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"],
-        permissions = data["permissions"].cast<String>() + ["LIKE"],
+        permissions = data["permissions"].cast<String>() + ["LIKE", "SHARE"],
         // ignore: prefer_null_aware_operators
         reports = data["reports"] != null
             ? data["reports"]
@@ -93,6 +94,7 @@ class QueryModel {
         createdBy: createdBy,
         createdAt: createdAt,
         permissions: permissions,
+        shareLink: "${shareBaseLink}query/$id",
         reports: reports);
   }
 }

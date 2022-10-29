@@ -1,4 +1,39 @@
 class QueryGQL {
+  String get = """
+    query(\$myQueryId: String!){
+      getMyQuery(MyQueryId: \$myQueryId) {
+        id
+        createdAt
+        title
+        content
+        photo
+        status
+        attachments
+        likeCount
+        isHidden
+        permissions
+        isLiked
+        commentCount
+        createdBy {
+          id
+          roll
+          name
+        }
+        comments {
+          id
+          content
+          images
+          createdAt
+          createdBy {
+            id
+            roll
+            name
+          }
+        }
+      }
+    }
+""";
+
   static const getAll = """
     query(
       \$lastId: String!

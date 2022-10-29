@@ -7,7 +7,6 @@ import '../../graphQL/report.dart';
 import '../../models/date_time_format.dart';
 import '../../services/notification.dart';
 import '../helpers/loading.dart';
-import '../utils/image_cache_path.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
 import '../helpers/error.dart';
@@ -342,24 +341,7 @@ class SharePostButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        List<String> images = [];
-        if (post.imageUrls != null && post.imageUrls!.isNotEmpty) {
-          images = await imageCachePath(post.imageUrls!);
-        }
-        String subject = post.title;
-        String text = "${post.title}\n${post.description}";
-        if (post.time != null && post.time != "") {
-          text = text +
-              "\n Date: ${DateTimeFormatModel.fromString(post.time!).toFormat()}";
-        }
-        if (post.location != null && post.location != "") {
-          text = text + "\n Location: ${post.location}";
-        }
-        if (images.isNotEmpty) {
-          await Share.shareFiles(images, text: text, subject: subject);
-        } else {
-          await Share.share(text, subject: subject);
-        }
+        await Share.share(post.shareLink ?? "", subject: post.title);
       },
       child: const Icon(Icons.share),
     );
