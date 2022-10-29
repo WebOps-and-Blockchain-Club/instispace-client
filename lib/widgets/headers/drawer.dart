@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
 import '../../screens/super_user/create_notification.dart';
+import '../../screens/teasure_hunt/main.dart';
 import '../../screens/user/e_id_card.dart';
 import '../../screens/mess/main.dart';
 import '../../screens/notification/main.dart';
@@ -120,6 +121,20 @@ class CustomDrawer extends StatelessWidget {
                                     EIDCard(user: user)));
                           },
                         ),
+
+                        if (user.permissions.contains("TREASURE_HUNT"))
+                          ListTile(
+                            leading: const Icon(Icons.wallet_giftcard),
+                            horizontalTitleGap: 0,
+                            title: const Text("Treasure Hunt"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const TeasureHuntWrapper()));
+                            },
+                          ),
+
                         // Search User
                         ListTile(
                           leading: const Icon(Icons.search_outlined),

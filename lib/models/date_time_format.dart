@@ -16,32 +16,44 @@ class DateTimeFormatModel {
     return dateTime.toIso8601String() + '+05:30';
   }
 
-  String toDiffString() {
+  String toDiffString({bool? abs}) {
     DateTime now = DateTime.now();
+    DateTime date1 = now;
+    DateTime date2 = dateTime;
+    if (abs != null && abs == true) {
+      date1 = dateTime;
+      date2 = now;
+    }
 
-    var returnVal = now.difference(dateTime).inMinutes;
+    var returnVal = date1.difference(date2).inMinutes;
     var format = 'min';
     if (returnVal < 60) {
       return "$returnVal $format";
     }
-    returnVal = now.difference(dateTime).inHours;
+    returnVal = date1.difference(date2).inHours;
     format = 'hour';
     if (returnVal < 24) {
       return "$returnVal $format";
     }
-    returnVal = now.difference(dateTime).inDays;
+    returnVal = date1.difference(date2).inDays;
     format = 'day';
     if (returnVal < 30) {
       return "$returnVal $format";
     }
-    returnVal = (now.difference(dateTime).inDays) ~/ 30;
+    returnVal = (date1.difference(date2).inDays) ~/ 30;
     format = 'month';
     if (returnVal < 12) {
       return "$returnVal $format";
     }
-    returnVal = (now.difference(dateTime).inDays) ~/ (30 * 12);
+    returnVal = (date1.difference(date2).inDays) ~/ (30 * 12);
     format = 'year';
 
     return "$returnVal $format";
+  }
+
+  int toDiffInSeconds() {
+    DateTime now = DateTime.now();
+
+    return dateTime.difference(now).inSeconds;
   }
 }
