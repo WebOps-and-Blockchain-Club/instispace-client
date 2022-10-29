@@ -1,9 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
+import '../helpers/navigate.dart';
 import '../../themes.dart';
 import '../button/elevated_button.dart';
+import '../page/webpage.dart';
 
 void showWarningAlert(BuildContext context) {
   showDialog(
@@ -27,9 +28,12 @@ void showWarningAlert(BuildContext context) {
                     style: const TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        launchUrlString(
-                            'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub',
-                            mode: LaunchMode.externalApplication);
+                        navigate(
+                            context,
+                            const WebPage(
+                                title: "Terms of Service",
+                                url:
+                                    'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub'));
                       },
                   ),
                 ],
