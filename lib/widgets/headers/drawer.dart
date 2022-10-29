@@ -22,6 +22,7 @@ import '../../screens/super_user/super_user_list.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
+import '../page/webpage.dart';
 import '../button/elevated_button.dart';
 import '../helpers/error.dart';
 
@@ -300,6 +301,23 @@ class CustomDrawer extends StatelessWidget {
                               ],
                             ),
                           ),
+
+                        // Emergency SOS
+                        ListTile(
+                          leading: const Icon(Icons.emergency_share_sharp),
+                          horizontalTitleGap: 0,
+                          title: const Text("SOS Instructions"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const WebPage(
+                                      title: "SOS Instructions",
+                                      url:
+                                          "https://docs.google.com/document/u/3/d/e/2PACX-1vSRcTWgKoSsq3yPcVvMJVlACvyzaMpDn2l8hQDBZjZxVss6dnOROaZUwswsmjdteGHf67YsjMGLGopt/pub",
+                                    )));
+                          },
+                        ),
 
                         // Feedback
                         user.permissions.contains("VIEW_FEEDBACK")
