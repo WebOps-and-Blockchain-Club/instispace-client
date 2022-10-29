@@ -48,7 +48,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return CustomAppBar(
-                        title: "Teasure Hunt",
+                        title: "Treasure Hunt",
                         leading: CustomIconButton(
                             icon: Icons.arrow_back,
                             onPressed: () {
@@ -69,6 +69,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 return RefreshIndicator(
                   onRefresh: () => widget.refetch!(),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,12 +97,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                   .toDiffInSeconds() >
                               0)
                             SelectableText(
-                              "Teasure Starts At: ${DateTimeFormatModel.fromString(widget.group.startTime).toFormat()}",
+                              "Treasure starts at ${DateTimeFormatModel.fromString(widget.group.startTime).toFormat("hh:mm a")}.",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           if (questions.isNotEmpty)
                             SelectableText(
-                              "Teasure Ends in: ${DateTimeFormatModel.fromString(widget.group.endTime).toDiffString(abs: true)}",
+                              "Treasure ends in ${DateTimeFormatModel.fromString(widget.group.endTime).toDiffString(abs: true)}.",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           if (!(widget.group.users != null &&
@@ -111,7 +112,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: SelectableText(
-                                "Minimum of ${widget.group.minMembers} is required to start the teasure hunt",
+                                "A minimum of ${widget.group.minMembers} members are required to start the treasure hunt.",
                                 style: Theme.of(context).textTheme.titleLarge,
                                 textAlign: TextAlign.center,
                               ),

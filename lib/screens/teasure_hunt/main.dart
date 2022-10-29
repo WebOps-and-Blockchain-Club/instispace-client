@@ -1,3 +1,4 @@
+import '../../widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -5,6 +6,7 @@ import '../../graphQL/teasure_hunt.dart';
 import '../../models/teasure_hunt.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../widgets/helpers/error.dart';
+import '../../widgets/page/webpage.dart';
 import 'question.dart';
 import 'group.dart';
 
@@ -30,7 +32,7 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
 
               if (result.isLoading) {
                 return const Loading(
-                  message: "Teasure Hunt Connecting...",
+                  message: "Treasure Hunt Connecting...",
                 );
               }
 
@@ -45,6 +47,18 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
                 return QuestionsPage(group: group, refetch: refetch);
               }
             }()),
+            floatingActionButton: FloatingActionButton(
+              child: const Icon(Icons.info),
+              onPressed: () {
+                navigate(
+                    context,
+                    const WebPage(
+                      title: "Instructions",
+                      url:
+                          "https://docs.google.com/document/u/3/d/e/2PACX-1vRn4lLUBznrpX6CyVVCmUHMDiCdnNBl0NwdVL04Pbfp7EK15QWU1gH_M78gDXGuTPeaicWhEmIiiLqu/pub",
+                    ));
+              },
+            ),
           );
         });
   }

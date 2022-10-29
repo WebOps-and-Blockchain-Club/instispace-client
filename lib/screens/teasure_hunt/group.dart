@@ -19,35 +19,40 @@ class GroupPage extends StatefulWidget {
 class _GroupPageState extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-              title: CustomAppBar(
-                  title: "Teasure Hunt",
-                  leading: CustomIconButton(
-                    icon: Icons.arrow_back,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )),
-              automaticallyImplyLeading: false),
-          body: ListView(
-            shrinkWrap: true,
-            children: [
-              const SizedBox(height: 20),
-              JoinGroup(refetch: widget.refetch),
-              const SizedBox(height: 50),
-              Expanded(
-                  child: SelectableText(
-                "----------- OR -----------",
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-              )),
-              const SizedBox(height: 50),
-              CreateGroup(refetch: widget.refetch)
-            ],
-          )),
-    );
+    return Scaffold(
+        key: UniqueKey(),
+        appBar: AppBar(
+            title: CustomAppBar(
+                title: "Treasure Hunt",
+                leading: CustomIconButton(
+                  icon: Icons.arrow_back,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )),
+            automaticallyImplyLeading: false),
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: widget.refetch!,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
+                SizedBox(
+                    height: 200, child: JoinGroup(refetch: widget.refetch)),
+                const SizedBox(height: 50),
+                SelectableText(
+                  "----------- OR -----------",
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 50),
+                SizedBox(
+                    height: 200, child: CreateGroup(refetch: widget.refetch))
+              ],
+            ),
+          ),
+        ));
   }
 }
 
@@ -98,19 +103,19 @@ class _JoinGroupState extends State<JoinGroup> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return Padding(
+          return Container(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Form(
               key: formKey,
               child: ListView(
                 shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
                 children: [
-                  Expanded(
-                      child: SelectableText(
+                  SelectableText(
                     "Join Group",
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center,
-                  )),
+                  ),
                   const LabelText(text: "Group Code"),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
@@ -191,19 +196,19 @@ class _CreateGroupState extends State<CreateGroup> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return Padding(
+          return Container(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Form(
               key: formKey,
               child: ListView(
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  Expanded(
-                      child: SelectableText(
+                  SelectableText(
                     "Create Group",
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center,
-                  )),
+                  ),
                   const LabelText(text: "Group Name"),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
