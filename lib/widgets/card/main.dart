@@ -1,12 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/widgets/card/image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
 import '../../models/date_time_format.dart';
 import '../../models/post.dart';
 import '../../utils/string_extension.dart';
-import '../utils/image_cache_path.dart';
-import 'image_view.dart';
 import 'description.dart';
 import 'action_buttons.dart';
 import '../../themes.dart';
@@ -85,52 +82,9 @@ class _PostCardState extends State<PostCard> {
                       'Posted by ${post.createdBy!.name}, ${DateTimeFormatModel.fromString(post.createdAt!).toDiffString()} ago',
                   style: Theme.of(context).textTheme.labelSmall),
             const Divider(),
-
+            //Images
             if (post.imageUrls != null && post.imageUrls!.isNotEmpty)
-              Container(
-                constraints: const BoxConstraints(maxHeight: 250, minHeight: 0),
-                child: Swiper(
-                  onTap: (index) async {
-                    List<String> images = await imageCachePath(post.imageUrls!);
-                    openImageView(context, index, images);
-                  },
-                  loop: post.imageUrls!.length != 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CachedNetworkImage(
-                      imageUrl: post.imageUrls![index],
-                      placeholder: (_, __) =>
-                          const Icon(Icons.image, size: 100),
-                      errorWidget: (_, __, ___) =>
-                          const Icon(Icons.image, size: 100),
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: post.imageUrls!.length,
-                  pagination: SwiperCustomPagination(builder:
-                      (BuildContext context, SwiperPluginConfig config) {
-                    return Positioned(
-                      top: 5,
-                      right: 5,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
-                        child: Text(
-                            '${config.activeIndex + 1}/${post.imageUrls!.length}'),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+              ImageCard(imageUrls: post.imageUrls!),
 
             // Time & Location
             Column(

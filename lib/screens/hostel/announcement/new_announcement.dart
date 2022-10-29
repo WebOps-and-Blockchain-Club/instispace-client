@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../widgets/buttom_sheet/main.dart';
 import '../shared/hostels_display.dart';
 import '../../../graphQL/announcements.dart';
 import '../../../models/date_time_format.dart';
@@ -331,14 +332,20 @@ class _NewAnnouncementPageState extends State<NewAnnouncementPage> {
                                             context: context,
                                             builder: (BuildContext context) =>
                                                 buildSheet(
-                                              context,
-                                              selectedHostels,
-                                              (value) {
-                                                setState(() {
-                                                  selectedHostels = value;
-                                                });
-                                              },
-                                            ),
+                                                    context,
+                                                    (controller) =>
+                                                        SelectHostels(
+                                                          selectedHostels:
+                                                              selectedHostels,
+                                                          controller:
+                                                              controller,
+                                                          callback: (value) {
+                                                            setState(() {
+                                                              selectedHostels =
+                                                                  value;
+                                                            });
+                                                          },
+                                                        )),
                                             isScrollControlled: true,
                                           );
                                         },

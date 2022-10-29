@@ -29,6 +29,10 @@ class ImagePickerService extends ChangeNotifier {
     _picker ??= ImagePicker();
   }
 
+  void clearPreview() {
+    _imageFileList = null;
+  }
+
   Future<void> _onImageButtonPressed({
     required int preSelectedNoOfImages,
     BuildContext? context,
@@ -273,6 +277,29 @@ class ImagePickerService extends ChangeNotifier {
       text: "Select Image",
       color: ColorPalette.palette(context).primary,
       type: ButtonType.outlined,
+    );
+  }
+
+  Widget pickImageIconButton(
+      {required BuildContext context, int preSelectedNoOfImages = 0}) {
+    _initImagePicker();
+    return IconButton(
+      onPressed: () {
+        if (((_imageFileList != null ? _imageFileList!.length : 0) +
+                preSelectedNoOfImages) >=
+            noOfImages) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Not allowed to select more that $noOfImages images')),
+          );
+        } else {
+          _onImageButtonPressed(
+              preSelectedNoOfImages: preSelectedNoOfImages, context: context);
+        }
+      },
+      color: ColorPalette.palette(context).primary,
+      icon: const Icon(Icons.camera_alt_rounded),
     );
   }
 }

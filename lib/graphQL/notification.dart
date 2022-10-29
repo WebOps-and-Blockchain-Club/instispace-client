@@ -16,4 +16,10 @@ class NotificationGQL {
       changeNotificationSettings(notifyEvent: \$notifyEvent,notifyNetop: \$notifyNetop,toggleNotifyFound: \$toggleNotifyFound,toggleNotifyMyQuery: \$toggleNotifyMyQuery)
     }
   """;
+
+  static const createNotification = """
+    mutation(\$notificationData: NotificationInput!) {
+      createNotification(NotificationData: \$notificationData)
+    }
+  """;
 }

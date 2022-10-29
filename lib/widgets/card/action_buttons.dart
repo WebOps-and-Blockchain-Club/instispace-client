@@ -86,9 +86,15 @@ class LikePostButton extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(like.isLikedByUser == true
-                      ? Icons.favorite
-                      : Icons.favorite_border),
+                  if (like.isLikedByUser == true)
+                    const Icon(
+                      Icons.favorite,
+                      color: Color.fromARGB(255, 255, 17, 0),
+                    ),
+                  if (like.isLikedByUser == false)
+                    const Icon(
+                      Icons.favorite_border,
+                    ),
                   const SizedBox(width: 5),
                   Text(like.count.toString(),
                       style: Theme.of(context).textTheme.labelLarge)
@@ -309,6 +315,10 @@ class SetReminderButton extends StatelessWidget {
                             description: post.description,
                             time:
                                 "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Reminder set Successfully')),
+                        );
                       },
                       text: "Set Reminder",
                       color: ColorPalette.palette(context).warning,

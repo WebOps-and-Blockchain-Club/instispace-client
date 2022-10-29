@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/validation.dart';
+import '../../../widgets/buttom_sheet/main.dart';
 import '../../../widgets/helpers/error.dart';
 import '../../../services/image_picker.dart';
 import '../../../services/local_storage.dart';
@@ -211,7 +212,7 @@ class _NewEventState extends State<NewEvent> {
                               controller: description,
                               maxLength: 3000,
                               minLines: 3,
-                              maxLines: 8,
+                              maxLines: null,
                               decoration: const InputDecoration(
                                   labelText: "Description"),
                               validator: (value) {
@@ -449,13 +450,15 @@ class _NewEventState extends State<NewEvent> {
                                   context: context,
                                   builder: (BuildContext context) => buildSheet(
                                     context,
-                                    selectedTags,
-                                    (value) {
-                                      setState(() {
-                                        selectedTags = value;
-                                      });
-                                    },
-                                    null,
+                                    (controller) => SelectTags(
+                                      selectedTags: selectedTags,
+                                      controller: controller,
+                                      callback: (value) {
+                                        setState(() {
+                                          selectedTags = value;
+                                        });
+                                      },
+                                    ),
                                   ),
                                   isScrollControlled: true,
                                 );

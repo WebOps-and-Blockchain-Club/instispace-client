@@ -3,12 +3,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
+import '../../screens/super_user/create_notification.dart';
+import '../../screens/teasure_hunt/main.dart';
 import '../../screens/user/e_id_card.dart';
 import '../../screens/mess/main.dart';
 import '../../screens/notification/main.dart';
-import '../../screens/hostel/main.dart';
 import '../../screens/user/profile.dart';
-import '../../screens/user/edit_profile.dart';
 import '../../screens/user/search_user.dart';
 import '../../screens/super_user/reported_posts.dart';
 import '../../screens/super_user/create_account.dart';
@@ -18,6 +18,7 @@ import '../../screens/super_user/update_role.dart';
 import '../../screens/info/feedback.dart';
 import '../../screens/super_user/view_feedback.dart';
 import '../../screens/info/about_us.dart';
+import '../../screens/super_user/super_user_list.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -108,86 +109,6 @@ class CustomDrawer extends StatelessWidget {
                           },
                         ),
 
-                        // Create Account
-                        if (user.permissions.contains("CREATE_ACCOUNT"))
-                          ListTile(
-                            leading: const Icon(Icons.addchart_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text('Create Accounts'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      CreateAccountPage(
-                                        role: user.role!,
-                                      )));
-                            },
-                          ),
-                        // Create Hostel
-                        if (user.permissions.contains("CREATE_HOSTEL"))
-                          ListTile(
-                            leading: const Icon(Icons.account_balance_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("Create Hostel"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CreateHostelPage()));
-                            },
-                          ),
-                        // Update Role
-                        if (user.permissions.contains("UPDATE_ROLE"))
-                          ListTile(
-                            leading: const Icon(Icons.upgrade),
-                            horizontalTitleGap: 0,
-                            title: const Text('Appoint Moderator'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const UpdateRolePage()));
-                            },
-                          ),
-                        // Reports
-                        if (user.permissions.contains("GET_REPORTS"))
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("View Reported Posts"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const ReportedPostPage()));
-                            },
-                          ),
-                        // Create Tag
-                        if (user.permissions.contains("CREATE_TAG"))
-                          ListTile(
-                            leading: const Icon(Icons.add_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text('Create Tag'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CreateTagPage()));
-                            },
-                          ),
-                        // Search User
-                        ListTile(
-                          leading: const Icon(Icons.search_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Find People"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const SearchUser()));
-                          },
-                        ),
-
                         // E ID Card
                         ListTile(
                           leading: const Icon(Icons.perm_identity),
@@ -198,6 +119,32 @@ class CustomDrawer extends StatelessWidget {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     EIDCard(user: user)));
+                          },
+                        ),
+
+                        if (user.permissions.contains("TREASURE_HUNT"))
+                          ListTile(
+                            leading: const Icon(Icons.wallet_giftcard),
+                            horizontalTitleGap: 0,
+                            title: const Text("Treasure Hunt"),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const TeasureHuntWrapper()));
+                            },
+                          ),
+
+                        // Search User
+                        ListTile(
+                          leading: const Icon(Icons.search_outlined),
+                          horizontalTitleGap: 0,
+                          title: const Text("Find People"),
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const SearchUser()));
                           },
                         ),
 
@@ -215,6 +162,144 @@ class CustomDrawer extends StatelessWidget {
                                     const NotificationPage()));
                           },
                         ),
+
+                        //Super User Actions
+                        if (user.role != "USER")
+                          Theme(
+                            data: Theme.of(context)
+                                .copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
+                              title: Row(
+                                children: const [
+                                  Icon(Icons.ads_click),
+                                  SizedBox(width: 16),
+                                  Text("Super User Actions"),
+                                ],
+                              ),
+                              children: [
+                                //Super User List
+                                if (user.permissions
+                                    .contains("VIEW_SUPER_USER_LIST"))
+                                  ListTile(
+                                      leading: const Icon(Icons.list),
+                                      horizontalTitleGap: 0,
+                                      title: const Text('Super User List'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        const SuperUserList()));
+                                      }),
+                                // Reports
+                                if (user.permissions.contains("GET_REPORTS"))
+                                  ListTile(
+                                    leading: const Icon(
+                                        Icons.account_circle_outlined),
+                                    horizontalTitleGap: 0,
+                                    title: const Text("View Reported Posts"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const ReportedPostPage()));
+                                    },
+                                  ),
+                                // Create Notification
+                                if (user.permissions
+                                    .contains("CREATE_NOTIFICATION"))
+                                  ListTile(
+                                    leading: const Icon(Icons.notification_add),
+                                    horizontalTitleGap: 0,
+                                    title: const Text("Create Notifcation"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const CreateNotification()));
+                                    },
+                                  ),
+                                // Create Account
+                                if (user.permissions.contains("CREATE_ACCOUNT"))
+                                  ListTile(
+                                    leading:
+                                        const Icon(Icons.addchart_outlined),
+                                    horizontalTitleGap: 0,
+                                    title: const Text('Create Accounts'),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  CreateAccountPage(
+                                                    role: user.role!,
+                                                  )));
+                                    },
+                                  ),
+                                // Update Role
+                                if (user.permissions.contains("UPDATE_ROLE"))
+                                  ListTile(
+                                    leading: const Icon(Icons.upgrade),
+                                    horizontalTitleGap: 0,
+                                    title: const Text('Appoint Moderator'),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const UpdateRolePage()));
+                                    },
+                                  ),
+                                // Create Hostel
+                                if (user.permissions.contains("CREATE_HOSTEL"))
+                                  ListTile(
+                                    leading: const Icon(
+                                        Icons.account_balance_outlined),
+                                    horizontalTitleGap: 0,
+                                    title: const Text("Create Hostel"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const CreateHostelPage()));
+                                    },
+                                  ),
+
+                                // Create Tag
+                                if (user.permissions.contains("CREATE_TAG"))
+                                  ListTile(
+                                    leading: const Icon(Icons.add_outlined),
+                                    horizontalTitleGap: 0,
+                                    title: const Text('Create Tag'),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const CreateTagPage()));
+                                    },
+                                  ),
+                                // Super User's Guide
+                                if (user.role != "USER")
+                                  ListTile(
+                                    leading: const Icon(
+                                        Icons.insert_drive_file_outlined),
+                                    horizontalTitleGap: 0,
+                                    title: const Text("Super User's Guide"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      launchUrlString(
+                                          "https://docs.google.com/document/d/e/2PACX-1vS8PkBeAZnlrIgyWaxchCdd2_I9hf7KwzwXCIv4MLO6NwRZbvEhVKMYWtjliZvk1EKW2RvoJcnpifJp/pub",
+                                          mode: LaunchMode.externalApplication);
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
 
                         // Feedback
                         user.permissions.contains("VIEW_FEEDBACK")
@@ -243,20 +328,6 @@ class CustomDrawer extends StatelessWidget {
                                     const AboutUsPage()));
                           },
                         ),
-
-                        if (user.role != "USER")
-                          ListTile(
-                            leading:
-                                const Icon(Icons.insert_drive_file_outlined),
-                            horizontalTitleGap: 0,
-                            title: const Text("Super User's Guide"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              launchUrlString(
-                                  "https://docs.google.com/document/d/e/2PACX-1vS8PkBeAZnlrIgyWaxchCdd2_I9hf7KwzwXCIv4MLO6NwRZbvEhVKMYWtjliZvk1EKW2RvoJcnpifJp/pub",
-                                  mode: LaunchMode.externalApplication);
-                            },
-                          ),
 
                         // Terms of Service
                         ListTile(

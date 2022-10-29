@@ -40,19 +40,19 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return SafeArea(
-            child: Scaffold(
-                appBar: AppBar(
-                    title: CustomAppBar(
-                        title: "Appoint Moderator",
-                        leading: CustomIconButton(
-                          icon: Icons.arrow_back,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )),
-                    automaticallyImplyLeading: false),
-                body: Padding(
+          return Scaffold(
+              appBar: AppBar(
+                  title: CustomAppBar(
+                      title: "Appoint Moderator",
+                      leading: CustomIconButton(
+                        icon: Icons.arrow_back,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )),
+                  automaticallyImplyLeading: false),
+              body: SafeArea(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Form(
                     key: formKey,
@@ -105,8 +105,8 @@ class _UpdateRolePageState extends State<UpdateRolePage> {
                       ],
                     ),
                   ),
-                )),
-          );
+                ),
+              ));
         });
   }
 }
