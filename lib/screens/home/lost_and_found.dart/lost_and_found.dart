@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
+import '../../../models/post.dart';
 import '../../../models/lost_and_found.dart';
 import '../../../widgets/page/post.dart';
 import '../../../graphQL/lost_and_found.dart';
@@ -24,7 +25,15 @@ class _LostnFoundPageState extends State<LostnFoundPage> {
       queryOptions: options,
       toPostsModel: (data) =>
           LostAndFoundItemModel.fromJson(data!["getItem"]).toPostModel(),
-      actions: (post) => lostAndFoundActions(post, options),
+      actions: (post) => PostActions(
+        edit: lostAndFoundEditAction(post, options),
+        resolve: PostAction(
+            id: post.id,
+            document: LostAndFoundGQL.resolve,
+            updateCache: (cache, result) {
+              Navigator.of(context).pop();
+            }),
+      ),
     );
   }
 }

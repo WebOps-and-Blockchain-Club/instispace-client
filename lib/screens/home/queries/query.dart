@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'actions.dart';
+import '../../../models/post.dart';
 import '../../../models/query.dart';
 import '../../../widgets/page/post.dart';
 import '../../../graphQL/query.dart';
@@ -24,7 +25,24 @@ class _QueryPageState extends State<QueryPage> {
       queryOptions: options,
       toPostsModel: (data) =>
           QueryModel.fromJson(data!["getMyQuery"]).toPostModel(),
-      actions: (post) => queryActions(post, options),
+      actions: (post) => PostActions(
+        edit: editQueryAction(post, options),
+        delete: PostAction(
+          id: post.id,
+          document: QueryGQL.delete,
+          updateCache: (cache, result) {
+            Navigator.of(context).pop();
+          },
+        ),
+        like: likeQueryAction(post, options),
+        report: PostAction(
+            id: post.id,
+            document: QueryGQL.report,
+            updateCache: (cache, result) {
+              Navigator.of(context).pop();
+            }),
+        comment: commentQueryAction(post),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../graphQL/events.dart';
 import '../../../models/event.dart';
-
+import '../../../models/post.dart';
 import '../../../widgets/page/post.dart';
 import 'actions.dart';
 
@@ -25,7 +25,18 @@ class _EventPageState extends State<EventPage> {
       queryOptions: options,
       toPostsModel: (data) =>
           EventModel.fromJson(data!["getEvent"]).toPostModel(),
-      actions: (post) => eventActions(post, options),
+      actions: (post) => PostActions(
+        edit: editEventAction(post, options),
+        delete: PostAction(
+          id: post.id,
+          document: EventGQL().delete,
+          updateCache: (cache, result) {
+            Navigator.of(context).pop();
+          },
+        ),
+        like: likeEventAction(post, options),
+        star: starEventAction(post, options),
+      ),
     );
   }
 }
