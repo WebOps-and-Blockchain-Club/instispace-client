@@ -71,7 +71,7 @@
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
         <key>CFBundleURLName</key>
-        <string>instispace.app</string>
+        <string>instispace.iitm.ac.in</string>
         <key>CFBundleURLSchemes</key>
         <array>
         <string>customscheme</string>

@@ -1,1 +1,1 @@
-const String shareBaseLink = "instispace.app/";
+const String shareBaseLink = "instispace.iitm.ac.in/share/";
