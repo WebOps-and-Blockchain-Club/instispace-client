@@ -237,9 +237,12 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                           options: options,
                                         )));
                               },
-                              child: const Image(
-                                  image: AssetImage(
-                                      'assets/illustrations/report_found-modified-colour.png')),
+                              child: const Padding(
+                                padding: EdgeInsets.all(9.0),
+                                child: Image(
+                                    image: AssetImage(
+                                        'assets/illustrations/report_found-modified-colour.png')),
+                              ),
                             ),
                           ),
                           Padding(
@@ -253,9 +256,12 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
                                             options: options,
                                           )));
                                 },
-                                child: const Image(
-                                    image: AssetImage(
-                                        'assets/illustrations/report_lost-modified-colour.png'))),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(9.0),
+                                  child: Image(
+                                      image: AssetImage(
+                                          'assets/illustrations/report_lost-modified-colour.png')),
+                                )),
                           ),
                         ],
                       )
