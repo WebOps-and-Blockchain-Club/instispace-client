@@ -31,13 +31,11 @@ class AcademicDatabase {
       ${UserTableFields.courseCode} $textType,
       ${UserTableFields.courseName} $textType,
       ${UserTableFields.slot} $textType,
-      ${UserTableFields.start} $textType,
-      ${UserTableFields.end} $textType
     )
     ''');
   }
 
-  Future<CourseModel> create(CourseModel course) async {
+  Future<CourseModel> addCourse(CourseModel course) async {
     final database = await instance.db;
 
     final id = await database.insert(userTable, course.toJson());
@@ -45,18 +43,18 @@ class AcademicDatabase {
     return course.copy(id: id);
   }
 
-  Future<CourseModel?> getCourse(int id) async {
+  Future<CourseModel?> getCourse(int slot) async {
     final database = await instance.db;
 
     final maps = await database.query(userTable,
         columns: UserTableFields.columns,
-        where: '${UserTableFields.id} = ?',
-        whereArgs: [id]);
+        where: '${UserTableFields.slot} = ?',
+        whereArgs: [slot]);
 
     if (maps.isNotEmpty) {
       return CourseModel.fromJson(maps.first);
     } else {
-      throw Exception('Course with id : $id not found');
+      throw Exception('Course in $slot slot not found');
     }
   }
 
