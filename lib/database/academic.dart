@@ -30,7 +30,7 @@ class AcademicDatabase {
       ${UserTableFields.id} $idType,
       ${UserTableFields.courseCode} $textType,
       ${UserTableFields.courseName} $textType,
-      ${UserTableFields.slot} $textType,
+      ${UserTableFields.slot} $textType
     )
     ''');
   }
@@ -43,7 +43,7 @@ class AcademicDatabase {
     return course.copy(id: id);
   }
 
-  Future<CourseModel?> getCourse(int slot) async {
+  Future<CourseModel?> getCourse(String slot) async {
     final database = await instance.db;
 
     final maps = await database.query(userTable,
@@ -54,7 +54,8 @@ class AcademicDatabase {
     if (maps.isNotEmpty) {
       return CourseModel.fromJson(maps.first);
     } else {
-      throw Exception('Course in $slot slot not found');
+      return null;
+      //throw Exception('Course in $slot slot not found');
     }
   }
 
