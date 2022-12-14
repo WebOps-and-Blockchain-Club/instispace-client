@@ -30,7 +30,10 @@ class AcademicDatabase {
       ${UserTableFields.id} $idType,
       ${UserTableFields.courseCode} $textType,
       ${UserTableFields.courseName} $textType,
-      ${UserTableFields.slot} $textType
+      ${UserTableFields.slot} $textType,
+      ${UserTableFields.alternateSlot1} $textType,
+      ${UserTableFields.alternateSlot2} $textType,
+      ${UserTableFields.alternateSlot3} $textType,
     )
     ''');
   }
