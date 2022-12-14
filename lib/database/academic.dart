@@ -43,13 +43,39 @@ class AcademicDatabase {
     return course.copy(id: id);
   }
 
-  Future<CourseModel?> getCourse(String slot) async {
+  Future<CourseModel?> getCourse(String? slot, String? additionalslot) async {
     final database = await instance.db;
+    var maps;
+    if (slot != null) {
+      maps = await database.query(userTable,
+          columns: UserTableFields.columns,
+          where: '${UserTableFields.slot} = ?',
+          whereArgs: [slot]);
+    } else if (additionalslot != null) {
+      if (slot != null) {
+        maps = await database.query(userTable,
+            columns: UserTableFields.columns,
+            where: '${UserTableFields.alternateSlot1} = ?',
+            whereArgs: [additionalslot]);
+      }
+      if (maps.isNotEmpty) {
+        return CourseModel.fromJson(maps.first);
+      } else {
+        maps = await database.query(userTable,
+            columns: UserTableFields.columns,
+            where: '${UserTableFields.alternateSlot2} = ?',
+            whereArgs: [additionalslot]);
 
-    final maps = await database.query(userTable,
-        columns: UserTableFields.columns,
-        where: '${UserTableFields.slot} = ?',
-        whereArgs: [slot]);
+        if (maps.isNotEmpty) {
+          return CourseModel.fromJson(maps.first);
+        } else {
+          maps = await database.query(userTable,
+              columns: UserTableFields.columns,
+              where: '${UserTableFields.alternateSlot3} = ?',
+              whereArgs: [additionalslot]);
+        }
+      }
+    }
 
     if (maps.isNotEmpty) {
       return CourseModel.fromJson(maps.first);
