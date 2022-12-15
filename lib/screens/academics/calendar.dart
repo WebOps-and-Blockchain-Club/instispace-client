@@ -49,7 +49,7 @@ class _CalendarState extends State<Calendar> {
 
   Future<List<HolidayModel?>> getholiday() async {
     holidays = [];
-    List<Holidayinfo> infolist = [];
+    List<Holidayinfo?> infolist = [];
     Holidayinfo? info;
     HolidayModel? holidaydetails;
     for (var month in months) {
@@ -58,11 +58,12 @@ class _CalendarState extends State<Calendar> {
       for (int i = 0; i < 31; i++) {
         info?.date = (i + 1).toString();
         info?.title = "working day";
-        infolist.add(info!);
+        infolist.add(info);
       }
       holidaydetails?.info = infolist;
       holidays.add(holidaydetails);
     }
+    print(holidays);
     return holidays;
   }
 
