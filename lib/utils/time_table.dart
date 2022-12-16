@@ -53,17 +53,18 @@ final Map<String, List<List<String>>> time_table = {
   ]
 };
 
-final holidays = {
-  '2022-08-09': 'Muharram',
-  '2022-08-15': 'Independence Day',
-  '2022-08-31': 'Ganesh Chaturthi',
-  '2022-09-08': 'Onam',
-  '2022-10-02': 'Gandhi Jayanthi',
-  '2022-10-05': 'Dussehra',
-  '2022-10-24': 'Deepavali',
-  '2022-11-08': "Guru Nanak's Birthday",
-  '2022-12-25': 'Christmas'
-};
+List<String> holiday = [
+  "2022-08-09 Muharram",
+  "2022-08-15 Independence Day",
+  "2022-08-31 Ganesh Chaturthi",
+  "2022-09-08 Onam",
+  "2022-10-02 Gandhi Jayanthi",
+  "2022-10-05 Dussehra",
+  "2022-10-24 Deepavali",
+  "2022-11-08 Guru Nanak's Birthday",
+  "2022-12-25 Christmas"
+];
+
 List<String> start_timing = [
   "8:00 AM",
   "9:00 AM",

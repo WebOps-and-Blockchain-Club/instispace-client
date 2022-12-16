@@ -45,6 +45,7 @@ class _CalendarState extends State<Calendar> {
     "November",
     "December"
   ];
+  List<int> month_index = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   List<HolidayModel?> holidays = [];
 
   Future<List<HolidayModel?>> getholiday() async {
@@ -57,12 +58,20 @@ class _CalendarState extends State<Calendar> {
       for (int i = 0; i < 31; i++) {
         Holidayinfo? info =
             Holidayinfo(date: (i + 1).toString(), title: "working day");
+
         infolist.add(info);
       }
       // holidaydetails?.info = infolist;
       holidaydetails = HolidayModel(info: infolist, month: month);
       holidays.add(holidaydetails);
     }
+
+    for (int i = 0; i < holiday.length; i++) {
+      holidays[int.parse(holiday[i].substring(5, 7)) - 1]
+          ?.info[int.parse(holiday[i].substring(8, 10)) - 1]
+          ?.title = holiday[i].substring(11, holiday[i].length);
+    }
+    print(holidays);
     return holidays;
   }
 
@@ -146,117 +155,151 @@ class _CalendarState extends State<Calendar> {
               future: getholiday(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView(scrollDirection: Axis.horizontal, children: [
-                    Row(
-                      children: [
-                        for (int i = 0; i < 12; i++)
-                          Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: InkWell(
-                              onTap: (() {
-                                setState(() {
-                                  _month = i;
-                                });
-                              }),
-                              child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  decoration: BoxDecoration(
-                                      color: i == _month
-                                          ? Colors.white
-                                          : Colors.blue,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.17,
-                                  height: 50,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      months[i].substring(0, 3),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          color: i == _month
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  )),
-                            ),
-                          )
-                      ],
-                    ),
-                    for (var i = 0; i < 31; i++)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: AnimatedContainer(
-                          height: MediaQuery.of(context).size.height * 0.13,
-                          duration: const Duration(milliseconds: 500),
-                          width: double.infinity,
-                          child: Card(
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  color: Colors.blue,
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Day",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white),
-                                        ),
-                                        const SizedBox(
-                                          height: 7.50,
-                                        ),
-                                        const Text("-"),
-                                        const SizedBox(
-                                          height: 7.50,
-                                        ),
-                                        Text(
-                                          "${i + 1}",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white),
-                                        ),
-                                      ]),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 7.50,
-                                      ),
-                                      Text(
-                                        holidays[_month]?.info[i] == null
-                                            ? "Working day"
-                                            : holidays[_month]!
-                                                .info[i]!
-                                                .title
-                                                .toString(),
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      SizedBox(
-                                        height: 7.50,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                  return ListView(
+                    children: [
+                      // Row(
+                      //   children: [
+                      //     for (int i = 0; i < 12; i++)
+                      //       Padding(
+                      //         padding: const EdgeInsets.all(3.0),
+                      //         child: InkWell(
+                      //           onTap: (() {
+                      //             setState(() {
+                      //               _month = i;
+                      //             });
+                      //           }),
+                      //           child: AnimatedContainer(
+                      //               duration: const Duration(milliseconds: 200),
+                      //               decoration: BoxDecoration(
+                      //                   color: i == _month
+                      //                       ? Colors.white
+                      //                       : Colors.blue,
+                      //                   borderRadius: BorderRadius.circular(5)),
+                      //               width: MediaQuery.of(context).size.width *
+                      //                   0.17,
+                      //               height: 50,
+                      //               child: Align(
+                      //                 alignment: Alignment.center,
+                      //                 child: Text(
+                      //                   months[i].substring(0, 3),
+                      //                   textAlign: TextAlign.center,
+                      //                   style: TextStyle(
+                      //                       fontSize: 17,
+                      //                       color: i == _month
+                      //                           ? Colors.black
+                      //                           : Colors.white),
+                      //                 ),
+                      //               )),
+                      //         ),
+                      //       )
+                      //   ],
+                      // ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      DropdownButtonFormField(
+                        value: _month,
+                        items: month_index
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(months[e]),
+                                  value: e,
+                                ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _month = val as int;
+                            print(_month);
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          color: Colors.blue,
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: "Month",
+                          prefixIcon: Icon(
+                            Icons.calendar_month_outlined,
+                            color: Colors.blue,
                           ),
                         ),
-                      )
-                  ]);
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      for (var i = 0; i < 31; i++)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: AnimatedContainer(
+                            height: MediaQuery.of(context).size.height * 0.13,
+                            duration: const Duration(milliseconds: 500),
+                            width: double.infinity,
+                            child: Card(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.20,
+                                    color: Colors.blue,
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Day",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.white),
+                                          ),
+                                          const SizedBox(
+                                            height: 7.50,
+                                          ),
+                                          const Text("-"),
+                                          const SizedBox(
+                                            height: 7.50,
+                                          ),
+                                          Text(
+                                            (i + 1).toString(),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.white),
+                                          ),
+                                        ]),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          holidays[_month]?.info[i] == null
+                                              ? "-"
+                                              : holidays[_month]!
+                                                  .info[i]!
+                                                  .title
+                                                  .toString(),
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        SizedBox(
+                                          height: 7.50,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                    ],
+                  );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting)
                   return CircularProgressIndicator();
