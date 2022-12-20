@@ -7,8 +7,9 @@ final Map<String, List<List<String>>> time_table = {
     ['C'],
     ['D'],
     ['G'],
-    ['P', 'H', 'H1'],
-    ['P', 'M', 'M2'],
+    ['P', 'B2', 'H1'],
+    ['P', 'E2', 'M2'],
+    ['P', 'C2', 'M2'],
     ['J', 'J3']
   ],
   'tuesday': [

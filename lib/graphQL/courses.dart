@@ -1,7 +1,24 @@
 class CoursesGQL {
   String searchCourses = """\
-  query(\$filter: String!) {
-  searchCourses(Filter: \$filter)
+  query Query(\$filter: String!) {
+    searchCourses(Filter: \$filter){
+    courseName
+    courseCode
+    id
+    slots
+    additionalSlots
+    }
+}
+""";
+  String getCourse = """\
+  query Query(\$getCourseFilter2: String!) {
+  getCourse(Filter: \$getCourseFilter2) {
+    slots
+    id
+    courseName
+    courseCode
+    additionalSlots
+  }
 }
 """;
 }

@@ -9,6 +9,27 @@ import 'package:flutter/material.dart';
 import '../../models/course.dart';
 import '../../database/academic.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import '../../../themes.dart';
+import '../../utils/time_table.dart';
+import 'dart:async';
+import 'add_course.dart';
+
+class Debouncer {
+  int? seconds;
+  int? milliseconds;
+  VoidCallback? action;
+  Timer? timer;
+
+  run(VoidCallback action) {
+    if (null != timer) {
+      timer!.cancel();
+    }
+    timer = Timer(
+      Duration(milliseconds: milliseconds ?? 100),
+      action,
+    );
+  }
+}
 
 class NewTimetable extends StatefulWidget {
   const NewTimetable({Key? key}) : super(key: key);
@@ -21,26 +42,71 @@ class _NewTimetableState extends State<NewTimetable> {
   var courseCode;
   var courseName;
   var slot;
+  final _debouncer = Debouncer();
+  Map<String, dynamic> defaultVariables = {"filter": "AM5"};
+  final focusNode = FocusNode();
+
   CoursesModel? _courses;
-  final Map<String, dynamic> defaultVariables = {"filter": "CS5"};
+  TextEditingController courseQueryController = TextEditingController();
   void getCourses() async {
     _courses = await AcademicDatabase.instance.getAllCourses();
   }
 
+  Iterable<String> getCourseNameWithCode(QueryResult result) {
+    List<String> courseNameWithCode = [];
+    for (var course in result.data!["searchCourses"]) {
+      courseNameWithCode
+          .add("${course["courseCode"]} - ${course["courseName"]}");
+    }
+    return courseNameWithCode.cast<String>();
+  }
+
+  /*void addCourseWithCode(String code, QueryResult result) async {
+    for (var course in result.data!["searchCourses"]) {
+      if (code == course["courseCode"]) {
+        String? alt1, alt2, alt3;
+        alt1 = course["additionalSlots"].length >= 1
+            ? course["additionalSlots"][0]
+            : null;
+        alt2 = course["additionalSlots"].length >= 2
+            ? course["additionalSlots"][1]
+            : null;
+        alt3 = course["additionalSlots"].length >= 3
+            ? course["additionalSlots"][2]
+            : null;
+        CourseModel selectedCourse = CourseModel(
+            slot: course["slots"][0],
+            courseCode: code,
+            courseName: course["courseName"],
+            alternateSlot1: alt1,
+            alternateSlot2: alt2,
+            alternateSlot3: alt3);
+        await AcademicDatabase.instance.addCourse(selectedCourse);
+        CoursesModel courses = await AcademicDatabase.instance.getAllCourses();
+        setState(() {
+          _courses = courses;
+        });
+      }
+    }
+  }*/
+
   @override
   void initState() {
+    //print("dialog opened");
     getCourses();
     super.initState();
   }
 
   void deleteCourse(CourseModel course) async {
+    print("course deleted");
     int id = await AcademicDatabase.instance.deleteCourse(course.id!);
   }
 
-  void showDialogWithFields() {
+  /*void showDialogWithFields() {
     showDialog(
       context: context,
       builder: (_) {
+        print("dialog opened");
         var courseCodeController = TextEditingController();
         var courseNameController = TextEditingController();
         var slotController = TextEditingController();
@@ -89,8 +155,6 @@ class _NewTimetableState extends State<NewTimetable> {
                 });
 
                 Navigator.of(context).pop();
-                print(courses.courses);
-                print("*******");
               },
               child: Text('Add'),
             ),
@@ -98,11 +162,11 @@ class _NewTimetableState extends State<NewTimetable> {
         );
       },
     );
-  }
+  }*/
 
   String getTruncatedName(String courseName) {
-    if (courseName.length > 20)
-      courseName = courseName.substring(0, 20) + "...";
+    if (courseName.length > 27)
+      courseName = courseName.substring(0, 27) + "...";
 
     return courseName;
   }
@@ -116,127 +180,268 @@ class _NewTimetableState extends State<NewTimetable> {
     return Scaffold(
         body: SafeArea(
             child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: NestedScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _scrollController,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return CustomAppBar(
-                            title: "Timetable",
-                            leading: CustomIconButton(
-                                icon: Icons.arrow_back,
-                                onPressed: () => Navigator.of(context).pop()),
-                          );
-                        }, childCount: 1),
-                      ),
-                    ];
-                  },
-                  body: FutureBuilder<CoursesModel>(
-                    future: AcademicDatabase.instance.getAllCourses(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        getCourses();
-                        return (Column(children: [
-                          if (_courses != null)
-                            for (var course in _courses!.courses)
-                              Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Container(
-                                      width: double.infinity,
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                course.courseCode,
-                                                style: TextStyle(fontSize: 22),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                getTruncatedName(
-                                                    course.courseName),
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                "${course.slot} Slot",
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                          new Spacer(),
-                                          IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  deleteCourse(course);
-                                                });
-                                              },
-                                              icon: Icon(Icons.delete))
-                                        ],
-                                      )),
-                                ),
-                              ),
-                          Flexible(
-                            flex: 2,
-                            child: Container(),
-                          ),
-                          Query(
-                            options: QueryOptions(
-                                document: gql(CoursesGQL().searchCourses),
-                                variables: defaultVariables),
-                            builder: (QueryResult result,
-                                {fetchMore, refetch}) {
-                              print(result);
-                              return Container();
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: NestedScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverList(
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+                return CustomAppBar(
+                  title: "Timetable",
+                  leading: CustomIconButton(
+                      icon: Icons.arrow_back,
+                      onPressed: () => Navigator.of(context).pop()),
+                );
+              }, childCount: 1),
+            ),
+          ];
+        },
+        body: FutureBuilder<CoursesModel>(
+          future: AcademicDatabase.instance.getAllCourses(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              getCourses();
+              return (ListView(children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Query(
+                  options: QueryOptions(
+                      document: gql(CoursesGQL().searchCourses),
+                      variables: defaultVariables),
+                  builder: (QueryResult result, {fetchMore, refetch}) {
+                    print(defaultVariables["filter"]);
+                    print(result.data);
+                    return LayoutBuilder(builder: (context, constraints) {
+                      return RawAutocomplete(
+                        optionsBuilder: (TextEditingValue _courseQuery) {
+                          if (_courseQuery.text == '' ||
+                              _courseQuery.text.length < 3) {
+                            return const Iterable<String>.empty();
+                          } else {
+                            List<String> matches = <String>[];
+                            if (result.data != null &&
+                                result.data!["searchCourses"] != null) {
+                              matches.addAll(getCourseNameWithCode(result));
+                            }
+                            matches.retainWhere((s) {
+                              return s
+                                  .toLowerCase()
+                                  .contains(_courseQuery.text.toLowerCase());
+                            });
+                            return matches;
+                          }
+                        },
+                        fieldViewBuilder: (BuildContext context,
+                            TextEditingController _courseQuery,
+                            FocusNode focusNode,
+                            VoidCallback onFieldSubmitted) {
+                          return TextFormField(
+                            controller: _courseQuery,
+                            minLines: 1,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                labelText: "Add course....",
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    _courseQuery.clear();
+                                  },
+                                )),
+                            focusNode: focusNode,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the location of the post";
+                              }
+                              return null;
                             },
-                          ),
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: Material(
-                                  color: Color.fromARGB(
-                                      255, 7, 77, 134), // Button color
-                                  child: InkWell(
-                                    splashColor: Colors.red, // Splash color
-                                    onTap: showDialogWithFields,
-                                    child: SizedBox(
-                                        width: 65,
-                                        height: 65,
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                        )),
-                                  ),
+                            onChanged: (String courseQuery) {
+                              _debouncer.run(() {
+                                setState(() {
+                                  defaultVariables["filter"] =
+                                      courseQuery.length > 2
+                                          ? courseQuery
+                                          : "AM5";
+                                });
+                                refetch!();
+                              });
+                            },
+                          );
+                        },
+                        optionsViewBuilder: (BuildContext context,
+                            void Function(String) onSelected,
+                            Iterable<String> options) {
+                          return Expanded(
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Material(
+                                  color: ColorPalette.palette(context)
+                                      .secondary[50],
+                                  child: SizedBox(
+                                    width: constraints.biggest.width,
+                                    child: ListView.builder(
+                                      itemCount: options.length,
+                                      itemBuilder: (context, index) {
+                                        final opt = options.elementAt(index);
+
+                                        return GestureDetector(
+                                            onTap: () {
+                                              onSelected(opt);
+                                            },
+                                            child: Card(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Text(opt),
+                                              ),
+                                            ));
+                                      },
+                                    ),
+                                  )),
+                            ),
+                          );
+                        },
+                        onSelected: (String option) async {
+                          String code = option.substring(0, 6);
+                          for (var course in result.data!["searchCourses"]) {
+                            if (code == course["courseCode"]) {
+                              String? alt1, alt2, alt3;
+                              alt1 = course["additionalSlots"].length >= 1
+                                  ? course["additionalSlots"][0]
+                                  : null;
+                              alt2 = course["additionalSlots"].length >= 2
+                                  ? course["additionalSlots"][1]
+                                  : null;
+                              alt3 = course["additionalSlots"].length >= 3
+                                  ? course["additionalSlots"][2]
+                                  : null;
+                              CourseModel selectedCourse = CourseModel(
+                                slot: course["slots"][0],
+                                courseCode: code,
+                                courseName: course["courseName"],
+                                alternateSlot1: alt1,
+                                alternateSlot2: alt2,
+                                alternateSlot3: alt3,
+                                monday: true,
+                                tuesday: true,
+                                wednesday: true,
+                                thursday: true,
+                                friday: true,
+                              );
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          AddCourse(
+                                            course: selectedCourse,
+                                            courses: _courses,
+                                          )));
+                              break;
+                            }
+                          }
+                          CoursesModel courses =
+                              await AcademicDatabase.instance.getAllCourses();
+                          setState(() {
+                            _courses = courses;
+                          });
+                        },
+                        textEditingController: courseQueryController,
+                        focusNode: focusNode,
+                      );
+                    });
+                  },
+                ),
+                if (_courses != null)
+                  for (var course in _courses!.courses)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Container(
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      course.courseCode,
+                                      style: TextStyle(fontSize: 22),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      getTruncatedName(course.courseName),
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: slot_color[course.slot],
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Text(
+                                          "${course.slot} SLOT",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          )
-                        ]));
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting)
-                        return (CircularProgressIndicator());
-                      else
-                        return (Container(
-                          child: Text("Error loading data"),
-                        ));
-                    },
-                  ),
-                ))));
+                                new Spacer(),
+                                IconButton(
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      setState(() {
+                                        deleteCourse(course);
+                                      });
+                                    },
+                                    icon: Icon(Icons.delete))
+                              ],
+                            )),
+                      ),
+                    ),
+
+                /*Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ClipOval(
+                      child: Material(
+                        color: Color.fromARGB(255, 7, 77, 134), // Button color
+                        child: InkWell(
+                          splashColor: Colors.red, // Splash color
+                          onTap: showDialogWithFields,
+                          child: SizedBox(
+                              width: 65,
+                              height: 65,
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              )),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),*/
+              ]));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: (CircularProgressIndicator()));
+            else
+              return (Container(
+                child: Text("Error loading data"),
+              ));
+          },
+        ),
+      ),
+    )));
   }
 }
