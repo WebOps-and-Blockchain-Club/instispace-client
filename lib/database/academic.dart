@@ -43,12 +43,20 @@ class AcademicDatabase {
     return course.copy(id: id);
   }
 
+  Future<int> editCourse(CourseModel course) async {
+    final database = await instance.db;
+
+    return database.update(userTable, course.toJson(),
+        where: '${UserTableFields.courseCode} = ?',
+        whereArgs: [course.courseCode]);
+  }
+
   Future<CoursesModel?> getCourses(String day) async {
     final database = await instance.db;
     var maps;
     maps = await database.query(userTable,
         columns: UserTableFields.columns,
-        where: '${UserTableFields.slots} LIKE “%$day*%');
+        where: '${UserTableFields.slots} LIKE %$day*%');
     if (maps.isNotEmpty) {
       return maps.map((course) => CourseModel.fromJson(course));
     }
