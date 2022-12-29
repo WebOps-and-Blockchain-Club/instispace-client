@@ -40,23 +40,11 @@ class CourseModel {
         UserTableFields.courseName: courseName
       };
 
-  CourseModel copy({
-    int? id,
-    String? slot,
-    String? courseCode,
-    String? courseName,
-    String? alternateSlot1,
-    String? alternateSlot2,
-    String? alternateSlot3,
-    bool? monday,
-    bool? tuesday,
-    bool? wednesday,
-    bool? thursday,
-    bool? friday,
-  }) =>
+  CourseModel copy(
+          {int? id, String? slots, String? courseCode, String? courseName}) =>
       CourseModel(
           id: id ?? this.id,
-          slots: slot ?? this.slots,
+          slots: slots ?? this.slots,
           courseCode: courseCode ?? this.courseCode,
           courseName: courseName ?? this.courseName);
 
