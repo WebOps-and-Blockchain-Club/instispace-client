@@ -25,22 +25,12 @@ class AcademicDatabase {
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
-    const additionalSlotType = 'TEXT';
-    const dayType = 'TEXT NOT NULL';
     await db.execute(''' 
     CREATE TABLE $userTable (
       ${UserTableFields.id} $idType,
       ${UserTableFields.courseCode} $textType,
       ${UserTableFields.courseName} $textType,
-      ${UserTableFields.slot} $textType,
-      ${UserTableFields.alternateSlot1} $additionalSlotType,
-      ${UserTableFields.alternateSlot2} $additionalSlotType,
-      ${UserTableFields.alternateSlot3} $additionalSlotType,
-      ${UserTableFields.monday} $dayType,
-      ${UserTableFields.tuesday} $dayType,
-      ${UserTableFields.wednesday} $dayType,
-      ${UserTableFields.thursday} $dayType,
-      ${UserTableFields.friday} $dayType
+      ${UserTableFields.slots} $textType
     );
     ''');
   }
@@ -53,37 +43,16 @@ class AcademicDatabase {
     return course.copy(id: id);
   }
 
-  Future<CourseModel?> getCourse(String slot) async {
+  Future<CoursesModel?> getCourses(String day) async {
     final database = await instance.db;
     var maps;
     maps = await database.query(userTable,
         columns: UserTableFields.columns,
-        where: '${UserTableFields.slot} = ?',
-        whereArgs: [slot]);
-    if (maps.isNotEmpty) return CourseModel.fromJson(maps.first);
-
-    maps = await database.query(userTable,
-        columns: UserTableFields.columns,
-        where: '${UserTableFields.alternateSlot1} = ?',
-        whereArgs: [slot]);
-    if (maps.isNotEmpty) return CourseModel.fromJson(maps.first);
-
-    maps = await database.query(userTable,
-        columns: UserTableFields.columns,
-        where: '${UserTableFields.alternateSlot2} = ?',
-        whereArgs: [slot]);
-    if (maps.isNotEmpty) return CourseModel.fromJson(maps.first);
-
-    maps = await database.query(userTable,
-        columns: UserTableFields.columns,
-        where: '${UserTableFields.alternateSlot3} = ?',
-        whereArgs: [slot]);
-    if (maps.isNotEmpty)
-      return CourseModel.fromJson(maps.first);
-    else {
-      return null;
-      //throw Exception('Course in $slot slot not found');
+        where: '${UserTableFields.slots} LIKE “%$day*%');
+    if (maps.isNotEmpty) {
+      return maps.map((course) => CourseModel.fromJson(course));
     }
+    return null;
   }
 
   Future<CoursesModel> getAllCourses() async {
