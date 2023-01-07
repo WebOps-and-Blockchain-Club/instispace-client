@@ -1,4 +1,6 @@
 import 'package:client/graphQL/courses.dart';
+import 'package:client/screens/academics/search_course.dart';
+import 'package:client/screens/academics/update_course.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:client/graphQL/user.dart';
@@ -13,6 +15,8 @@ import '../../../themes.dart';
 import '../../utils/time_table.dart';
 import 'dart:async';
 import 'add_course.dart';
+import '../../services/notification.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Debouncer {
   int? seconds;
@@ -45,7 +49,8 @@ class _NewTimetableState extends State<NewTimetable> {
   final _debouncer = Debouncer();
   Map<String, dynamic> defaultVariables = {"filter": "AM5"};
   final focusNode = FocusNode();
-
+  final LocalNotificationService notificationService =
+      LocalNotificationService();
   CoursesModel? _courses;
   TextEditingController courseQueryController = TextEditingController();
   void getCourses() async {
@@ -165,8 +170,8 @@ class _NewTimetableState extends State<NewTimetable> {
   }*/
 
   String getTruncatedName(String courseName) {
-    if (courseName.length > 27)
-      courseName = courseName.substring(0, 27) + "...";
+    if (courseName.length > 20)
+      courseName = courseName.substring(0, 20) + "...";
 
     return courseName;
   }
@@ -208,151 +213,123 @@ class _NewTimetableState extends State<NewTimetable> {
                 SizedBox(
                   height: 10,
                 ),
-                Query(
-                  options: QueryOptions(
-                      document: gql(CoursesGQL().searchCourses),
-                      variables: defaultVariables),
-                  builder: (QueryResult result, {fetchMore, refetch}) {
-                    print(defaultVariables["filter"]);
-                    print(result.data);
-                    return LayoutBuilder(builder: (context, constraints) {
-                      return RawAutocomplete(
-                        optionsBuilder: (TextEditingValue _courseQuery) {
-                          if (_courseQuery.text == '' ||
-                              _courseQuery.text.length < 3) {
-                            return const Iterable<String>.empty();
-                          } else {
-                            List<String> matches = <String>[];
-                            if (result.data != null &&
-                                result.data!["searchCourses"] != null) {
-                              matches.addAll(getCourseNameWithCode(result));
-                            }
-                            matches.retainWhere((s) {
-                              return s
-                                  .toLowerCase()
-                                  .contains(_courseQuery.text.toLowerCase());
-                            });
-                            return matches;
-                          }
-                        },
-                        fieldViewBuilder: (BuildContext context,
-                            TextEditingController _courseQuery,
-                            FocusNode focusNode,
-                            VoidCallback onFieldSubmitted) {
-                          return TextFormField(
-                            controller: _courseQuery,
-                            minLines: 1,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                                labelText: "Add course....",
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    _courseQuery.clear();
-                                  },
-                                )),
-                            focusNode: focusNode,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the location of the post";
-                              }
-                              return null;
-                            },
-                            onChanged: (String courseQuery) {
-                              _debouncer.run(() {
-                                setState(() {
-                                  defaultVariables["filter"] =
-                                      courseQuery.length > 2
-                                          ? courseQuery
-                                          : "AM5";
-                                });
-                                refetch!();
-                              });
-                            },
-                          );
-                        },
-                        optionsViewBuilder: (BuildContext context,
-                            void Function(String) onSelected,
-                            Iterable<String> options) {
-                          return Expanded(
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Material(
-                                  color: ColorPalette.palette(context)
-                                      .secondary[50],
-                                  child: SizedBox(
-                                    width: constraints.biggest.width,
-                                    child: ListView.builder(
-                                      itemCount: options.length,
-                                      itemBuilder: (context, index) {
-                                        final opt = options.elementAt(index);
+                // Query(
+                //   options: QueryOptions(
+                //       document: gql(CoursesGQL().searchCourses),
+                //       variables: defaultVariables),
+                //   builder: (QueryResult result, {fetchMore, refetch}) {
+                //     //print(defaultVariables["filter"]);
+                //     //print(result.data);
+                //     return LayoutBuilder(builder: (context, constraints) {
+                //       return RawAutocomplete(
+                //         optionsBuilder: (TextEditingValue _courseQuery) {
+                //           if (_courseQuery.text == '' ||
+                //               _courseQuery.text.length < 3) {
+                //             return const Iterable<String>.empty();
+                //           } else {
+                //             List<String> matches = <String>[];
+                //             if (result.data != null &&
+                //                 result.data!["searchCourses"] != null) {
+                //               matches.addAll(getCourseNameWithCode(result));
+                //             }
+                //             matches.retainWhere((s) {
+                //               return s
+                //                   .toLowerCase()
+                //                   .contains(_courseQuery.text.toLowerCase());
+                //             });
+                //             return matches;
+                //           }
+                //         },
+                //         fieldViewBuilder: (BuildContext context,
+                //             TextEditingController _courseQuery,
+                //             FocusNode focusNode,
+                //             VoidCallback onFieldSubmitted) {
+                //           return TextFormField(
+                //             controller: _courseQuery,
+                //             minLines: 1,
+                //             maxLines: null,
+                //             decoration: InputDecoration(
+                //                 labelText: "Add course....",
+                //                 suffixIcon: IconButton(
+                //                   icon: const Icon(Icons.clear),
+                //                   onPressed: () {
+                //                     _courseQuery.clear();
+                //                   },
+                //                 )),
+                //             focusNode: focusNode,
+                //             validator: (value) {
+                //               if (value == null || value.isEmpty) {
+                //                 return "Enter the location of the post";
+                //               }
+                //               return null;
+                //             },
+                //             onChanged: (String courseQuery) {
+                //               _debouncer.run(() {
+                //                 setState(() {
+                //                   defaultVariables["filter"] =
+                //                       courseQuery.length > 2
+                //                           ? courseQuery
+                //                           : "AM5";
+                //                 });
+                //                 refetch!();
+                //               });
+                //             },
+                //           );
+                //         },
+                //         optionsViewBuilder: (BuildContext context,
+                //             void Function(String) onSelected,
+                //             Iterable<String> options) {
+                //           return Expanded(
+                //             child: Align(
+                //               alignment: Alignment.topLeft,
+                //               child: Material(
+                //                   color: ColorPalette.palette(context)
+                //                       .secondary[50],
+                //                   child: SizedBox(
+                //                     width: constraints.biggest.width,
+                //                     child: ListView.builder(
+                //                       itemCount: options.length,
+                //                       itemBuilder: (context, index) {
+                //                         final opt = options.elementAt(index);
 
-                                        return GestureDetector(
-                                            onTap: () {
-                                              onSelected(opt);
-                                            },
-                                            child: Card(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
-                                                child: Text(opt),
-                                              ),
-                                            ));
-                                      },
-                                    ),
-                                  )),
-                            ),
-                          );
-                        },
-                        onSelected: (String option) async {
-                          String code = option.substring(0, 6);
-                          for (var course in result.data!["searchCourses"]) {
-                            if (code == course["courseCode"]) {
-                              String? alt1, alt2, alt3;
-                              alt1 = course["additionalSlots"].length >= 1
-                                  ? course["additionalSlots"][0]
-                                  : null;
-                              alt2 = course["additionalSlots"].length >= 2
-                                  ? course["additionalSlots"][1]
-                                  : null;
-                              alt3 = course["additionalSlots"].length >= 3
-                                  ? course["additionalSlots"][2]
-                                  : null;
-                              CourseModel selectedCourse = CourseModel(
-                                slot: course["slots"][0],
-                                courseCode: code,
-                                courseName: course["courseName"],
-                                alternateSlot1: alt1,
-                                alternateSlot2: alt2,
-                                alternateSlot3: alt3,
-                                monday: true,
-                                tuesday: true,
-                                wednesday: true,
-                                thursday: true,
-                                friday: true,
-                              );
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          AddCourse(
-                                            course: selectedCourse,
-                                            courses: _courses,
-                                          )));
-                              break;
-                            }
-                          }
-                          CoursesModel courses =
-                              await AcademicDatabase.instance.getAllCourses();
-                          setState(() {
-                            _courses = courses;
-                          });
-                        },
-                        textEditingController: courseQueryController,
-                        focusNode: focusNode,
-                      );
-                    });
-                  },
-                ),
+                //                         return GestureDetector(
+                //                             onTap: () {
+                //                               onSelected(opt);
+                //                             },
+                //                             child: Card(
+                //                               child: Padding(
+                //                                 padding:
+                //                                     const EdgeInsets.all(10.0),
+                //                                 child: Text(opt),
+                //                               ),
+                //                             ));
+                //                       },
+                //                     ),
+                //                   )),
+                //             ),
+                //           );
+                //         },
+                //         onSelected: (String option) async {
+                //           String code = option.substring(0, 6);
+
+                //           Navigator.of(context)
+                //               .pushReplacement(MaterialPageRoute(
+                //                   builder: (BuildContext context) => AddCourse(
+                //                         courseCode: code,
+                //                         courses: _courses,
+                //                       )));
+                //           CoursesModel courses =
+                //               await AcademicDatabase.instance.getAllCourses();
+                //           setState(() {
+                //             _courses = courses;
+                //           });
+                //         },
+                //         textEditingController: courseQueryController,
+                //         focusNode: focusNode,
+                //       );
+                //     });
+                //   },
+                // ),
                 if (_courses != null)
                   for (var course in _courses!.courses)
                     Card(
@@ -381,13 +358,15 @@ class _NewTimetableState extends State<NewTimetable> {
                                     ),
                                     Container(
                                       decoration: BoxDecoration(
-                                          color: slot_color[course.slot],
+                                          color: slot_color[course.slots
+                                              .split('&')[0]
+                                              .split(',')[0]],
                                           borderRadius:
                                               BorderRadius.circular(5)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(5.0),
                                         child: Text(
-                                          "${course.slot} SLOT",
+                                          "${course.slots.split('&')[0].split(',')[0]} SLOT",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14),
@@ -398,11 +377,34 @@ class _NewTimetableState extends State<NewTimetable> {
                                 ),
                                 new Spacer(),
                                 IconButton(
-                                    color: Colors.red,
                                     onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UpdateCourse(
+                                                    course: course,
+                                                    courses: _courses,
+                                                  )));
+                                    },
+                                    icon: Icon(Icons.edit)),
+                                IconButton(
+                                    color: Colors.red,
+                                    onPressed: () async {
                                       setState(() {
                                         deleteCourse(course);
                                       });
+                                      final FlutterLocalNotificationsPlugin
+                                          plugin =
+                                          FlutterLocalNotificationsPlugin();
+                                      final List<PendingNotificationRequest>
+                                          pending = await plugin
+                                              .pendingNotificationRequests();
+                                      for (var notif in pending) {
+                                        if (notif.title == course.courseCode) {
+                                          plugin.cancel(notif.id);
+                                          print("Cancelled notifications");
+                                        }
+                                      }
                                     },
                                     icon: Icon(Icons.delete))
                               ],
@@ -410,7 +412,7 @@ class _NewTimetableState extends State<NewTimetable> {
                       ),
                     ),
 
-                /*Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ClipOval(
@@ -418,7 +420,10 @@ class _NewTimetableState extends State<NewTimetable> {
                         color: Color.fromARGB(255, 7, 77, 134), // Button color
                         child: InkWell(
                           splashColor: Colors.red, // Splash color
-                          onTap: showDialogWithFields,
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SearchCourse())).then((_)=> setState((){}));
+                          },
                           child: SizedBox(
                               width: 65,
                               height: 65,
@@ -430,7 +435,7 @@ class _NewTimetableState extends State<NewTimetable> {
                       ),
                     ),
                   ],
-                ),*/
+                ),
               ]));
             }
             if (snapshot.connectionState == ConnectionState.waiting)

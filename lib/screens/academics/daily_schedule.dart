@@ -7,11 +7,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:client/widgets/button/icon_button.dart';
 import 'package:client/widgets/headers/main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 import '../../utils/time_table.dart';
 import '../../models/course.dart';
 import '../../database/academic.dart';
 import 'dart:async';
+
+class Pair<T1, T2> {
+  final T1 a;
+  final T2 b;
+
+  Pair(this.a, this.b);
+}
 
 class DailyScheduleScreen extends StatefulWidget {
   const DailyScheduleScreen({Key? key}) : super(key: key);
@@ -24,78 +33,62 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
   String _day = DateFormat('EEEE').format(DateTime.now());
   List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   int startDate = int.parse(DateFormat('d').format(DateTime.now()));
-  List<CourseModel?> schedule = [];
-  late List<List<String>>? slots = time_table[_day.toLowerCase()];
-  List<String> start_timing = [
-    "8:00 AM",
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "1:00 PM",
-    "2:00 PM",
-    "3:30 PM",
-    "5:00 PM"
-  ];
-  List<String> end_timing = [
-    "8:50 AM",
-    "9:50 AM",
-    "10:50 AM",
-    "11:50 AM",
-    "1:50 PM",
-    "3:15 PM",
-    "4:45 PM",
-    "5:50 PM"
-  ];
-  bool checkDay(CourseModel? course, String day) {
-    if (course == null) return true;
-    if (day == "Monday") return course.monday;
-    if (day == "Tuesday") return course.tuesday;
-    if (day == "Wednesday") return course.wednesday;
-    if (day == "Thursday") return course.thursday;
-    if (day == "Friday") return course.friday;
-    return false;
+  List<Pair<String?, CourseModel?>> schedule = [];
+
+  String getTimings(String day, String slot, int index) {
+    if (time_table[day.toLowerCase()]![slot]![0] > 7) {
+      return "${start_timing[index + 8]} to ${end_timing[index + 8]}";
+    } else {
+      return "${start_timing[index]} to ${end_timing[index]}";
+    }
   }
 
-  Future<List<CourseModel?>> getSchedule() async {
+  Future<List<Pair<String?, CourseModel?>>> getSchedule() async {
     schedule = [];
 
-    if (_day == "Saturday" || _day == "Sunday") _day = "Monday";
-    List<List<String>>? slots = time_table[_day.toLowerCase()];
-    CourseModel? course;
-    for (var slot in slots!) {
-      if (slot.length == 1) {
-        course = await AcademicDatabase.instance.getCourse(slot[0]);
-        if (checkDay(course, _day))
-          schedule.add(course);
-        else
-          schedule.add(null);
-      } else {
-        bool f = false;
-        for (var slotA in slot) {
-          course = await AcademicDatabase.instance.getCourse(slotA);
-          if (course != null) {
-            f = true;
-            if (checkDay(course, _day))
-              schedule.add(course);
-            else
-              schedule.add(null);
-            break;
-          }
+    if (_day == "Saturday" || _day == "Sunday") {
+      _day = "Monday";
+    }
+
+    String d = _day == "Thursday" ? "th" : _day[0].toLowerCase();
+    CoursesModel? coursesForDay = await AcademicDatabase.instance.getCourses(d);
+
+    //Intializing Schedule list with free slots
+    //Course = null corresponds to free slot
+    for (int i = 0; i < 8; i++) {
+      schedule.add(Pair("", null));
+    }
+    for (int i = 0; i < 11; i++) {
+      List<int>? indices = time_table[_day.toLowerCase()]?.values.elementAt(i);
+      for (int index in indices!) {
+        if (schedule[index > 7 ? index - 8 : index] == Pair("", null)) {
+          schedule[index] =
+              Pair(time_table[_day.toLowerCase()]?.keys.elementAt(i), null);
+        } else {
+          schedule[index > 7 ? index - 8 : index] = Pair(
+              schedule[index > 7 ? index - 8 : index].a! +
+                  ',' +
+                  time_table[_day.toLowerCase()]!.keys.elementAt(i),
+              null);
         }
-        if (f == false) schedule.add(null);
       }
     }
 
-    for (var i = 0; i < schedule.length - 1; i++) {
-      if (schedule[i] != null &&
-          schedule[i + 1] != null &&
-          schedule[i]!.slot == schedule[i + 1]!.slot) {
-        // print("continuous class");
-        dynamic res = schedule.removeAt(i + 1);
-        end_timing[i] = end_timing[i + 1];
+    for (var course in coursesForDay!.courses) {
+      List<String> slots = course.slots.split('&');
+      for (String slot in slots) {
+        if (slot.contains(d + '*')) {
+          List<int>? indices =
+              time_table[_day.toLowerCase()]![slot.split(',')[0]];
+          for (var index in indices!) {
+            //adding extra XX or YY type slot
+            if (index == 16) schedule.add(Pair('', null));
+            schedule[index > 7 ? index - 8 : index] =
+                Pair(slot.split(',')[0], course);
+          }
+        }
       }
     }
-    //print(schedule);
     return (schedule);
   }
 
@@ -142,10 +135,11 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                       ),
                     ];
                   },
-                  body: FutureBuilder<List<CourseModel?>>(
+                  body: FutureBuilder<List<Pair<String?, CourseModel?>>>(
                       future: getSchedule(),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData ||
+                            snapshot.connectionState == ConnectionState.done) {
                           return ListView(
                             children: [
                               Row(
@@ -157,8 +151,8 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                         onTap: (() {
                                           setState(() {
                                             _day = i;
-                                            slots =
-                                                time_table[_day.toLowerCase()];
+                                            //slots =
+                                            //time_table[_day.toLowerCase()];
                                           });
                                         }),
                                         child: AnimatedContainer(
@@ -195,7 +189,7 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                 height: 10,
                               ),
                               for (var i = 0; i < schedule.length; i++)
-                                schedule[i] == null
+                                schedule[i].b == null
                                     ? Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 0),
@@ -207,14 +201,32 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "${start_timing[i]} to ${end_timing[i]}",
-                                                  style: TextStyle(
+                                                  getTimings(_day,
+                                                      schedule[i].a![1], i),
+                                                  style: const TextStyle(
                                                       color: Colors.black54),
                                                 ),
                                                 const SizedBox(
                                                   width: 7.5,
                                                 ),
-                                                const Text("Free Slot")
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color: Colors.grey,
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            5.0),
+                                                    child: Text(
+                                                        "SLOT ${schedule[i].a!.substring(1)}",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        )),
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -238,7 +250,9 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                   Container(
                                                     width: 5,
                                                     color: slot_color[
-                                                        schedule[i]!.slot],
+                                                        schedule[i]
+                                                            .b!
+                                                            .slots[0]],
                                                   ),
                                                   Padding(
                                                     padding:
@@ -255,7 +269,11 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                         Row(
                                                           children: [
                                                             Text(
-                                                              "${start_timing[i]} to ${end_timing[i]}",
+                                                              getTimings(
+                                                                  _day,
+                                                                  schedule[i]
+                                                                      .a!,
+                                                                  i),
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .black54),
@@ -267,8 +285,8 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                               decoration: BoxDecoration(
                                                                   color: slot_color[
                                                                       schedule[
-                                                                              i]!
-                                                                          .slot],
+                                                                              i]
+                                                                          .a!],
                                                                   borderRadius:
                                                                       BorderRadius
                                                                           .circular(
@@ -279,7 +297,7 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                                             .all(
                                                                         5.0),
                                                                 child: Text(
-                                                                  "${schedule[i]!.slot} SLOT",
+                                                                  "${schedule[i].a} SLOT",
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .white),
@@ -292,7 +310,8 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                           height: 7.5,
                                                         ),
                                                         Text(
-                                                          schedule[i]!
+                                                          schedule[i]
+                                                              .b!
                                                               .courseCode,
                                                           style: const TextStyle(
                                                               fontSize: 15,
@@ -305,7 +324,8 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                                                         ),
                                                         Text(
                                                           getTruncatedName(
-                                                              schedule[i]!
+                                                              schedule[i]
+                                                                  .b!
                                                                   .courseName),
                                                           style: TextStyle(
                                                               fontSize: 16),
@@ -328,7 +348,7 @@ class _DailyScheduleScreenState extends State<DailyScheduleScreen> {
                         if (snapshot.connectionState == ConnectionState.waiting)
                           return Center(child: CircularProgressIndicator());
                         else {
-                          print("no connection");
+                          print(snapshot.connectionState);
                           return Container();
                         }
                       }),

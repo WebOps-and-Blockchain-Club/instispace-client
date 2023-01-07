@@ -78,6 +78,7 @@ class SearchBar extends StatefulWidget {
   final List<ChipModel>? chips;
   final List<String>? selectedChips;
   final Function? onChipFilter;
+  final int? time;
   const SearchBar(
       {Key? key,
       required this.onSubmitted,
@@ -86,7 +87,8 @@ class SearchBar extends StatefulWidget {
       this.padding,
       this.chips,
       this.selectedChips,
-      this.onChipFilter})
+      this.onChipFilter,
+      this.time})
       : super(key: key);
 
   @override
@@ -94,8 +96,19 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final _debouncer = Debouncer();
+  int? time;
+  Debouncer _debouncer = Debouncer();
   final search = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        time = widget.time;
+        _debouncer = Debouncer(milliseconds: time);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,13 +243,19 @@ class Debouncer {
   int? seconds;
   VoidCallback? action;
   Timer? timer;
+  int? milliseconds;
+  Debouncer({
+    this.seconds,
+    this.milliseconds,
+  });
 
   run(VoidCallback action) {
     if (null != timer) {
       timer!.cancel();
     }
     timer = Timer(
-      Duration(seconds: seconds ?? 2),
+      //Duration(seconds: seconds ?? 2),
+      Duration(milliseconds: milliseconds ?? 2000),
       action,
     );
   }
