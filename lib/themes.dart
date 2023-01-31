@@ -4,12 +4,13 @@ import '../../models/color_palette.dart';
 
 class Themes {
   static final ThemeData theme = ThemeData(
+    fontFamily: "Montserrat",
     primaryColor: ColorPalette._primary,
     colorScheme: ColorScheme.fromSwatch(
       primarySwatch: ColorPalette._primary,
       brightness: Brightness.light,
     ),
-    scaffoldBackgroundColor: ColorPalette._secondary[50],
+    scaffoldBackgroundColor: Colors.white,
 
     brightness: Brightness.light,
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -17,31 +18,33 @@ class Themes {
     // Text Theme
     textTheme: TextTheme(
         headlineSmall: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.w600),
-        titleLarge: TextStyle(color: ColorPalette._primary),
-        titleMedium: TextStyle(color: ColorPalette._primary),
-        titleSmall: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.w500),
+          color: ColorPalette._text,
+          fontWeight: FontWeight.w600,
+        ),
+        titleLarge: TextStyle(color: ColorPalette._text),
+        titleMedium: TextStyle(color: ColorPalette._text),
+        titleSmall:
+            TextStyle(color: ColorPalette._text, fontWeight: FontWeight.w500),
         bodyLarge: const TextStyle(fontWeight: FontWeight.normal),
         // Default Style for body medium
         labelLarge: TextStyle(
-            color: ColorPalette._primary,
+            color: ColorPalette._text,
             letterSpacing: 0,
             fontWeight: FontWeight.normal),
         labelSmall: const TextStyle(
             color: Colors.grey, letterSpacing: 0, fontSize: 12)),
 
     appBarTheme: AppBarTheme(
-        backgroundColor: ColorPalette._secondary[50],
+        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: ColorPalette._primary)),
 
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        unselectedItemColor: ColorPalette._primary,
+        unselectedItemColor: Colors.white,
         selectedItemColor: ColorPalette._secondary[400],
         type: BottomNavigationBarType.fixed,
-        backgroundColor: ColorPalette._secondary[50],
+        backgroundColor: ColorPalette._primary[500],
         showUnselectedLabels: true),
 
     // Elevated Button Theme
@@ -61,21 +64,21 @@ class Themes {
 
     // TextFormField
     inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        constraints: const BoxConstraints(minHeight: 50),
-        prefixIconColor: ColorPalette._secondary,
-        suffixIconColor: ColorPalette._primary,
-        isDense: true,
-        contentPadding: const EdgeInsets.all(10),
-        labelStyle: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.normal),
-        hintStyle: const TextStyle(fontWeight: FontWeight.normal),
-        enabledBorder: border,
-        focusedBorder: border,
-        errorBorder: errorBorder,
-        focusedErrorBorder: errorBorder,
-        errorStyle: const TextStyle(color: ColorPalette._error)),
+      // filled: true,
+      // fillColor: Colors.white,
+      // constraints: const BoxConstraints(minHeight: 50),
+      // prefixIconColor: ColorPalette._secondary,
+      // isDense: true,
+      // contentPadding: const EdgeInsets.all(10),
+      labelStyle: TextStyle(
+          color: ColorPalette._text[300], fontWeight: FontWeight.normal),
+      hintStyle: const TextStyle(fontWeight: FontWeight.normal),
+      // enabledBorder: border,
+      // focusedBorder: border,
+      // errorBorder: errorBorder,
+      // focusedErrorBorder: errorBorder,
+      // errorStyle: const TextStyle(color: ColorPalette._error)
+    ),
 
     // Card Theme
     cardTheme: CardTheme(
@@ -124,7 +127,7 @@ class Themes {
   );
 
   static InputBorder border = const OutlineInputBorder(
-      borderSide: BorderSide(color: ColorPalette._primaryColor),
+      borderSide: BorderSide(color: Color.fromARGB(116, 52, 47, 129)),
       borderRadius: BorderRadius.all(Radius.circular(10)));
   static InputBorder borderNone = const OutlineInputBorder(
       borderSide: BorderSide(color: Colors.white),
@@ -138,18 +141,31 @@ class Themes {
 }
 
 class ColorPalette {
-  static const Color _primaryColor = Color(0xFF2F247B);
+  static const Color _primaryColor = Color(0xFF342f81);
+  static const Color _textColor = Color(0xFF262626);
+  static final Map<int, Color> _textColorShades = {
+    50: const Color(0xFF939393),
+    100: const Color(0xFF7d7d7d),
+    200: const Color(0xFF676767),
+    300: const Color(0xFF515151),
+    400: const Color(0xFF3c3c3c),
+    500: const Color(0xFF262626),
+    600: const Color(0xFF222222),
+    700: const Color(0xFF1e1e1e),
+    800: const Color(0xFF1b1b1b),
+    900: const Color(0xFF171717),
+  };
   static final Map<int, Color> _primaryColorShades = {
-    50: const Color(0xFFEAE9F1),
-    100: const Color(0xFFC0BDD7),
-    200: const Color(0xFF9791BD),
-    300: const Color(0xFF6D65A2),
-    400: const Color(0xFF433988),
-    500: _primaryColor,
-    600: const Color(0xFF2A206E),
-    700: const Color(0xFF251C62),
-    800: const Color(0xFF201956),
-    900: const Color(0xFF1C1549),
+    50: const Color(0xFF9a97c0),
+    100: const Color(0xFF8582b3),
+    200: const Color(0xFF716da7),
+    300: const Color(0xFF5d599a),
+    400: const Color(0xFF48448e),
+    500: const Color(0xFF342f81),
+    600: const Color(0xFF2f2a74),
+    700: const Color(0xFF2a2667),
+    800: const Color(0xFF24215a),
+    900: const Color(0xFF1f1c4d),
   };
 
   static const Color _warningColor = Color(0xFFED6C02);
@@ -168,7 +184,9 @@ class ColorPalette {
 
   static final MaterialColor _primary =
       MaterialColor(_primaryColor.value, _primaryColorShades);
-  static const MaterialColor _secondary = Colors.purple;
+  static final MaterialColor _text =
+      MaterialColor(_textColor.value, _textColorShades);
+  static const MaterialColor _secondary = Colors.lightBlue;
   static const MaterialColor _success = Colors.green;
   static final MaterialColor _warning =
       MaterialColor(_warningColor.value, _warningColorShades);

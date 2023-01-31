@@ -73,87 +73,118 @@ class _LogInState extends State<LogIn> {
                   children: [
                     const Center(
                       child: SizedBox(
-                        height: 350,
-                        width: 250,
+                        height: 250,
+                        width: 150,
                         child: Image(
                             image: AssetImage(
                                 'assets/logo/primary_with_text.png')),
                       ),
                     ),
-                    const LabelText(text: "Login with LDAP"),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: TextFormField(
-                        controller: name,
-                        decoration: InputDecoration(
-                          labelText: "Roll Number",
-                          prefixIcon: const Icon(Icons.person, size: 20),
-                          prefixIconConstraints: Themes.inputIconConstraints,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter the roll number";
-                          } else if (!isValidRoll(value.toUpperCase().trim()) &&
-                              !isValidEmail(value.trim())) {
-                            return "Enter the valid username";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: TextFormField(
-                        controller: pass,
-                        obscureText: passwordVisible,
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.password, size: 20),
-                            suffixIcon: IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () => setState(() {
-                                passwordVisible = !passwordVisible;
-                              }),
-                              icon: Icon(
-                                  passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  size: 20),
+                      padding: const EdgeInsets.all(25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text('LDAP CREDS',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 34)),
+                          ),
+                          TextFormField(
+                            controller: name,
+                            decoration: const InputDecoration(
+                              labelText: "Roll Number",
                             ),
-                            prefixIconConstraints: Themes.inputIconConstraints,
-                            suffixIconConstraints: Themes.inputIconConstraints,
-                            labelText: "Password"),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter the LDAP password";
-                          }
-                          return null;
-                        },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the roll number";
+                              } else if (!isValidRoll(
+                                      value.toUpperCase().trim()) &&
+                                  !isValidEmail(value.trim())) {
+                                return "Enter the valid username";
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            controller: pass,
+                            obscureText: passwordVisible,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => setState(() {
+                                    passwordVisible = !passwordVisible;
+                                  }),
+                                  icon: Icon(
+                                      passwordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                      size: 20),
+                                ),
+                                suffixIconColor: const Color(0x00b674ff),
+                                suffixIconConstraints:
+                                    Themes.inputIconConstraints,
+                                labelText: "Password"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the LDAP password";
+                              }
+                              return null;
+                            },
+                          ),
+                          if (result != null && result.hasException)
+                            ErrorText(error: result.exception.toString()),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(25, 50, 25, 25),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(37)),
+                                  backgroundColor:
+                                      ColorPalette.palette(context).primary),
+                              child: Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Text(
+                                      'Sign in',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                    Icon(Icons.arrow_forward)
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {
+                                final isValid =
+                                    formKey.currentState!.validate();
+                                FocusScope.of(context).unfocus();
+
+                                if (isValid) {
+                                  runMutation({
+                                    'fcmToken': fcmToken,
+                                    'loginInputs': {
+                                      "roll": name.text.trim().toLowerCase(),
+                                      "pass": pass.text,
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    if (result != null && result.hasException)
-                      ErrorText(error: result.exception.toString()),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: CustomElevatedButton(
-                        onPressed: () {
-                          final isValid = formKey.currentState!.validate();
-                          FocusScope.of(context).unfocus();
-
-                          if (isValid) {
-                            runMutation({
-                              'fcmToken': fcmToken,
-                              'loginInputs': {
-                                "roll": name.text.trim().toLowerCase(),
-                                "pass": pass.text,
-                              }
-                            });
-                          }
-                        },
-                        text: "SIGN IN",
-                        isLoading: result!.isLoading,
-                      ),
-                    )
                   ],
                 ),
               ),
