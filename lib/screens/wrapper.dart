@@ -64,6 +64,7 @@ class _WrapperState extends State<Wrapper> {
 
                 final UserModel user =
                     UserModel.fromJson(result.data!["getMe"]);
+                print("IS NEW USER : ${user.isNewUser}");
 
                 if (user.isNewUser == true) {
                   return EditProfile(

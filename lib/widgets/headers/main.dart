@@ -56,7 +56,10 @@ class CustomAppBar extends StatelessWidget {
                 child: MarqueeWidget(
                   child: Text(
                     title,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

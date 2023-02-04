@@ -75,19 +75,18 @@ class _EditProfileUserState extends State<EditProfileUser> {
   late TagsModel selectedTags = TagsModel.fromJson([]);
   String tagError = "";
 
-  Widget scaffoldBody(QueryResult queryResult,
-      Future<QueryResult<Object?>?> Function()? refetch) {
-    if (queryResult.hasException) {
-      return Error(error: queryResult.exception.toString());
-    }
+  Widget scaffoldBody() {
+    // if (queryResult.hasException) {
+    //   return Error(error: queryResult.exception.toString());
+    // }
 
-    if (queryResult.isLoading) {
-      return const Loading();
-    }
+    // if (queryResult.isLoading) {
+    //   return const Loading();
+    // }
 
-    List<String> hostels =
-        HostelsModel.fromJson(queryResult.data!["getHostels"]).getNames();
-    hostels.insert(0, "None");
+    // List<String> hostels =
+    //     HostelsModel.fromJson(queryResult.data!["getHostels"]).getNames();
+    // hostels.insert(0, "None");
 
     return Mutation(
         options: MutationOptions(
@@ -111,7 +110,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
               shrinkWrap: true,
               children: [
                 CustomAppBar(
-                    title: "Edit Profile",
+                    title: "Your Profile",
                     leading: CustomIconButton(
                       icon: Icons.arrow_back,
                       onPressed: () {
@@ -143,131 +142,157 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 ),
                 const SizedBox(height: 10),
 
-                /// Info
-                const LabelText(text: "Info"),
                 // Name
                 Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextFormField(
-                    controller: name,
-                    decoration:
-                        const InputDecoration(labelText: "Profile Name"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Enter the name";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                // Mobile Number
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextFormField(
-                    controller: mobile,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        labelText: "Mobile Number (Optional)", counterText: ""),
-                    maxLength: 10,
-                    validator: (val) {
-                      if (val != null &&
-                          val.isNotEmpty &&
-                          (!isValidNumber(val) || val.length != 10)) {
-                        return "Please enter a valid number";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: name,
+                            decoration:
+                                const InputDecoration(labelText: "Name"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the name";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        // Mobile Number
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextFormField(
+                            controller: mobile,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                labelText: "Mobile Number (Optional)",
+                                counterText: ""),
+                            maxLength: 10,
+                            validator: (val) {
+                              if (val != null &&
+                                  val.isNotEmpty &&
+                                  (!isValidNumber(val) || val.length != 10)) {
+                                return "Please enter a valid number";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
 
-                // Hostel
-                const LabelText(text: "Select Hostel"),
-                CustomDropdownButton(
-                  value: hostel,
-                  items: hostels,
-                  onChanged: (value) {
-                    setState(() {
-                      hostel = value!;
-                    });
-                  },
-                ),
+                        // Hostel
+                        // const LabelText(text: "Select Hostel"),
+                        // CustomDropdownButton(
+                        //   value: hostel,
+                        //   items: hostels,
+                        //   onChanged: (value) {
+                        //     setState(() {
+                        //       hostel = value!;
+                        //     });
+                        //   },
+                        // ),
 
-                // Tags
-                const LabelText(text: "Tags you wish to follow"),
-                // Selected Tags
-                TagsDisplay(
-                    tagsModel: selectedTags,
-                    onDelete: (value) => setState(() {
-                          selectedTags = value;
-                        })),
-                if (tagError.isNotEmpty)
-                  Text(tagError,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: ColorPalette.palette(context).error,
-                          fontSize: 12)),
+                        // Tags
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18, bottom: 18),
+                          child: Text(
+                            "Followed Tags",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        // Selected Tags
+                        TagsDisplay(
+                            tagsModel: selectedTags,
+                            onDelete: (value) => setState(() {
+                                  selectedTags = value;
+                                })),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomElevatedButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) => buildSheet(
-                              context,
-                              (controller) => SelectTags(
-                                  selectedTags: selectedTags,
-                                  controller: controller,
-                                  callback: (val) {
+                        if (tagError.isNotEmpty)
+                          Text(tagError,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                      color:
+                                          ColorPalette.palette(context).error,
+                                      fontSize: 12)),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CustomElevatedButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) => buildSheet(
+                                      context,
+                                      (controller) => SelectTags(
+                                          selectedTags: selectedTags,
+                                          controller: controller,
+                                          callback: (val) {
+                                            setState(() {
+                                              selectedTags = val;
+                                            });
+                                          })),
+                                  isScrollControlled: true,
+                                );
+                              },
+                              text: "Add Tags",
+                              textSize: 15,
+                            ),
+                          ],
+                        ),
+
+                        if (result != null && result.hasException)
+                          ErrorText(error: result.exception.toString()),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CustomElevatedButton(
+                                padding: const [25, 15, 25, 15],
+                                onPressed: () async {
+                                  if (selectedTags.tags.isEmpty) {
                                     setState(() {
-                                      selectedTags = val;
+                                      tagError = "Tags not selected";
                                     });
-                                  })),
-                          isScrollControlled: true,
-                        );
-                      },
-                      text: "Select Tags",
-                      color: ColorPalette.palette(context).primary,
-                      type: ButtonType.outlined,
-                    ),
-                  ],
-                ),
+                                  } else if (tagError.isNotEmpty &&
+                                      selectedTags.tags.isNotEmpty) {
+                                    setState(() {
+                                      tagError = "";
+                                    });
+                                  }
+                                  final isValid =
+                                      formKey.currentState!.validate() &&
+                                          selectedTags.tags.isNotEmpty;
+                                  FocusScope.of(context).unfocus();
 
-                if (result != null && result.hasException)
-                  ErrorText(error: result.exception.toString()),
-
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: CustomElevatedButton(
-                    onPressed: () async {
-                      if (selectedTags.tags.isEmpty) {
-                        setState(() {
-                          tagError = "Tags not selected";
-                        });
-                      } else if (tagError.isNotEmpty &&
-                          selectedTags.tags.isNotEmpty) {
-                        setState(() {
-                          tagError = "";
-                        });
-                      }
-                      final isValid = formKey.currentState!.validate() &&
-                          selectedTags.tags.isNotEmpty;
-                      FocusScope.of(context).unfocus();
-
-                      if (isValid) {
-                        runMutation({
-                          'userInput': {
-                            'name': name.text,
-                            'interest': selectedTags.getTagIds(),
-                            'hostel': hostel,
-                            'mobile': mobile.text == "" ? null : mobile.text,
-                          }
-                        });
-                      }
-                    },
-                    text: "Save",
-                    isLoading: result!.isLoading,
-                  ),
+                                  if (isValid) {
+                                    runMutation({
+                                      'userInput': {
+                                        'name': name.text,
+                                        'interest': selectedTags.getTagIds(),
+                                        'hostel': hostel,
+                                        'mobile': mobile.text == ""
+                                            ? null
+                                            : mobile.text,
+                                      }
+                                    });
+                                  }
+                                },
+                                text: "Save Profile",
+                                color: ColorPalette.palette(context).primary,
+                                isLoading: result!.isLoading,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
                 )
               ],
             ),
@@ -294,16 +319,10 @@ class _EditProfileUserState extends State<EditProfileUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Query(
-        options: QueryOptions(
-          document: gql(AuthGQL().getHostel),
-        ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          return Scaffold(
-              body: SafeArea(
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: scaffoldBody(result, refetch))));
-        });
+    return Scaffold(
+        body: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: scaffoldBody())));
   }
 }

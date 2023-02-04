@@ -136,41 +136,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             ),
 
                             // Hostel
-                            if (selectedRole == "HOSTEL_SEC")
-                              const LabelText(text: "Select Hostel"),
-                            if (selectedRole == "HOSTEL_SEC")
-                              Query(
-                                  options: QueryOptions(
-                                    document: gql(AuthGQL().getHostel),
-                                  ),
-                                  builder: (QueryResult queryResult,
-                                      {fetchMore, refetch}) {
-                                    if (queryResult.hasException) {
-                                      return ErrorText(
-                                          error:
-                                              queryResult.exception.toString());
-                                    }
+                            // if (selectedRole == "HOSTEL_SEC")
+                            //   const LabelText(text: "Select Hostel"),
+                            // if (selectedRole == "HOSTEL_SEC")
+                            //   Query(
+                            //       options: QueryOptions(
+                            //         document: gql(AuthGQL().getHostel),
+                            //       ),
+                            //       builder: (QueryResult queryResult,
+                            //           {fetchMore, refetch}) {
+                            //         if (queryResult.hasException) {
+                            //           return ErrorText(
+                            //               error:
+                            //                   queryResult.exception.toString());
+                            //         }
 
-                                    if (queryResult.isLoading) {
-                                      return const Text('Loading');
-                                    }
+                            //         if (queryResult.isLoading) {
+                            //           return const Text('Loading');
+                            //         }
 
-                                    hostels = HostelsModel.fromJson(
-                                        queryResult.data!["getHostels"]);
-                                    List<String> hostelNames =
-                                        HostelsModel.fromJson(
-                                                queryResult.data!["getHostels"])
-                                            .getNames();
-                                    return CustomDropdownButton(
-                                      value: selectedHostel,
-                                      items: hostelNames,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedHostel = value!;
-                                        });
-                                      },
-                                    );
-                                  }),
+                            //         hostels = HostelsModel.fromJson(
+                            //             queryResult.data!["getHostels"]);
+                            //         List<String> hostelNames =
+                            //             HostelsModel.fromJson(
+                            //                     queryResult.data!["getHostels"])
+                            //                 .getNames();
+                            //         return CustomDropdownButton(
+                            //           value: selectedHostel,
+                            //           items: hostelNames,
+                            //           onChanged: (value) {
+                            //             setState(() {
+                            //               selectedHostel = value!;
+                            //             });
+                            //           },
+                            //         );
+                            //       }),
 
                             if (hostelError.isNotEmpty &&
                                 selectedRole == "HOSTEL_SEC")

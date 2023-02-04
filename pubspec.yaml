@@ -115,6 +115,9 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: fonts/Montserrat-Regular.ttf
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/MyFlutterApp.ttf
 
   #
   # For details regarding fonts from package dependencies,

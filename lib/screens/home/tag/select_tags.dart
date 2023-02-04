@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -134,18 +136,17 @@ class _SelectTagsState extends State<SelectTags> {
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color: isSelected
-                                                ? Colors.purple[100]
+                                                ? const Color(0xFFE1E0EC)
                                                 : Colors.transparent,
                                             border: Border.all(
-                                                color: ColorPalette.palette(
-                                                        context)
-                                                    .secondary),
+                                                color: const Color(0xFFE1E0EC)),
                                             borderRadius:
-                                                BorderRadius.circular(8)),
+                                                BorderRadius.circular(17)),
                                         padding: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        child:
-                                            Text(category.tags[index1].title),
+                                            vertical: 6, horizontal: 11),
+                                        child: Text(category.tags[index1].title,
+                                            style: const TextStyle(
+                                                color: Color(0xFF3C3C3C))),
                                       ),
                                     );
                                   })),
@@ -153,12 +154,16 @@ class _SelectTagsState extends State<SelectTags> {
                         ]);
                       }),
                 ),
-                CustomElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      widget.callback!(selectedTags);
-                    },
-                    text: "Apply")
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                  child: CustomElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        widget.callback!(selectedTags);
+                      },
+                      text: "Apply"),
+                )
               ],
             );
           }),

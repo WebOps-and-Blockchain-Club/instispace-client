@@ -174,17 +174,17 @@ class _NewAmenityPageState extends State<NewAmenityPage> {
                               ),
                             ),
 
-                            if (!widget.user.role!.contains("HOSTEL_SEC") &&
-                                widget.amenity == null)
-                              HostelListDropdown(
-                                value: selectedHostel,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedHostel = value;
-                                  });
-                                },
-                                error: hostelError,
-                              ),
+                            // if (!widget.user.role!.contains("HOSTEL_SEC") &&
+                            //     widget.amenity == null)
+                            //   HostelListDropdown(
+                            //     value: selectedHostel,
+                            //     onChanged: (value) {
+                            //       setState(() {
+                            //         selectedHostel = value;
+                            //       });
+                            //     },
+                            //     error: hostelError,
+                            //   ),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

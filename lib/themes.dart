@@ -22,7 +22,7 @@ class Themes {
           fontWeight: FontWeight.w600,
         ),
         titleLarge: TextStyle(color: ColorPalette._text),
-        titleMedium: TextStyle(color: ColorPalette._text),
+        titleMedium: TextStyle(color: ColorPalette._text[400]),
         titleSmall:
             TextStyle(color: ColorPalette._text, fontWeight: FontWeight.w500),
         bodyLarge: const TextStyle(fontWeight: FontWeight.normal),
@@ -37,6 +37,10 @@ class Themes {
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,
+        titleTextStyle: TextStyle(
+            color: ColorPalette._text[400],
+            fontSize: 24,
+            fontWeight: FontWeight.w700),
         iconTheme: IconThemeData(color: ColorPalette._primary)),
 
     // Bottom Navigation Bar Theme
@@ -56,7 +60,9 @@ class Themes {
                 borderRadius: BorderRadius.circular(8),
                 side: const BorderSide(color: ColorPalette._success)),
             textStyle: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold))),
+                fontFamily: "Montserrat",
+                color: Colors.white,
+                fontWeight: FontWeight.bold))),
 
     // Floating Action Button Theme
     floatingActionButtonTheme:
@@ -95,11 +101,12 @@ class Themes {
     //ExpansionTile Theme
     expansionTileTheme: ExpansionTileThemeData(
         iconColor: ColorPalette._primary,
+        textColor: ColorPalette._primary,
         collapsedIconColor: ColorPalette._primary,
         childrenPadding: const EdgeInsets.only(left: 30)),
 
     // Icon Theme
-    iconTheme: IconThemeData(color: ColorPalette._primary),
+    iconTheme: IconThemeData(color: Colors.black),
 
     // Divider Theme
     dividerTheme: DividerThemeData(color: ColorPalette._primary, thickness: 2),
@@ -112,10 +119,10 @@ class Themes {
 
     // Chip Theme
     chipTheme: ChipThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFE1E0EC),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: ColorPalette._primaryColor))),
+          borderRadius: BorderRadius.circular(17),
+        )),
 
     // Dialog Theme
     dialogTheme: DialogTheme(
