@@ -255,7 +255,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               CustomElevatedButton(
-                                padding: const [25, 15, 25, 15],
+                                padding: const [25, 15],
                                 onPressed: () async {
                                   if (selectedTags.tags.isEmpty) {
                                     setState(() {

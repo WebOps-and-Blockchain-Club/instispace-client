@@ -4,7 +4,7 @@ import '../../models/color_palette.dart';
 
 class Themes {
   static final ThemeData theme = ThemeData(
-    fontFamily: "Montserrat",
+    fontFamily: "Proxima Nova",
     primaryColor: ColorPalette._primary,
     colorScheme: ColorScheme.fromSwatch(
       primarySwatch: ColorPalette._primary,
@@ -60,7 +60,7 @@ class Themes {
                 borderRadius: BorderRadius.circular(8),
                 side: const BorderSide(color: ColorPalette._success)),
             textStyle: const TextStyle(
-                fontFamily: "Montserrat",
+                fontFamily: "Proxima Nova",
                 color: Colors.white,
                 fontWeight: FontWeight.bold))),
 
@@ -201,10 +201,11 @@ class ColorPalette {
 
   static ColorPaletteModel palette(BuildContext context) {
     return ColorPaletteModel(
-        primary: _primary,
-        secondary: _secondary,
-        success: _success,
-        warning: _warning,
-        error: _error);
+      primary: _primary,
+      secondary: _secondary,
+      success: _success,
+      warning: _warning,
+      error: _error,
+    );
   }
 }

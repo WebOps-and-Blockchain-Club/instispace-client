@@ -1,3 +1,4 @@
+import 'package:client/screens/home/chooseImages.dart';
 import 'package:flutter/material.dart';
 
 import 'actions.dart';
@@ -48,79 +49,75 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: RefreshIndicator(
-              onRefresh: () => widget.refetch(),
-              child: NestedScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        return CustomAppBar(
-                          title: "InstiSpace",
-                          leading: CustomIconButton(
-                              icon: Icons.menu,
-                              onPressed: () => {
-                                    widget.scaffoldKey.currentState!
-                                        .openDrawer()
-                                  }),
-                          action: (widget.user.hostelId != null ||
-                                  widget.user.permissions
-                                      .contains("HOSTEL_ADMIN"))
-                              ? CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => navigate(context,
-                                      HostelWrapper(user: widget.user)))
-                              : null,
-                        );
-                      }, childCount: 1),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Header(
-                              title: "Hi ${widget.user.name}",
-                              subTitle: "Get InstiSpace feed here"),
-                        );
-                      }, childCount: 1),
-                    ),
-                  ];
-                },
-                body: RefreshIndicator(
-                  onRefresh: () => widget.refetch(),
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: (home == null || home.isEmpty)
-                          ? const Error(error: "No Posts")
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: home.length,
-                              itemBuilder: (context, index) => Section(
-                                  user: widget.user,
-                                  title: home[index].title,
-                                  posts: home[index].posts))),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: RefreshIndicator(
+                onRefresh: () => widget.refetch(),
+                child: NestedScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return CustomAppBar(
+                            title: "InstiSpace",
+                            leading: CustomIconButton(
+                                icon: Icons.menu,
+                                onPressed: () => {
+                                      widget.scaffoldKey.currentState!
+                                          .openDrawer()
+                                    }),
+                            action: (widget.user.hostelId != null ||
+                                    widget.user.permissions
+                                        .contains("HOSTEL_ADMIN"))
+                                ? CustomIconButton(
+                                    icon: Icons.account_balance_outlined,
+                                    onPressed: () => navigate(context,
+                                        HostelWrapper(user: widget.user)))
+                                : null,
+                          );
+                        }, childCount: 1),
+                      ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Header(
+                                title: "Hi ${widget.user.name}",
+                                subTitle: "Get InstiSpace feed here"),
+                          );
+                        }, childCount: 1),
+                      ),
+                    ];
+                  },
+                  body: RefreshIndicator(
+                    onRefresh: () => widget.refetch(),
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: (home == null || home.isEmpty)
+                            ? const Error(error: "No Posts")
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: home.length,
+                                itemBuilder: (context, index) => Section(
+                                    user: widget.user,
+                                    title: home[index].title,
+                                    posts: home[index].posts))),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        floatingActionButton: widget.user.permissions.contains("TREASURE_HUNT")
-            ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const TeasureHuntWrapper()));
-                },
-                child: const Icon(Icons.wallet_giftcard))
-            : null,
-      ),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: (() => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChooseImages()))))),
     );
   }
 }

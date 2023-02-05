@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../../themes.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  final MaterialColor? color;
+  final Color? color;
   final ButtonType type;
   final void Function()? onPressed;
   final String text;
   final bool isLoading;
   final double? textSize;
+  final Color? textColor;
   final List<double>? padding;
   const CustomElevatedButton(
       {Key? key,
@@ -18,19 +19,18 @@ class CustomElevatedButton extends StatelessWidget {
       required this.text,
       this.isLoading = false,
       this.textSize,
-      this.padding})
+      this.padding,
+      this.textColor})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final MaterialColor primaryColor =
-        color ?? ColorPalette.palette(context).secondary;
+    final Color primaryColor = color ?? ColorPalette.palette(context).secondary;
     return ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
             elevation: 3,
-            backgroundColor:
-                type == ButtonType.outlined ? primaryColor[50] : primaryColor,
+            backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(36),
                 side: BorderSide(color: primaryColor))),
@@ -48,14 +48,16 @@ class CustomElevatedButton extends StatelessWidget {
               ),
             Padding(
               padding: padding != null
-                  ? EdgeInsets.fromLTRB(
-                      padding![0], padding![1], padding![2], padding![3])
-                  : EdgeInsets.fromLTRB(5, 2, 5, 2),
+                  ? EdgeInsets.symmetric(
+                      horizontal: padding![0], vertical: padding![1])
+                  : const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               child: Text(
                 text,
                 style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: type == ButtonType.outlined ? color : Colors.white,
+                    fontFamily: 'Proxima Nova',
+                    color: type == ButtonType.outlined
+                        ? color
+                        : textColor ?? Colors.white,
                     fontSize: textSize ?? 17,
                     fontWeight: FontWeight.normal),
               ),

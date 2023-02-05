@@ -7,10 +7,11 @@ class ColorPaletteModel {
   final MaterialColor warning;
   final MaterialColor error;
 
-  ColorPaletteModel(
-      {required this.primary,
-      required this.secondary,
-      required this.success,
-      required this.warning,
-      required this.error});
+  ColorPaletteModel({
+    required this.primary,
+    required this.secondary,
+    required this.success,
+    required this.warning,
+    required this.error,
+  });
 }
