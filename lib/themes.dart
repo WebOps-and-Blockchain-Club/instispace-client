@@ -21,7 +21,7 @@ class Themes {
           color: ColorPalette._text,
           fontWeight: FontWeight.w600,
         ),
-        titleLarge: TextStyle(color: ColorPalette._text),
+        titleLarge: TextStyle(color: ColorPalette._text, fontSize: 24),
         titleMedium: TextStyle(color: ColorPalette._text[400]),
         titleSmall:
             TextStyle(color: ColorPalette._text, fontWeight: FontWeight.w500),

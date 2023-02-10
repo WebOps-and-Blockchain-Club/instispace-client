@@ -73,11 +73,11 @@ class _LogInState extends State<LogIn> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         children: [
-                          const SizedBox(height: 80),
+                          const SizedBox(height: 30),
                           const Center(
                             child: SizedBox(
-                              height: 250,
-                              width: 150,
+                              height: 240,
+                              width: 170,
                               child: Image(
                                   image: AssetImage(
                                       'assets/logo/primary_with_text.png')),
@@ -90,13 +90,25 @@ class _LogInState extends State<LogIn> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text('LDAP CREDS',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 34)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('LOGIN',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 34)),
+                                      Text(
+                                        'Use you LDAP credentials',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 TextFormField(
                                   controller: name,
@@ -189,6 +201,38 @@ class _LogInState extends State<LogIn> {
                                     },
                                   ),
                                 ),
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            side: BorderSide(
+                                                style: BorderStyle.none),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 15),
+                                            backgroundColor: Colors.white),
+                                        onPressed: () {},
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: const [
+                                            Image(
+                                                height: 35,
+                                                image: AssetImage(
+                                                    'assets/google.png')),
+                                            SizedBox(width: 15),
+                                            Text(
+                                              'Google Login',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18),
+                                            )
+                                          ],
+                                        )),
+                                  ],
+                                )
                               ],
                             ),
                           ),
@@ -200,9 +244,9 @@ class _LogInState extends State<LogIn> {
               )),
               const Positioned(
                   top: -50,
-                  right: -90,
+                  right: -80,
                   child: Image(
-                      height: 320,
+                      width: 300,
                       image: AssetImage('assets/illustrations/decor.png'))),
             ],
           );
