@@ -276,8 +276,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                                     runMutation({
                                       'userInput': {
                                         'name': name.text,
-                                        'interest': selectedTags.getTagIds(),
-                                        'hostel': hostel,
+                                        'interests': selectedTags.getTagIds(),
                                         'mobile': mobile.text == ""
                                             ? null
                                             : mobile.text,

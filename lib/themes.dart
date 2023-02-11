@@ -94,10 +94,9 @@ class Themes {
 
     // ListTile Theme
     listTileTheme: ListTileThemeData(
-        horizontalTitleGap: 0,
-        iconColor: ColorPalette._primary,
-        textColor: ColorPalette._primary),
-
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textColor: ColorPalette._text,
+        tileColor: const Color.fromRGBO(3, 162, 220, 0.3)),
     //ExpansionTile Theme
     expansionTileTheme: ExpansionTileThemeData(
         iconColor: ColorPalette._primary,
@@ -116,7 +115,6 @@ class Themes {
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10)))),
-
     // Chip Theme
     chipTheme: ChipThemeData(
         backgroundColor: const Color(0xFFE1E0EC),

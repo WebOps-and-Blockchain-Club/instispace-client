@@ -79,7 +79,7 @@ class _NewPostState extends State<NewPost> {
                   child: ListView(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+                        padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
                         child: CustomAppBar(
                             title: "NEW POST",
                             leading: CustomIconButton(
@@ -87,7 +87,7 @@ class _NewPostState extends State<NewPost> {
                               onPressed: () => Navigator.of(context).pop(),
                             )),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       if (widget.images != null)
                         SizedBox(
                           height: 310,
@@ -108,7 +108,7 @@ class _NewPostState extends State<NewPost> {
                                 );
                               })),
                         ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 42),
                         child: Column(
@@ -204,23 +204,15 @@ class _NewPostState extends State<NewPost> {
                             ),
                             if (dateFormated != null && time != null)
                               Padding(
-                                padding: const EdgeInsets.only(top: 15),
+                                padding: const EdgeInsets.only(top: 17),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      dateFormated!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      timeFormatted!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    )
+                                    Text(dateFormated!,
+                                        style: const TextStyle(fontSize: 18)),
+                                    const SizedBox(width: 13),
+                                    Text(timeFormatted!,
+                                        style: const TextStyle(fontSize: 18))
                                   ],
                                 ),
                               ),
@@ -240,7 +232,7 @@ class _NewPostState extends State<NewPost> {
                               decoration: const InputDecoration(
                                   label: Text("link (optional)")),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             TagsDisplay(
                                 tagsModel: selectedTags,
                                 onDelete: (value) => setState(() {
@@ -250,7 +242,7 @@ class _NewPostState extends State<NewPost> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 CustomElevatedButton(
-                                    padding: [10, 3],
+                                    padding: const [10, 3],
                                     onPressed: () {
                                       showModalBottomSheet(
                                         context: context,
@@ -285,7 +277,7 @@ class _NewPostState extends State<NewPost> {
                                     padding: const [27, 16],
                                     textColor: Colors.black,
                                     color: Colors.white),
-                                ElevatedButton(
+                                CustomElevatedButton(
                                   onPressed: () {
                                     if (selectedTags.tags.isEmpty) {
                                       setState(() {
@@ -333,35 +325,17 @@ class _NewPostState extends State<NewPost> {
                                       });
                                     }
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 13),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: const [
-                                        Text(
-                                          'Post',
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                        Icon(Icons.arrow_forward)
-                                      ],
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          ColorPalette.palette(context)
-                                              .secondary,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(36),
-                                      )),
+                                  text: 'Post',
+                                  padding: const [27, 16],
+                                  color:
+                                      ColorPalette.palette(context).secondary,
                                 ),
-                                const SizedBox(height: 10)
                               ],
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 30)
                     ],
                   )),
             ),

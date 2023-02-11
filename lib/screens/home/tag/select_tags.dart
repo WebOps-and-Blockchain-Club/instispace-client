@@ -39,7 +39,7 @@ class _SelectTagsState extends State<SelectTags> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       child: Query(
           options: QueryOptions(
             document: gql(TagGQL().getAll),
@@ -66,14 +66,6 @@ class _SelectTagsState extends State<SelectTags> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    child: const Text("Close"),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                const Divider(height: 1),
                 Expanded(
                   child: ListView.builder(
                       controller: widget.controller,
@@ -99,10 +91,14 @@ class _SelectTagsState extends State<SelectTags> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    category.category,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      category.category,
+                                      style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                   isMinimized
                                       ? const Icon(Icons.arrow_drop_down)
@@ -161,6 +157,7 @@ class _SelectTagsState extends State<SelectTags> {
                         Navigator.of(context).pop();
                         widget.callback!(selectedTags);
                       },
+                      padding: const [27, 16],
                       text: "Apply"),
                 )
               ],

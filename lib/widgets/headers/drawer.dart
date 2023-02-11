@@ -55,320 +55,338 @@ class CustomDrawer extends StatelessWidget {
                     child: Column(
                       children: [
                         // Header
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10, left: 15, bottom: 10),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                  width: 50,
-                                  child: Image(
-                                      image: AssetImage(
-                                          'assets/logo/primary_solid.png'))),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "InstiSpace",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
-                                    ),
-                                    Text(
-                                      "Everything Insti",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                              color:
-                                                  ColorPalette.palette(context)
-                                                      .secondary,
-                                              fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const Divider(indent: 15, endIndent: 15),
-
-                        // My Profile
-                        ListTile(
-                          leading: const Icon(Icons.account_circle_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("My Profile"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => Profile(
-                                      user: user,
-                                    )));
-                          },
-                        ),
-
-                        // E ID Card
-                        ListTile(
-                          leading: const Icon(Icons.perm_identity),
-                          horizontalTitleGap: 0,
-                          title: const Text("E-ID Card"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EIDCard(user: user)));
-                          },
-                        ),
-
-                        if (user.permissions.contains("TREASURE_HUNT"))
-                          ListTile(
-                            leading: const Icon(Icons.wallet_giftcard),
-                            horizontalTitleGap: 0,
-                            title: const Text("Treasure Hunt"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const TeasureHuntWrapper()));
-                            },
-                          ),
-
-                        // Search User
-                        ListTile(
-                          leading: const Icon(Icons.search_outlined),
-                          horizontalTitleGap: 0,
-                          title: const Text("Find People"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const SearchUser()));
-                          },
-                        ),
-
-                        // Mess Menu
-                        const ViewMessMenu(),
-                        // Notifications
-                        ListTile(
-                          leading: const Icon(Icons.notifications),
-                          horizontalTitleGap: 0,
-                          title: const Text("Notifications"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const NotificationPage()));
-                          },
-                        ),
-
-                        //Super User Actions
-                        if (user.role != "USER")
-                          Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              title: Row(
-                                children: const [
-                                  Icon(Icons.ads_click),
-                                  SizedBox(width: 16),
-                                  Text("Super User Actions"),
+                        Row(
+                          children: [
+                            const SizedBox(
+                                width: 50,
+                                child: Image(
+                                    image: AssetImage(
+                                        'assets/logo/primary_solid.png'))),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "InstiSpace",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                  ),
+                                  Text(
+                                    "Everything Insti",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                            color: ColorPalette.palette(context)
+                                                .secondary,
+                                            fontWeight: FontWeight.w500),
+                                  )
                                 ],
                               ),
-                              children: [
-                                //Super User List
-                                if (user.permissions
-                                    .contains("VIEW_SUPER_USER_LIST"))
-                                  ListTile(
-                                      leading: const Icon(Icons.list),
-                                      horizontalTitleGap: 0,
-                                      title: const Text('Super User List'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        const SuperUserList()));
-                                      }),
-                                // Reports
-                                if (user.permissions.contains("GET_REPORTS"))
-                                  ListTile(
-                                    leading: const Icon(
-                                        Icons.account_circle_outlined),
-                                    horizontalTitleGap: 0,
-                                    title: const Text("View Reported Posts"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const ReportedPostPage()));
-                                    },
-                                  ),
-                                // Create Notification
-                                if (user.permissions
-                                    .contains("CREATE_NOTIFICATION"))
-                                  ListTile(
-                                    leading: const Icon(Icons.notification_add),
-                                    horizontalTitleGap: 0,
-                                    title: const Text("Create Notifcation"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const CreateNotification()));
-                                    },
-                                  ),
-                                // Create Account
-                                if (user.permissions.contains("CREATE_ACCOUNT"))
-                                  ListTile(
-                                    leading:
-                                        const Icon(Icons.addchart_outlined),
-                                    horizontalTitleGap: 0,
-                                    title: const Text('Create Accounts'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  CreateAccountPage(
-                                                    role: user.role!,
-                                                  )));
-                                    },
-                                  ),
-                                // Update Role
-                                if (user.permissions.contains("UPDATE_ROLE"))
-                                  ListTile(
-                                    leading: const Icon(Icons.upgrade),
-                                    horizontalTitleGap: 0,
-                                    title: const Text('Appoint Moderator'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const UpdateRolePage()));
-                                    },
-                                  ),
-                                // Create Hostel
-                                if (user.permissions.contains("CREATE_HOSTEL"))
-                                  ListTile(
-                                    leading: const Icon(
-                                        Icons.account_balance_outlined),
-                                    horizontalTitleGap: 0,
-                                    title: const Text("Create Hostel"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const CreateHostelPage()));
-                                    },
-                                  ),
-
-                                // Create Tag
-                                if (user.permissions.contains("CREATE_TAG"))
-                                  ListTile(
-                                    leading: const Icon(Icons.add_outlined),
-                                    horizontalTitleGap: 0,
-                                    title: const Text('Create Tag'),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const CreateTagPage()));
-                                    },
-                                  ),
-                                // Super User's Guide
-                                if (user.role != "USER")
-                                  ListTile(
-                                    leading: const Icon(
-                                        Icons.insert_drive_file_outlined),
-                                    horizontalTitleGap: 0,
-                                    title: const Text("Super User's Guide"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      launchUrlString(
-                                          "https://docs.google.com/document/d/e/2PACX-1vS8PkBeAZnlrIgyWaxchCdd2_I9hf7KwzwXCIv4MLO6NwRZbvEhVKMYWtjliZvk1EKW2RvoJcnpifJp/pub",
-                                          mode: LaunchMode.externalApplication);
-                                    },
-                                  ),
-                              ],
                             ),
-                          ),
-
-                        // Emergency SOS
-                        ListTile(
-                          leading: const Icon(Icons.emergency_share_sharp),
-                          horizontalTitleGap: 0,
-                          title: const Text("SOS Instructions"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const WebPage(
-                                      title: "SOS Instructions",
-                                      url:
-                                          "https://docs.google.com/document/u/3/d/e/2PACX-1vSRcTWgKoSsq3yPcVvMJVlACvyzaMpDn2l8hQDBZjZxVss6dnOROaZUwswsmjdteGHf67YsjMGLGopt/pub",
-                                    )));
-                          },
+                          ],
                         ),
 
-                        // Feedback
-                        user.permissions.contains("VIEW_FEEDBACK")
-                            ? const ViewFeedback()
-                            : ListTile(
-                                leading: const Icon(Icons.feedback_outlined),
-                                horizontalTitleGap: 0,
-                                title: const Text("Feedback"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const FeedbackPage()));
-                                },
-                              ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                // My Profile
+                                ListTile(
+                                  leading:
+                                      const Icon(Icons.account_circle_outlined),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("My Profile"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Profile(
+                                                  user: user,
+                                                )));
+                                  },
+                                ),
 
-                        // About Us
-                        ListTile(
-                          leading: const Icon(Icons.alternate_email),
-                          horizontalTitleGap: 0,
-                          title: const Text("About Us"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const AboutUsPage()));
-                          },
-                        ),
+                                // E ID Card
+                                ListTile(
+                                  leading: const Icon(Icons.perm_identity),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("E-ID Card"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                EIDCard(user: user)));
+                                  },
+                                ),
 
-                        // Terms of Service
-                        ListTile(
-                          leading: const Icon(Icons.info_outline),
-                          horizontalTitleGap: 0,
-                          title: const Text("Terms of Service"),
-                          onTap: () {
-                            Navigator.pop(context);
-                            launchUrlString(
-                              'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub',
-                              mode: LaunchMode.externalApplication,
-                            );
-                          },
-                        ),
+                                // Search User
+                                ListTile(
+                                  leading: const Icon(Icons.search_outlined),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("Find People"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const SearchUser()));
+                                  },
+                                ),
 
-                        // Logout Button
-                        ListTile(
-                          leading: const Icon(Icons.logout),
-                          horizontalTitleGap: 0,
-                          title: const Text("Logout"),
-                          onTap: () => logoutAlert(
-                              context, () => auth.logout(), fcmToken),
-                        ),
+                                // Mess Menu
+                                const ViewMessMenu(),
+                                // Notifications
+                                ListTile(
+                                  leading: const Icon(Icons.notifications),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("Notifications"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const NotificationPage()));
+                                  },
+                                ),
+
+                                //Super User Actions
+                                if (user.role != "USER")
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                        dividerColor: Colors.transparent),
+                                    child: ExpansionTile(
+                                      title: Row(
+                                        children: const [
+                                          Icon(Icons.ads_click),
+                                          SizedBox(width: 16),
+                                          Text("Super User Actions"),
+                                        ],
+                                      ),
+                                      children: [
+                                        //Super User List
+                                        if (user.permissions
+                                            .contains("VIEW_SUPER_USER_LIST"))
+                                          ListTile(
+                                              leading: const Icon(Icons.list),
+                                              horizontalTitleGap: 0,
+                                              title:
+                                                  const Text('Super User List'),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            const SuperUserList()));
+                                              }),
+                                        // Reports
+                                        if (user.permissions
+                                            .contains("GET_REPORTS"))
+                                          ListTile(
+                                            leading: const Icon(
+                                                Icons.account_circle_outlined),
+                                            horizontalTitleGap: 0,
+                                            title: const Text(
+                                                "View Reported Posts"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const ReportedPostPage()));
+                                            },
+                                          ),
+                                        // Create Notification
+                                        if (user.permissions
+                                            .contains("CREATE_NOTIFICATION"))
+                                          ListTile(
+                                            leading: const Icon(
+                                                Icons.notification_add),
+                                            horizontalTitleGap: 0,
+                                            title: const Text(
+                                                "Create Notifcation"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const CreateNotification()));
+                                            },
+                                          ),
+                                        // Create Account
+                                        if (user.permissions
+                                            .contains("CREATE_ACCOUNT"))
+                                          ListTile(
+                                            leading: const Icon(
+                                                Icons.addchart_outlined),
+                                            horizontalTitleGap: 0,
+                                            title:
+                                                const Text('Create Accounts'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          CreateAccountPage(
+                                                            role: user.role!,
+                                                          )));
+                                            },
+                                          ),
+                                        // Update Role
+                                        if (user.permissions
+                                            .contains("UPDATE_ROLE"))
+                                          ListTile(
+                                            leading: const Icon(Icons.upgrade),
+                                            horizontalTitleGap: 0,
+                                            title:
+                                                const Text('Appoint Moderator'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const UpdateRolePage()));
+                                            },
+                                          ),
+                                        // Create Hostel
+                                        if (user.permissions
+                                            .contains("CREATE_HOSTEL"))
+                                          ListTile(
+                                            leading: const Icon(
+                                                Icons.account_balance_outlined),
+                                            horizontalTitleGap: 0,
+                                            title: const Text("Create Hostel"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const CreateHostelPage()));
+                                            },
+                                          ),
+
+                                        // Create Tag
+                                        if (user.permissions
+                                            .contains("CREATE_TAG"))
+                                          ListTile(
+                                            leading:
+                                                const Icon(Icons.add_outlined),
+                                            horizontalTitleGap: 0,
+                                            title: const Text('Create Tag'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const CreateTagPage()));
+                                            },
+                                          ),
+                                        // Super User's Guide
+                                        if (user.role != "USER")
+                                          ListTile(
+                                            leading: const Icon(Icons
+                                                .insert_drive_file_outlined),
+                                            horizontalTitleGap: 0,
+                                            title: const Text(
+                                                "Super User's Guide"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              launchUrlString(
+                                                  "https://docs.google.com/document/d/e/2PACX-1vS8PkBeAZnlrIgyWaxchCdd2_I9hf7KwzwXCIv4MLO6NwRZbvEhVKMYWtjliZvk1EKW2RvoJcnpifJp/pub",
+                                                  mode: LaunchMode
+                                                      .externalApplication);
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+
+                                // Emergency SOS
+                                ListTile(
+                                  leading:
+                                      const Icon(Icons.emergency_share_sharp),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("SOS Instructions"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const WebPage(
+                                                  title: "SOS Instructions",
+                                                  url:
+                                                      "https://docs.google.com/document/u/3/d/e/2PACX-1vSRcTWgKoSsq3yPcVvMJVlACvyzaMpDn2l8hQDBZjZxVss6dnOROaZUwswsmjdteGHf67YsjMGLGopt/pub",
+                                                )));
+                                  },
+                                ),
+
+                                // Feedback
+                                user.permissions.contains("VIEW_FEEDBACK")
+                                    ? const ViewFeedback()
+                                    : ListTile(
+                                        leading:
+                                            const Icon(Icons.feedback_outlined),
+                                        horizontalTitleGap: 0,
+                                        title: const Text("Feedback"),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      const FeedbackPage()));
+                                        },
+                                      ),
+
+                                // About Us
+                                ListTile(
+                                  leading: const Icon(Icons.alternate_email),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("About Us"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                const AboutUsPage()));
+                                  },
+                                ),
+
+                                // Terms of Service
+                                ListTile(
+                                  leading: const Icon(Icons.info_outline),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("Terms of Service"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    launchUrlString(
+                                      'https://docs.google.com/document/d/e/2PACX-1vTCDv6MFgQ6BmWKHQdGqeo2qVVhHMnlNyU24buZV_Vf1riw0ixCz_yysktiCYc-mCLsTplq3XZVdXrU/pub',
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  },
+                                ),
+
+                                // Logout Button
+                                ListTile(
+                                  leading: const Icon(Icons.logout),
+                                  horizontalTitleGap: 0,
+                                  title: const Text("Logout"),
+                                  onTap: () => logoutAlert(
+                                      context, () => auth.logout(), fcmToken),
+                                ),
+                              ],
+                            )),
 
                         Expanded(
                           child: Align(

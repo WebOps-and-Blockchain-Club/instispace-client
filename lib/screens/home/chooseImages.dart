@@ -118,7 +118,7 @@ class _ChooseImagesState extends State<ChooseImages> {
                         })),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextButton(
                           onPressed: () async {
@@ -131,7 +131,10 @@ class _ChooseImagesState extends State<ChooseImages> {
                           },
                           child: const Text(
                             'Camera',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           )),
                       TextButton(
                           onPressed: () async {
@@ -146,7 +149,10 @@ class _ChooseImagesState extends State<ChooseImages> {
                           },
                           child: const Text(
                             'Open Gallery',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           )),
                       TextButton(
                           onPressed: () {

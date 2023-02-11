@@ -201,35 +201,45 @@ class _LogInState extends State<LogIn> {
                                     },
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            side: BorderSide(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.73)),
+                                            side: const BorderSide(
                                                 style: BorderStyle.none),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 15),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 2, horizontal: 15),
                                             backgroundColor: Colors.white),
                                         onPressed: () {},
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: const [
-                                            Image(
-                                                height: 35,
-                                                image: AssetImage(
-                                                    'assets/google.png')),
-                                            SizedBox(width: 15),
-                                            Text(
-                                              'Google Login',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                            )
-                                          ],
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 8),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: const [
+                                              Image(
+                                                  height: 31,
+                                                  image: AssetImage(
+                                                      'assets/google.png')),
+                                              SizedBox(width: 15),
+                                              Text(
+                                                'Sign in with Google',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              )
+                                            ],
+                                          ),
                                         )),
                                   ],
                                 )
