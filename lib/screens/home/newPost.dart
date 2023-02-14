@@ -1,5 +1,4 @@
 import 'package:client/graphQL/post.dart';
-import 'package:client/models/color_palette.dart';
 import 'package:client/screens/home/tag/select_tags.dart';
 import 'package:client/screens/home/tag/tags_display.dart';
 import 'package:client/themes.dart';
@@ -8,7 +7,6 @@ import 'package:client/widgets/button/elevated_button.dart';
 import 'package:client/widgets/headers/main.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart';
 
 import '../../models/date_time_format.dart';
 import '../../models/tag.dart';
@@ -58,14 +56,15 @@ class _NewPostState extends State<NewPost> {
         options: MutationOptions(
           document: gql(PostGQl().createPost),
           onCompleted: (data) {
-            print(data);
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Posted')),
+              const SnackBar(content: Text('Posted Successfully!')),
             );
           },
           onError: (dynamic error) {
-            print(error.toString());
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(formatErrorMessage(error.toString()))),
+            );
           },
         ),
         builder: (
@@ -158,8 +157,6 @@ class _NewPostState extends State<NewPost> {
                                           setState(() {
                                             date = value.toString();
                                           });
-                                          print(
-                                              value); //2023-02-10 00:00:00.000
                                           if (value != null) {
                                             DateTimeFormatModel _date =
                                                 DateTimeFormatModel(
@@ -175,11 +172,10 @@ class _NewPostState extends State<NewPost> {
                                           context: context,
                                           initialTime: TimeOfDay.now(),
                                         ).then((value) {
-                                          print(value); //TimeOfDay(14:10)
                                           if (value != null) {
                                             DateTime _dateTime = DateTime(2023,
                                                 1, 1, value.hour, value.minute);
-                                            print(_dateTime);
+
                                             setState(() {
                                               time = _dateTime.toString();
                                             }); //2021-01-01 14:11:00.000
@@ -189,7 +185,6 @@ class _NewPostState extends State<NewPost> {
                                             setState(() {
                                               timeFormatted =
                                                   _time.toFormat("h:mm a");
-                                              ;
                                             });
                                           }
                                         });
@@ -216,23 +211,33 @@ class _NewPostState extends State<NewPost> {
                                   ],
                                 ),
                               ),
-                            if (widget.category == "Lost" ||
-                                widget.category == "Found" ||
-                                widget.category == "Events")
-                              TextFormField(
-                                controller: location,
-                                decoration: InputDecoration(
-                                    label: Text(widget.category == "Events"
-                                        ? "Location"
-                                        : "Where?")),
+                            if (['Lost', 'Found', 'Events']
+                                .contains(widget.category))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: TextFormField(
+                                  controller: location,
+                                  decoration: InputDecoration(
+                                      label: Text(widget.category == "Events"
+                                          ? "Location"
+                                          : "Where?")),
+                                ),
                               ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: link,
-                              decoration: const InputDecoration(
-                                  label: Text("link (optional)")),
-                            ),
-                            const SizedBox(height: 10),
+                            if ([
+                              'Events',
+                              'Competitions,' 'Recruitment',
+                              'Announcement',
+                              'Opportunity',
+                              'Reviews'
+                            ].contains(widget.category))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: TextFormField(
+                                  controller: link,
+                                  decoration: const InputDecoration(
+                                      label: Text("link (optional)")),
+                                ),
+                              ),
                             TagsDisplay(
                                 tagsModel: selectedTags,
                                 onDelete: (value) => setState(() {

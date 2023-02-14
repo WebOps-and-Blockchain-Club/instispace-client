@@ -36,18 +36,39 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String roleError = "";
   String hostelError = "";
 
+  Map<String, bool> permissions = {
+    "Create Notification": false,
+    "Create Tag": false,
+    "Approve Posts": false,
+    "Handle Reports": false
+  };
+
+  final List<String> feed = ["Events", "Announcements", "Recruitment"];
+
   List<String> getRole(role) {
     switch (role) {
       case "ADMIN":
-        return ["SECRETARY", "HAS", "LEADS", "HOSTEL_SEC"];
+        return ["SECRETARY", "LEADS", "HOSTEL_SEC", "MODERATOR", "DEV_TEAM"];
       case "SECRETARY":
-        return ["LEADS"];
-      case "HAS":
-        return ["LEADS", "HOSTEL_SEC"];
+        return ["LEADS", "MODERATOR"];
+      case "LEADS":
+        return ["LEADS", "MODERATOR"];
       default:
         return [];
     }
   }
+
+  List<String> accounts = [];
+  List<String> posts = [
+    "Networking",
+    "Help",
+    "Connect",
+    "Random Thoughts",
+    "Opportunities",
+    "Queries",
+    "Lost",
+    "Found"
+  ];
 
   @override
   void initState() {
@@ -71,7 +92,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             automaticallyImplyLeading: false),
         body: SafeArea(
             child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Mutation(
                     options: MutationOptions(
                       document: gql(SuperUserGQL().createAccount),
@@ -97,32 +118,27 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           children: [
                             const SizedBox(height: 10),
 
-                            /// Info
-                            const LabelText(
-                                text:
-                                    "Enter the email for creating the account"),
                             // Email
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: TextFormField(
-                                controller: name,
-                                decoration: InputDecoration(
-                                  labelText: "Email ID",
-                                  prefixIcon:
-                                      const Icon(Icons.person, size: 20),
-                                  prefixIconConstraints:
-                                      Themes.inputIconConstraints,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Enter the email id";
-                                  } else if (!isValidEmail(value.trim())) {
-                                    return "Enter the valid email";
-                                  }
-                                  return null;
-                                },
+                            TextFormField(
+                              style: const TextStyle(fontSize: 18),
+                              controller: name,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.black)),
+                                labelText: "Email ID",
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the email id";
+                                } else if (!isValidEmail(value.trim())) {
+                                  return "Enter the valid email";
+                                }
+                                return null;
+                              },
                             ),
+
+                            const SizedBox(height: 10),
 
                             const LabelText(text: "Select Role"),
                             CustomDropdownButton(
@@ -183,9 +199,137 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                               .error,
                                           fontSize: 12)),
 
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 30),
+                              child: Text('Configure Permissions',
+                                  style: TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+
+                            Center(
+                              child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 6,
+                                  children: List.generate(permissions.length,
+                                      (index) {
+                                    String key =
+                                        permissions.keys.elementAt(index);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          permissions[key] = !permissions.values
+                                              .elementAt(index);
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: permissions[key]!
+                                                ? const Color(0xFFE1E0EC)
+                                                : Colors.transparent,
+                                            border: Border.all(
+                                                color: const Color(0xFFE1E0EC)),
+                                            borderRadius:
+                                                BorderRadius.circular(17)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 11),
+                                        child: Text(key,
+                                            style: const TextStyle(
+                                                color: Color(0xFF3C3C3C))),
+                                      ),
+                                    );
+                                  })),
+                            ),
+                            if (getRole(selectedRole).isNotEmpty)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 30),
+                                child: Text('Which accounts can they create?',
+                                    style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w500)),
+                              ),
+
+                            Center(
+                              child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 6,
+                                  children: List.generate(
+                                      getRole(selectedRole).length, (index) {
+                                    String role = getRole(selectedRole)[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (accounts.contains(role)) {
+                                            accounts.remove(role);
+                                          } else {
+                                            accounts.add(role);
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: accounts.contains(role)
+                                                ? const Color(0xFFE1E0EC)
+                                                : Colors.transparent,
+                                            border: Border.all(
+                                                color: const Color(0xFFE1E0EC)),
+                                            borderRadius:
+                                                BorderRadius.circular(17)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 11),
+                                        child: Text(role,
+                                            style: const TextStyle(
+                                                color: Color(0xFF3C3C3C))),
+                                      ),
+                                    );
+                                  })),
+                            ),
+
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 30),
+                              child: Text('What Posts can they create?',
+                                  style: TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+
+                            Center(
+                              child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 6,
+                                  children: List.generate(feed.length, (index) {
+                                    String p = feed[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (posts.contains(p)) {
+                                            posts.remove(p);
+                                          } else {
+                                            posts.add(p);
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: posts.contains(p)
+                                                ? const Color(0xFFE1E0EC)
+                                                : Colors.transparent,
+                                            border: Border.all(
+                                                color: const Color(0xFFE1E0EC)),
+                                            borderRadius:
+                                                BorderRadius.circular(17)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 11),
+                                        child: Text(p,
+                                            style: const TextStyle(
+                                                color: Color(0xFF3C3C3C))),
+                                      ),
+                                    );
+                                  })),
+                            ),
+
                             if (result != null && result.hasException)
                               ErrorText(error: result.exception.toString()),
-
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: CustomElevatedButton(
@@ -205,11 +349,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   FocusScope.of(context).unfocus();
                                   if (isValid) {
                                     runMutation({
-                                      "createAccountInput": {
+                                      "user": {
                                         "roll": name.text.trim(),
-                                        "role": selectedRole
+                                        "role": selectedRole,
                                       },
-                                      "hostelId": hostels?.getId(selectedHostel)
+                                      "permission": {
+                                        "account": accounts,
+                                        "livePosts": posts,
+                                        "createNotification":
+                                            permissions.values.elementAt(0),
+                                        "createTag":
+                                            permissions.values.elementAt(1),
+                                        "approvePosts":
+                                            permissions.values.elementAt(2),
+                                        "handleReports":
+                                            permissions.values.elementAt(3),
+                                        "hostel": ["Sarayu"],
+                                      }
                                     });
                                   }
                                 },

@@ -1,4 +1,6 @@
 import 'package:client/screens/home/chooseImages.dart';
+import 'package:client/screens/home/newPost.dart';
+import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 
 class CategoryList extends StatefulWidget {
@@ -31,36 +33,47 @@ class _CategoryListState extends State<CategoryList>
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 90,
-      right: 10,
-      child: Container(
-        width: 180,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13),
-          color: const Color(0xFFE1E0EC),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.categories.length,
-              itemBuilder: ((context, index) {
-                return TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChooseImages(
-                                  category: widget.categories[index])));
-                    },
-                    child: Text(widget.categories[index]),
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))));
-              })),
-        ),
+    return AlertDialog(
+      insetPadding:
+          const EdgeInsets.only(bottom: 0, left: 180, top: 10, right: 15),
+      contentPadding: const EdgeInsets.all(10),
+      backgroundColor: const Color(0xFFE1E0EC),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      content: SizedBox(
+        width: 50,
+        child: ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.categories.length,
+            itemBuilder: ((context, index) {
+              return TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ([
+                                  'Queries',
+                                  'Help',
+                                  'Opportunities',
+                                  'Connect',
+                                  'Random'
+                                ].contains(widget.categories[index]))
+                                    ? NewPost(
+                                        category: widget.categories[index])
+                                    : ChooseImages(
+                                        category: widget.categories[index])));
+                  },
+                  child: Text(
+                    widget.categories[index],
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(120, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))));
+            })),
       ),
     );
   }

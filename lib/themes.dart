@@ -41,7 +41,7 @@ class Themes {
             color: ColorPalette._text[400],
             fontSize: 24,
             fontWeight: FontWeight.w700),
-        iconTheme: IconThemeData(color: ColorPalette._primary)),
+        iconTheme: IconThemeData(color: ColorPalette._text)),
 
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -71,14 +71,18 @@ class Themes {
     // TextFormField
     inputDecorationTheme: InputDecorationTheme(
       // filled: true,
+
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(width: 1, color: Colors.black)),
       // fillColor: Colors.white,
       // constraints: const BoxConstraints(minHeight: 50),
       // prefixIconColor: ColorPalette._secondary,
-      // isDense: true,
-      // contentPadding: const EdgeInsets.all(10),
+      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+      alignLabelWithHint: true,
       labelStyle: TextStyle(
-          color: ColorPalette._text[300], fontWeight: FontWeight.normal),
+          color: ColorPalette._text[900], fontWeight: FontWeight.normal),
       hintStyle: const TextStyle(fontWeight: FontWeight.normal),
+
       // enabledBorder: border,
       // focusedBorder: border,
       // errorBorder: errorBorder,
@@ -94,18 +98,19 @@ class Themes {
 
     // ListTile Theme
     listTileTheme: ListTileThemeData(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         textColor: ColorPalette._text,
         tileColor: const Color.fromRGBO(3, 162, 220, 0.3)),
     //ExpansionTile Theme
+    dividerColor: Colors.transparent,
     expansionTileTheme: ExpansionTileThemeData(
-        iconColor: ColorPalette._primary,
-        textColor: ColorPalette._primary,
-        collapsedIconColor: ColorPalette._primary,
-        childrenPadding: const EdgeInsets.only(left: 30)),
+      textColor: ColorPalette._text,
+      iconColor: Colors.black,
+      collapsedIconColor: ColorPalette._primary,
+    ),
 
     // Icon Theme
-    iconTheme: IconThemeData(color: Colors.black),
+    iconTheme: const IconThemeData(color: Colors.black),
 
     // Divider Theme
     dividerTheme: DividerThemeData(color: ColorPalette._primary, thickness: 2),

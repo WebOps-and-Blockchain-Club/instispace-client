@@ -39,7 +39,7 @@ class _SelectTagsState extends State<SelectTags> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
       child: Query(
           options: QueryOptions(
             document: gql(TagGQL().getAll),
@@ -75,78 +75,84 @@ class _SelectTagsState extends State<SelectTags> {
                         final category = categorys[index];
                         final isMinimized =
                             minimizedCategorys.contains(category.category);
-                        return Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: InkWell(
-                              onTap: () => isMinimized
-                                  ? setState(() {
-                                      minimizedCategorys
-                                          .remove(category.category);
-                                    })
-                                  : setState(() {
-                                      minimizedCategorys.add(category.category);
-                                    }),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      category.category,
-                                      style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                  isMinimized
-                                      ? const Icon(Icons.arrow_drop_down)
-                                      : const Icon(Icons.arrow_drop_up)
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (!isMinimized)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Wrap(
-                                  spacing: 5,
-                                  runSpacing: 5,
-                                  children: List.generate(category.tags.length,
-                                      (index1) {
-                                    final isSelected = selectedTags
-                                        .contains(category.tags[index1]);
-                                    return InkWell(
-                                      onTap: () {
-                                        isSelected
-                                            ? selectedTags
-                                                .remove(category.tags[index1])
-                                            : selectedTags
-                                                .add(category.tags[index1]);
-                                        setState(() {
-                                          selectedTags;
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? const Color(0xFFE1E0EC)
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: const Color(0xFFE1E0EC)),
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
+                        return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: InkWell(
+                                  onTap: () => isMinimized
+                                      ? setState(() {
+                                          minimizedCategorys
+                                              .remove(category.category);
+                                        })
+                                      : setState(() {
+                                          minimizedCategorys
+                                              .add(category.category);
+                                        }),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 11),
-                                        child: Text(category.tags[index1].title,
-                                            style: const TextStyle(
-                                                color: Color(0xFF3C3C3C))),
+                                            vertical: 10),
+                                        child: Text(
+                                          category.category,
+                                          style: const TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w500),
+                                        ),
                                       ),
-                                    );
-                                  })),
-                            ),
-                        ]);
+                                      isMinimized
+                                          ? const Icon(Icons.arrow_drop_down)
+                                          : const Icon(Icons.arrow_drop_up)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              if (!isMinimized)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Wrap(
+                                      spacing: 5,
+                                      runSpacing: 5,
+                                      children: List.generate(
+                                          category.tags.length, (index1) {
+                                        final isSelected = selectedTags
+                                            .contains(category.tags[index1]);
+                                        return InkWell(
+                                          onTap: () {
+                                            isSelected
+                                                ? selectedTags.remove(
+                                                    category.tags[index1])
+                                                : selectedTags
+                                                    .add(category.tags[index1]);
+                                            setState(() {
+                                              selectedTags;
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: isSelected
+                                                    ? const Color(0xFFE1E0EC)
+                                                    : Colors.transparent,
+                                                border: Border.all(
+                                                    color: const Color(
+                                                        0xFFE1E0EC)),
+                                                borderRadius:
+                                                    BorderRadius.circular(17)),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6, horizontal: 11),
+                                            child: Text(
+                                                category.tags[index1].title,
+                                                style: const TextStyle(
+                                                    color: Color(0xFF3C3C3C))),
+                                          ),
+                                        );
+                                      })),
+                                ),
+                            ]);
                       }),
                 ),
                 Padding(

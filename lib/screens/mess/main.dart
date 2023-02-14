@@ -21,7 +21,6 @@ class _MessMenuState extends State<ViewMessMenu> {
       builder: (QueryResult result, {fetchMore, refetch}) {
         final String? link = result.data?["getMessMenu"];
         return ListTile(
-          leading: const Icon(Icons.food_bank_outlined),
           horizontalTitleGap: 0,
           title: const Text("View Mess Menu"),
           onTap: () {

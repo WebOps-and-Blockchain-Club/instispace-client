@@ -47,7 +47,7 @@ class _LogInState extends State<LogIn> {
           onCompleted: (dynamic resultData) {
             if (resultData["login"] != null) {
               widget.auth.login(
-                resultData["login"]["accessToken"],
+                resultData["login"]["token"],
               );
 
               ScaffoldMessenger.of(context).showSnackBar(
@@ -111,6 +111,7 @@ class _LogInState extends State<LogIn> {
                                   ),
                                 ),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 18),
                                   controller: name,
                                   decoration: const InputDecoration(
                                     labelText: "Roll Number",
@@ -127,6 +128,7 @@ class _LogInState extends State<LogIn> {
                                   },
                                 ),
                                 TextFormField(
+                                  style: const TextStyle(fontSize: 18),
                                   controller: pass,
                                   obscureText: passwordVisible,
                                   maxLines: 1,
@@ -144,7 +146,7 @@ class _LogInState extends State<LogIn> {
                                       ),
                                       suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
-                                          Themes.inputIconConstraints,
+                                          const BoxConstraints(maxHeight: 0),
                                       labelText: "Password"),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

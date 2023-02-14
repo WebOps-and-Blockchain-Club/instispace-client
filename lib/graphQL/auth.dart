@@ -2,7 +2,7 @@ class AuthGQL {
   String login = """
     mutation(\$loginInputs: LoginInput!){
       login(loginInput: \$loginInputs) {
-        accessToken
+        token
       }
     }
   """;

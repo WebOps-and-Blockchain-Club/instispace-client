@@ -20,20 +20,29 @@ class ChooseImages extends StatefulWidget {
 }
 
 class _ChooseImagesState extends State<ChooseImages> {
+  final _controller = ScrollController();
   final ImagePicker _picker = ImagePicker();
   late List images = [];
+  int page = 0;
   late List chosenImgs = [
     "https://i.imgflip.com/51mkbd.png",
     "https://thumbs.gfycat.com/PoorRealisticGermanpinscher-size_restricted.gif"
   ];
   bool initialized = false;
   int len = 0;
+
   @override
   void initState() {
     _getImages();
     setState(() {
       initialized = true;
     });
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+        _getImages();
+      }
+    });
+
     super.initState();
   }
 
@@ -44,7 +53,7 @@ class _ChooseImagesState extends State<ChooseImages> {
         onlyAll: true,
       );
       final List<AssetEntity> entities_list =
-          await paths[0].getAssetListPaged(page: 0, size: 24);
+          await paths[0].getAssetListPaged(page: page, size: (page + 1) * 24);
       for (var e in entities_list) {
         if (e.type == AssetType.image) {
           final file = await e.file;
@@ -53,6 +62,9 @@ class _ChooseImagesState extends State<ChooseImages> {
           });
         }
       }
+      setState(() {
+        page++;
+      });
     } else {
       await PhotoManager.openSetting();
     }
@@ -177,6 +189,7 @@ class _ChooseImagesState extends State<ChooseImages> {
                     child: GridView.builder(
                         padding: EdgeInsets.zero,
                         scrollDirection: Axis.vertical,
+                        controller: _controller,
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
