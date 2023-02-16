@@ -113,52 +113,56 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ColorPalette.palette(context).secondary[50],
+      color: Colors.white,
       padding: widget.padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 40,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                    child: Card(
-                        margin: const EdgeInsets.all(0),
-                        child: Theme(
-                          data: ThemeData(
-                            primarySwatch:
-                                ColorPalette.palette(context).primary,
-                          ),
-                          child: TextField(
-                            maxLength: 50,
-                            controller: search,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'What are you looking for?',
-                                prefixIcon: const Icon(Icons.search, size: 25),
-                                suffixIcon: search.text == ""
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          search.clear();
-                                          widget.onSubmitted("");
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          size: 25,
-                                        )),
-                                counterText: ""),
-                            onSubmitted: widget.onSubmitted,
-                            onChanged: (value) {
-                              _debouncer.run(() {
-                                widget.onSubmitted(value);
-                              });
+          Container(
+            height: 50,
+            child: Expanded(
+                child: Theme(
+              data: ThemeData(
+                primarySwatch: ColorPalette.palette(context).primary,
+              ),
+              child: TextField(
+                textAlignVertical: TextAlignVertical.center,
+                maxLength: 50,
+                controller: search,
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFE1E0EC),
+                    contentPadding: EdgeInsets.all(5),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(35)),
+                    //hintText: 'What are you looking for?',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 25,
+                      color: Color(0xFFB5B4CA),
+                    ),
+                    suffixIcon: search.text == ""
+                        ? null
+                        : IconButton(
+                            onPressed: () {
+                              search.clear();
+                              widget.onSubmitted("");
                             },
-                          ),
-                        ))),
-                if (widget.onFilterClick != null)
+                            icon: const Icon(
+                              Icons.close,
+                              size: 25,
+                            )),
+                    counterText: ""),
+                onSubmitted: widget.onSubmitted,
+                onChanged: (value) {
+                  _debouncer.run(() {
+                    widget.onSubmitted(value);
+                  });
+                },
+              ),
+            )),
+            /*if (widget.onFilterClick != null)
                   Card(
                     margin: const EdgeInsets.only(left: 10),
                     child: InkWell(
@@ -168,9 +172,7 @@ class _SearchBarState extends State<SearchBar> {
                         child: Icon(Icons.filter_alt_outlined),
                       ),
                     ),
-                  )
-              ],
-            ),
+                  )*/
           ),
           if (widget.error != null && widget.error != "")
             SizedBox(

@@ -1,4 +1,5 @@
 import 'package:client/screens/academics/calendar.dart';
+import 'package:client/utils/custom_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -307,7 +308,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
 
                         ListTile(
-                            leading: const Icon(Icons.book),
+                            leading: const Icon(CustomIcons.academics),
                             horizontalTitleGap: 0,
                             title: const Text("Daily Schedule"),
                             onTap: () {
@@ -318,7 +319,9 @@ class CustomDrawer extends StatelessWidget {
                             }),
 
                         ListTile(
-                            leading: const Icon(Icons.calendar_month),
+                            leading: Icon(
+                              Icons.calendar_month,
+                            ),
                             horizontalTitleGap: 0,
                             title: const Text("Calendar"),
                             onTap: () {
