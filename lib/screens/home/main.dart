@@ -1,8 +1,10 @@
+import 'package:client/models/category.dart';
+import 'package:client/utils/custom_icons.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../models/postModel.dart';
 import '../../models/user.dart';
 import '../../services/auth.dart';
 import '../../services/client.dart';
@@ -21,6 +23,7 @@ import 'lost_and_found.dart/main.dart';
 import 'lost_and_found.dart/lost_and_found.dart';
 import 'netops/netops.dart';
 import 'queries/main.dart';
+import 'feed/feed.dart';
 
 class HomeWrapper extends StatefulWidget {
   final AuthService auth;
@@ -48,6 +51,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   void _onItemTapped(int index) {
     setState(() {
+      if (tappedIndex[tappedIndex.length - 1] == index) print(tappedIndex);
       tappedIndex = [...tappedIndex, index];
     });
   }
@@ -89,6 +93,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0.0;
+    print(isKeyboardOpen);
     final _selectedIndex = tappedIndex.last;
     return WillPopScope(
       onWillPop: () async {
@@ -103,49 +109,61 @@ class _HomeWrapperState extends State<HomeWrapper> {
       },
       child: Scaffold(
         key: _scaffoldKey,
+        //resizeToAvoidBottomInset: false,
         drawer: CustomDrawer(
             auth: widget.auth, user: widget.user, fcmToken: fcmToken!),
         body: IndexedStack(index: _selectedIndex, children: [
-          LostAndFoundPage(user: widget.user, scaffoldKey: _scaffoldKey),
-          QueriesPage(user: widget.user, scaffoldKey: _scaffoldKey),
           HomePage(
               auth: widget.auth,
               user: widget.user,
               refetch: widget.refetch,
               scaffoldKey: _scaffoldKey),
+          FeedPage(
+            user: widget.user,
+            scaffoldKey: _scaffoldKey,
+            title: 'FEED',
+          ),
+          FeedPage(
+            user: widget.user,
+            scaffoldKey: _scaffoldKey,
+            title: 'FORUM',
+          ),
           EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
           NetopsPage(user: widget.user, scaffoldKey: _scaffoldKey),
         ]),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.travel_explore),
-              label: 'L&F',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.query_stats_rounded),
-              label: 'Queries',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.event),
-              label: 'Events',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.connect_without_contact_sharp),
-              label: 'NetOps',
-            ),
-          ],
-          onTap: _onItemTapped,
-        ),
+        bottomNavigationBar: isKeyboardOpen
+            ? null
+            : BottomNavigationBar(
+                showUnselectedLabels: false,
+                currentIndex: _selectedIndex,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(CustomIcons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CustomIcons.feed),
+                    label: 'Feed',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CustomIcons.forums),
+                    label: 'Forums',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CustomIcons.academics),
+                    label: 'Academics',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(CustomIcons.lost_and_found),
+                    label: 'L&F',
+                  ),
+                ],
+                onTap: _onItemTapped,
+              ),
       ),
     );
   }
-  
+
   void navigateToPath(String path) {
     final type = path.split("/")[0].toLowerCase();
     final id = path.split("/")[1];

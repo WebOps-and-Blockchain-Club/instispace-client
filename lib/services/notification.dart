@@ -148,6 +148,65 @@ class LocalNotificationService {
             UILocalNotificationDateInterpretation.absoluteTime);
   }
 
+  Future<void> scheduleWeeklyNotification({
+    required String title,
+    required String description,
+    required day,
+    required int hours,
+    required int minutes,
+  }) async {
+    tz.initializeTimeZones();
+    await _localNotificationService.zonedSchedule(
+        Random().nextInt(1000),
+        title,
+        description,
+        getNextInstanceOfTime(day, hours, minutes),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'High_importance_channel',
+            'High Importance Notifications',
+            channelDescription:
+                'This channel is used for important notifications.',
+            color: Color(0xFF2F247B),
+            playSound: true,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: IOSNotificationDetails(
+            sound: 'default.wav',
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  tz.TZDateTime getNextInstanceOfTime(String day, int hours, int minutes) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    now.add(const Duration(minutes: 330));
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hours, minutes);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    day = day.toLowerCase();
+    int dayInFormat = 0;
+    if (day == "monday") dayInFormat = DateTime.monday;
+    if (day == "tuesday") dayInFormat = DateTime.tuesday;
+    if (day == "wednesday") dayInFormat = DateTime.wednesday;
+    if (day == "thursday") dayInFormat = DateTime.thursday;
+    if (day == "friday") dayInFormat = DateTime.friday;
+    while (scheduledDate.weekday != dayInFormat) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    scheduledDate = scheduledDate.subtract(const Duration(minutes: 330));
+    print(scheduledDate);
+    return scheduledDate;
+  }
+
   void onDidReceiveLocalNotification(
       int id, String? title, String? body, String? payload) {}
 

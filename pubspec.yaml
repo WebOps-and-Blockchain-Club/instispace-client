@@ -68,6 +68,8 @@ dependencies:
   rxdart: ^0.27.5
   uni_links: ^0.5.1
   webview_flutter: ^3.0.4
+  sqflite: ^2.0.3+1
+  table_calendar: ^3.0.8
 
 dev_dependencies:
   flutter_test:
@@ -98,7 +100,19 @@ flutter:
     - assets/illustrations/
     - assets/splash/
     - assets/
-
+  fonts:
+    - family: Proxima Nova
+      fonts:
+        - asset: assets/Proxima Nova Font.otf
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/MyFlutterApp.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/Raleway-Light.ttf
+        - asset: assets/Raleway-Regular.ttf
+        - asset: assets/Raleway-Medium.ttf
+        - asset: assets/Raleway-Thin.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

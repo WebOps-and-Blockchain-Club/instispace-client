@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'actions.dart';
+import '../../../widgets/card/image_view.dart';
 import '../../teasure_hunt/main.dart';
 import '../../hostel/main.dart';
 import '../../../widgets/helpers/navigate.dart';
@@ -11,6 +12,9 @@ import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/main.dart';
 import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/error.dart';
+import '../../../widgets/utils/image_cache_path.dart';
+import '../../../themes.dart';
+import '../../../utils/custom_icons.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
@@ -48,9 +52,10 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: RefreshIndicator(
               onRefresh: () => widget.refetch(),
               child: NestedScrollView(
@@ -62,21 +67,40 @@ class _HomePageState extends State<HomePage> {
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                         return CustomAppBar(
-                          title: "InstiSpace",
-                          leading: CustomIconButton(
-                              icon: Icons.menu,
-                              onPressed: () => {
-                                    widget.scaffoldKey.currentState!
-                                        .openDrawer()
-                                  }),
-                          action: (widget.user.hostelId != null ||
-                                  widget.user.permissions
-                                      .contains("HOSTEL_ADMIN"))
-                              ? CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => navigate(context,
-                                      HostelWrapper(user: widget.user)))
-                              : null,
+                          title: "",
+                          leading: IconButton(
+                            onPressed: () =>
+                                widget.scaffoldKey.currentState!.openDrawer(),
+                            icon: Icon(CustomIcons.hamburger),
+                          ),
+                          action: GestureDetector(
+                            onTap: () async {
+                              List<String> images =
+                                  await imageCachePath([widget.user.photo]);
+                              openImageView(context, 0, images);
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: widget.user.photo,
+                              placeholder: (_, __) => const Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 45),
+                              errorWidget: (_, __, ___) => const Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 45),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         );
                       }, childCount: 1),
                     ),
@@ -84,10 +108,31 @@ class _HomePageState extends State<HomePage> {
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Header(
-                              title: "Hi ${widget.user.name}",
-                              subTitle: "Get InstiSpace feed here"),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 7.5),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  widget.user.name!.toUpperCase(),
+                                  style: TextStyle(
+                                      color: Color(0xFF3C3C3C),
+                                      fontFamily: 'Proxima Nova',
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  widget.user.roll!.toUpperCase(),
+                                  style: TextStyle(
+                                      color: Color(0xFF3C3C3C),
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: 'Proxima Nova',
+                                      fontSize: 20),
+                                )
+                              ]),
                         );
                       }, childCount: 1),
                     ),
