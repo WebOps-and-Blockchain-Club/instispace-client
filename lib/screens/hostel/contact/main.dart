@@ -165,7 +165,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                                   .textTheme
                                                   .labelSmall),
 
-                                          /*Padding(
+                                          Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 10),
                                             child: Wrap(
@@ -184,7 +184,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                                       delete: actions.delete!),
                                               ],
                                             ),
-                                          ),*/
+                                          ),
                                         ],
                                       ),
                                       InkWell(

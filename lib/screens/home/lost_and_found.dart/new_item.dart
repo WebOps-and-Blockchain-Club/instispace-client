@@ -299,6 +299,7 @@ class _NewItemPageState extends State<NewItemPage> {
                                               .data!["getLocations"]
                                               .cast<String>());
                                         }
+
                                         matches.retainWhere((s) {
                                           return s.toLowerCase().contains(
                                               _location.text.toLowerCase());

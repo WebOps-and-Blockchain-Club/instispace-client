@@ -13,7 +13,6 @@ class CommentsModel {
 class CommentModel {
   final String id;
   final String content;
-  final int likeCount;
   final List<String>? images;
   final String createdAt;
   final CreatedByModel createdBy;
@@ -21,16 +20,14 @@ class CommentModel {
   CommentModel(
       {required this.id,
       required this.content,
-      required this.createdAt,
       this.images,
-      required this.likeCount,
+      required this.createdAt,
       required this.createdBy});
 
   CommentModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
         content = data["content"],
-        likeCount = data["likeCount"],
-        images = [''],
+        images = data["images"]?.split(" AND ").cast<String>(),
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
 }

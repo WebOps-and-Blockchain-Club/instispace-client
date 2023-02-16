@@ -60,10 +60,8 @@ android {
         applicationId "com.cfi.instispace"
         minSdkVersion 20
         targetSdkVersion 31
-        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-
     }
 
    signingConfigs {
@@ -87,7 +85,6 @@ flutter {
 }
 
 dependencies {
-    implementation "androidx.multidex:multidex:2.0.1"
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

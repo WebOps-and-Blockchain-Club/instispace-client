@@ -20,14 +20,12 @@ class CommentsPage extends StatefulWidget {
   final String? id;
   final String? type;
   final String? document;
-  final String? postId;
   final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
       updateCache;
 
   const CommentsPage({
     Key? key,
     required this.comments,
-    this.postId,
     this.id,
     this.type,
     this.document,
@@ -53,7 +51,7 @@ class _CommentsPageState extends State<CommentsPage> {
     return Scaffold(
       appBar: AppBar(
           title: CustomAppBar(
-              title: "COMMENTS",
+              title: "Comments",
               leading: CustomIconButton(
                 icon: Icons.arrow_back,
                 onPressed: () {
@@ -149,10 +147,9 @@ class _CreateCommentState extends State<CreateComment> {
             document: gql(widget.document),
             update: (cache, result) {
               if (result != null) {
-                //print(result);
                 widget.updateCache(cache, result);
-                widget.updateComments(
-                    CommentModel.fromJson(result.data!["createComment"]));
+                widget.updateComments(CommentModel.fromJson(
+                    result.data!["createComment${widget.type}"]));
                 comment.clear();
               }
             }),
@@ -166,7 +163,7 @@ class _CreateCommentState extends State<CreateComment> {
                   builder: (context, imagePickerService, child) {
                 if (result != null &&
                     result.data != null &&
-                    result.data!["createComment"] != null) {
+                    result.data!["createComment${widget.type}"] != null) {
                   imagePickerService.clearPreview();
                 }
                 return Container(
@@ -213,20 +210,19 @@ class _CreateCommentState extends State<CreateComment> {
                                                   Theme.of(context).errorColor,
                                             ),
                                           );
+
                                           return;
                                         }
                                         if (!(result != null &&
                                                 result.isLoading) &&
                                             comment.text.isNotEmpty) {
                                           runMutation({
-                                            "postId": widget.id,
-                                            "createCommentInput": {
+                                            "commentData": {
                                               "content": comment.text,
-                                              "postId": widget.id,
-                                              "isHidden": false,
-                                            }
+                                              "imageUrls": uploadResult
+                                            },
+                                            "id": widget.id,
                                           });
-                                          //print(result);
                                         }
                                       },
                                       child: Padding(

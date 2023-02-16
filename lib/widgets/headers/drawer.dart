@@ -1,5 +1,3 @@
-import 'package:client/screens/academics/calendar.dart';
-import 'package:client/utils/custom_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -21,9 +19,6 @@ import '../../screens/info/feedback.dart';
 import '../../screens/super_user/view_feedback.dart';
 import '../../screens/info/about_us.dart';
 import '../../screens/super_user/super_user_list.dart';
-import '../../screens/academics/daily_schedule.dart';
-import '../../screens/academics/calendar.dart';
-import '../../screens/academics/new_timetable.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -307,39 +302,6 @@ class CustomDrawer extends StatelessWidget {
                             ),
                           ),
 
-                        ListTile(
-                            leading: const Icon(CustomIcons.academics),
-                            horizontalTitleGap: 0,
-                            title: const Text("Daily Schedule"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const DailyScheduleScreen()));
-                            }),
-
-                        ListTile(
-                            leading: Icon(
-                              Icons.calendar_month,
-                            ),
-                            horizontalTitleGap: 0,
-                            title: const Text("Calendar"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const Calendar()));
-                            }),
-                        ListTile(
-                            leading: const Icon(Icons.calendar_month),
-                            horizontalTitleGap: 0,
-                            title: const Text("Add courses"),
-                            onTap: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const NewTimetable()));
-                            }),
                         // Emergency SOS
                         ListTile(
                           leading: const Icon(Icons.emergency_share_sharp),

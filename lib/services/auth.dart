@@ -41,7 +41,7 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  login(String token) async {
+  login(String token, String role, bool isNewUser) async {
     await _setToken(token);
     notifyListeners();
   }

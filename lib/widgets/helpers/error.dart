@@ -57,7 +57,6 @@ String getAsset(String error, String? message) {
 }
 
 String formatErrorMessage(String error) {
-  return error;
   if (error.contains("Failed host lookup")) {
     return "No network connection";
   } else if (error.contains(

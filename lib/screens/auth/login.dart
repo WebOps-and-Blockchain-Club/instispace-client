@@ -48,11 +48,10 @@ class _LogInState extends State<LogIn> {
           document: gql(AuthGQL().login),
           onCompleted: (dynamic resultData) {
             if (resultData["login"] != null) {
-              print(resultData["login"]);
               widget.auth.login(
-                resultData["login"]["token"],
-                //resultData["login"]["isNewUser"]
-              );
+                  resultData["login"]["token"],
+                  resultData["login"]["role"],
+                  resultData["login"]["isNewUser"]);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('User Logged In')),
               );
@@ -143,7 +142,7 @@ class _LogInState extends State<LogIn> {
 
                           if (isValid) {
                             runMutation({
-                              //'fcmToken': fcmToken,
+                              'fcmToken': fcmToken,
                               'loginInputs': {
                                 "roll": name.text.trim().toLowerCase(),
                                 "pass": pass.text,

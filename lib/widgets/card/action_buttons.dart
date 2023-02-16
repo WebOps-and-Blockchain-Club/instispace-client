@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/link.dart' as url_launcher;
-import '../../config.dart';
+
 import '../../graphQL/report.dart';
 import '../../models/date_time_format.dart';
 import '../../services/notification.dart';
@@ -14,9 +14,7 @@ import '../helpers/navigate.dart';
 import '../../screens/home/tag/tag.dart';
 import '../../models/comment.dart';
 import '../../models/actions.dart';
-import '../../models/postModel.dart';
-import '../../utils/custom_icons.dart';
-//import '../../models/post.dart';
+import '../../models/post.dart';
 import '../../models/tag.dart';
 import '../../utils/string_extension.dart';
 import '../../themes.dart';
@@ -58,29 +56,20 @@ class TagButton extends StatelessWidget {
   }
 }
 
-class LikePostButton extends StatefulWidget {
+class LikePostButton extends StatelessWidget {
   final LikePostModel like;
   final PostAction? likeAction;
   const LikePostButton({Key? key, required this.like, required this.likeAction})
       : super(key: key);
 
   @override
-  State<LikePostButton> createState() => _LikePostButtonState();
-}
-
-class _LikePostButtonState extends State<LikePostButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _likeController = AnimationController(
-      duration: const Duration(milliseconds: 200), vsync: this, value: 1.0);
-  @override
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(
-                widget.likeAction != null ? widget.likeAction!.document : ""),
+            document: gql(likeAction != null ? likeAction!.document : ""),
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
-                widget.likeAction!.updateCache(cache, result);
+                likeAction!.updateCache(cache, result);
               }
             }),
         builder: (
@@ -88,37 +77,26 @@ class _LikePostButtonState extends State<LikePostButton>
           QueryResult? result,
         ) =>
             InkWell(
-              onTap: () {},
+              onTap: () {
+                if (!(result != null && result.isLoading) &&
+                    likeAction != null) {
+                  runMutation({"id": likeAction!.id});
+                }
+              },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ScaleTransition(
-                    scale: Tween(begin: 0.7, end: 1.0).animate(CurvedAnimation(
-                        parent: _likeController, curve: Curves.easeOut)),
-                    child: IconButton(
-                      icon: widget.like.isLikedByUser
-                          ? const Icon(
-                              CustomIcons.likefilled,
-                              color: Colors.red,
-                              size: 25,
-                            )
-                          : const Icon(
-                              CustomIcons.like,
-                              size: 25,
-                            ),
-                      onPressed: () {
-                        //print(result);
-                        _likeController
-                            .reverse()
-                            .then((value) => _likeController.forward());
-                        if (!(result != null && result.isLoading) &&
-                            widget.likeAction != null) {
-                          runMutation({"postId": widget.likeAction!.id});
-                        }
-                      },
+                  if (like.isLikedByUser == true)
+                    const Icon(
+                      Icons.favorite,
+                      color: Color.fromARGB(255, 255, 17, 0),
                     ),
-                  ),
-                  Text(widget.like.count.toString(),
+                  if (like.isLikedByUser == false)
+                    const Icon(
+                      Icons.favorite_border,
+                    ),
+                  const SizedBox(width: 5),
+                  Text(like.count.toString(),
                       style: Theme.of(context).textTheme.labelLarge)
                 ],
               ),
@@ -193,15 +171,13 @@ class _StarPostButtonState extends State<StarPostButton> {
               onTap: () {
                 if (!(result != null && result.isLoading) &&
                     widget.starAction != null) {
-                  runMutation({"postId": widget.starAction!.id});
-                  print(result);
+                  runMutation({"id": widget.starAction!.id});
                 }
               },
               child: Icon(
                 isStarred == true
                     ? Icons.bookmark_outlined
                     : Icons.bookmark_border,
-                size: 25,
               ),
             ));
   }
@@ -214,10 +190,7 @@ class SetReminderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: const Icon(
-        CustomIcons.reminder,
-        size: 25,
-      ),
+      child: const Icon(Icons.alarm_add),
       onTap: () => {
         showDialog(
             context: context,
@@ -231,9 +204,9 @@ class SetReminderButton extends StatelessWidget {
                 final LocalNotificationService service =
                     LocalNotificationService();
                 setReminderData() {
-                  if (post.createdAt != null) {
+                  if (post.time != null) {
                     DateTimeFormatModel _time =
-                        DateTimeFormatModel.fromString(post.createdAt);
+                        DateTimeFormatModel.fromString(post.time!);
                     date.text = _time.dateTime.toString();
                     dateFormated.text = _time.toFormat("MMM dd, yyyy");
                     time.text = _time.dateTime.toString();
@@ -337,8 +310,8 @@ class SetReminderButton extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).pop();
                         await service.scheduleNotification(
-                            title: post.title!,
-                            description: post.content!,
+                            title: post.title,
+                            description: post.description,
                             time:
                                 "${date.text.split(" ")[0]} ${time.text.split(" ")[1]}");
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -365,15 +338,11 @@ class SharePostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String shareLink = "${shareBaseLink}post/${post.id}";
     return InkWell(
       onTap: () async {
-        await Share.share(shareLink, subject: post.title);
+        await Share.share(post.shareLink ?? "", subject: post.title);
       },
-      child: const Icon(
-        CustomIcons.share,
-        size: 25,
-      ),
+      child: const Icon(Icons.share),
     );
   }
 }
