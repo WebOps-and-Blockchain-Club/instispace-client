@@ -45,7 +45,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
                   automaticallyImplyLeading: false),
               body: SafeArea(
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: (() {
                         if (queryResult.hasException) {
                           return Error(error: queryResult.exception.toString());
@@ -64,7 +64,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
                             options: MutationOptions(
                               document: gql(SuperUserGQL().createTag),
                               onCompleted: (dynamic resultData) {
-                                if (resultData["createTag"] == true) {
+                                if (resultData["createTag"]["id"] != null) {
                                   Navigator.of(context).pop();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -116,6 +116,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
                                         maxLength: 20,
                                         minLines: 1,
                                         maxLines: null,
+                                        style: const TextStyle(fontSize: 18),
                                         decoration: const InputDecoration(
                                             labelText: "Tag Name"),
                                         validator: (value) {
@@ -130,7 +131,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
                                     if (result != null && result.hasException)
                                       ErrorText(
                                           error: result.exception.toString()),
-
+                                    const SizedBox(height: 20),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 10),
                                       child: CustomElevatedButton(
@@ -157,7 +158,7 @@ class _CreateTagPageState extends State<CreateTagPage> {
 
                                           if (isValid) {
                                             runMutation({
-                                              'tagInput': {
+                                              'createTagInput': {
                                                 "title": name.text,
                                                 "category": selectedCategory,
                                               }

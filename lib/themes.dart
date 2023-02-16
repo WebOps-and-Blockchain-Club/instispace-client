@@ -17,10 +17,12 @@ class Themes {
 
     // Text Theme
     textTheme: TextTheme(
-        headlineSmall:
-            TextStyle(color: ColorPalette._text, fontWeight: FontWeight.w600),
-        titleLarge: TextStyle(color: ColorPalette._text),
-        titleMedium: TextStyle(color: ColorPalette._text),
+        headlineSmall: TextStyle(
+          color: ColorPalette._text,
+          fontWeight: FontWeight.w600,
+        ),
+        titleLarge: TextStyle(color: ColorPalette._text, fontSize: 24),
+        titleMedium: TextStyle(color: ColorPalette._text[400]),
         titleSmall:
             TextStyle(color: ColorPalette._text, fontWeight: FontWeight.w500),
         bodyLarge: const TextStyle(fontWeight: FontWeight.normal),
@@ -35,7 +37,11 @@ class Themes {
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: ColorPalette._primary)),
+        titleTextStyle: TextStyle(
+            color: ColorPalette._text[400],
+            fontSize: 24,
+            fontWeight: FontWeight.w700),
+        iconTheme: IconThemeData(color: ColorPalette._text)),
 
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -54,7 +60,9 @@ class Themes {
                 borderRadius: BorderRadius.circular(8),
                 side: const BorderSide(color: ColorPalette._success)),
             textStyle: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold))),
+                fontFamily: "Proxima Nova",
+                color: Colors.white,
+                fontWeight: FontWeight.bold))),
 
     // Floating Action Button Theme
     floatingActionButtonTheme:
@@ -62,21 +70,25 @@ class Themes {
 
     // TextFormField
     inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        constraints: const BoxConstraints(minHeight: 50),
-        prefixIconColor: ColorPalette._secondary,
-        suffixIconColor: ColorPalette._primary,
-        isDense: true,
-        contentPadding: const EdgeInsets.all(10),
-        labelStyle: TextStyle(
-            color: ColorPalette._primary, fontWeight: FontWeight.normal),
-        hintStyle: const TextStyle(fontWeight: FontWeight.normal),
-        enabledBorder: border,
-        focusedBorder: border,
-        errorBorder: errorBorder,
-        focusedErrorBorder: errorBorder,
-        errorStyle: const TextStyle(color: ColorPalette._error)),
+      // filled: true,
+
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(width: 1, color: Colors.black)),
+      // fillColor: Colors.white,
+      // constraints: const BoxConstraints(minHeight: 50),
+      // prefixIconColor: ColorPalette._secondary,
+      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+      alignLabelWithHint: true,
+      labelStyle: TextStyle(
+          color: ColorPalette._text[900], fontWeight: FontWeight.normal),
+      hintStyle: const TextStyle(fontWeight: FontWeight.normal),
+
+      // enabledBorder: border,
+      // focusedBorder: border,
+      // errorBorder: errorBorder,
+      // focusedErrorBorder: errorBorder,
+      // errorStyle: const TextStyle(color: ColorPalette._error)
+    ),
 
     // Card Theme
     cardTheme: CardTheme(
@@ -86,15 +98,16 @@ class Themes {
 
     // ListTile Theme
     listTileTheme: ListTileThemeData(
-        horizontalTitleGap: 0,
-        iconColor: ColorPalette._primary,
-        textColor: ColorPalette._primary),
-
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        textColor: ColorPalette._text,
+        tileColor: const Color.fromRGBO(3, 162, 220, 0.3)),
     //ExpansionTile Theme
+    dividerColor: Colors.transparent,
     expansionTileTheme: ExpansionTileThemeData(
-        iconColor: ColorPalette._primary,
-        collapsedIconColor: ColorPalette._primary,
-        childrenPadding: const EdgeInsets.only(left: 30)),
+      textColor: ColorPalette._text,
+      iconColor: Colors.black,
+      collapsedIconColor: ColorPalette._primary,
+    ),
 
     // Icon Theme
     iconTheme: IconThemeData(color: ColorPalette._secondary),
@@ -107,13 +120,12 @@ class Themes {
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10)))),
-
     // Chip Theme
     chipTheme: ChipThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFE1E0EC),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: ColorPalette._primaryColor))),
+          borderRadius: BorderRadius.circular(17),
+        )),
 
     // Dialog Theme
     dialogTheme: DialogTheme(
@@ -192,10 +204,11 @@ class ColorPalette {
 
   static ColorPaletteModel palette(BuildContext context) {
     return ColorPaletteModel(
-        primary: _primary,
-        secondary: _secondary,
-        success: _success,
-        warning: _warning,
-        error: _error);
+      primary: _primary,
+      secondary: _secondary,
+      success: _success,
+      warning: _warning,
+      error: _error,
+    );
   }
 }

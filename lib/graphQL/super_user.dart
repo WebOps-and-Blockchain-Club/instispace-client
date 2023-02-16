@@ -1,7 +1,10 @@
 class SuperUserGQL {
   String createAccount = """
-    mutation(\$createAccountInput: CreateAccountInput!, \$hostelId: String){
-      createAccount(CreateAccountInput: \$createAccountInput, HostelId: \$hostelId)
+    mutation CreateUser(\$user: CreateUserInput!, \$permission: PermissionInput!) {
+      createUser(user: \$user, permission: \$permission) {
+        id
+        isNewUser
+      }
     }
   """;
 
@@ -18,9 +21,13 @@ class SuperUserGQL {
   """;
 
   String createTag = """
-    mutation(\$tagInput: TagInput!){
-      createTag(TagInput: \$tagInput)
+    mutation(\$createTagInput: CreateTagInput!) {
+    createTag(CreateTagInput: \$createTagInput) {
+      id
+      title
+      category
     }
+}
   """;
 
   String updateRole = """

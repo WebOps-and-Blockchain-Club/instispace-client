@@ -217,17 +217,17 @@ class _NewContactPageState extends State<NewContactPage> {
                               ),
                             ),
 
-                            if (!widget.user.role!.contains("HOSTEL_SEC") &&
-                                widget.contact == null)
-                              HostelListDropdown(
-                                value: selectedHostel,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedHostel = value;
-                                  });
-                                },
-                                error: hostelError,
-                              ),
+                            // if (!widget.user.role!.contains("HOSTEL_SEC") &&
+                            //     widget.contact == null)
+                            //   HostelListDropdown(
+                            //     value: selectedHostel,
+                            //     onChanged: (value) {
+                            //       setState(() {
+                            //         selectedHostel = value;
+                            //       });
+                            //     },
+                            //     error: hostelError,
+                            //   ),
 
                             Padding(
                               padding: const EdgeInsets.only(top: 10),

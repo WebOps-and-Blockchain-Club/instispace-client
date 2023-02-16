@@ -38,7 +38,7 @@ ValueNotifier<GraphQLClient> client(String? token) {
 
 http.MultipartRequest uploadClient() {
   var headers = {
-    "apikey": "",
+    "apikey": "b5fde0ea-307a-4e83-999f-28b64092425d",
   };
   var request = http.MultipartRequest(
       'POST', Uri.parse("https://instispace.iitm.ac.in/upload/"));

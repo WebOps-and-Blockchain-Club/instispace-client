@@ -11,16 +11,14 @@ class CustomIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: CircleBorder(),
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
       margin: const EdgeInsets.all(0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       child: InkWell(
         onTap: onPressed,
         child: Container(
           width: size * 10,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-          ),
           padding: EdgeInsets.all(size * 1.75),
           child: Icon(icon, size: size * 6.5),
         ),

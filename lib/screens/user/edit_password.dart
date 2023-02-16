@@ -65,122 +65,119 @@ class _EditPasswordState extends State<EditPassword> {
                     ) {
                       return Form(
                         key: formKey,
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: [
-                            CustomAppBar(
-                                title: "Edit Profile",
-                                leading: CustomIconButton(
-                                  icon: Icons.arrow_back,
-                                  onPressed: () {
-                                    if (widget.user.id != null) {
-                                      Navigator.of(context).pop();
-                                    } else {
-                                      widget.auth.logout();
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              CustomAppBar(
+                                  title: "Edit Profile",
+                                  leading: CustomIconButton(
+                                    icon: Icons.arrow_back,
+                                    onPressed: () {
+                                      if (widget.user.id != null) {
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        widget.auth.logout();
+                                      }
+                                    },
+                                  )),
+                              const SizedBox(height: 100),
+
+                              // Name
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: TextFormField(
+                                  controller: name,
+                                  decoration: const InputDecoration(
+                                      labelText: "Profile Name"),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter the name";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+
+                              // Password
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: TextFormField(
+                                  controller: pass,
+                                  obscureText: true,
+                                  maxLines: 1,
+                                  decoration: const InputDecoration(
+                                      labelText: "Password"),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter the new password";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: TextFormField(
+                                  controller: confirmPass,
+                                  obscureText: confirmPassVisible,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () => setState(() {
+                                          confirmPassVisible =
+                                              !confirmPassVisible;
+                                        }),
+                                        icon: Icon(
+                                            confirmPassVisible
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            size: 20),
+                                      ),
+                                      prefixIconConstraints:
+                                          Themes.inputIconConstraints,
+                                      suffixIconConstraints:
+                                          Themes.inputIconConstraints,
+                                      labelText: "Confirm Password"),
+                                  validator: (val) {
+                                    if (val == null || val.isEmpty) {
+                                      return "Re-enter the password to confirm";
+                                    } else if (pass.text != val) {
+                                      return "Password don't match";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+
+                              if (result != null && result.hasException)
+                                ErrorText(error: result.exception.toString()),
+
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: CustomElevatedButton(
+                                  onPressed: () async {
+                                    final isValid =
+                                        formKey.currentState!.validate();
+                                    FocusScope.of(context).unfocus();
+
+                                    if (isValid) {
+                                      runMutation({
+                                        "updateSuperUserInput": {
+                                          "newPassword": confirmPass.text,
+                                          "name": name.text
+                                        }
+                                      });
                                     }
                                   },
-                                )),
-                            const SizedBox(height: 100),
-
-                            // Name
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: TextFormField(
-                                controller: name,
-                                decoration: const InputDecoration(
-                                    labelText: "Profile Name"),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Enter the name";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-
-                            // Password
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: TextFormField(
-                                controller: pass,
-                                obscureText: true,
-                                maxLines: 1,
-                                decoration: InputDecoration(
-                                    prefixIcon:
-                                        const Icon(Icons.password, size: 20),
-                                    prefixIconConstraints:
-                                        Themes.inputIconConstraints,
-                                    labelText: "Password"),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Enter the new password";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: TextFormField(
-                                controller: confirmPass,
-                                obscureText: confirmPassVisible,
-                                maxLines: 1,
-                                decoration: InputDecoration(
-                                    prefixIcon:
-                                        const Icon(Icons.password, size: 20),
-                                    suffixIcon: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () => setState(() {
-                                        confirmPassVisible =
-                                            !confirmPassVisible;
-                                      }),
-                                      icon: Icon(
-                                          confirmPassVisible
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          size: 20),
-                                    ),
-                                    prefixIconConstraints:
-                                        Themes.inputIconConstraints,
-                                    suffixIconConstraints:
-                                        Themes.inputIconConstraints,
-                                    labelText: "Confirm Password"),
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Re-enter the password to confirm";
-                                  } else if (pass.text != val) {
-                                    return "Password don't match";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-
-                            if (result != null && result.hasException)
-                              ErrorText(error: result.exception.toString()),
-
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: CustomElevatedButton(
-                                onPressed: () async {
-                                  final isValid =
-                                      formKey.currentState!.validate();
-                                  FocusScope.of(context).unfocus();
-
-                                  if (isValid) {
-                                    runMutation({
-                                      "updateSuperUserInput": {
-                                        "newPassword": confirmPass.text,
-                                        "name": name.text
-                                      }
-                                    });
-                                  }
-                                },
-                                text: "Save",
-                                isLoading: result!.isLoading,
-                              ),
-                            )
-                          ],
+                                  text: "Save",
+                                  isLoading: result!.isLoading,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       );
                     }))));

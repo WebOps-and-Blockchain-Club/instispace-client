@@ -1,6 +1,6 @@
 class UserGQL {
   String getMe = """
-    query {
+query {
   getMe {
     photo
     accountsCreated {

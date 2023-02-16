@@ -20,8 +20,8 @@ class AuthGQL {
   """;
 
   String updateUser = """
-    mutation(\$userInput: UserInput!){
-      updateUser(UserInput: \$userInput)
+    mutation UpdateUser(\$userInput: UpdateUserInput!) {
+      updateUser(userInput: \$userInput)
     }
   """;
 

@@ -94,23 +94,23 @@ class _AnnouncementsPageState extends State<AnnouncementsPage> {
                             ),
                           ),
                         ),
-                        if (widget.user.permissions
-                            .contains("GET_ALL_ANNOUNCEMENTS"))
-                          SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: HostelListDropdown(
-                                value: selectedHostel,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedHostel = value;
-                                  });
-                                },
-                              ),
-                            );
-                          }, childCount: 1))
+                        // if (widget.user.permissions
+                        //     .contains("GET_ALL_ANNOUNCEMENTS"))
+                        //   SliverList(
+                        //       delegate: SliverChildBuilderDelegate(
+                        //           (BuildContext context, int index) {
+                        //     return Padding(
+                        //       padding: const EdgeInsets.only(bottom: 10.0),
+                        //       child: HostelListDropdown(
+                        //         value: selectedHostel,
+                        //         onChanged: (value) {
+                        //           setState(() {
+                        //             selectedHostel = value;
+                        //           });
+                        //         },
+                        //       ),
+                        //     );
+                        //   }, childCount: 1))
                       ];
                     },
                     body: (() {

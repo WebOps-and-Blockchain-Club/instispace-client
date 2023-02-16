@@ -11,17 +11,19 @@ class Error extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SvgPicture.asset(getAsset(error, message),
-              height: 250, semanticsLabel: 'A red up arrow'),
-        ),
-        ErrorText(error: error, message: message)
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SvgPicture.asset(getAsset(error, message),
+                height: 250, semanticsLabel: 'A red up arrow'),
+          ),
+          ErrorText(error: error, message: message)
+        ],
+      ),
     );
   }
 }

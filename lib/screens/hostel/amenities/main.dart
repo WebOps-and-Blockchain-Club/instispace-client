@@ -80,16 +80,16 @@ class _AmenitiesPageState extends State<AmenitiesPage> {
                           SliverList(
                               delegate: SliverChildBuilderDelegate(
                                   (BuildContext contaxt, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: HostelListDropdown(
-                                  value: selectedHostel,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedHostel = val;
-                                    });
-                                  }),
-                            );
+                            // return Padding(
+                            //   padding: const EdgeInsets.only(bottom: 10.0),
+                            //   child: HostelListDropdown(
+                            //       value: selectedHostel,
+                            //       onChanged: (val) {
+                            //         setState(() {
+                            //           selectedHostel = val;
+                            //         });
+                            //       }),
+                            // );
                           }, childCount: 1))
                       ];
                     },
