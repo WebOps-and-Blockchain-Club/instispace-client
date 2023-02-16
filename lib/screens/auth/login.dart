@@ -84,7 +84,7 @@ class _LogInState extends State<LogIn> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(25),
+                            padding: const EdgeInsets.fromLTRB(25, 0, 25, 25),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -94,13 +94,24 @@ class _LogInState extends State<LogIn> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('LOGIN',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 34)),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: const [
+                                          Text('L',
+                                              style: TextStyle(
+                                                  fontSize: 44,
+                                                  fontWeight: FontWeight.w900)),
+                                          Padding(
+                                            padding: EdgeInsets.only(bottom: 1),
+                                            child: Text('OGIN',
+                                                style: TextStyle(
+                                                    fontSize: 37,
+                                                    fontWeight:
+                                                        FontWeight.w900)),
+                                          ),
+                                        ],
+                                      ),
                                       Text(
                                         'Use you LDAP credentials',
                                         style: Theme.of(context)
