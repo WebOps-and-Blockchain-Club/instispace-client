@@ -1,27 +1,56 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import '../utils/image_cache_path.dart';
 import 'image_view.dart';
 
-class ImageCard extends StatelessWidget {
+class ImageCard extends StatefulWidget {
   final List<String> imageUrls;
-  final double? minHeight;
-  const ImageCard({
-    Key? key,
-    required this.imageUrls,
-    this.minHeight,
-  }) : super(key: key);
+  const ImageCard({Key? key, required this.imageUrls}) : super(key: key);
+
+  @override
+  State<ImageCard> createState() => _ImageCardState();
+}
+
+class _ImageCardState extends State<ImageCard> {
+  double minHeight = 0;
+
+  void getMinHeight(List<String> imageUrls) {
+    for (var imageUrl in imageUrls) {
+      Image image = Image.network(imageUrl.trim());
+      image.image.resolve(const ImageConfiguration()).addListener(
+        ImageStreamListener(
+          (ImageInfo image, bool synchronousCall) {
+            var myImage = image.image;
+
+            double c = myImage.width.toDouble() /
+                (MediaQuery.of(context).size.width - 80.toDouble());
+            if (myImage.height.toDouble() / c >= minHeight) {
+              setState(() {
+                minHeight = myImage.height.toDouble() / c;
+              });
+            }
+          },
+        ),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.imageUrls.isNotEmpty) {
+      getMinHeight(widget.imageUrls);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final imageUrls = widget.imageUrls;
     return Container(
-      constraints: BoxConstraints(
-          maxHeight: min(500, minHeight ?? minHeight!), minHeight: 0),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(29)),
+      constraints: BoxConstraints(maxHeight: min(500, minHeight), minHeight: 0),
       child: Swiper(
         onTap: (index) async {
           List<String> images = await imageCachePath(imageUrls);
@@ -30,9 +59,7 @@ class ImageCard extends StatelessWidget {
         loop: imageUrls.length != 1,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            margin: imageUrls.length > 1
-                ? EdgeInsets.only(bottom: 15)
-                : EdgeInsets.only(bottom: 0),
+            margin: EdgeInsets.only(bottom: imageUrls.length > 1 ? 15 : 0),
             child: CachedNetworkImage(
               imageUrl: imageUrls[index],
               placeholder: (_, __) => const Icon(Icons.image, size: 100),
@@ -48,47 +75,52 @@ class ImageCard extends StatelessWidget {
                 ),
               ),
             ),
-          )
-              //SizedBox(height: 20),
-              ;
+          );
         },
         itemCount: imageUrls.length,
         pagination: imageUrls.length > 1
             ? SwiperCustomPagination(
                 builder: (BuildContext context, SwiperPluginConfig config) {
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    children: [
-                      new Spacer(),
-                      for (var i = 0; i < imageUrls.length; i++)
-                        Container(
-                          margin: EdgeInsets.all(3),
-                          width: 5,
-                          height: 5,
-                          decoration: BoxDecoration(
-                              color: config.activeIndex == i
-                                  ? Colors.black
-                                  : Colors.black26,
-                              shape: BoxShape.circle),
-                        ),
-                      new Spacer()
-                    ],
-                  ),
-                );
-                /*Positioned(
-            top: 5,
-            right: 5,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), color: Colors.white),
-              child: Text('${config.activeIndex + 1}/${imageUrls.length}'),
-            ),
-          );*/
-              })
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        for (var i = 0; i < imageUrls.length; i++)
+                          Container(
+                            margin: const EdgeInsets.all(3),
+                            width: 5,
+                            height: 5,
+                            decoration: BoxDecoration(
+                                color: config.activeIndex == i
+                                    ? Colors.black
+                                    : Colors.black26,
+                                shape: BoxShape.circle),
+                          ),
+                        const Spacer()
+                      ],
+                    ),
+                  );
+                },
+              )
             : null,
       ),
     );
   }
 }
+
+/*
+class ImageCard extends StatelessWidget {
+  final List<String> imageUrls;
+  final double? minHeight;
+  const ImageCard({
+    Key? key,
+    required this.imageUrls,
+    this.minHeight,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return;
+  }
+}
+*/

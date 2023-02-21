@@ -47,13 +47,6 @@ class PostModel {
     required this.createdAt,
     required this.createdBy,
   });
-  List<CommentModel> getComments(List<Map<String, dynamic>> dataList) {
-    List<CommentModel> comments = [];
-    for (var data in dataList) {
-      comments.add(CommentModel.fromJson(data));
-    }
-    return comments;
-  }
 
   PostModel.fromJson(Map<String, dynamic> data)
       : id = data['id'],

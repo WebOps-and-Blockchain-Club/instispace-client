@@ -9,22 +9,30 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../models/date_time_format.dart';
+import '../../models/post/actions.dart';
+import '../../models/post/create_post.dart';
 import '../../models/tag.dart';
 import '../../widgets/button/icon_button.dart';
 import '../../../widgets/helpers/error.dart';
 
-class NewPost extends StatefulWidget {
-  const NewPost({Key? key, this.images, this.post, required this.category})
-      : super(key: key);
+class NewPostScreen extends StatefulWidget {
   final List<dynamic>? images;
   final post;
-  final String category;
+  final PostCategoryModel category;
+  final CreatePostModel fieldConfiguration;
+  const NewPostScreen(
+      {Key? key,
+      this.images,
+      this.post,
+      required this.category,
+      required this.fieldConfiguration})
+      : super(key: key);
 
   @override
-  State<NewPost> createState() => _NewPostState();
+  State<NewPostScreen> createState() => _NewPostScreenState();
 }
 
-class _NewPostState extends State<NewPost> {
+class _NewPostScreenState extends State<NewPostScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController title = TextEditingController();
   final TextEditingController desc = TextEditingController();
@@ -72,20 +80,31 @@ class _NewPostState extends State<NewPost> {
           QueryResult? result,
         ) {
           return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                "NEW POST",
+                style: TextStyle(
+                    letterSpacing: 2.64,
+                    color: Color(0xFF3C3C3C),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
             body: SafeArea(
               child: Form(
                   key: formKey,
                   child: ListView(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                        child: CustomAppBar(
-                            title: "NEW POST",
-                            leading: CustomIconButton(
-                              icon: Icons.arrow_back,
-                              onPressed: () => Navigator.of(context).pop(),
-                            )),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                      //   child: CustomAppBar(
+                      //       title: "NEW POST",
+                      //       leading: CustomIconButton(
+                      //         icon: Icons.arrow_back,
+                      //         onPressed: () => Navigator.of(context).pop(),
+                      //       )),
+                      // ),
                       const SizedBox(height: 10),
                       if (widget.images != null)
                         SizedBox(
@@ -100,8 +119,7 @@ class _NewPostState extends State<NewPost> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(40),
                                       image: DecorationImage(
-                                        image:
-                                            NetworkImage(widget.images![index]),
+                                        image: FileImage(widget.images![index]),
                                         fit: BoxFit.cover,
                                       )),
                                 );

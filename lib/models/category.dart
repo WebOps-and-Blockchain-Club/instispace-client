@@ -19,8 +19,12 @@ List<PostCategoryModel> feedCategories = [
 ];
 List<PostCategoryModel> forumCategories = [
   PostCategoryModel(name: "Opportunities", icon: CustomIcons.opportunities),
-  PostCategoryModel(name: "Connect", icon: CustomIcons.connect),
   PostCategoryModel(name: "Queries", icon: CustomIcons.queries),
+  PostCategoryModel(name: "Connect", icon: CustomIcons.connect),
   PostCategoryModel(name: "Help", icon: CustomIcons.help),
   PostCategoryModel(name: "Random Thoughts", icon: CustomIcons.thoughts),
+];
+List<PostCategoryModel> lnfCategories = [
+  PostCategoryModel(name: "Lost", icon: CustomIcons.lost),
+  PostCategoryModel(name: "Found", icon: CustomIcons.found),
 ];

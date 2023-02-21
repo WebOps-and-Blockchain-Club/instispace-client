@@ -305,8 +305,8 @@ class _EditProfileUserState extends State<EditProfileUser> {
     if (widget.user.mobile != null) {
       mobile.text = widget.user.mobile!;
     }
-    if (widget.user.hostelName != null) {
-      hostel = widget.user.hostelName!;
+    if (widget.user.hostel != null) {
+      hostel = widget.user.hostel!.name;
     }
     if (widget.user.interets != null) {
       setState(() {

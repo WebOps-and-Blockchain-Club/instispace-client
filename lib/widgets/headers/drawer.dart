@@ -44,6 +44,7 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final user = auth.user;
     return Drawer(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       child: StatefulBuilder(
@@ -126,20 +127,21 @@ class CustomDrawer extends StatelessWidget {
                                       ),
 
                                       // E ID Card
-                                      ListTile(
-                                        visualDensity:
-                                            const VisualDensity(vertical: -4),
-                                        tileColor: Colors.transparent,
-                                        title: const Text("E-ID Card"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          EIDCard(user: user)));
-                                        },
-                                      ),
+                                      if (user != null)
+                                        ListTile(
+                                          visualDensity:
+                                              const VisualDensity(vertical: -4),
+                                          tileColor: Colors.transparent,
+                                          title: const Text("E-ID Card"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        EIDCard(user: user)));
+                                          },
+                                        ),
 
                                       // Search User
                                       ListTile(
@@ -183,7 +185,9 @@ class CustomDrawer extends StatelessWidget {
                                 ),
 
                                 //Super User Actions
-                                if (user.role != "USER")
+                                if (user != null &&
+                                    user.permission != null &&
+                                    user.role != "USER")
                                   Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
@@ -192,8 +196,8 @@ class CustomDrawer extends StatelessWidget {
                                       children: [
                                         const SizedBox(height: 10),
                                         //Super User List
-                                        if (user.permissions
-                                            .contains("VIEW_SUPER_USER_LIST"))
+                                        if (user.permission!.createAccount
+                                            .hasPermission)
                                           ListTile(
                                               tileColor: Colors.transparent,
                                               visualDensity:
@@ -210,8 +214,7 @@ class CustomDrawer extends StatelessWidget {
                                                             const SuperUserList()));
                                               }),
                                         // Reports
-                                        if (user.permissions
-                                            .contains("GET_REPORTS"))
+                                        if (user.permission!.moderateReport)
                                           ListTile(
                                             tileColor: Colors.transparent,
                                             visualDensity: const VisualDensity(
@@ -228,8 +231,7 @@ class CustomDrawer extends StatelessWidget {
                                             },
                                           ),
                                         // Create Notification
-                                        if (user.permissions
-                                            .contains("CREATE_NOTIFICATION"))
+                                        if (user.permission!.createNotification)
                                           ListTile(
                                             tileColor: Colors.transparent,
                                             visualDensity: const VisualDensity(
@@ -246,27 +248,28 @@ class CustomDrawer extends StatelessWidget {
                                             },
                                           ),
                                         // Create Account
-                                        // if (user.permissions
-                                        //     .contains("CREATE_ACCOUNT"))
-                                        ListTile(
-                                          tileColor: Colors.transparent,
-                                          visualDensity:
-                                              const VisualDensity(vertical: -4),
-                                          title: const Text('Create Accounts'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        CreateAccountPage(
-                                                          role: user.role!,
-                                                        )));
-                                          },
-                                        ),
+                                        if (user.permission!.createAccount
+                                            .hasPermission)
+                                          ListTile(
+                                            tileColor: Colors.transparent,
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4),
+                                            title:
+                                                const Text('Create Accounts'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          CreateAccountPage(
+                                                            role: user.role!,
+                                                          )));
+                                            },
+                                          ),
                                         // Update Role
-                                        if (user.permissions
-                                            .contains("UPDATE_ROLE"))
+                                        if (user.permission!.createAccount
+                                            .hasPermission)
                                           ListTile(
                                             tileColor: Colors.transparent,
                                             visualDensity: const VisualDensity(
@@ -283,8 +286,7 @@ class CustomDrawer extends StatelessWidget {
                                             },
                                           ),
                                         // Create Hostel
-                                        if (user.permissions
-                                            .contains("CREATE_HOSTEL"))
+                                        if (user.permission!.createHostel)
                                           ListTile(
                                             tileColor: Colors.transparent,
                                             visualDensity: const VisualDensity(
@@ -301,22 +303,21 @@ class CustomDrawer extends StatelessWidget {
                                           ),
 
                                         // Create Tag
-                                        // if (user.permissions
-                                        //     .contains("CREATE_TAG"))
-                                        ListTile(
-                                          tileColor: Colors.transparent,
-                                          visualDensity:
-                                              const VisualDensity(vertical: -4),
-                                          title: const Text('Create Tag'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        const CreateTagPage()));
-                                          },
-                                        ),
+                                        if (user.permission!.createTag)
+                                          ListTile(
+                                            tileColor: Colors.transparent,
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4),
+                                            title: const Text('Create Tag'),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          const CreateTagPage()));
+                                            },
+                                          ),
                                         // Super User's Guide
                                         if (user.role != "USER")
                                           ListTile(
@@ -364,6 +365,7 @@ class CustomDrawer extends StatelessWidget {
                                     title: const Text('About Us'),
                                     children: [
                                       const SizedBox(height: 10),
+
                                       // About Us
                                       ListTile(
                                         visualDensity:
@@ -379,8 +381,11 @@ class CustomDrawer extends StatelessWidget {
                                                           const AboutUsPage()));
                                         },
                                       ),
+
                                       // Feedback
-                                      user.permissions.contains("VIEW_FEEDBACK")
+                                      (user != null &&
+                                                  user.permission != null) &&
+                                              user.permission!.viewFeeback
                                           ? const ViewFeedback()
                                           : ListTile(
                                               visualDensity:
@@ -425,7 +430,7 @@ class CustomDrawer extends StatelessWidget {
                                     horizontalTitleGap: 0,
                                     title: const Text("Logout"),
                                     onTap: () => logoutAlert(
-                                        context, () => auth.logout(), fcmToken),
+                                        context, () => auth.logout()),
                                   ),
                                 ),
                               ],
@@ -527,8 +532,7 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-Future<dynamic> logoutAlert(
-    BuildContext context, Function callback, String fcmToken) {
+Future<dynamic> logoutAlert(BuildContext context, void Function() callback) {
   return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -549,40 +553,11 @@ Future<dynamic> logoutAlert(
                 color: ColorPalette.palette(context).warning,
                 type: ButtonType.outlined,
               ),
-              Mutation(
-                  options: MutationOptions(
-                    document: gql(AuthGQL().logout),
-                    onCompleted: (dynamic resultData) async {
-                      Navigator.of(context).pop();
-                      callback();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('User Logged Out')),
-                      );
-                    },
-                    onError: (dynamic error) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content:
-                                Text(formatErrorMessage(error.toString()))),
-                      );
-                    },
-                  ),
-                  builder: (
-                    RunMutation runMutation,
-                    QueryResult? result,
-                  ) {
-                    return CustomElevatedButton(
-                      onPressed: () {
-                        runMutation({
-                          "fcmToken": fcmToken,
-                        });
-                      },
-                      text: "Logout",
-                      isLoading: result!.isLoading,
-                      color: ColorPalette.palette(context).warning,
-                    );
-                  }),
+              CustomElevatedButton(
+                onPressed: callback,
+                text: "Logout",
+                color: ColorPalette.palette(context).warning,
+              ),
             ],
           );
         });

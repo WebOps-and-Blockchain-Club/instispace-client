@@ -13,6 +13,7 @@ class FeedGQL {
           roll
           role
           name
+          photo
         }
         content
         isLiked
@@ -36,6 +37,7 @@ class FeedGQL {
         roll
         role
         name
+        photo
       }
       createdAt
       content
@@ -53,16 +55,30 @@ class FeedGQL {
     isLiked
   }
 }""";
+// TODO:
+  String toggleDisLikePost = """mutation Mutation(\$postId: String!) {
+  toggleLikePost(postId: \$postId) {
+    title
+    likeCount
+    isLiked
+  }
+}""";
   String createComment =
-      """mutation CreateComment(\$createCommentInput: CreateCommentInput!) {
-  createComment(createCommentInput: \$createCommentInput) {
+      """mutation CreateComment(\$createCommentInput: CreateCommentInput!, \$postId: String!) {
+  createComment(createCommentInput: \$createCommentInput, postId: \$postId) {
     id
     content
+    isLiked
+    isDisliked
+    likeCount
+    isHidden
     createdAt
     createdBy {
       id
       name
       roll
+      photo
+      role
     }
   }
 }""";
@@ -70,6 +86,12 @@ class FeedGQL {
   toggleSavePost(postId: \$postId) {
     id
     title
+  }
+}""";
+
+String report = """mutation CreateReport(\$createReportInput: CreateReportInput!, \$postId: String!) {
+  createReport(createReportInput: \$createReportInput, postId: \$postId) {
+    id
   }
 }""";
 }

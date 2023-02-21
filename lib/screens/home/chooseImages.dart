@@ -9,24 +9,30 @@ import 'package:flutter_cache_manager/file.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../../models/post/actions.dart';
+import '../../models/post/create_post.dart';
 import '../../widgets/button/icon_button.dart';
 
-class ChooseImages extends StatefulWidget {
-  final category;
-  const ChooseImages({Key? key, this.category}) : super(key: key);
+class SelectImageScreen extends StatefulWidget {
+  final PostCategoryModel category;
+  final CreatePostModel fieldConfiguration;
+
+  const SelectImageScreen(
+      {Key? key, required this.category, required this.fieldConfiguration})
+      : super(key: key);
 
   @override
-  State<ChooseImages> createState() => _ChooseImagesState();
+  State<SelectImageScreen> createState() => _SelectImageScreenState();
 }
 
-class _ChooseImagesState extends State<ChooseImages> {
+class _SelectImageScreenState extends State<SelectImageScreen> {
   final _controller = ScrollController();
   final ImagePicker _picker = ImagePicker();
   late List images = [];
   int page = 0;
   late List chosenImgs = [
-    "https://i.imgflip.com/51mkbd.png",
-    "https://thumbs.gfycat.com/PoorRealisticGermanpinscher-size_restricted.gif"
+    // "https://i.imgflip.com/51mkbd.png",
+    // "https://thumbs.gfycat.com/PoorRealisticGermanpinscher-size_restricted.gif"
   ];
   bool initialized = false;
   int len = 0;
@@ -35,6 +41,7 @@ class _ChooseImagesState extends State<ChooseImages> {
   void initState() {
     _getImages();
     setState(() {
+      // chosenImgs.add(images[0]);
       initialized = true;
     });
     _controller.addListener(() {
@@ -62,6 +69,11 @@ class _ChooseImagesState extends State<ChooseImages> {
           });
         }
       }
+      if (page == 0) {
+        setState(() {
+          chosenImgs.add(images[0]);
+        });
+      }
       setState(() {
         page++;
       });
@@ -72,9 +84,20 @@ class _ChooseImagesState extends State<ChooseImages> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: initialized == true
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "NEW POST",
+          style: TextStyle(
+              letterSpacing: 2.64,
+              color: Color(0xFF3C3C3C),
+              fontSize: 24,
+              fontWeight: FontWeight.w700),
+        ),
+      ),
+      body: SafeArea(
+        child: initialized == true
             ? Column(
                 children: [
                   Padding(
@@ -92,8 +115,10 @@ class _ChooseImagesState extends State<ChooseImages> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => NewPost(
+                                  builder: (context) => NewPostScreen(
                                         category: widget.category,
+                                        fieldConfiguration:
+                                            widget.fieldConfiguration,
                                       ))),
                         ),
                         leading: CustomIconButton(
@@ -123,7 +148,7 @@ class _ChooseImagesState extends State<ChooseImages> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(40),
                                 image: DecorationImage(
-                                  image: NetworkImage(chosenImgs[index]),
+                                  image: FileImage(chosenImgs[index]),
                                   fit: BoxFit.cover,
                                 )),
                           );
@@ -171,9 +196,11 @@ class _ChooseImagesState extends State<ChooseImages> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => NewPost(
+                                    builder: (context) => NewPostScreen(
                                           category: widget.category,
                                           images: chosenImgs,
+                                          fieldConfiguration:
+                                              widget.fieldConfiguration,
                                         )));
                           },
                           child: Text(
@@ -202,7 +229,9 @@ class _ChooseImagesState extends State<ChooseImages> {
                           return GestureDetector(
                             onTap: () {
                               print('tapped $index');
+                              print('${images[index]}');
                               setState(() {
+                                chosenImgs.add(images[index]);
                                 len++;
                               });
                             },

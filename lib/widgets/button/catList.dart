@@ -1,10 +1,14 @@
+import 'package:client/models/post/actions.dart';
 import 'package:client/screens/home/chooseImages.dart';
 import 'package:client/screens/home/newPost.dart';
 import 'package:client/themes.dart';
+import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 
+import '../../screens/home/new_post/main.dart';
+
 class CategoryList extends StatefulWidget {
-  final List<String> categories;
+  final List<PostCategoryModel> categories;
   const CategoryList({Key? key, required this.categories}) : super(key: key);
 
   @override
@@ -49,23 +53,11 @@ class _CategoryListState extends State<CategoryList>
             itemBuilder: ((context, index) {
               return TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ([
-                                  'Queries',
-                                  'Help',
-                                  'Opportunities',
-                                  'Connect',
-                                  'Random'
-                                ].contains(widget.categories[index]))
-                                    ? NewPost(
-                                        category: widget.categories[index])
-                                    : ChooseImages(
-                                        category: widget.categories[index])));
+                    navigate(context,
+                        NewPostWrapper(category: widget.categories[index]));
                   },
                   child: Text(
-                    widget.categories[index],
+                    widget.categories[index].name,
                     style: const TextStyle(color: Colors.black),
                   ),
                   style: TextButton.styleFrom(

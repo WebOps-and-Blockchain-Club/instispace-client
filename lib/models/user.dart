@@ -1,7 +1,5 @@
+import 'hostel.dart';
 import 'post.dart';
-import 'announcement.dart';
-import 'event.dart';
-import 'netop.dart';
 import 'tag.dart';
 
 class UserModel {
@@ -16,29 +14,26 @@ class UserModel {
   bool isNewUser;
   String? mobile;
   List<TagModel>? interets;
-  String? hostelName;
-  String? hostelId;
-  // List<AnnouncementModel>? announcements;
-  // List<EventModel>? events;
-  // List<NetopModel>? netops;
+  HostelModel? hostel;
   List<String?> permissions;
-  List<PostModel>? posts;
+  PermissionModel? permission;
 
-  UserModel(
-      {this.id,
-      this.name,
-      this.ldapName,
-      this.roll,
-      required this.role,
-      required this.photo,
-      required this.isNewUser,
-      this.program,
-      this.department,
-      this.mobile,
-      this.interets,
-      this.hostelName,
-      this.posts,
-      required this.permissions});
+  UserModel({
+    this.id,
+    this.name,
+    this.ldapName,
+    this.roll,
+    required this.role,
+    required this.photo,
+    required this.isNewUser,
+    this.program,
+    this.department,
+    this.mobile,
+    this.interets,
+    this.hostel,
+    required this.permissions,
+    this.permission,
+  });
 
   UserModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
@@ -52,47 +47,65 @@ class UserModel {
         // department = data["department"],
         mobile = data["mobile"],
         interets = TagsModel.fromJson(data["interests"] ?? []).tags,
-        hostelName = data["hostel"] != null ? data["hostel"]["name"] : null,
-        hostelId = data["hostel"] != null ? data["hostel"]["id"] : null,
-        posts = data["post"] ??
-            [
-              PostModel(
-                  id: "id",
-                  title: "title",
-                  description: "description",
-                  permissions: ["USER", "ADMIN"])
-            ],
-        // announcements =
-        //     data["getHome"] != null && data["getHome"]["announcements"] != null
-        //         ? AnnouncementsModel.fromJson(data["getHome"]["announcements"])
-        //             .announcements
-        //         : null,
-        // events = data["getHome"] != null && data["getHome"]["events"] != null
-        //     ? EventsModel.fromJson(data["getHome"]["events"]).events
-        //     : null,
-        // netops = data["getHome"] != null && data["getHome"]["netops"] != null
-        //     ? NetopsModel.fromJson(data["getHome"]["netops"]).netops
-        //     : null,
+        hostel = data["hostel"] != null
+            ? HostelModel.fromJson(data["hostel"])
+            : null,
         permissions = data["permission"]["account"] != null
             ? data["permission"]["account"].cast<String>()
-            : [];
+            : [],
+        permission = PermissionModel.fromJson(data["permission"]);
+}
 
-  List<HomeModel> toHomeModel() {
-    List<HomeModel> home = [];
-    if (posts != null && posts!.isNotEmpty) {
-      home.add(HomeModel(
-          title: "Networking & Opportunities",
-          posts: posts ??
-              [
-                PostModel(
-                    id: "id",
-                    title: "title",
-                    description: "description",
-                    permissions: ["USER", "ADMIN"]),
-              ]));
-    }
-    return home;
-  }
+class PermissionModel {
+  final bool createNotification;
+  final bool createTag;
+  final bool createHostel;
+  final bool moderateReport;
+  final bool approvePost;
+  final bool viewFeeback;
+  final CreateAccountPermissionModel createAccount;
+  final CreatePostPermissionModel? createPost;
+
+  PermissionModel(
+      {required this.createNotification,
+      required this.createTag,
+      required this.createHostel,
+      required this.moderateReport,
+      required this.approvePost,
+      required this.viewFeeback,
+      required this.createAccount,
+      required this.createPost});
+
+  PermissionModel.fromJson(Map<String, dynamic> data)
+      : createNotification = true,
+        createTag = true,
+        createHostel = true,
+        moderateReport = true,
+        approvePost = true,
+        viewFeeback = true,
+        createAccount = CreateAccountPermissionModel.fromJson(data['account']),
+        createPost = null;
+}
+
+class CreateAccountPermissionModel {
+  final bool hasPermission;
+  final List<String>? allowedRoles;
+
+  CreateAccountPermissionModel(
+      {required this.hasPermission, this.allowedRoles});
+
+  CreateAccountPermissionModel.fromJson(dynamic data)
+      : hasPermission = true,
+        // : hasPermission = data != null && data.cast<String>().length,
+        allowedRoles = data != null ? data.cast<String>() : [];
+}
+
+class CreatePostPermissionModel {
+  final bool hasPermission;
+  final List<String>? allowedCategory;
+
+  CreatePostPermissionModel(
+      {required this.hasPermission, this.allowedCategory});
 }
 
 class HomeModel {

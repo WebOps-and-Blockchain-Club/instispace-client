@@ -37,6 +37,7 @@ class Themes {
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         titleTextStyle: TextStyle(
             color: ColorPalette._text[400],
             fontSize: 24,
@@ -110,7 +111,7 @@ class Themes {
     ),
 
     // Icon Theme
-    iconTheme: IconThemeData(color: ColorPalette._secondary),
+    iconTheme: const IconThemeData(color: ColorPalette._secondary),
 
     // Divider Theme
     dividerTheme: DividerThemeData(color: ColorPalette._primary, thickness: 2),

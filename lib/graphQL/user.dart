@@ -1,45 +1,31 @@
 class UserGQL {
   String getMe = """
-query {
-  getMe {
-    photo
-    accountsCreated {
-      id
+    query {
+      getMe {
+        id
+        roll
+        ldapName
+        name
+        role
+        photo
+        isNewUser
+        mobile
+        interests {
+          id
+          title
+          category
+        }
+        hostel {
+          id
+          name
+        }
+        permission {
+          approvePosts
+          createTag
+          handleReports
+        }
+      }
     }
-    comment {
-      id
-    }
-    createdBy {
-      id
-    }
-    id
-    interests {
-      id
-      category
-    }
-    isNewUser
-    mobile
-    name
-    permission {
-      account
-      id
-    }
-    role
-    roll
-    savedPost {
-      id
-    }
-    likedComment {
-      id
-    }
-    likedPost {
-      id
-    }
-    post {
-      id
-    }
-  }
-}
   """;
 
   String searchUser = """

@@ -1,36 +1,27 @@
-import 'package:client/screens/home/chooseImages.dart';
-import 'package:client/themes.dart';
-import 'package:client/widgets/button/catList.dart';
+import 'package:client/models/post/actions.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'actions.dart';
-import '../../../widgets/card/image_view.dart';
-import '../../teasure_hunt/main.dart';
-import '../../hostel/main.dart';
-import '../../../widgets/helpers/navigate.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+import '../../../graphQL/user.dart';
 import '../../../services/auth.dart';
+import '/themes.dart';
+import 'actions.dart';
+import '../post/query.dart';
+import '../../../widgets/button/catList.dart';
+import '../../../graphQL/feed.dart';
 import '../../../models/user.dart';
 import '../../../models/post.dart';
-import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/main.dart';
-import '../../../widgets/headers/main.dart';
-import '../../../widgets/helpers/error.dart';
-import '../../../widgets/utils/image_cache_path.dart';
-import '../../../themes.dart';
-import '../../../utils/custom_icons.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  final Future<void> Function() refetch;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final Widget appBar;
+  // final Future<void> Function() refetch;
+  // final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomePage(
-      {Key? key,
-      required this.auth,
-      required this.user,
-      required this.refetch,
-      required this.scaffoldKey})
+      {Key? key, required this.auth, required this.user, required this.appBar})
       : super(key: key);
 
   @override
@@ -41,201 +32,137 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   bool show = false;
 
+  int take = 10;
+
   @override
   Widget build(BuildContext context) {
-    final List<HomeModel>? home = widget.user.toHomeModel();
+    // final List<HomeModel>? home = widget.user.toHomeModel();
+    final Map<String, dynamic> variables = {
+      "take": take,
+      "lastEventId": "",
+      "orderInput": {"byLikes": false, "byComments": false},
+      "filteringCondition": {
+        "search": null,
+        "posttobeApproved": false,
+        "isSaved": false,
+        "showOldPost": false,
+        "isLiked": false,
+        "categories": null,
+      },
+    };
+    final QueryOptions<Object?> options =
+        QueryOptions(document: gql(FeedGQL().findPosts), variables: variables);
+
     return WillPopScope(
-        onWillPop: () async {
-          if (_scrollController.offset != 0.0) {
-            _scrollController.animateTo(0.0,
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeIn);
-            return false;
-          } else {
-            return true;
-          }
-        },
-        child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: SafeArea(
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    child: RefreshIndicator(
-                      onRefresh: () => widget.refetch(),
-                      child: NestedScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        controller: _scrollController,
-                        headerSliverBuilder: (context, innerBoxIsScrolled) {
-                          return [
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                return CustomAppBar(
-                                  title: "",
-                                  leading: IconButton(
-                                    onPressed: () => widget
-                                        .scaffoldKey.currentState!
-                                        .openDrawer(),
-                                    icon: Icon(CustomIcons.hamburger),
-                                  ),
-                                  action: GestureDetector(
-                                    onTap: () async {
-                                      List<String> images =
-                                          await imageCachePath(
-                                              [widget.user.photo]);
-                                      openImageView(context, 0, images);
-                                    },
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.user.photo,
-                                      placeholder: (_, __) => const Icon(
-                                          Icons.account_circle_rounded,
-                                          size: 45),
-                                      errorWidget: (_, __, ___) => const Icon(
-                                          Icons.account_circle_rounded,
-                                          size: 45),
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                        height: 45,
-                                        width: 45,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }, childCount: 1),
-                            ),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 7.5),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          widget.user.name!.toUpperCase(),
-                                          style: TextStyle(
-                                              color: Color(0xFF3C3C3C),
-                                              fontFamily: 'Proxima Nova',
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                        Text(
-                                          widget.user.roll!.toUpperCase(),
-                                          style: TextStyle(
-                                              color: Color(0xFF3C3C3C),
-                                              fontWeight: FontWeight.w700,
-                                              fontFamily: 'Proxima Nova',
-                                              fontSize: 20),
-                                        )
-                                      ]),
-                                );
-                              }, childCount: 1),
-                            ),
-                          ];
-                        },
-                        body: RefreshIndicator(
-                          onRefresh: () => widget.refetch(),
-                          child: NestedScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            controller: _scrollController,
-                            headerSliverBuilder: (context, innerBoxIsScrolled) {
-                              return [
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                    return CustomAppBar(
-                                      title: "InstiSpace",
-                                      leading: CustomIconButton(
-                                          icon: Icons.menu,
-                                          onPressed: () => {
-                                                widget.scaffoldKey.currentState!
-                                                    .openDrawer()
-                                              }),
-                                      action: (widget.user.hostelId != null ||
-                                              widget.user.permissions
-                                                  .contains("HOSTEL_ADMIN"))
-                                          ? CustomIconButton(
-                                              icon: Icons
-                                                  .account_balance_outlined,
-                                              onPressed: () => navigate(
-                                                  context,
-                                                  HostelWrapper(
-                                                      user: widget.user)))
-                                          : null,
-                                    );
-                                  }, childCount: 1),
-                                ),
-                                SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: Header(
-                                          title: "Hi ${widget.user.name}",
-                                          subTitle: "Get InstiSpace feed here"),
-                                    );
-                                  }, childCount: 1),
-                                ),
-                              ];
-                            },
-                            body: RefreshIndicator(
-                              onRefresh: () => widget.refetch(),
-                              child: Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: (home == null || home.isEmpty)
-                                      ? const Error(error: "No Posts")
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: home.length,
-                                          itemBuilder: (context, index) =>
-                                              Section(
-                                                  user: widget.user,
-                                                  title: home[index].title,
-                                                  posts: home[index].posts))),
-                            ),
-                          ),
-                        ),
+      onWillPop: () async {
+        if (_scrollController.offset != 0.0) {
+          _scrollController.animateTo(0.0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeIn);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        body: NestedScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: ScrollController(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+            return <Widget>[
+              // AppBar
+              widget.appBar,
+
+              // SearchBar & Categories Filter
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      widget.user.name!.toUpperCase(),
+                      // "JANITH",
+                      style: const TextStyle(
+                        color: Color(0xFF3C3C3C),
+                        fontFamily: 'Proxima Nova',
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2.64,
                       ),
-                    ))),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: ColorPalette.palette(context).secondary,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const CategoryList(categories: [
-                        'Queries',
-                        'Help',
-                        'Announcements',
-                        'Opportunities',
-                        'Recruitment',
-                        'Lost',
-                        'Found',
-                        'Connect',
-                        'Events',
-                        'Random'
-                      ]);
-                    });
-              },
-            )));
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      widget.user.roll!.toUpperCase(),
+                      // "MM19B035",
+                      style: const TextStyle(
+                        color: Color(0xFF3C3C3C),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Proxima Nova',
+                        fontSize: 20,
+                        letterSpacing: 2.64,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ]),
+              ),
+            ];
+          },
+          body: Query(
+            options: QueryOptions(document: gql(UserGQL().getMe)),
+            builder: (result, {fetchMore, refetch}) {
+              print("\n\n\n\ngetme query called");
+              if (result.hasException) {
+                return Text(result.exception.toString());
+              }
+
+              if (result.isLoading) {
+                return const Text(
+                  "Connecting to InstiSpace...",
+                );
+              }
+
+              final UserModel user = UserModel.fromJson(result.data!["getMe"]);
+
+              // widget.auth.updateUser(user);
+
+              return PostQuery(options: options);
+            },
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: ColorPalette.palette(context).secondary,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CategoryList(categories: [
+                    PostCategoryModel.fromJson("Events"),
+                    PostCategoryModel.fromJson("Recruitment"),
+                    PostCategoryModel.fromJson("Announcements"),
+                    PostCategoryModel.fromJson("Opportunities"),
+                    PostCategoryModel.fromJson("Queries"),
+                    PostCategoryModel.fromJson("Connect"),
+                    PostCategoryModel.fromJson("Help"),
+                    PostCategoryModel.fromJson("Random Thoughts"),
+                    PostCategoryModel.fromJson("Lost"),
+                    PostCategoryModel.fromJson("Found"),
+                  ]);
+                });
+          },
+        ),
+      ),
+    );
   }
 }
-
+/*
 class Section extends StatefulWidget {
   final String title;
   final List<PostModel> posts;
@@ -297,3 +224,4 @@ class _SectionState extends State<Section> {
     );
   }
 }
+*/
