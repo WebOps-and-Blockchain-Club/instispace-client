@@ -1,6 +1,6 @@
 import 'package:client/models/post/actions.dart';
-import 'package:client/screens/home/chooseImages.dart';
-import 'package:client/screens/home/newPost.dart';
+import 'package:client/screens/home/new_post/chooseImages.dart';
+import 'package:client/screens/home/new_post/newPost.dart';
 import 'package:client/themes.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';

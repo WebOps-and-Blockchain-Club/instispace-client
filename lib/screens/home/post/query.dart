@@ -60,7 +60,7 @@ class _PostQueryState extends State<PostQuery> {
                           if (notification.metrics.pixels >
                                   0.8 * notification.metrics.maxScrollExtent &&
                               total > posts.length) {
-                            // fetchMore!(opts);
+                            fetchMore!(opts);
                           }
                           return true;
                         },
@@ -68,18 +68,28 @@ class _PostQueryState extends State<PostQuery> {
                       ),
 
                     //Fetch More Loader
+                    // small
                     if (result.isLoading) const Text("Loading more items"),
 
                     //End of Post
+                    // new widget
                     if (total == posts.length) const Text("View Older Posts")
                   ];
                 }()),
 
               //Error Display
-              if (result.hasException) Text(result.exception.toString()),
+              // snackbar
+              if (result.hasException && result.data != null)
+                Text(result.exception.toString()),
+
+              // full screen
+              if (result.hasException && result.data == null)
+                Text(result.exception.toString()),
 
               //Loading Display
-              if (result.isLoading) const Text("Loading"),
+              //full screen
+              if (result.isLoading && result.data == null)
+                const Text("Loading"),
             ],
           ),
         );

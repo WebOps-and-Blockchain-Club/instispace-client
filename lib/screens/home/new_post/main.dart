@@ -1,13 +1,16 @@
 import 'package:client/models/post/create_post.dart';
-import 'package:client/screens/home/chooseImages.dart';
+import 'package:client/screens/home/new_post/chooseImages.dart';
+import 'package:client/widgets/section/main.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../../graphQL/feed.dart';
 import '../../../models/post/actions.dart';
-import '../newPost.dart';
+import 'newPost.dart';
 
 Map<String, CreatePostModel> getCreatePostFields = {
   "Events": CreatePostModel(
-    imagePrimary: FieldModel(required: false),
+    imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
@@ -17,26 +20,28 @@ Map<String, CreatePostModel> getCreatePostFields = {
     endTime: FieldModel(),
   ),
   "Competition": CreatePostModel(
-    imagePrimary: FieldModel(required: false),
+    imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
     tag: FieldModel(),
+    postTime: FieldModel(required: false),
     endTime: FieldModel(),
   ),
   "Recruitment": CreatePostModel(
-    imagePrimary: FieldModel(required: false),
+    imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
     tag: FieldModel(),
+    postTime: FieldModel(required: false),
     endTime: FieldModel(),
   ),
   "Announcements": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
-    imageSecondary: FieldModel(required: false),
+    imageSecondary: FieldModel(required: false, maxImgs: 8),
     tag: FieldModel(),
     endTime: FieldModel(),
   ),
@@ -87,7 +92,10 @@ Map<String, CreatePostModel> getCreatePostFields = {
 
 class NewPostWrapper extends StatelessWidget {
   final PostCategoryModel category;
-  const NewPostWrapper({Key? key, required this.category}) : super(key: key);
+
+  final QueryOptions<Object?> options =
+      QueryOptions(document: gql(FeedGQL().findPosts));
+  NewPostWrapper({Key? key, required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

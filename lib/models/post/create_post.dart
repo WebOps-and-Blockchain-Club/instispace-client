@@ -9,26 +9,28 @@ class CreatePostModel {
   final FieldModel? postTime;
   final FieldModel? endTime;
 
-  CreatePostModel(
-      {this.imagePrimary,
-      this.title,
-      this.description,
-      this.link,
-      this.imageSecondary,
-      this.tag,
-      this.location,
-      this.postTime,
-      this.endTime});
+  CreatePostModel({
+    this.imagePrimary,
+    this.title,
+    this.description,
+    this.link,
+    this.imageSecondary,
+    this.tag,
+    this.location,
+    this.postTime,
+    this.endTime,
+  });
 }
 
 class FieldModel {
   final bool required;
   final String? label;
   final bool enableEdit;
+  final int maxImgs;
 
-  FieldModel({
-    this.required = true,
-    this.label,
-    this.enableEdit = true,
-  });
+  FieldModel(
+      {this.required = true,
+      this.label,
+      this.enableEdit = true,
+      this.maxImgs = 4});
 }
