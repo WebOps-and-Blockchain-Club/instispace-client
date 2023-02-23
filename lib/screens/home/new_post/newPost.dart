@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
+import 'package:client/screens/home/new_post/endTime.dart';
 import 'package:client/screens/home/new_post/imageView.dart';
 import 'package:client/widgets/text/label.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,18 +67,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late TagsModel selectedTags = TagsModel.fromJson([]);
   late String error;
   String tagError = "";
-  late DateTime? endTime;
+  DateTime? endTime = null;
+  late DateTime? date;
+  late DateTime? time;
 
-  late String? date;
-  late String? time;
-  late String? dateFormated;
-  late String? timeFormated;
+  late String endTimeFormated;
 
   final localStorage = LocalStorageService();
 
   void onDelete(io.File f) {
     setState(() {
       imgs.remove(f);
+    });
+  }
+
+  void setEndTime(DateTime e) {
+    setState(() {
+      endTime = e;
     });
   }
 
@@ -253,17 +259,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                   (value) {
                                                     if (value != null) {
                                                       setState(() {
-                                                        date = value.toString();
-                                                      });
-
-                                                      DateTimeFormatModel
-                                                          _date =
-                                                          DateTimeFormatModel(
-                                                              dateTime: value);
-                                                      setState(() {
-                                                        dateFormated =
-                                                            _date.toFormat(
-                                                                "MMM dd, yyyy");
+                                                        date = value;
                                                       });
 
                                                       print("date : $date");
@@ -285,25 +281,38 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                                     value
                                                                         .minute);
                                                             setState(() {
-                                                              time = _dateTime
-                                                                  .toString();
-                                                            });
-
-                                                            DateTimeFormatModel
-                                                                _time =
-                                                                DateTimeFormatModel(
-                                                                    dateTime:
-                                                                        _dateTime);
-                                                            setState(() {
-                                                              timeFormated =
-                                                                  _time.toFormat(
-                                                                      "h:mm a");
+                                                              time = _dateTime;
                                                             });
 
                                                             dateTimeFormated
-                                                                    .text =
-                                                                dateFormated! +
-                                                                    timeFormated!;
+                                                                .text = DateTimeFormatModel(
+                                                                        dateTime:
+                                                                            date!)
+                                                                    .toFormat(
+                                                                        "MMM dd, yyyy") +
+                                                                " " +
+                                                                DateTimeFormatModel(
+                                                                        dateTime:
+                                                                            time!)
+                                                                    .toFormat(
+                                                                        "h:mm a");
+                                                            setState(() {
+                                                              endTime = DateTimeFormatModel.fromString(date
+                                                                          .toString()
+                                                                          .split(
+                                                                              " ")
+                                                                          .first +
+                                                                      " " +
+                                                                      time
+                                                                          .toString()
+                                                                          .split(
+                                                                              " ")
+                                                                          .last)
+                                                                  .dateTime
+                                                                  .add(const Duration(
+                                                                      hours:
+                                                                          5));
+                                                            });
 
                                                             print(
                                                                 "time : $time");
@@ -466,7 +475,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                             }
                                                           });
                                                         },
-                                                        child: Text('Camera')),
+                                                        child: const Text(
+                                                            'Camera')),
                                                     TextButton(
                                                         onPressed: () async {
                                                           final List<XFile>?
@@ -515,7 +525,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                 if (fieldConfiguration.tag != null)
                                   CustomElevatedButton(
                                       leading: Icons.tag,
-                                      padding: [0, 2],
+                                      padding: const [0, 2],
                                       onPressed: () {
                                         showModalBottomSheet(
                                           context: context,
@@ -542,6 +552,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                   style: const TextStyle(
                                       color: Colors.red, fontSize: 12)),
                             const SizedBox(height: 10),
+                            EndTime(
+                              endTime: endTime,
+                              setEndtime: setEndTime,
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(top: 25),
                               child: Row(
@@ -582,15 +596,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                               selectedTags.tags.isNotEmpty &&
                                               selectedTags.tags.length <= 7;
                                       FocusScope.of(context).unfocus();
-
-                                      DateTimeFormatModel? _dateTime;
-                                      if (fieldConfiguration.postTime != null) {
-                                        _dateTime =
-                                            DateTimeFormatModel.fromString(
-                                                date!.split(" ").first +
-                                                    " " +
-                                                    time!.split(" ").last);
-                                      }
 
                                       if (isValid) {
                                         setState(() {
@@ -644,9 +649,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                             "location": location.text,
                                             "tagIds": selectedTags.getTagIds(),
                                             "link": link.text,
-                                            "postTime":
-                                                _dateTime?.toISOFormat(),
-                                            "endTime": endTime,
+                                            "postTime": date,
+                                            "endTime":
+                                                endTime!.toIso8601String(),
                                             "photoList":
                                                 widget.images?.join(" AND ")
                                           },

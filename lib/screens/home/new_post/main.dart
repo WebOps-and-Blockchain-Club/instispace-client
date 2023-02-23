@@ -88,6 +88,18 @@ Map<String, CreatePostModel> getCreatePostFields = {
     tag: FieldModel(),
     endTime: FieldModel(),
   ),
+  "Lost": CreatePostModel(
+    title: FieldModel(),
+    description: FieldModel(),
+    imageSecondary: FieldModel(required: false),
+    endTime: FieldModel(),
+  ),
+  "Found": CreatePostModel(
+    title: FieldModel(),
+    description: FieldModel(),
+    imageSecondary: FieldModel(required: false),
+    endTime: FieldModel(),
+  ),
 };
 
 class NewPostWrapper extends StatelessWidget {
