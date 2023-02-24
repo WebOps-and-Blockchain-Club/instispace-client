@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return CategoryList(categories: [
+                  return CategoryList(options: options, categories: [
                     PostCategoryModel.fromJson("Events"),
                     PostCategoryModel.fromJson("Recruitment"),
                     PostCategoryModel.fromJson("Announcements"),

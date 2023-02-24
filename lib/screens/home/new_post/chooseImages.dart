@@ -17,10 +17,14 @@ import '../../../widgets/button/icon_button.dart';
 
 class SelectImageScreen extends StatefulWidget {
   final PostCategoryModel category;
+  final options;
   final CreatePostModel fieldConfiguration;
 
   const SelectImageScreen(
-      {Key? key, required this.category, required this.fieldConfiguration})
+      {Key? key,
+      required this.category,
+      required this.fieldConfiguration,
+      this.options})
       : super(key: key);
 
   @override
@@ -148,6 +152,7 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                                             images: chosenImgs,
                                             fieldConfiguration:
                                                 widget.fieldConfiguration,
+                                            options: widget.options,
                                           )));
                             }
                           },

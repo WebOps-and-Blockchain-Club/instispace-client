@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 
 class EndTime extends StatefulWidget {
   final DateTime? endTime;
+  final bool edit;
   final Function setEndtime;
-  const EndTime({Key? key, required this.endTime, required this.setEndtime})
+  const EndTime(
+      {Key? key,
+      required this.endTime,
+      required this.setEndtime,
+      required this.edit})
       : super(key: key);
 
   @override
@@ -21,8 +26,9 @@ class _EndTimeState extends State<EndTime> {
   void initState() {
     // TODO: implement initState
     setState(() {
-      endTime = widget.endTime ?? DateTime.now();
+      endTime = widget.endTime ?? DateTime.now().add(const Duration(days: 5));
     });
+
     super.initState();
   }
 
@@ -47,47 +53,48 @@ class _EndTimeState extends State<EndTime> {
                 .copyWith(color: ColorPalette.palette(context).primary),
           )
         ]),
-        IconButton(
-          onPressed: () {
-            showDatePicker(
-                    context: context,
-                    initialDate: endTime,
-                    firstDate: endTime,
-                    lastDate: endTime.add(const Duration(days: 30 * 5)))
-                .then((value) {
-                  if (value != null) {
-                    setState(() {
-                      date = value;
-                    });
-                  }
-                })
-                .then((value) => showTimePicker(
-                    context: context, initialTime: TimeOfDay.now()))
-                .then((value) {
-                  if (value != null) {
-                    DateTime _dateTime = DateTime(
-                        int.parse(
-                            date.toString().split(" ").first.split('-')[0]),
-                        int.parse(
-                            date.toString().split(" ").first.split('-')[1]),
-                        int.parse(
-                            date.toString().split(" ").first.split('-')[2]),
-                        value.hour,
-                        value.minute);
-                    setState(() {
-                      time = _dateTime;
-                    });
-                  }
+        if (widget.edit)
+          IconButton(
+            onPressed: () {
+              showDatePicker(
+                      context: context,
+                      initialDate: endTime,
+                      firstDate: endTime,
+                      lastDate: endTime.add(const Duration(days: 30 * 5)))
+                  .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        date = value;
+                      });
+                    }
+                  })
+                  .then((value) => showTimePicker(
+                      context: context, initialTime: TimeOfDay.now()))
+                  .then((value) {
+                    if (value != null) {
+                      DateTime _dateTime = DateTime(
+                          int.parse(
+                              date.toString().split(" ").first.split('-')[0]),
+                          int.parse(
+                              date.toString().split(" ").first.split('-')[1]),
+                          int.parse(
+                              date.toString().split(" ").first.split('-')[2]),
+                          value.hour,
+                          value.minute);
+                      setState(() {
+                        time = _dateTime;
+                      });
+                    }
 
-                  setState(() {
-                    endTime = time!;
-                  });
-                })
-                .then((value) => widget.setEndtime(endTime));
-          },
-          icon: const Icon(Icons.edit),
-          color: ColorPalette.palette(context).secondary,
-        )
+                    setState(() {
+                      endTime = time!;
+                    });
+                  })
+                  .then((value) => widget.setEndtime(endTime));
+            },
+            icon: const Icon(Icons.edit),
+            color: ColorPalette.palette(context).secondary,
+          )
       ],
     );
   }

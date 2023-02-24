@@ -43,6 +43,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   final TextEditingController comment = TextEditingController();
+
   late List<CommentModel> comments;
 
   @override
@@ -53,6 +54,7 @@ class _CommentsPageState extends State<CommentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -143,7 +145,7 @@ class _CommentsPageState extends State<CommentsPage> {
                   setState(() {
                     comments.add(comment);
                   });
-                })
+                }),
           ],
         ),
       ),
@@ -240,15 +242,27 @@ class _CreateCommentState extends State<CreateComment> {
                   imagePickerService.clearPreview();
                 }
                 return Container(
-                  color: ColorPalette.palette(context).secondary[50],
-                  padding: const EdgeInsets.all(5),
+                  // padding: EdgeInsets.symmetric(vertical: 4),
+
+                  margin: const EdgeInsets.only(bottom: 30),
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromARGB(255, 192, 192, 192),
+                            offset: Offset(1, 1),
+                            blurRadius: 10,
+                            spreadRadius: 0.0)
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(35)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IntrinsicHeight(
+                      Container(
+                        padding: EdgeInsets.fromLTRB(6, 0, 6, 6),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
                                 child: Column(
@@ -262,6 +276,7 @@ class _CreateCommentState extends State<CreateComment> {
                                   minLines: 1,
                                   maxLines: null,
                                   decoration: InputDecoration(
+                                    counterText: "",
                                     prefixIcon:
                                         imagePickerService.pickImageIconButton(
                                       context: context,
@@ -300,7 +315,7 @@ class _CreateCommentState extends State<CreateComment> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
+                                            horizontal: 3),
                                         child: (result != null &&
                                                 result.isLoading)
                                             ? const CircularProgressIndicator(
@@ -315,7 +330,7 @@ class _CreateCommentState extends State<CreateComment> {
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide.none),
-                                    hintText: 'Enter your comment',
+                                    hintText: 'Add your comment.....',
                                   ),
                                 ),
                               ],

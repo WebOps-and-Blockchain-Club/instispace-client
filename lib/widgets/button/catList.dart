@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 import '../../screens/home/new_post/main.dart';
 
 class CategoryList extends StatefulWidget {
+  final options;
   final List<PostCategoryModel> categories;
-  const CategoryList({Key? key, required this.categories}) : super(key: key);
+  const CategoryList({Key? key, required this.categories, this.options})
+      : super(key: key);
 
   @override
   State<CategoryList> createState() => _CategoryListState();
@@ -53,8 +55,11 @@ class _CategoryListState extends State<CategoryList>
             itemBuilder: ((context, index) {
               return TextButton(
                   onPressed: () {
-                    navigate(context,
-                        NewPostWrapper(category: widget.categories[index]));
+                    navigate(
+                        context,
+                        NewPostWrapper(
+                            options: widget.options,
+                            category: widget.categories[index]));
                   },
                   child: Text(
                     widget.categories[index].name,

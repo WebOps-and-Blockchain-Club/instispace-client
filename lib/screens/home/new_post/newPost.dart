@@ -52,6 +52,7 @@ class NewPostScreen extends StatefulWidget {
 class _NewPostScreenState extends State<NewPostScreen> {
   List<io.File> imgs = [];
   bool isLoading = false;
+  bool proceed = false;
   final formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   final TextEditingController title = TextEditingController();
@@ -68,8 +69,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late String error;
   String tagError = "";
   DateTime? endTime = null;
-  late DateTime? date;
-  late DateTime? time;
+  late DateTime? date = null;
+  late DateTime? time = null;
 
   late String endTimeFormated;
 
@@ -148,15 +149,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
               data["findPosts"]["list"] =
                   [result.data!["createPost"]] + data["findPosts"]["list"];
               data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
+
               cache.writeQuery(widget.options.asRequest, data: data);
               clearForm();
-              Navigator.pop(context);
+              if (fieldConfiguration.imageSecondary != null) {
+                Navigator.pop(context);
+              } else {
+                Navigator.of(context)
+                  ..pop()
+                  ..pop();
+              }
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Event Created')),
+                const SnackBar(content: Text('Posted')),
               );
             }
           }),
           onError: (dynamic error) {
+            print(error.toString());
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(formatErrorMessage(error.toString()))),
             );
@@ -265,120 +274,67 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                       print("date : $date");
                                                     }
                                                   },
-                                                ).then((value) =>
-                                                        showTimePicker(
-                                                          context: context,
-                                                          initialTime:
-                                                              TimeOfDay.now(),
-                                                        ).then((value) {
-                                                          if (value != null) {
-                                                            DateTime _dateTime =
-                                                                DateTime(
-                                                                    2021,
-                                                                    1,
-                                                                    1,
-                                                                    value.hour,
-                                                                    value
-                                                                        .minute);
-                                                            setState(() {
-                                                              time = _dateTime;
-                                                            });
+                                                ).then(
+                                                        (value) =>
+                                                            showTimePicker(
+                                                              context: context,
+                                                              initialTime:
+                                                                  TimeOfDay
+                                                                      .now(),
+                                                            ).then((value) {
+                                                              if (value !=
+                                                                  null) {
+                                                                DateTime
+                                                                    _dateTime =
+                                                                    DateTime(
+                                                                        2021,
+                                                                        1,
+                                                                        1,
+                                                                        value
+                                                                            .hour,
+                                                                        value
+                                                                            .minute);
+                                                                setState(() {
+                                                                  time =
+                                                                      _dateTime;
+                                                                });
 
-                                                            dateTimeFormated
-                                                                .text = DateTimeFormatModel(
-                                                                        dateTime:
-                                                                            date!)
-                                                                    .toFormat(
-                                                                        "MMM dd, yyyy") +
-                                                                " " +
-                                                                DateTimeFormatModel(
-                                                                        dateTime:
-                                                                            time!)
-                                                                    .toFormat(
-                                                                        "h:mm a");
-                                                            setState(() {
-                                                              endTime = DateTimeFormatModel.fromString(date
-                                                                          .toString()
-                                                                          .split(
-                                                                              " ")
-                                                                          .first +
-                                                                      " " +
-                                                                      time
-                                                                          .toString()
-                                                                          .split(
-                                                                              " ")
-                                                                          .last)
-                                                                  .dateTime
-                                                                  .add(const Duration(
-                                                                      hours:
-                                                                          5));
-                                                            });
+                                                                dateTimeFormated
+                                                                    .text = DateTimeFormatModel(
+                                                                            dateTime:
+                                                                                date!)
+                                                                        .toFormat(
+                                                                            "MMM dd, yyyy") +
+                                                                    " " +
+                                                                    DateTimeFormatModel(
+                                                                            dateTime:
+                                                                                time!)
+                                                                        .toFormat(
+                                                                            "h:mm a");
 
-                                                            print(
-                                                                "time : $time");
-                                                          }
-                                                        }))),
+                                                                setState(() {
+                                                                  endTime = fieldConfiguration
+                                                                          .endTime!
+                                                                          .enableEdit
+                                                                      ? DateTimeFormatModel.fromString(date.toString().split(" ").first + " " + time.toString().split(" ").last)
+                                                                          .dateTime
+                                                                          .add(const Duration(
+                                                                              hours:
+                                                                                  2))
+                                                                      : DateTime
+                                                                              .now()
+                                                                          .add(const Duration(
+                                                                              days: 30));
+                                                                });
+
+                                                                print(
+                                                                    "time : $time");
+                                                              }
+                                                            }))),
                                       ),
                                       const SizedBox(
                                         width: 10,
                                       ),
-
-                                      // CustomElevatedButton(
-                                      //     onPressed: () {
-                                      //       showDatePicker(
-                                      //               context: context,
-                                      //               initialDate: DateTime.now(),
-                                      //               firstDate: DateTime.now(),
-                                      //               lastDate: DateTime.now().add(
-                                      //                   const Duration(
-                                      //                       days: 30 * 5)))
-                                      //           .then(
-                                      //         (value) {
-                                      //           setState(() {
-                                      //             date = value.toString();
-                                      //           });
-                                      //           if (value != null) {
-                                      //             DateTimeFormatModel _date =
-                                      //                 DateTimeFormatModel(
-                                      //                     dateTime: value);
-                                      //             setState(() {
-                                      //               dateFormated = _date
-                                      //                   .toFormat("MMM dd, yyyy");
-                                      //             });
-                                      //           }
-                                      //         },
-                                      //       ).then((value) {
-                                      //         showTimePicker(
-                                      //           context: context,
-                                      //           initialTime: TimeOfDay.now(),
-                                      //         ).then((value) {
-                                      //           if (value != null) {
-                                      //             DateTime _dateTime = DateTime(
-                                      //                 2023,
-                                      //                 1,
-                                      //                 1,
-                                      //                 value.hour,
-                                      //                 value.minute);
-
-                                      //             setState(() {
-                                      //               time = _dateTime.toString();
-                                      //             }); //2021-01-01 14:11:00.000
-                                      //             DateTimeFormatModel _time =
-                                      //                 DateTimeFormatModel(
-                                      //                     dateTime: _dateTime);
-                                      //             setState(() {
-                                      //               timeFormatted =
-                                      //                   _time.toFormat("h:mm a");
-                                      //             });
-                                      //           }
-                                      //         });
-                                      //       });
-                                      //     },
-                                      //     text: "Select Date and Time",
-                                      //     padding: const [27, 16],
-                                      //     textColor: Colors.white,
-                                      //     color: ColorPalette.palette(context)
-                                      //         .secondary)
                                     ],
                                   ),
                                 ],
@@ -552,10 +508,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                   style: const TextStyle(
                                       color: Colors.red, fontSize: 12)),
                             const SizedBox(height: 10),
-                            EndTime(
-                              endTime: endTime,
-                              setEndtime: setEndTime,
-                            ),
+                            if ((fieldConfiguration.postTime != null &&
+                                    endTime != null) ||
+                                fieldConfiguration.postTime == null)
+                              EndTime(
+                                endTime: endTime,
+                                setEndtime: setEndTime,
+                                edit: fieldConfiguration.endTime!.enableEdit,
+                              ),
                             Padding(
                               padding: const EdgeInsets.only(top: 25),
                               child: Row(
@@ -591,71 +551,128 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           tagError = "";
                                         });
                                       }
-                                      final isValid =
-                                          formKey.currentState!.validate() &&
-                                              selectedTags.tags.isNotEmpty &&
-                                              selectedTags.tags.length <= 7;
+                                      final isValid = formKey.currentState!
+                                              .validate() &&
+                                          (fieldConfiguration.tag != null &&
+                                                  selectedTags
+                                                      .tags.isNotEmpty &&
+                                                  selectedTags.tags.length <=
+                                                      7 ||
+                                              fieldConfiguration.tag == null);
+
                                       FocusScope.of(context).unfocus();
 
                                       if (isValid) {
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        List<String> uploadResult;
-                                        try {
-                                          uploadResult =
-                                              await upload(widget.images!);
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: const Text(
-                                                  'Image Upload Failed'),
-                                              backgroundColor:
-                                                  Theme.of(context).errorColor,
-                                            ),
-                                          );
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                          return;
-                                        }
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25)),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      const Text(
+                                                          "Think before you post"),
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            List<String>?
+                                                                uploadResult;
+                                                            if (imgs
+                                                                .isNotEmpty) {
+                                                              setState(() {
+                                                                isLoading =
+                                                                    true;
+                                                              });
 
-                                        setState(() {
-                                          isLoading = false;
-                                        });
+                                                              try {
+                                                                uploadResult =
+                                                                    await upload(
+                                                                        imgs);
+                                                              } catch (e) {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  SnackBar(
+                                                                    content:
+                                                                        const Text(
+                                                                            'Image Upload Failed'),
+                                                                    backgroundColor:
+                                                                        Theme.of(context)
+                                                                            .errorColor,
+                                                                  ),
+                                                                );
+                                                                setState(() {
+                                                                  isLoading =
+                                                                      false;
+                                                                });
+                                                                return;
+                                                              }
 
-                                        // showDialog(
-                                        //     context: context,
-                                        //     builder: (context) {
-                                        //       DateTime _endTime =
-                                        //           DateTime.parse("$date $time")
-                                        //               .add(const Duration(
-                                        //                   hours: 3));
-                                        //       setState(() {});
-                                        //       return AlertDialog(
-                                        //         title: const Text(
-                                        //             "How long do you want this post to be visible?"),
-                                        //         content: Row(children: []),
-                                        //       );
-                                        //     });
-                                        List<String> imageUrls;
-
-                                        runMutation({
-                                          "postInput": {
-                                            "category": widget.category,
-                                            "title": title.text,
-                                            "content": desc.text,
-                                            "location": location.text,
-                                            "tagIds": selectedTags.getTagIds(),
-                                            "link": link.text,
-                                            "postTime": date,
-                                            "endTime":
-                                                endTime!.toIso8601String(),
-                                            "photoList":
-                                                widget.images?.join(" AND ")
-                                          },
-                                        });
+                                                              setState(() {
+                                                                isLoading =
+                                                                    false;
+                                                              });
+                                                            }
+                                                            runMutation({
+                                                              "postInput": {
+                                                                "category":
+                                                                    widget
+                                                                        .category
+                                                                        .name,
+                                                                "title":
+                                                                    title.text,
+                                                                "content":
+                                                                    desc.text,
+                                                                "location":
+                                                                    location
+                                                                        .text,
+                                                                "tagIds":
+                                                                    selectedTags
+                                                                        .getTagIds(),
+                                                                "link":
+                                                                    link.text,
+                                                                "postTime": fieldConfiguration
+                                                                            .postTime !=
+                                                                        null
+                                                                    ? date
+                                                                            .toString()
+                                                                            .split(
+                                                                                " ")
+                                                                            .first +
+                                                                        " " +
+                                                                        time
+                                                                            .toString()
+                                                                            .split(" ")
+                                                                            .last
+                                                                    : null,
+                                                                "endTime": endTime !=
+                                                                        null
+                                                                    ? endTime!
+                                                                        .toIso8601String()
+                                                                    : DateTime
+                                                                            .now()
+                                                                        .add(const Duration(
+                                                                            days:
+                                                                                5))
+                                                                        .toIso8601String(),
+                                                                "photoList":
+                                                                    uploadResult
+                                                                        ?.join(
+                                                                            " AND ")
+                                                              },
+                                                            });
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: const Text(
+                                                              'proceed'))
+                                                    ],
+                                                  ));
+                                            });
                                       }
                                     },
                                     text: 'Post',

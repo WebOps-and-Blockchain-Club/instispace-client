@@ -1,3 +1,5 @@
+import 'package:client/widgets/helpers/error.dart';
+import 'package:client/widgets/helpers/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -20,6 +22,7 @@ class _PostQueryState extends State<PostQuery> {
       options: options,
       builder: (result, {fetchMore, refetch}) {
         // print('\n\n\n\n${options.variables["filteringCondition"]["categories"]}');
+
         return RefreshIndicator(
           onRefresh: () {
             return refetch!();
@@ -69,27 +72,46 @@ class _PostQueryState extends State<PostQuery> {
 
                     //Fetch More Loader
                     // small
-                    if (result.isLoading) const Text("Loading more items"),
+                    if (result.isLoading)
+                      Transform.scale(
+                          scaleX: 0.1,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 4,
+                          )),
 
                     //End of Post
                     // new widget
-                    if (total == posts.length) const Text("View Older Posts")
+                    if (total == posts.length)
+                      Center(
+                        child: TextButton(
+                            onPressed: () {
+                              print("older posts");
+                            },
+                            child: const Text("View Older Posts")),
+                      )
                   ];
                 }()),
 
               //Error Display
               // snackbar
               if (result.hasException && result.data != null)
-                Text(result.exception.toString()),
+                Center(
+                    child:
+                        Text(formatErrorMessage(result.exception.toString()))),
 
               // full screen
               if (result.hasException && result.data == null)
-                Text(result.exception.toString()),
+                Center(
+                  child: Image(
+                    image: AssetImage(getAsset(result.exception.toString(),
+                        formatErrorMessage(result.exception.toString()))),
+                  ),
+                ),
 
               //Loading Display
               //full screen
               if (result.isLoading && result.data == null)
-                const Text("Loading"),
+                const Center(child: Loading()),
             ],
           ),
         );

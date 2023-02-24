@@ -91,23 +91,24 @@ Map<String, CreatePostModel> getCreatePostFields = {
   "Lost": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
+    postTime: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
-    endTime: FieldModel(),
+    endTime: FieldModel(enableEdit: false),
   ),
   "Found": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
+    postTime: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
-    endTime: FieldModel(),
+    endTime: FieldModel(enableEdit: false),
   ),
 };
 
 class NewPostWrapper extends StatelessWidget {
   final PostCategoryModel category;
-
-  final QueryOptions<Object?> options =
-      QueryOptions(document: gql(FeedGQL().findPosts));
-  NewPostWrapper({Key? key, required this.category}) : super(key: key);
+  final options;
+  const NewPostWrapper({Key? key, required this.category, this.options})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +116,15 @@ class NewPostWrapper extends StatelessWidget {
         getCreatePostFields[category.name] ?? getCreatePostFields["Events"]!;
     if (fieldConfiguration.imagePrimary != null) {
       return SelectImageScreen(
-          category: category, fieldConfiguration: fieldConfiguration);
+        category: category,
+        fieldConfiguration: fieldConfiguration,
+        options: options,
+      );
     }
     return NewPostScreen(
-        category: category, fieldConfiguration: fieldConfiguration);
+      category: category,
+      fieldConfiguration: fieldConfiguration,
+      options: options,
+    );
   }
 }
