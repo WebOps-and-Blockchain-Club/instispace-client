@@ -21,7 +21,7 @@ class _ViewFeedbackState extends State<ViewFeedback> {
       builder: (QueryResult result, {fetchMore, refetch}) {
         final String? link = result.data?["getSheetLink"];
         return ListTile(
-          leading: const Icon(Icons.feedback_outlined),
+          tileColor: Colors.transparent,
           horizontalTitleGap: 0,
           title: const Text("View Feedbacks"),
           onTap: () {

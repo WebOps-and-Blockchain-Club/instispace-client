@@ -1,4 +1,5 @@
 import 'package:client/models/post/actions.dart';
+import 'package:client/screens/home/new_post/newPostButton.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -133,30 +134,6 @@ class _HomePageState extends State<HomePage> {
               return PostQuery(options: options);
             },
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: ColorPalette.palette(context).secondary,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.add),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CategoryList(options: options, categories: [
-                    PostCategoryModel.fromJson("Events"),
-                    PostCategoryModel.fromJson("Recruitment"),
-                    PostCategoryModel.fromJson("Announcements"),
-                    PostCategoryModel.fromJson("Opportunities"),
-                    PostCategoryModel.fromJson("Queries"),
-                    PostCategoryModel.fromJson("Connect"),
-                    PostCategoryModel.fromJson("Help"),
-                    PostCategoryModel.fromJson("Random Thoughts"),
-                    PostCategoryModel.fromJson("Lost"),
-                    PostCategoryModel.fromJson("Found"),
-                  ]);
-                });
-          },
         ),
       ),
     );

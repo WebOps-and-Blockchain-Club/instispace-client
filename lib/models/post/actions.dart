@@ -100,28 +100,28 @@ class CreatedByModel {
             : "https://media.licdn.com/dms/image/C4D0BAQGEK-WB5mNx4g/company-logo_200_200/0/1519911884159?e=2147483647&v=beta&t=4Tsb5Gx2LoQXmCk_wN1jqdCGX5qAY8ejRpFMgcTpSHE";
 }
 
-class PostCategoryModel {
-  final String name;
-  final IconData icon;
+// class PostCategoryModel {
+//   final String name;
+//   final IconData icon;
 
-  PostCategoryModel({
-    required this.name,
-    required this.icon,
-  });
+//   PostCategoryModel({
+//     required this.name,
+//     required this.icon,
+//   });
 
-  PostCategoryModel.fromJson(String data)
-      : name = data,
-        icon = getIcon[data] == null ? Icons.local_activity : getIcon[data]!;
+//   PostCategoryModel.fromJson(String data)
+//       : name = data,
+//         icon = getIcon[data] == null ? Icons.local_activity : getIcon[data]!;
 
-  static Map<String, IconData> getIcon = {
-    "Events": CustomIcons.events,
-    "Competition": CustomIcons.competition,
-    "Announcements": CustomIcons.announcement,
-    "Recruitment": CustomIcons.recruitment,
-    "Opportunities": CustomIcons.opportunities,
-    "Connect": CustomIcons.connect,
-    "Queries": CustomIcons.queries,
-    "Help": CustomIcons.help,
-    "Random Thoughts": CustomIcons.thoughts,
-  };
-}
+//   static Map<String, IconData> getIcon = {
+//     "Events": CustomIcons.events,
+//     "Competition": CustomIcons.competition,
+//     "Announcements": CustomIcons.announcement,
+//     "Recruitment": CustomIcons.recruitment,
+//     "Opportunities": CustomIcons.opportunities,
+//     "Connect": CustomIcons.connect,
+//     "Queries": CustomIcons.queries,
+//     "Help": CustomIcons.help,
+//     "Random Thoughts": CustomIcons.thoughts,
+//   };
+// }

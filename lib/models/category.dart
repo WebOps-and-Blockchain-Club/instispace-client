@@ -9,6 +9,22 @@ class PostCategoryModel {
     required this.name,
     required this.icon,
   });
+
+  PostCategoryModel.fromJson(String data)
+      : name = data,
+        icon = getIcon[data] == null ? Icons.local_activity : getIcon[data]!;
+
+  static Map<String, IconData> getIcon = {
+    "Events": CustomIcons.events,
+    "Competition": CustomIcons.competition,
+    "Announcements": CustomIcons.announcement,
+    "Recruitment": CustomIcons.recruitment,
+    "Opportunities": CustomIcons.opportunities,
+    "Connect": CustomIcons.connect,
+    "Queries": CustomIcons.queries,
+    "Help": CustomIcons.help,
+    "Random Thoughts": CustomIcons.thoughts,
+  };
 }
 
 List<PostCategoryModel> feedCategories = [

@@ -1,3 +1,5 @@
+import 'package:client/models/category.dart';
+
 import '../tag.dart';
 import './actions.dart';
 
@@ -17,6 +19,7 @@ class PostModel {
   final PostCategoryModel category;
   final String? location;
   final String? eventTime;
+  final String? endTime;
   final CommentsModel? comments;
   final List<String>? photo;
   final TagsModel? tags;
@@ -39,6 +42,7 @@ class PostModel {
     this.tags,
     this.location,
     this.eventTime,
+    this.endTime,
     this.photo,
     this.status,
     this.link,
@@ -55,6 +59,7 @@ class PostModel {
         content = data['content'],
         location = data['location'],
         eventTime = data['postTime'],
+        endTime = data['endTime'],
         category = PostCategoryModel.fromJson(data['category']),
         like =
             LikeModel(count: data['likeCount'], isLikedByUser: data['isLiked']),

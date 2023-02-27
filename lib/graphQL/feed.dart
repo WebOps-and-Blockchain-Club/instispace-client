@@ -89,9 +89,55 @@ class FeedGQL {
   }
 }""";
 
-String report = """mutation CreateReport(\$createReportInput: CreateReportInput!, \$postId: String!) {
+  String report =
+      """mutation CreateReport(\$createReportInput: CreateReportInput!, \$postId: String!) {
   createReport(createReportInput: \$createReportInput, postId: \$postId) {
     id
   }
 }""";
+
+  String editFragment = """
+    fragment postUpdateField on Post{
+      updatedAt
+      title
+      postComments {
+        id
+        createdAt
+        createdBy {
+          id
+          roll
+          role
+          name
+          photo
+        }
+        content
+        isLiked
+        isDisliked
+        likeCount
+        isHidden
+      }
+      photo
+      location
+      linkName
+      likeCount
+      isLiked
+      isDisliked
+      isHidden
+      id
+      isSaved
+      endTime
+      dislikeCount
+      createdBy{
+        id
+        roll
+        role
+        name
+        photo
+      }
+      createdAt
+      content
+      category
+      Link
+    }
+""";
 }

@@ -242,8 +242,7 @@ class _CreateCommentState extends State<CreateComment> {
                   imagePickerService.clearPreview();
                 }
                 return Container(
-                  // padding: EdgeInsets.symmetric(vertical: 4),
-
+                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
                   margin: const EdgeInsets.only(bottom: 30),
                   decoration: BoxDecoration(
                       boxShadow: const [
@@ -259,84 +258,81 @@ class _CreateCommentState extends State<CreateComment> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(6, 0, 6, 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                imagePickerService.previewImages(),
-                                const SizedBox(height: 10),
-                                TextField(
-                                  controller: comment,
-                                  maxLength: 3000,
-                                  minLines: 1,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    counterText: "",
-                                    prefixIcon:
-                                        imagePickerService.pickImageIconButton(
-                                      context: context,
-                                    ),
-                                    suffixIcon: InkWell(
-                                      onTap: () async {
-                                        List<String> uploadResult;
-                                        try {
-                                          uploadResult =
-                                              await imagePickerService
-                                                  .uploadImage();
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: const Text(
-                                                  'Image Upload Failed'),
-                                              backgroundColor:
-                                                  Theme.of(context).errorColor,
-                                            ),
-                                          );
-                                          return;
-                                        }
-                                        if (!(result != null &&
-                                                result.isLoading) &&
-                                            comment.text.isNotEmpty) {
-                                          runMutation({
-                                            "postId": widget.postId,
-                                            "createCommentInput": {
-                                              "content": comment.text,
-                                              "photoList": uploadResult,
-                                              "isHidden": false,
-                                            }
-                                          });
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 3),
-                                        child: (result != null &&
-                                                result.isLoading)
-                                            ? const CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                              )
-                                            : const Icon(Icons.send),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide.none),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide.none),
-                                    hintText: 'Add your comment.....',
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              imagePickerService.previewImages(),
+                              const SizedBox(height: 10),
+                              TextField(
+                                controller: comment,
+                                maxLength: 3000,
+                                minLines: 1,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  counterText: "",
+                                  prefixIcon:
+                                      imagePickerService.pickImageIconButton(
+                                    context: context,
                                   ),
+                                  contentPadding: EdgeInsets.zero,
+                                  suffixIcon: InkWell(
+                                    onTap: () async {
+                                      List<String> uploadResult;
+                                      try {
+                                        uploadResult = await imagePickerService
+                                            .uploadImage();
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Image Upload Failed'),
+                                            backgroundColor:
+                                                Theme.of(context).errorColor,
+                                          ),
+                                        );
+                                        return;
+                                      }
+                                      if (!(result != null &&
+                                              result.isLoading) &&
+                                          comment.text.isNotEmpty) {
+                                        runMutation({
+                                          "postId": widget.postId,
+                                          "createCommentInput": {
+                                            "content": comment.text,
+                                            "photoList": uploadResult,
+                                            "isHidden": false,
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      child:
+                                          (result != null && result.isLoading)
+                                              ? const CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                )
+                                              : const Icon(Icons.send),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none),
+                                  hintText: 'Add your comment.....',
                                 ),
-                              ],
-                            )),
-                          ],
-                        ),
+                              ),
+                            ],
+                          )),
+                        ],
                       ),
                       if (result != null && result.hasException)
                         IntrinsicHeight(

@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/screens/home/new_post/main.dart';
+import 'package:client/screens/home/new_post/newPost.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -157,6 +159,22 @@ class _PostCardState extends State<PostCard>
                   padding: const EdgeInsets.only(right: 10.0),
                   child: SavePostButton(postId: post.id, save: post.saved!),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NewPostScreen(
+                              category: post.category,
+                              fieldConfiguration:
+                                  getCreatePostFields[post.category.name]!,
+                              post: post,
+                            ),
+                          ))),
+                ),
+
                 // Padding(
                 //   padding: const EdgeInsets.only(right: 10.0),
                 //   child: ReportPostButton(

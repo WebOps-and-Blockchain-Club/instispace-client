@@ -1,9 +1,10 @@
+import 'package:client/models/category.dart';
+import 'package:client/screens/home/new_post/newPostButton.dart';
 import 'package:client/screens/home/post/query.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../graphQL/feed.dart';
-import '../../../models/category.dart';
 
 import '../../../widgets/primary_filter.dart';
 import '../../../widgets/search_bar.dart';
@@ -86,6 +87,10 @@ class _PostPageState extends State<PostPage> {
           ];
         },
         body: PostQuery(options: options),
+      ),
+      floatingActionButton: NewPostButton(
+        options: options,
+        categories: widget.categories,
       ),
     );
   }
