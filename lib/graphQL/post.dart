@@ -54,31 +54,50 @@ class PostGQl {
     }
 """;
 
-  static const editFragment = """
-    fragment postUpdateField on Post {
-      id
-      createdAt
+  String editPost = """
+    mutation UpdatePost(\$updatePostInput: UpdatePostInput!, \$updatePostId: String!) {
+  updatePost(updatePostInput: \$updatePostInput, id: \$updatePostId) {
+    updatedAt
       title
-      content
-      photoList
+      postComments {
+        id
+        createdAt
+        createdBy {
+          id
+          roll
+          role
+          name
+          photo
+        }
+        content
+        isLiked
+        isDisliked
+        likeCount
+        isHidden
+      }
+      photo
       location
-      postTime
-      endTime
+      linkName
       likeCount
-      isStared
-      link
-      permissions
-      tags {
-        title
-        id
-        category
-      }
       isLiked
-      createdAt
-      createdBy {
+      isDisliked
+      isHidden
+      id
+      isSaved
+      endTime
+      dislikeCount
+      createdBy{
         id
+        roll
+        role
         name
+        photo
       }
-    }
-  """;
+      createdAt
+      content
+      category
+      Link
+}
+}
+""";
 }

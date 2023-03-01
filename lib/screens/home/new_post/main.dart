@@ -1,3 +1,4 @@
+import 'package:client/models/category.dart';
 import 'package:client/models/post/create_post.dart';
 import 'package:client/screens/home/new_post/chooseImages.dart';
 import 'package:client/widgets/section/main.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../graphQL/feed.dart';
-import '../../../models/post/actions.dart';
+
 import 'newPost.dart';
 
 Map<String, CreatePostModel> getCreatePostFields = {
@@ -51,27 +52,26 @@ Map<String, CreatePostModel> getCreatePostFields = {
     link: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
-    endTime: FieldModel(),
+    endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Connect": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
-    endTime: FieldModel(),
+    endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Query": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
-    endTime: FieldModel(),
   ),
   "Help": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
-    endTime: FieldModel(),
+    endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Review": CreatePostModel(
     title: FieldModel(),
@@ -79,28 +79,28 @@ Map<String, CreatePostModel> getCreatePostFields = {
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
     link: FieldModel(required: false),
-    endTime: FieldModel(),
+    endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Random Thought": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
-    endTime: FieldModel(),
+    endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Lost": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     postTime: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
-    endTime: FieldModel(enableEdit: false),
+    endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),
   "Found": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     postTime: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
-    endTime: FieldModel(enableEdit: false),
+    endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),
 };
 

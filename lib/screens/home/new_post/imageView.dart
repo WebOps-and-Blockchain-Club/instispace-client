@@ -1,11 +1,9 @@
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
 
 class ImageView extends StatefulWidget {
-  final List<io.File> images;
+  final List<io.File>? images;
+
   final Function onDelete;
   const ImageView({Key? key, required this.images, required this.onDelete})
       : super(key: key);
@@ -17,7 +15,7 @@ class ImageView extends StatefulWidget {
 class _ImageViewState extends State<ImageView> {
   @override
   Widget build(BuildContext context) {
-    List<io.File> imgs = widget.images;
+    dynamic imgs = widget.images;
     return SizedBox(
       height: 310,
       child: PageView.builder(

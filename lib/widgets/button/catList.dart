@@ -1,4 +1,4 @@
-import 'package:client/models/post/actions.dart';
+import 'package:client/models/category.dart';
 import 'package:client/screens/home/new_post/chooseImages.dart';
 import 'package:client/screens/home/new_post/newPost.dart';
 import 'package:client/themes.dart';
@@ -41,7 +41,7 @@ class _CategoryListState extends State<CategoryList>
   Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding:
-          const EdgeInsets.only(bottom: 0, left: 180, top: 10, right: 15),
+          const EdgeInsets.only(bottom: 0, left: 180, top: 330, right: 15),
       contentPadding: const EdgeInsets.all(10),
       backgroundColor: const Color(0xFFE1E0EC),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

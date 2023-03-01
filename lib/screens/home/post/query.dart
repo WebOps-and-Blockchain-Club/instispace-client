@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import './card/main.dart';
 import '/widgets/helpers/navigate.dart';
 import '/widgets/helpers/error.dart';
-import './card/main.dart';
-import '../../../models/post/actions.dart';
 import '../../super_user/approve_post.dart';
+import '../../../models/category.dart';
 import '../../../models/post/main.dart';
 
 class PostQuery extends StatefulWidget {

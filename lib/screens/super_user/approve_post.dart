@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../models/category.dart';
 import '../home/post/query.dart';
 import '../../models/post/main.dart';
 import '../../models/post/query_variable.dart';
-import '../../models/post/actions.dart';
 import '../../../graphQL/feed.dart';
 
 class SuperUserPostPage extends StatefulWidget {

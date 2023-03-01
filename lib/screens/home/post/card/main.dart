@@ -1,18 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:client/graphQL/feed.dart';
-import 'package:client/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '/utils/string_extension.dart';
+import '../../new_post/main.dart';
+import '../../new_post/newPost.dart';
 import '../../../../models/date_time_format.dart';
 import '../../../../models/post/main.dart';
 import '../../../../utils/custom_icons.dart';
-import '../../../../widgets/button/icon_button.dart';
 import '../../../../widgets/card.dart';
 import '../../../../widgets/card/action_buttons.dart';
 import '../../../../widgets/card/description.dart';
 import '../../../../widgets/card/image.dart';
-import '../../../../widgets/helpers/error.dart';
 
 class PostCard extends StatefulWidget {
   final PostModel post;
@@ -126,6 +125,7 @@ class _PostCardState extends State<PostCard>
           padding: const EdgeInsets.only(top: 20.0),
           child: Row(
             children: [
+              const SizedBox(width: 5),
               if (post.permissions.contains('Upvote_Downvote'))
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
@@ -175,6 +175,21 @@ class _PostCardState extends State<PostCard>
                   padding: const EdgeInsets.only(right: 10.0),
                   child: ReportPostButton(
                       postId: post.id, options: widget.options),
+                ),
+              if (post.permissions.contains('Edit'))
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NewPostScreen(
+                              category: post.category,
+                              fieldConfiguration:
+                                  getCreatePostFields[post.category.name]!,
+                              post: post,
+                            ),
+                          ))),
                 ),
               const Spacer(),
               if (post.photo != null &&

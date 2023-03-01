@@ -130,6 +130,7 @@ class Themes {
 
     // Dialog Theme
     dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
         alignment: Alignment.center,
         titleTextStyle: TextStyle(
             color: ColorPalette._primary,

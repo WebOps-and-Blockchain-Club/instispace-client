@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-
-import '../../utils/custom_icons.dart';
-
 class LinkModel {
   final String name;
   final String link;
@@ -101,51 +97,3 @@ class CreatedByModel {
                 ? "https://media.licdn.com/dms/image/C4D0BAQGEK-WB5mNx4g/company-logo_200_200/0/1519911884159?e=2147483647&v=beta&t=4Tsb5Gx2LoQXmCk_wN1jqdCGX5qAY8ejRpFMgcTpSHE"
                 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ835BghQCqBsROIiDKH37nh68eOOCCsiq1WGGrYG8Cfw&s';
 }
-
-class PostCategoryModel {
-  final String name;
-  final IconData icon;
-
-  PostCategoryModel({
-    required this.name,
-    required this.icon,
-  });
-
-  PostCategoryModel.fromJson(String data)
-      : name = data,
-        icon = getIcon[data] == null ? Icons.local_activity : getIcon[data]!;
-
-  static Map<String, IconData> getIcon = {
-    "Event": CustomIcons.events,
-    "Competition": CustomIcons.competition,
-    "Announcement": CustomIcons.announcement,
-    "Recruitment": CustomIcons.recruitment,
-    "Opportunity": CustomIcons.opportunities,
-    "Connect": CustomIcons.connect,
-    "Query": CustomIcons.queries,
-    "Help": CustomIcons.help,
-    "Review": CustomIcons.help,
-    "Random Thought": CustomIcons.thoughts,
-    "Lost": CustomIcons.lost,
-    "Found": CustomIcons.found
-  };
-}
-
-List<PostCategoryModel> feedCategories = [
-  PostCategoryModel(name: "Event", icon: CustomIcons.events),
-  PostCategoryModel(name: "Competition", icon: CustomIcons.competition),
-  PostCategoryModel(name: "Announcement", icon: CustomIcons.announcement),
-  PostCategoryModel(name: "Recruitment", icon: CustomIcons.recruitment),
-];
-List<PostCategoryModel> forumCategories = [
-  PostCategoryModel(name: "Opportunity", icon: CustomIcons.opportunities),
-  PostCategoryModel(name: "Query", icon: CustomIcons.queries),
-  PostCategoryModel(name: "Connect", icon: CustomIcons.connect),
-  PostCategoryModel(name: "Help", icon: CustomIcons.help),
-  PostCategoryModel(name: "Review", icon: CustomIcons.help),
-  PostCategoryModel(name: "Random Thought", icon: CustomIcons.thoughts),
-];
-List<PostCategoryModel> lnfCategories = [
-  PostCategoryModel(name: "Lost", icon: CustomIcons.lost),
-  PostCategoryModel(name: "Found", icon: CustomIcons.found),
-];

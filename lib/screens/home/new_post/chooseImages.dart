@@ -1,3 +1,4 @@
+import 'package:client/models/category.dart';
 import 'package:client/screens/home/new_post/imageView.dart';
 import 'package:client/screens/home/new_post/main.dart';
 import 'package:client/screens/home/new_post/newPost.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_cache_manager/file.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'dart:io' as io;
-import '../../../models/post/actions.dart';
+
 import '../../../models/post/create_post.dart';
 import '../../../widgets/button/icon_button.dart';
 

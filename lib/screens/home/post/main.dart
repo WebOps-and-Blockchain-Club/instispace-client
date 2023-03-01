@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'query.dart';
+import '../new_post/newPostButton.dart';
 import '../../../graphQL/feed.dart';
+import '../../../models/category.dart';
 import '../../../models/post/query_variable.dart';
-import '../../../models/post/actions.dart';
 import '../../../models/post/main.dart';
 import '../../../widgets/primary_filter.dart';
 import '../../../widgets/search_bar.dart';
@@ -78,6 +79,10 @@ class _PostPageState extends State<PostPage> {
           ];
         },
         body: PostQuery(options: options, categories: widget.categories),
+      ),
+      floatingActionButton: NewPostButton(
+        options: options,
+        categories: widget.categories,
       ),
     );
   }

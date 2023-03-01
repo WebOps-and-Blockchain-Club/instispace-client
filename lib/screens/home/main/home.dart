@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '/themes.dart';
+import '../../../models/category.dart';
 import '../post/query.dart';
-import '../../../models/post/actions.dart';
 import '../../../models/post/query_variable.dart';
 import '../../../models/post/main.dart';
 import '../../../models/user.dart';
 import '../../../services/auth.dart';
-import '../../../widgets/button/catList.dart';
 import '../../../graphQL/feed.dart';
 
 class HomePage extends StatefulWidget {
@@ -95,22 +93,6 @@ class _HomePageState extends State<HomePage> {
             ];
           },
           body: PostQuery(options: options),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: ColorPalette.palette(context).secondary,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.add, size: 25),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CategoryList(
-                      options: options,
-                      categories:
-                          feedCategories + forumCategories + lnfCategories);
-                });
-          },
         ),
       ),
     );

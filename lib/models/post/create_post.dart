@@ -27,10 +27,12 @@ class FieldModel {
   final String? label;
   final bool enableEdit;
   final int maxImgs;
+  final Duration time;
 
   FieldModel(
       {this.required = true,
       this.label,
       this.enableEdit = true,
-      this.maxImgs = 4});
+      this.maxImgs = 4,
+      this.time = const Duration(hours: 2)});
 }

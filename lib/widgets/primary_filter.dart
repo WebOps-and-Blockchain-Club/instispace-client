@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/post/actions.dart';
+import '../models/category.dart';
 
 class PrimaryFilter extends StatefulWidget {
   final List<PostCategoryModel> categories;
