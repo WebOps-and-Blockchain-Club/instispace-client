@@ -1,24 +1,20 @@
-import 'package:client/models/post/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import '../../../graphQL/user.dart';
-import '../../../services/auth.dart';
 import '/themes.dart';
-import 'actions.dart';
 import '../post/query.dart';
+import '../../../models/post/actions.dart';
+import '../../../models/post/query_variable.dart';
+import '../../../models/post/main.dart';
+import '../../../models/user.dart';
+import '../../../services/auth.dart';
 import '../../../widgets/button/catList.dart';
 import '../../../graphQL/feed.dart';
-import '../../../models/user.dart';
-import '../../../models/post.dart';
-import '../../../widgets/card/main.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
   final Widget appBar;
-  // final Future<void> Function() refetch;
-  // final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomePage(
       {Key? key, required this.auth, required this.user, required this.appBar})
@@ -36,33 +32,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // final List<HomeModel>? home = widget.user.toHomeModel();
-    final Map<String, dynamic> variables = {
-      "take": take,
-      "lastEventId": "",
-      "orderInput": {"byLikes": false, "byComments": false},
-      "filteringCondition": {
-        "search": null,
-        "posttobeApproved": false,
-        "isSaved": false,
-        "showOldPost": false,
-        "isLiked": false,
-        "categories": null,
-      },
-    };
-    final QueryOptions<Object?> options =
-        QueryOptions(document: gql(FeedGQL().findPosts), variables: variables);
+    final QueryOptions<Object?> options = QueryOptions(
+        document: gql(FeedGQL().findPosts()),
+        variables: PostQueryVariableModel(categories: feedCategories).toJson(),
+        parserFn: (data) => PostsModel.fromJson(data));
 
     return WillPopScope(
       onWillPop: () async {
-        if (_scrollController.offset != 0.0) {
-          _scrollController.animateTo(0.0,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeIn);
-          return false;
-        } else {
-          return true;
-        }
+        return true;
+        // if (_scrollController.offset != 0.0) {
+        //   _scrollController.animateTo(0.0,
+        //       duration: const Duration(milliseconds: 250),
+        //       curve: Curves.easeIn);
+        //   return false;
+        // } else {
+        //   return true;
+        // }
       },
       child: Scaffold(
         body: NestedScrollView(
@@ -81,14 +66,12 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
-                      widget.user.name!.toUpperCase(),
-                      // "JANITH",
+                      widget.user.name?.toUpperCase() ?? "",
                       style: const TextStyle(
                         color: Color(0xFF3C3C3C),
-                        fontFamily: 'Proxima Nova',
-                        fontSize: 30,
+                        fontSize: 24,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 2.64,
+                        letterSpacing: 2.5,
                       ),
                     ),
                   ),
@@ -96,65 +79,36 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
-                      widget.user.roll!.toUpperCase(),
-                      // "MM19B035",
+                      widget.user.role == 'USER'
+                          ? widget.user.roll?.toUpperCase() ?? ""
+                          : widget.user.role ?? "",
                       style: const TextStyle(
                         color: Color(0xFF3C3C3C),
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Proxima Nova',
-                        fontSize: 20,
-                        letterSpacing: 2.64,
+                        fontSize: 18,
+                        letterSpacing: 2.25,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
                 ]),
               ),
             ];
           },
-          body: Query(
-            options: QueryOptions(document: gql(UserGQL().getMe)),
-            builder: (result, {fetchMore, refetch}) {
-              print("\n\n\n\ngetme query called");
-              if (result.hasException) {
-                return Text(result.exception.toString());
-              }
-
-              if (result.isLoading) {
-                return const Text(
-                  "Connecting to InstiSpace...",
-                );
-              }
-
-              final UserModel user = UserModel.fromJson(result.data!["getMe"]);
-
-              // widget.auth.updateUser(user);
-
-              return PostQuery(options: options);
-            },
-          ),
+          body: PostQuery(options: options),
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: ColorPalette.palette(context).secondary,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add, size: 25),
           onPressed: () {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return CategoryList(options: options, categories: [
-                    PostCategoryModel.fromJson("Events"),
-                    PostCategoryModel.fromJson("Recruitment"),
-                    PostCategoryModel.fromJson("Announcements"),
-                    PostCategoryModel.fromJson("Opportunities"),
-                    PostCategoryModel.fromJson("Queries"),
-                    PostCategoryModel.fromJson("Connect"),
-                    PostCategoryModel.fromJson("Help"),
-                    PostCategoryModel.fromJson("Random Thoughts"),
-                    PostCategoryModel.fromJson("Lost"),
-                    PostCategoryModel.fromJson("Found"),
-                  ]);
+                  return CategoryList(
+                      options: options,
+                      categories:
+                          feedCategories + forumCategories + lnfCategories);
                 });
           },
         ),
@@ -162,66 +116,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-/*
-class Section extends StatefulWidget {
-  final String title;
-  final List<PostModel> posts;
-  final UserModel user;
-  const Section(
-      {Key? key, required this.title, required this.posts, required this.user})
-      : super(key: key);
-
-  @override
-  State<Section> createState() => _SectionState();
-}
-
-class _SectionState extends State<Section> {
-  bool isMinimized = false;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: InkWell(
-            onTap: () => setState(() {
-              isMinimized = !isMinimized;
-            }),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                isMinimized
-                    ? const Icon(Icons.arrow_drop_down)
-                    : const Icon(Icons.arrow_drop_up)
-              ],
-            ),
-          ),
-        ),
-        if (!isMinimized)
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: widget.posts.length,
-                  itemBuilder: (context, index) {
-                    final PostActions actions = homePostActions(
-                        widget.user, widget.title, widget.posts[index]);
-                    return PostCard(
-                      post: widget.posts[index],
-                      actions: actions,
-                    );
-                  }),
-            ),
-          ),
-      ],
-    );
-  }
-}
-*/

@@ -1,4 +1,5 @@
 import 'package:client/models/category.dart';
+import 'package:client/screens/academics/main.dart';
 import 'package:client/screens/home/post/main.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/home_app_bar.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/post/actions.dart';
 import '../../models/postModel.dart';
 import '../../models/user.dart';
 import '../../services/auth.dart';
@@ -69,49 +71,54 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
   }
 
-  final _bucket = PageStorageBucket();
+  // final _bucket = PageStorageBucket();
 
-  var widgetList = (widget, _scaffoldKey, index) => [
-        HomePage(
-          key: PageStorageKey("HOME"),
-          auth: widget.auth,
-          user: widget.user,
-          appBar: HomeAppBar(
-            title: "",
-            scaffoldKey: _scaffoldKey,
-            photo: widget.auth.user?.photo ?? "",
-          ),
-        ),
-        PostPage(
-          key: PageStorageKey("FEED"),
-          appBar: HomeAppBar(
-            title: "Feed",
-            scaffoldKey: _scaffoldKey,
-            photo: widget.auth.user?.photo ?? "",
-          ),
-          categories: feedCategories,
-        ),
-        PostPage(
-          key: PageStorageKey("FORUM"),
-          appBar: HomeAppBar(
-            title: "Forum",
-            scaffoldKey: _scaffoldKey,
-            photo: widget.auth.user?.photo ?? "",
-          ),
-          categories: forumCategories,
-        ),
-        const Text("Under Construction"),
-        // EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
-        PostPage(
-          key: PageStorageKey("LnF"),
-          appBar: HomeAppBar(
-            title: "Lost & Found",
-            scaffoldKey: _scaffoldKey,
-            photo: widget.auth.user?.photo ?? "",
-          ),
-          categories: lnfCategories,
-        ),
-      ][index];
+  // var widgetList = (widget, _scaffoldKey, index) => [
+  //       HomePage(
+  //         key: PageStorageKey("HOME"),
+  //         auth: widget.auth,
+  //         user: widget.user,
+  //         appBar: HomeAppBar(
+  //           title: "",
+  //           scaffoldKey: _scaffoldKey,
+  //           photo: widget.auth.user?.photo ?? "",
+  //         ),
+  //       ),
+  //       PostPage(
+  //         key: PageStorageKey("FEED"),
+  //         appBar: HomeAppBar(
+  //           title: "Feed",
+  //           scaffoldKey: _scaffoldKey,
+  //           photo: widget.auth.user?.photo ?? "",
+  //         ),
+  //         categories: feedCategories,
+  //       ),
+  //       PostPage(
+  //         key: PageStorageKey("FORUM"),
+  //         appBar: HomeAppBar(
+  //           title: "Forum",
+  //           scaffoldKey: _scaffoldKey,
+  //           photo: widget.auth.user?.photo ?? "",
+  //         ),
+  //         categories: forumCategories,
+  //       ),
+  //       AcademicWrapper(
+  //         appBar: HomeAppBar(
+  //             title: "Academics",
+  //             scaffoldKey: _scaffoldKey,
+  //             photo: widget.user.photo),
+  //       ),
+  //       // EventsPage(user: widget.user, scaffoldKey: _scaffoldKey),
+  //       PostPage(
+  //         key: PageStorageKey("LnF"),
+  //         appBar: HomeAppBar(
+  //           title: "Lost & Found",
+  //           scaffoldKey: _scaffoldKey,
+  //           photo: widget.auth.user?.photo ?? "",
+  //         ),
+  //         categories: lnfCategories,
+  //       ),
+  //     ][index];
 
   @override
   void initState() {
@@ -152,7 +159,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
               appBar: HomeAppBar(
                 title: "",
                 scaffoldKey: _scaffoldKey,
-                photo: widget.user.photo,
+                user: widget.user,
               ),
             )
           : Container(),
@@ -161,7 +168,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
               appBar: HomeAppBar(
                 title: "Feed",
                 scaffoldKey: _scaffoldKey,
-                photo: widget.user.photo,
+                user: widget.user,
               ),
               categories: feedCategories,
             )
@@ -171,18 +178,25 @@ class _HomeWrapperState extends State<HomeWrapper> {
               appBar: HomeAppBar(
                 title: "Forum",
                 scaffoldKey: _scaffoldKey,
-                photo: widget.user.photo,
+                user: widget.user,
               ),
               categories: forumCategories,
             )
           : Container(),
-      _selectedIndex == 3 ? const Text("Under Construction") : Container(),
+      _selectedIndex == 3
+          ? AcademicWrapper(
+              appBar: HomeAppBar(
+                  title: "Academics",
+                  scaffoldKey: _scaffoldKey,
+                  user: widget.user),
+            )
+          : Container(),
       _selectedIndex == 4
           ? PostPage(
               appBar: HomeAppBar(
                 title: "Lost & Found",
                 scaffoldKey: _scaffoldKey,
-                photo: widget.user.photo,
+                user: widget.user,
               ),
               categories: lnfCategories,
             )
@@ -190,7 +204,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
     ];
     return WillPopScope(
       onWillPop: () async {
+        print('==================Popupscope called');
+        print(tappedIndex);
         if (tappedIndex.length == 1) {
+          // if (!await Navigator.of(context).maybePop()) return true;
+          print(true);
           return true;
         } else {
           setState(() {
@@ -218,26 +236,27 @@ class _HomeWrapperState extends State<HomeWrapper> {
             ? null
             : BottomNavigationBar(
                 showUnselectedLabels: false,
+                showSelectedLabels: false,
                 currentIndex: _selectedIndex,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.home),
+                    icon: Icon(CustomIcons.home, size: 21),
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.feed),
+                    icon: Icon(CustomIcons.feed, size: 21),
                     label: 'Feed',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.forums),
+                    icon: Icon(CustomIcons.forums, size: 21),
                     label: 'Forums',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.academics),
+                    icon: Icon(CustomIcons.academics, size: 21),
                     label: 'Academics',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.lost_and_found),
+                    icon: Icon(CustomIcons.lost_and_found, size: 21),
                     label: 'L&F',
                   ),
                 ],

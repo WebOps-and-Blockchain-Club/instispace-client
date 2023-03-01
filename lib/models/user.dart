@@ -50,10 +50,13 @@ class UserModel {
         hostel = data["hostel"] != null
             ? HostelModel.fromJson(data["hostel"])
             : null,
-        permissions = data["permission"]["account"] != null
-            ? data["permission"]["account"].cast<String>()
-            : [],
-        permission = PermissionModel.fromJson(data["permission"]);
+        permissions =
+            data["permission"] != null && data["permission"]["account"] != null
+                ? data["permission"]["account"].cast<String>()
+                : [],
+        permission = data["permission"] != null
+            ? PermissionModel.fromJson(data["permission"])
+            : null;
 }
 
 class PermissionModel {

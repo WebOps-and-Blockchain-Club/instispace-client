@@ -1,5 +1,5 @@
 class FeedGQL {
-  String findPosts = """
+  String findPosts({List<String>? relations}) => """
   query FindPosts(\$lastEventId: String!, \$take: Float!, \$filteringCondition: FilteringConditions!, \$orderInput: OrderInput!) {
   findPosts(lastEventId: \$lastEventId, take: \$take, filteringCondition: \$filteringCondition, orderInput: \$orderInput) {
     list {
@@ -43,6 +43,26 @@ class FeedGQL {
       content
       category
       Link
+      status
+      tags {
+        id
+        title
+        category
+      }
+      ${relations != null && relations.contains("REPORT") ? """postReports {
+        createdBy {
+          id
+          name
+          role
+          roll
+          photo
+        }
+        description
+        id
+        createdAt
+      }""" : ""}
+      permissions
+      actions
     }
     total
   }
@@ -55,12 +75,12 @@ class FeedGQL {
     isLiked
   }
 }""";
-// TODO:
-  String toggleDisLikePost = """mutation Mutation(\$postId: String!) {
-  toggleLikePost(postId: \$postId) {
+
+  String toggleDisLikePost = """mutation ToggleDislikePost(\$postId: String!) {
+  toggleDislikePost(postId: \$postId) {
     title
-    likeCount
-    isLiked
+    isDisliked
+    dislikeCount
   }
 }""";
   String createComment =
@@ -89,8 +109,16 @@ class FeedGQL {
   }
 }""";
 
-String report = """mutation CreateReport(\$createReportInput: CreateReportInput!, \$postId: String!) {
+  String report =
+      """mutation CreateReport(\$createReportInput: CreateReportInput!, \$postId: String!) {
   createReport(createReportInput: \$createReportInput, postId: \$postId) {
+    id
+  }
+}""";
+
+  String updateStatus =
+      """mutation ChangePostsStatus(\$postId: String!, \$status: PostStatusInput!) {
+  changePostsStatus(id: \$postId, status: \$status) {
     id
   }
 }""";

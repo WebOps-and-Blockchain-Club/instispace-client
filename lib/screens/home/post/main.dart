@@ -1,10 +1,11 @@
-import 'package:client/screens/home/post/query.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import 'query.dart';
 import '../../../graphQL/feed.dart';
-import '../../../models/category.dart';
-
+import '../../../models/post/query_variable.dart';
+import '../../../models/post/actions.dart';
+import '../../../models/post/main.dart';
 import '../../../widgets/primary_filter.dart';
 import '../../../widgets/search_bar.dart';
 
@@ -21,32 +22,24 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   late List<PostCategoryModel> selectedCategories = [];
   String search = "";
-  int take = 10;
 
   @override
   Widget build(BuildContext context) {
-    print('\n\n\n\n\ntitle is ${widget.key}');
     final List<PostCategoryModel> categories = widget.categories;
 
-    final Map<String, dynamic> variables = {
-      "take": take,
-      "lastEventId": "",
-      "orderInput": {"byLikes": false, "byComments": false},
-      "filteringCondition": {
-        "search": search.trim(),
-        "posttobeApproved": false,
-        "isSaved": false,
-        "showOldPost": false,
-        "isLiked": false,
-        "categories": selectedCategories,
-      },
-    };
-    final QueryOptions<Object?> options =
-        QueryOptions(document: gql(FeedGQL().findPosts), variables: variables);
+    final QueryOptions<Object?> options = QueryOptions(
+        document: gql(FeedGQL().findPosts()),
+        variables: PostQueryVariableModel(
+                search: search,
+                categories: selectedCategories.isEmpty
+                    ? categories
+                    : selectedCategories)
+            .toJson(),
+        parserFn: (data) => PostsModel.fromJson(data));
 
     return Scaffold(
       body: NestedScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        // physics: const AlwaysScrollableScrollPhysics(),
         controller: ScrollController(),
         floatHeaderSlivers: true,
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
@@ -80,12 +73,11 @@ class _PostPageState extends State<PostPage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10),
               ]),
             ),
           ];
         },
-        body: PostQuery(options: options),
+        body: PostQuery(options: options, categories: widget.categories),
       ),
     );
   }

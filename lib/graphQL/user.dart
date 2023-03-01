@@ -23,6 +23,7 @@ class UserGQL {
           approvePosts
           createTag
           handleReports
+          account
         }
       }
     }

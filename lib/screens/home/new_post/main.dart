@@ -9,7 +9,7 @@ import '../../../models/post/actions.dart';
 import 'newPost.dart';
 
 Map<String, CreatePostModel> getCreatePostFields = {
-  "Events": CreatePostModel(
+  "Event": CreatePostModel(
     imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
     description: FieldModel(),
@@ -37,7 +37,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     postTime: FieldModel(required: false),
     endTime: FieldModel(),
   ),
-  "Announcements": CreatePostModel(
+  "Announcement": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
@@ -45,7 +45,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     tag: FieldModel(),
     endTime: FieldModel(),
   ),
-  "Opportunities": CreatePostModel(
+  "Opportunity": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     link: FieldModel(required: false),
@@ -60,7 +60,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     tag: FieldModel(),
     endTime: FieldModel(),
   ),
-  "Queries": CreatePostModel(
+  "Query": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
@@ -81,7 +81,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     link: FieldModel(required: false),
     endTime: FieldModel(),
   ),
-  "Random Thoughts": CreatePostModel(
+  "Random Thought": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),

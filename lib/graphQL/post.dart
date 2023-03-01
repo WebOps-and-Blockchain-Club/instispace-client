@@ -42,6 +42,14 @@ class PostGQl {
       content
       category
       Link
+      status
+      tags {
+        id
+        title
+        category
+      }
+      permissions
+      actions
     }
     }
 """;

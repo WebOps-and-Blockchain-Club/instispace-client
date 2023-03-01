@@ -10,6 +10,7 @@ import '../../models/date_time_format.dart';
 import '../../models/post/actions.dart';
 import '../../models/post/main.dart';
 import '../../services/notification.dart';
+import '../button/icon_button.dart';
 import '../helpers/loading.dart';
 import '../button/elevated_button.dart';
 import '../button/flat_icon_text_button.dart';
@@ -124,17 +125,17 @@ class _LikePostButtonState extends State<LikePostButton>
                           ? const Icon(
                               CustomIcons.likefilled,
                               color: Colors.red,
-                              size: 25,
+                              size: 21,
                             )
                           : const Icon(
                               CustomIcons.like,
-                              size: 25,
+                              size: 21,
                             )
                       : Icon(
                           widget.like.isLikedByUser
                               ? Icons.thumb_up_alt
                               : Icons.thumb_up_alt_outlined,
-                          size: 30,
+                          size: 26,
                         ),
                   onPressed: () {
                     if (!(result != null && result.isLoading)) {
@@ -176,9 +177,9 @@ class _LikePostButtonState extends State<LikePostButton>
 
 class DisLikePostButton extends StatefulWidget {
   final String postId;
-  // TODO:
-  final LikeModel like;
-  const DisLikePostButton({Key? key, required this.postId, required this.like})
+  final DisLikeModel dislike;
+  const DisLikePostButton(
+      {Key? key, required this.postId, required this.dislike})
       : super(key: key);
 
   @override
@@ -188,29 +189,26 @@ class DisLikePostButton extends StatefulWidget {
 class _DisLikePostButtonState extends State<DisLikePostButton> {
   @override
   Widget build(BuildContext context) {
-    final like = widget.like;
+    final dislike = widget.dislike;
     return Mutation(
         options: MutationOptions(
-            // TODO:
-            document: gql(FeedGQL().toggleLikePost),
+            document: gql(FeedGQL().toggleDisLikePost),
             update: (cache, result) {
               if (result != null && (!result.hasException)) {
                 final Map<String, dynamic> updated = {
                   "__typename": "Post",
                   "id": widget.postId,
-                  // TODO:
-                  "isLiked": !(like.isLikedByUser),
-                  // TODO:
-                  "likeCount":
-                      like.isLikedByUser ? like.count - 1 : like.count + 1
+                  "isDisliked": !(dislike.isDislikedByUser),
+                  "dislikeCount": dislike.isDislikedByUser
+                      ? dislike.count - 1
+                      : dislike.count + 1
                 };
                 cache.writeFragment(
-                  // TODO:
                   Fragment(document: gql('''
-                      fragment LikeField on Post{
+                      fragment DisLikeField on Post{
                         id
-                        isLiked
-                        likeCount
+                        isDisliked
+                        dislikeCount
                       }
                     ''')).asRequest(idFields: {
                     '__typename': updated['__typename'],
@@ -230,10 +228,10 @@ class _DisLikePostButtonState extends State<DisLikePostButton> {
               children: [
                 IconButton(
                   icon: Icon(
-                    widget.like.isLikedByUser
+                    widget.dislike.isDislikedByUser
                         ? Icons.thumb_down_alt
                         : Icons.thumb_down_alt_outlined,
-                    size: 30,
+                    size: 26,
                   ),
                   onPressed: () {
                     if (!(result != null && result.isLoading)) {
@@ -241,7 +239,7 @@ class _DisLikePostButtonState extends State<DisLikePostButton> {
                     }
                   },
                 ),
-                Text(widget.like.count.toString(),
+                Text(widget.dislike.count.toString(),
                     style: Theme.of(context).textTheme.labelLarge)
               ],
             ));
@@ -266,7 +264,7 @@ class CommentPostButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.comment, size: 27),
+          const Icon(Icons.comment, size: 25),
           const SizedBox(width: 5),
           Text(comment.count.toString(),
               style: Theme.of(context).textTheme.labelLarge),
@@ -343,7 +341,7 @@ class _SavePostButtonState extends State<SavePostButton> {
                 isStarred == true
                     ? Icons.bookmark_outlined
                     : Icons.bookmark_border,
-                size: 30,
+                size: 24,
               ),
             ));
   }
@@ -358,7 +356,7 @@ class SetReminderButton extends StatelessWidget {
     return InkWell(
       child: const Icon(
         CustomIcons.reminder,
-        size: 25,
+        size: 21,
       ),
       onTap: () => {
         showDialog(
@@ -514,7 +512,7 @@ class SharePostButton extends StatelessWidget {
       },
       child: const Icon(
         CustomIcons.share,
-        size: 25,
+        size: 21,
       ),
     );
   }
@@ -754,7 +752,7 @@ class _ReportPostButtonState extends State<ReportPostButton> {
               ),
             );
           }),
-      child: const Icon(Icons.warning_rounded, size: 30),
+      child: const Icon(Icons.warning_rounded, size: 25),
     );
   }
 }
@@ -908,102 +906,101 @@ class _ReportState extends State<Report> {
   }
 }
 
-/**
- *  runMutation({
-                                  "reportPostInput": {
-                                    "description": description ?? "",
-                                  },
-                                  "id": widget.report!.id,
-                                });
- */
-/**
- *           ? showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return StatefulBuilder(builder: (context, _) {
-                  //Keys
-                  final formKey = GlobalKey<FormState>();
+class SuperUserActionButton extends StatefulWidget {
+  final PostModel post;
+  final String type;
+  const SuperUserActionButton(
+      {Key? key, required this.post, this.type = 'approve'})
+      : super(key: key);
 
-                  //Controllers
-                  final description = TextEditingController();
+  @override
+  State<SuperUserActionButton> createState() => _SuperUserActionButtonState();
+}
 
-                  return AlertDialog(
-                    titlePadding: const EdgeInsets.only(top: 30, bottom: 10),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                    actionsPadding: const EdgeInsets.all(10),
-                    title: const Text('Report', textAlign: TextAlign.center),
-                    content: Form(
-                      key: formKey,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: TextFormField(
-                            controller: description,
-                            minLines: 5,
-                            maxLines: 8,
-                            decoration: const InputDecoration(
-                                labelText: "Why do you report this post?"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the reason for reporting";
-                              }
-                              return null;
-                            }),
-                      ),
-                    ),
-                    actions: <Widget>[
-                      CustomElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        text: "Cancel",
-                        color: ColorPalette.palette(context).warning,
-                        type: ButtonType.outlined,
-                      ),
-                      Mutation(
-                          options: MutationOptions(
-                            document: gql(widget.report != null
-                                ? widget.report!.document
-                                : ""),
-                            update: (cache, result) {
-                              if (result != null && (!result.hasException)) {
-                                widget.report!.updateCache(cache, result);
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Post reported & necessary action will be taken')),
-                                );
-                              }
-                            },
-                            onError: (dynamic error) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        formatErrorMessage(error.toString()))),
-                              );
-                            },
-                          ),
-                          builder: (
-                            RunMutation runMutation,
-                            QueryResult? result,
-                          ) {
-                            return CustomElevatedButton(
-                              onPressed: () {
-                                final isValid =
-                                    formKey.currentState!.validate();
-                                if (!isValid) return;
-                                runMutation({
-                                  "description": description.text,
-                                  "id": widget.report!.id,
-                                });
-                              },
-                              text: "Report",
-                              isLoading: result!.isLoading,
-                              color: ColorPalette.palette(context).warning,
-                            );
-                          }),
-                    ],
-                  );
+class _SuperUserActionButtonState extends State<SuperUserActionButton> {
+  String? status;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = widget.post;
+    return Mutation(
+      options: MutationOptions(
+        document: gql(FeedGQL().updateStatus),
+        update: (cache, result) {
+          if (result!.hasException) {
+          } else {
+            final Map<String, dynamic> updated = {
+              "__typename": "Post",
+              "id": widget.post.id,
+              "status": status,
+            };
+            cache.writeFragment(
+              Fragment(document: gql('''
+                                          fragment statusField on Post{
+                                              id
+                                              status
+                                          }''')).asRequest(idFields: {
+                '__typename': updated['__typename'],
+                'id': updated['id'],
+              }),
+              data: updated,
+              broadcast: false,
+            );
+          }
+        },
+        onError: (dynamic error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(formatErrorMessage(error.toString()))),
+          );
+        },
+      ),
+      builder: (
+        RunMutation runMutation,
+        QueryResult? result,
+      ) {
+        if (result != null && result.isLoading) {
+          return const Center(
+            child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                )),
+          );
+        }
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomIconButton(
+              icon: Icons.check,
+              onPressed: () {
+                String _status =
+                    '${widget.type == 'approve' ? '' : "REPORT_"}ACCEPTED';
+                setState(() {
+                  status = _status;
                 });
- */
+                runMutation({
+                  "id": widget.post.id,
+                  "status": _status,
+                });
+              },
+            ),
+            CustomIconButton(
+                icon: Icons.close,
+                onPressed: () {
+                  String _status =
+                      '${widget.type == 'approve' ? '' : "REPORT_"}REJECTED';
+                  setState(() {
+                    status = _status;
+                  });
+                  runMutation({
+                    "id": widget.post.id,
+                    "status": _status,
+                  });
+                }),
+          ],
+        );
+      },
+    );
+  }
+}

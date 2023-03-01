@@ -3,11 +3,15 @@ import './actions.dart';
 
 class PostsModel {
   final List<PostModel> posts;
+  final int total;
 
-  PostsModel({required this.posts});
+  PostsModel({required this.posts, required this.total});
 
-  PostsModel.fromJson(List<dynamic> data)
-      : posts = data.map((e) => PostModel.fromJson(e)).toList();
+  PostsModel.fromJson(dynamic data)
+      : posts = (data["findPosts"]["list"] as List<dynamic>)
+            .map((e) => PostModel.fromJson(e))
+            .toList(),
+        total = data["findPosts"]['total'];
 }
 
 class PostModel {
@@ -25,9 +29,11 @@ class PostModel {
   final SavePostModel? saved;
   final String? status;
   final LinkModel? link;
+  final List<ReportModel>? reports;
   final String updatedAt;
   final String createdAt;
   final CreatedByModel createdBy;
+  final List<String> permissions;
 
   PostModel({
     this.title,
@@ -42,11 +48,13 @@ class PostModel {
     this.photo,
     this.status,
     this.link,
+    this.reports,
     this.dislike,
     this.saved,
     required this.updatedAt,
     required this.createdAt,
     required this.createdBy,
+    required this.permissions,
   });
 
   PostModel.fromJson(Map<String, dynamic> data)
@@ -67,9 +75,37 @@ class PostModel {
         photo = data['photo'] != '' && data['photo'] != null
             ? data['photo'].split(' AND ')
             : null,
+        reports = data['postReports']
+            ?.map((e) => ReportModel.fromJson(e))
+            .toList()
+            .cast<ReportModel>(),
         updatedAt = data['updatedAt'],
         status = data['status'],
         link = LinkModel(name: "data['linkName']", link: "data['link']"),
         createdAt = data['createdAt'],
-        createdBy = CreatedByModel.fromJson(data['createdBy']);
+        createdBy = CreatedByModel.fromJson(
+          data['createdBy'],
+        ),
+        permissions =
+            data['permissions'].cast<String>() + data['actions'].cast<String>();
+}
+
+class ReportModel {
+  final String id;
+  final String description;
+  final CreatedByModel createdBy;
+  final String createdAt;
+
+  ReportModel({
+    required this.id,
+    required this.description,
+    required this.createdBy,
+    required this.createdAt,
+  });
+
+  ReportModel.fromJson(Map<String, dynamic> data)
+      : id = data["id"],
+        description = data["description"],
+        createdBy = CreatedByModel.fromJson(data["createdBy"]),
+        createdAt = data["createdAt"];
 }

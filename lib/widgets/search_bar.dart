@@ -53,8 +53,7 @@ class _SearchBarState extends State<SearchBar> {
         children: [
           SizedBox(
             height: 50,
-            child: Expanded(
-                child: Theme(
+            child: Theme(
               data: ThemeData(
                 primarySwatch: ColorPalette.palette(context).primary,
               ),
@@ -94,7 +93,7 @@ class _SearchBarState extends State<SearchBar> {
                   });
                 },
               ),
-            )),
+            ),
           ),
           if (error != "")
             SizedBox(

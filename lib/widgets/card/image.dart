@@ -15,10 +15,16 @@ class ImageCard extends StatefulWidget {
 
 class _ImageCardState extends State<ImageCard> {
   double minHeight = 0;
+  var imageProviders = [];
 
   void getMinHeight(List<String> imageUrls) {
+    var _imageProviders = [];
     for (var imageUrl in imageUrls) {
-      Image image = Image.network(imageUrl.trim());
+      var imageProvider = CachedNetworkImageProvider(imageUrl);
+      Image image = Image(
+        image: CachedNetworkImageProvider(imageUrl),
+      );
+      _imageProviders.add(imageProvider);
       image.image.resolve(const ImageConfiguration()).addListener(
         ImageStreamListener(
           (ImageInfo image, bool synchronousCall) {
@@ -35,18 +41,21 @@ class _ImageCardState extends State<ImageCard> {
         ),
       );
     }
+    setState(() {
+      imageProviders = _imageProviders;
+    });
   }
 
   @override
   void initState() {
-    if (widget.imageUrls.isNotEmpty) {
-      getMinHeight(widget.imageUrls);
-    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.imageUrls.isNotEmpty) {
+      getMinHeight(widget.imageUrls);
+    }
     final imageUrls = widget.imageUrls;
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(29)),
@@ -56,29 +65,24 @@ class _ImageCardState extends State<ImageCard> {
           List<String> images = await imageCachePath(imageUrls);
           openImageView(context, index, images);
         },
-        loop: imageUrls.length != 1,
+        loop: imageProviders.length != 1,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            margin: EdgeInsets.only(bottom: imageUrls.length > 1 ? 15 : 0),
-            child: CachedNetworkImage(
-              imageUrl: imageUrls[index],
-              placeholder: (_, __) => const Icon(Icons.image, size: 100),
-              errorWidget: (_, __, ___) => const Icon(Icons.image, size: 100),
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(29),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.fitWidth,
-                  ),
+            margin: EdgeInsets.only(bottom: imageProviders.length > 1 ? 15 : 0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(29),
+                image: DecorationImage(
+                  image: imageProviders[index],
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
           );
         },
-        itemCount: imageUrls.length,
-        pagination: imageUrls.length > 1
+        itemCount: imageProviders.length,
+        pagination: imageProviders.length > 1
             ? SwiperCustomPagination(
                 builder: (BuildContext context, SwiperPluginConfig config) {
                   return Align(
@@ -86,7 +90,7 @@ class _ImageCardState extends State<ImageCard> {
                     child: Row(
                       children: [
                         const Spacer(),
-                        for (var i = 0; i < imageUrls.length; i++)
+                        for (var i = 0; i < imageProviders.length; i++)
                           Container(
                             margin: const EdgeInsets.all(3),
                             width: 5,
@@ -108,19 +112,3 @@ class _ImageCardState extends State<ImageCard> {
     );
   }
 }
-
-/*
-class ImageCard extends StatelessWidget {
-  final List<String> imageUrls;
-  final double? minHeight;
-  const ImageCard({
-    Key? key,
-    required this.imageUrls,
-    this.minHeight,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return;
-  }
-}
-*/

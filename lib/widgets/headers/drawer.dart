@@ -1,10 +1,12 @@
 import 'package:client/screens/academics/calendar.dart';
 import 'package:client/utils/custom_icons.dart';
+import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/user.dart';
+import '../../screens/super_user/approve_post.dart';
 import '../../screens/super_user/create_notification.dart';
 import '../../screens/teasure_hunt/main.dart';
 import '../../screens/user/e_id_card.dart';
@@ -45,6 +47,8 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final user = auth.user;
+    print('==========drawer');
+    print(user.permissions);
     return Drawer(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       child: StatefulBuilder(
@@ -223,11 +227,23 @@ class CustomDrawer extends StatelessWidget {
                                                 "View Reported Posts"),
                                             onTap: () {
                                               Navigator.pop(context);
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          const ReportedPostPage()));
+                                              navigate(
+                                                  context,
+                                                  const SuperUserPostPage(
+                                                      title: 'MODERATE POST',
+                                                      type: 'moderate'));
+                                            },
+                                          ),
+                                        if (user.permission!.approvePost)
+                                          ListTile(
+                                            tileColor: Colors.transparent,
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4),
+                                            title: const Text("Approve Post"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              navigate(context,
+                                                  const SuperUserPostPage());
                                             },
                                           ),
                                         // Create Notification
