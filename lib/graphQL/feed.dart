@@ -19,9 +19,12 @@ class FeedGQL {
         isLiked
         isDisliked
         likeCount
+        dislikeCount
+        photo
         isHidden
       }
       photo
+      attachment
       location
       linkName
       likeCount
@@ -76,6 +79,13 @@ class FeedGQL {
   }
 }""";
 
+  String toggleLikeComment = """mutation Mutation(\$commentId: String!) {
+  toggleLikeComment(commentId: \$commentId) {
+    likeCount
+    isLiked
+  }
+}""";
+
   String toggleDisLikePost = """mutation ToggleDislikePost(\$postId: String!) {
   toggleDislikePost(postId: \$postId) {
     title
@@ -117,8 +127,8 @@ class FeedGQL {
 }""";
 
   String updateStatus =
-      """mutation ChangePostsStatus(\$postId: String!, \$status: PostStatusInput!) {
-  changePostsStatus(id: \$postId, status: \$status) {
+      """mutation ChangePostsStatus(\$id: String!, \$status: PostStatusInput!) {
+  changePostsStatus(id: \$id, status: \$status) {
     id
   }
 }""";
@@ -143,6 +153,7 @@ class FeedGQL {
         isHidden
       }
       photo
+      attachment
       location
       linkName
       likeCount

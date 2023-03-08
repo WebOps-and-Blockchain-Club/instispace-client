@@ -1,3 +1,4 @@
+import 'package:client/models/post/query_variable.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -94,8 +95,10 @@ class _PostQueryState extends State<PostQuery> {
                                     context,
                                     SuperUserPostPage(
                                       title: 'OLDER POST',
-                                      type: 'oldPost',
-                                      categories: widget.categories,
+                                      filterVariables: PostQueryVariableModel(
+                                        showOldPost: true,
+                                        categories: widget.categories,
+                                      ),
                                     ));
                               },
                               child: const Text("View Older Posts"))

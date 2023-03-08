@@ -13,7 +13,12 @@ import '../../../widgets/search_bar.dart';
 class PostPage extends StatefulWidget {
   final Widget appBar;
   final List<PostCategoryModel> categories;
-  const PostPage({Key? key, required this.appBar, required this.categories})
+  final bool createPost;
+  const PostPage(
+      {Key? key,
+      required this.appBar,
+      required this.categories,
+      this.createPost = false})
       : super(key: key);
 
   @override
@@ -65,9 +70,11 @@ class _PostPageState extends State<PostPage> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: PrimaryFilter(
-                    categories: categories,
-                    onCategoryTab: (value) {
+                  child: PrimaryFilter<PostCategoryModel>(
+                    options: categories,
+                    optionIconBuilder: (e) => e.icon,
+                    optionTextBuilder: (e) => e.name,
+                    onSelect: (value) {
                       setState(() {
                         selectedCategories = value;
                       });
@@ -80,10 +87,12 @@ class _PostPageState extends State<PostPage> {
         },
         body: PostQuery(options: options, categories: widget.categories),
       ),
-      floatingActionButton: NewPostButton(
-        options: options,
-        categories: widget.categories,
-      ),
+      floatingActionButton: widget.createPost
+          ? NewPostButton(
+              options: options,
+              categories: widget.categories,
+            )
+          : null,
     );
   }
 }

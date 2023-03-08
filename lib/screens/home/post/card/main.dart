@@ -1,4 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/models/post/query_variable.dart';
+import 'package:client/screens/super_user/approve_post.dart';
+import 'package:client/widgets/card/image_view.dart';
+import 'package:client/widgets/helpers/navigate.dart';
+import 'package:client/widgets/profile_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -52,25 +57,7 @@ class _PostCardState extends State<PostCard>
                     spreadRadius: 1,
                   )
                 ]),
-                child: CachedNetworkImage(
-                  imageUrl: post.createdBy.photo,
-                  placeholder: (_, __) =>
-                      const Icon(Icons.account_circle_rounded, size: 40),
-                  errorWidget: (_, __, ___) =>
-                      const Icon(Icons.account_circle_rounded, size: 40),
-                  imageBuilder: (context, imageProvider) => Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
+                child: ProfileIconWidget(photo: post.createdBy.photo),
               ),
             Expanded(
               child: Text(
@@ -79,14 +66,22 @@ class _PostCardState extends State<PostCard>
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 5),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  post.category.icon,
-                  color: Colors.lightBlue,
+            GestureDetector(
+              onTap: () => navigate(
+                  context,
+                  SuperUserPostPage(
+                      title: post.category.name,
+                      filterVariables:
+                          PostQueryVariableModel(categories: [post.category]))),
+              child: Container(
+                margin: const EdgeInsets.only(left: 5),
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    post.category.icon,
+                    color: Colors.lightBlue,
+                  ),
                 ),
               ),
             ),
@@ -188,6 +183,7 @@ class _PostCardState extends State<PostCard>
                               fieldConfiguration:
                                   getCreatePostFields[post.category.name]!,
                               post: post,
+                              options: widget.options,
                             ),
                           ))),
                 ),
@@ -271,6 +267,24 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
             child: Description(content: post.content!),
           ),
 
+        if (post.attachement != null && post.attachement!.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: GestureDetector(
+                onTap: () => openImageView(context, 0, post.attachement!),
+                child: Row(
+                  children: [
+                    const Icon(Icons.attachment, color: Color(0xFF342f81)),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Attachement (${post.attachement!.length})',
+                      style: const TextStyle(
+                          color: Color(0xFF342f81), fontSize: 16),
+                    ),
+                  ],
+                )),
+          ),
+
         //Created by and created at
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -289,6 +303,17 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
               spacing: 3,
               children:
                   post.tags!.tags.map((tag) => TagButton(tag: tag)).toList(),
+            ),
+          ),
+
+        if (post.link != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CTAButton(cta: post.link!),
+              ],
             ),
           ),
 

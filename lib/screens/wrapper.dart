@@ -78,7 +78,7 @@ class _WrapperState extends State<Wrapper> {
                 }
 
                 if (result.hasException) {
-                  return Error(error: result.exception.toString());
+                  return Text(formatErrorMessage(result.exception.toString()));
                 }
 
                 if (result.isLoading) {
@@ -87,7 +87,7 @@ class _WrapperState extends State<Wrapper> {
                   );
                 }
 
-                return Error(error: result.data.toString());
+                return Text(formatErrorMessage(result.exception.toString()));
               }()),
             );
           });

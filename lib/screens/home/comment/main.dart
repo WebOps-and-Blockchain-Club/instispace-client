@@ -1,41 +1,23 @@
-import 'dart:async';
-
 import 'package:client/graphQL/feed.dart';
 import 'package:client/services/image_picker.dart';
-import 'package:client/themes.dart';
 import 'package:client/widgets/card.dart';
 import 'package:client/widgets/card/image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-// import '../../../models/comment.dart';
 import '../../../models/date_time_format.dart';
 import '../../../models/post/actions.dart';
-import '../../../themes.dart';
-import '../../../widgets/button/icon_button.dart';
+import '../../../utils/custom_icons.dart';
 import '../../../widgets/card/description.dart';
-import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/error.dart';
 
 class CommentsPage extends StatefulWidget {
   final String postId;
   final CommentsModel comments;
-  // final String? id;
-  // final String? type;
-  // final String? document;
-  // final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
-  //     updateCache;
 
-  const CommentsPage({
-    Key? key,
-    required this.postId,
-    required this.comments,
-    // this.id,
-    // this.type,
-    // this.document,
-    // this.updateCache,
-  }) : super(key: key);
+  const CommentsPage({Key? key, required this.postId, required this.comments})
+      : super(key: key);
 
   @override
   State<CommentsPage> createState() => _CommentsPageState();
@@ -54,7 +36,6 @@ class _CommentsPageState extends State<CommentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -67,89 +48,147 @@ class _CommentsPageState extends State<CommentsPage> {
               fontWeight: FontWeight.w700),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 15.0, left: 15.0, top: 15.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: widget.comments.comments.length,
-                  itemBuilder: (context, index) {
-                    final CommentModel comment =
-                        widget.comments.comments[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: CustomCard(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Images
-                          if (comment.images != null &&
-                              comment.images!.isNotEmpty &&
-                              comment.images!.first != "")
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  child: ImageCard(
-                                    imageUrls: comment.images!,
-                                  )),
-                            ),
-
-                          // Description
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+                itemCount: widget.comments.comments.length,
+                itemBuilder: (context, index) {
+                  final CommentModel comment = widget.comments.comments[index];
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        right: 20.0,
+                        left: 20.0,
+                        top: index == 0 ? 20.0 : 0,
+                        bottom: 20),
+                    child: CustomCard(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Images
+                        if (comment.images != null &&
+                            comment.images!.isNotEmpty &&
+                            comment.images!.first != "")
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 5.0),
-                            child: Description(content: comment.content),
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: Container(
+                                margin: const EdgeInsets.all(10),
+                                child: ImageCard(
+                                  imageUrls: comment.images!,
+                                )),
                           ),
 
-                          // Posted By & Time
-                          SelectableText(
-                            '${comment.createdBy.name}, ${DateTimeFormatModel.fromString(comment.createdAt).toDiffString()} ago',
-                            style: const TextStyle(color: Colors.black45),
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      )),
-                    );
-                    // return Card(
-                    //   margin: const EdgeInsets.only(bottom: 15),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(15),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.stretch,
-                    //       children: [
-                    //         // Images
-                    //         if (commet.images != null &&
-                    //             commet.images!.isNotEmpty)
-                    //           Container(
-                    //               margin: const EdgeInsets.all(10),
-                    //               child: ImageCard(imageUrls: commet.images!)),
+                        // Description
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0),
+                          child: Description(content: comment.content),
+                        ),
 
-                    //         // Description
-                    //         Description(content: commet.content),
-
-                    //         // Posted By & Time
-                    //         SelectableText(
-                    //             'Commented by ${commet.createdBy.name}, ${DateTimeFormatModel.fromString(commet.createdAt).toDiffString()} ago',
-                    //             style: Theme.of(context).textTheme.labelSmall),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // );
-                  }),
-            ),
-            CreateComment(
+                        // Posted By & Time
+                        SelectableText(
+                          '${comment.createdBy.name}, ${DateTimeFormatModel.fromString(comment.createdAt).toDiffString()} ago',
+                          style: const TextStyle(color: Colors.black45),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    )),
+                  );
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0, left: 20.0, top: 0.0),
+            child: CreateComment(
                 postId: widget.postId,
                 updateComments: (CommentModel comment) {
                   setState(() {
                     comments.add(comment);
                   });
                 }),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+class LikeCommentButton extends StatefulWidget {
+  final String commentId;
+  final LikeModel like;
+  const LikeCommentButton(
+      {Key? key, required this.commentId, required this.like})
+      : super(key: key);
+
+  @override
+  State<LikeCommentButton> createState() => _LikeCommentButtonState();
+}
+
+class _LikeCommentButtonState extends State<LikeCommentButton> {
+  @override
+  Widget build(BuildContext context) {
+    final like = widget.like;
+    return Mutation(
+        options: MutationOptions(
+            document: gql(FeedGQL().toggleLikeComment),
+            update: (cache, result) {
+              print(result?.exception);
+              if (result != null && (!result.hasException)) {
+                final Map<String, dynamic> updated = {
+                  "__typename": "Comments",
+                  "id": widget.commentId,
+                  "isLiked": !(like.isLikedByUser),
+                  "likeCount":
+                      like.isLikedByUser ? like.count - 1 : like.count + 1
+                };
+                cache.writeFragment(
+                  Fragment(document: gql('''
+                      fragment LikeField on Comments {
+                        id
+                        isLiked
+                        likeCount
+                      }
+                    ''')).asRequest(idFields: {
+                    '__typename': updated['__typename'],
+                    'id': updated['id'],
+                  }),
+                  data: updated,
+                  broadcast: false,
+                );
+              }
+            }),
+        builder: (
+          RunMutation runMutation,
+          QueryResult? result,
+        ) =>
+            Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    color: Colors.black,
+                    child: IconButton(
+                      padding: EdgeInsets.all(0),
+                      icon: widget.like.isLikedByUser
+                          ? const Icon(
+                              CustomIcons.likefilled,
+                              color: Colors.red,
+                              size: 15,
+                            )
+                          : const Icon(
+                              CustomIcons.like,
+                              size: 15,
+                            ),
+                      onPressed: () {
+                        if (!(result != null && result.isLoading)) {
+                          runMutation({"commentId": widget.commentId});
+                        }
+                      },
+                    ),
+                  ),
+                  Text(widget.like.count.toString(),
+                      style: Theme.of(context).textTheme.labelLarge)
+                ],
+              ),
+            ));
   }
 }
 

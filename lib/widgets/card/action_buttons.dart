@@ -1,5 +1,7 @@
 import 'package:client/graphQL/feed.dart';
+import 'package:client/models/post/query_variable.dart';
 import 'package:client/screens/home/comment/main.dart';
+import 'package:client/screens/super_user/approve_post.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -28,7 +30,7 @@ import '../../themes.dart';
 import '../text/label.dart';
 
 class CTAButton extends StatelessWidget {
-  final CTAModel cta;
+  final LinkModel cta;
   const CTAButton({Key? key, required this.cta}) : super(key: key);
 
   @override
@@ -38,7 +40,10 @@ class CTAButton extends StatelessWidget {
       uri: Uri.parse(
           cta.link.contains("http") ? cta.link : "http://" + cta.link),
       builder: (context, followLink) => CustomElevatedButton(
-          onPressed: followLink, text: cta.name.capitalize()),
+        onPressed: followLink,
+        text: cta.name.capitalize(),
+        padding: const [15, 5],
+      ),
     );
   }
 }
@@ -51,9 +56,11 @@ class TagButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // TODO: Add tag page navigation
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (BuildContext context) => TagPage(tag: tag)));
+        navigate(
+            context,
+            SuperUserPostPage(
+                title: tag.title,
+                filterVariables: PostQueryVariableModel(tags: [tag])));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 0),
@@ -981,7 +988,9 @@ class _SuperUserActionButtonState extends State<SuperUserActionButton> {
                 });
                 runMutation({
                   "id": widget.post.id,
-                  "status": _status,
+                  "status": {
+                    "status": _status,
+                  }
                 });
               },
             ),
@@ -995,7 +1004,9 @@ class _SuperUserActionButtonState extends State<SuperUserActionButton> {
                   });
                   runMutation({
                     "id": widget.post.id,
-                    "status": _status,
+                    "status": {
+                      "status": _status,
+                    }
                   });
                 }),
           ],

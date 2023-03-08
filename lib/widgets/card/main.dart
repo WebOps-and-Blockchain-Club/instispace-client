@@ -189,10 +189,10 @@ class _PostCardState extends State<PostCard> {
               ),
 
             // CTA
-            if (post.cta != null)
-              Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: CTAButton(cta: post.cta!)),
+            // if (post.cta != null)
+            //   Padding(
+            //       padding: const EdgeInsets.only(top: 10),
+            //       child: CTAButton(cta: post.cta!)),
 
             // Actions
             if ((post.permissions.contains("LIKE") && post.like != null) ||

@@ -25,7 +25,7 @@ class _EndTimeState extends State<EndTime> {
   @override
   void initState() {
     setState(() {
-      endTime = widget.endTime!;
+      endTime = widget.endTime ?? DateTime.now();
     });
 
     super.initState();
@@ -43,11 +43,8 @@ class _EndTimeState extends State<EndTime> {
           ),
           const SizedBox(height: 3),
           Text(
-            DateTimeFormatModel(dateTime: widget.endTime!)
-                    .toFormat("MMM dd, yyyy") +
-                " " +
-                DateTimeFormatModel(dateTime: widget.endTime!)
-                    .toFormat("h:mm a"),
+            DateTimeFormatModel(dateTime: endTime)
+                .toFormat("MMM dd, yyyy h:mm a"),
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
@@ -59,10 +56,9 @@ class _EndTimeState extends State<EndTime> {
             onPressed: () {
               showDatePicker(
                       context: context,
-                      initialDate: widget.endTime!,
-                      firstDate: widget.endTime!,
-                      lastDate:
-                          widget.endTime!.add(const Duration(days: 30 * 5)))
+                      initialDate: endTime,
+                      firstDate: endTime,
+                      lastDate: endTime.add(const Duration(days: 30 * 5)))
                   .then((value) {
                     if (value != null) {
                       setState(() {

@@ -167,6 +167,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 user: widget.user,
               ),
               categories: feedCategories,
+              createPost:
+                  widget.user.role != 'USER' && widget.user.role != 'MODERATOR',
             )
           : Container(),
       _selectedIndex == 2
@@ -177,6 +179,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 user: widget.user,
               ),
               categories: forumCategories,
+              createPost: true,
             )
           : Container(),
       _selectedIndex == 3
@@ -195,6 +198,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 user: widget.user,
               ),
               categories: lnfCategories,
+              createPost: true,
             )
           : Container(),
     ];

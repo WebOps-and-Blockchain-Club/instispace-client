@@ -30,8 +30,8 @@ import '../../../../widgets/helpers/error.dart';
 
 class NewPostScreen extends StatefulWidget {
   final List<io.File>? images;
-  final options;
-  final post;
+  final QueryOptions options;
+  final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
   const NewPostScreen(
@@ -40,7 +40,7 @@ class NewPostScreen extends StatefulWidget {
       this.post,
       required this.category,
       required this.fieldConfiguration,
-      this.options})
+      required this.options})
       : super(key: key);
 
   @override
@@ -276,6 +276,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                 if (value == null || value.isEmpty) {
                                   return "Enter the description of the post";
                                 }
+                                return null;
                               },
                             ),
 

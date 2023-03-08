@@ -40,14 +40,11 @@ void showWarningAlert(BuildContext context) {
               ),
             ),
             actions: [
-              CustomElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                text: "Agreed",
-                color: ColorPalette.palette(context).primary,
-                type: ButtonType.outlined,
-              )
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Agreed"))
             ],
           ));
 }

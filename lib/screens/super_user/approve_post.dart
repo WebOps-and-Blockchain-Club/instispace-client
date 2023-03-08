@@ -9,14 +9,10 @@ import '../../../graphQL/feed.dart';
 
 class SuperUserPostPage extends StatefulWidget {
   final String title;
-  final String type;
-  final List<PostCategoryModel>? categories;
+  final PostQueryVariableModel filterVariables;
 
   const SuperUserPostPage(
-      {Key? key,
-      this.title = 'APPROVE POST',
-      this.type = 'approve',
-      this.categories})
+      {Key? key, required this.title, required this.filterVariables})
       : super(key: key);
 
   @override
@@ -31,14 +27,10 @@ class _SuperUserPostPageState extends State<SuperUserPostPage> {
   @override
   Widget build(BuildContext context) {
     final QueryOptions<Object?> options = QueryOptions(
-      document: gql(FeedGQL()
-          .findPosts(relations: widget.type == 'moderate' ? ["REPORT"] : null)),
-      variables: PostQueryVariableModel(
-        postToBeApproved: widget.type == 'approve' ? true : false,
-        viewReportedPosts: widget.type == 'moderate' ? true : false,
-        showOldPost: widget.type == 'oldPost' ? true : false,
-        categories: widget.categories,
-      ).toJson(),
+      document: gql(FeedGQL().findPosts(
+          relations:
+              widget.filterVariables.viewReportedPosts ? ["REPORT"] : null)),
+      variables: widget.filterVariables.toJson(),
       parserFn: (data) => PostsModel.fromJson(data),
     );
 

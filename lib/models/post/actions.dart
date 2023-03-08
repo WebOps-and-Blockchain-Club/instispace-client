@@ -33,7 +33,7 @@ class CommentsModel {
     int? count,
   ) {
     if (on == "LIKE_COUNT") {
-      comments.sort((a, b) => a.likeCount.compareTo(b.likeCount));
+      comments.sort((a, b) => a.like.count.compareTo(b.like.count));
     } else if (on == "CREATED_AT") {
       comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     }
@@ -44,7 +44,7 @@ class CommentsModel {
 class CommentModel {
   final String id;
   final String content;
-  final int likeCount;
+  final LikeModel like;
   final List<String>? images;
   final String createdAt;
   final CreatedByModel createdBy;
@@ -54,14 +54,17 @@ class CommentModel {
       required this.content,
       required this.createdAt,
       this.images,
-      required this.likeCount,
+      required this.like,
       required this.createdBy});
 
   CommentModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
         content = data["content"],
-        likeCount = data["likeCount"],
-        images = [''],
+        like =
+            LikeModel(count: data["likeCount"], isLikedByUser: data["isLiked"]),
+        images = data['photo'] != '' && data['photo'] != null
+            ? data['photo'].split(' AND ')
+            : null,
         createdBy = CreatedByModel.fromJson(data["createdBy"]),
         createdAt = data["createdAt"];
 }

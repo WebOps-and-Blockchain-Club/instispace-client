@@ -1,72 +1,77 @@
 import 'package:flutter/material.dart';
-import '../models/category.dart';
 
-class PrimaryFilter extends StatefulWidget {
-  final List<PostCategoryModel> categories;
-  final void Function(List<PostCategoryModel>) onCategoryTab;
+class PrimaryFilter<T> extends StatefulWidget {
+  final List<T> options;
+  final String Function(T) optionTextBuilder;
+  final IconData? Function(T)? optionIconBuilder;
+  final void Function(List<T>) onSelect;
 
   const PrimaryFilter(
-      {Key? key, required this.categories, required this.onCategoryTab})
+      {Key? key,
+      required this.options,
+      required this.optionTextBuilder,
+      this.optionIconBuilder,
+      required this.onSelect})
       : super(key: key);
 
   @override
-  State<PrimaryFilter> createState() => _PrimaryFilterState();
+  State<PrimaryFilter<T>> createState() => _PrimaryFilterState<T>();
 }
 
-class _PrimaryFilterState extends State<PrimaryFilter> {
-  late List<PostCategoryModel> selectedCategories = [];
+class _PrimaryFilterState<T> extends State<PrimaryFilter<T>> {
+  late List<T> selectedOptions = [];
 
   @override
   Widget build(BuildContext context) {
-    final List<PostCategoryModel> categories = widget.categories;
+    final List<T> options = widget.options;
     return SizedBox(
       height: 30,
       child: ListView.builder(
           physics: const ClampingScrollPhysics(),
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
+          itemCount: options.length,
           itemBuilder: (BuildContext context, int index) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (selectedCategories.contains(categories[index])) {
-                        selectedCategories.remove(categories[index]);
+                      if (selectedOptions.contains(options[index])) {
+                        selectedOptions.remove(options[index]);
                       } else {
-                        selectedCategories.add(categories[index]);
+                        selectedOptions.add(options[index]);
                       }
                     });
-                    widget.onCategoryTab(selectedCategories);
+                    widget.onSelect(selectedOptions);
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
-                        color: selectedCategories.contains(categories[index])
+                        color: selectedOptions.contains(options[index])
                             ? Colors.black
                             : const Color(0xFFEEEEEE),
                         borderRadius: BorderRadiusDirectional.circular(15)),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 13),
                       child: Row(
                         children: [
-                          Icon(
-                            categories[index].icon,
-                            size: 15,
-                            color:
-                                selectedCategories.contains(categories[index])
+                          if (widget.optionIconBuilder != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: Icon(
+                                widget.optionIconBuilder!(options[index]),
+                                size: 15,
+                                color: selectedOptions.contains(options[index])
                                     ? Colors.white
                                     : const Color(0xFF505050),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                              ),
+                            ),
                           Text(
-                            categories[index].name,
+                            widget.optionTextBuilder(options[index]),
                             style: TextStyle(
                                 fontSize: 15,
-                                color: selectedCategories
-                                        .contains(categories[index])
+                                color: selectedOptions.contains(options[index])
                                     ? Colors.white
                                     : const Color(0xFF505050)),
                           ),

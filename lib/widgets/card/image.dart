@@ -22,7 +22,7 @@ class _ImageCardState extends State<ImageCard> {
     for (var imageUrl in imageUrls) {
       var imageProvider = CachedNetworkImageProvider(imageUrl);
       Image image = Image(
-        image: CachedNetworkImageProvider(imageUrl),
+        image: imageProvider,
       );
       _imageProviders.add(imageProvider);
       image.image.resolve(const ImageConfiguration()).addListener(

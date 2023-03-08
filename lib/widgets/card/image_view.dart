@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -13,6 +14,7 @@ class ImageViewViewWrapper extends StatefulWidget {
     this.initialIndex = 0,
     required this.galleryItems,
     this.scrollDirection = Axis.horizontal,
+    required this.type,
   })  : pageController = PageController(initialPage: initialIndex),
         super(key: key);
 
@@ -24,6 +26,7 @@ class ImageViewViewWrapper extends StatefulWidget {
   final PageController pageController;
   final List<String> galleryItems;
   final Axis scrollDirection;
+  final String type;
 
   @override
   State<StatefulWidget> createState() {
@@ -85,6 +88,15 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final String item = widget.galleryItems[index];
+    if (widget.type == 'file') {
+      return PhotoViewGalleryPageOptions(
+        imageProvider: NetworkImage(item),
+        initialScale: PhotoViewComputedScale.contained,
+        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+        maxScale: PhotoViewComputedScale.covered * 4.1,
+        heroAttributes: PhotoViewHeroAttributes(tag: item),
+      );
+    }
     return PhotoViewGalleryPageOptions(
       imageProvider: FileImage(File(item)),
       initialScale: PhotoViewComputedScale.contained,
@@ -96,7 +108,8 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
 }
 
 void openImageView(
-    BuildContext context, final int index, final List<String> galleryItems) {
+    BuildContext context, final int index, final List<String> galleryItems,
+    {final String type = 'file'}) {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -107,6 +120,7 @@ void openImageView(
         ),
         initialIndex: index,
         scrollDirection: Axis.horizontal,
+        type: type,
       ),
     ),
   );

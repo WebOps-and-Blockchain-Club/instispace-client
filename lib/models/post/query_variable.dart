@@ -15,6 +15,8 @@ class PostQueryVariableModel {
   final bool showOldPost;
   final bool isLiked;
   final List<PostCategoryModel>? categories;
+  final bool createdByMe;
+  final String? createdById;
 
   PostQueryVariableModel(
       {this.take = 10,
@@ -29,7 +31,9 @@ class PostQueryVariableModel {
       this.isSaved = false,
       this.showOldPost = false,
       this.isLiked = false,
-      this.categories});
+      this.categories,
+      this.createdByMe = false,
+      this.createdById});
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,6 +50,8 @@ class PostQueryVariableModel {
         "showOldPost": showOldPost,
         "isLiked": isLiked,
         "categories": categories?.map((e) => e.name).toList(),
+        "createdByMe": createdByMe,
+        "createBy": createdById,
       },
     };
   }
