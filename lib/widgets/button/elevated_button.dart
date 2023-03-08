@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../themes.dart';
 
 class CustomElevatedButton extends StatelessWidget {
+  final double? elevation;
   final Color? color;
   final IconData? leading;
   final IconData? trailing;
@@ -25,6 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.textColor,
     this.leading,
     this.trailing,
+    this.elevation,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,7 @@ class CustomElevatedButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-            elevation: 3,
+            elevation: elevation ?? 3,
             backgroundColor: primaryColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(36),
