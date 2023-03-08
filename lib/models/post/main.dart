@@ -26,6 +26,7 @@ class PostModel {
   final String? endTime;
   final CommentsModel? comments;
   final List<String>? photo;
+  final List<String>? attachement;
   final TagsModel? tags;
   final LikeModel? like;
   final DisLikeModel? dislike;
@@ -50,6 +51,7 @@ class PostModel {
     this.eventTime,
     this.endTime,
     this.photo,
+    this.attachement,
     this.status,
     this.link,
     this.reports,
@@ -80,13 +82,19 @@ class PostModel {
         photo = data['photo'] != '' && data['photo'] != null
             ? data['photo'].split(' AND ')
             : null,
+        attachement = data['attachment'] != '' && data['attachment'] != null
+            ? data['attachment'].split(' AND ')
+            : null,
         reports = data['postReports']
             ?.map((e) => ReportModel.fromJson(e))
             .toList()
             .cast<ReportModel>(),
         updatedAt = data['updatedAt'],
         status = data['status'],
-        link = LinkModel(name: "data['linkName']", link: "data['link']"),
+        link = data['Link'] != null && data['Link'] != ""
+            ? LinkModel(
+                name: data['linkName'], link: (data['Link'] as String).trim())
+            : null,
         createdAt = data['createdAt'],
         createdBy = CreatedByModel.fromJson(
           data['createdBy'],
