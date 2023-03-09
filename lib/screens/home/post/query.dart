@@ -51,8 +51,12 @@ class _PostQueryState extends State<PostQuery> {
         final int total = resultParsedData.total;
 
         if (posts.isEmpty) {
-          return const Center(
-            child: Error(error: '', message: 'No data found.'),
+          return Center(
+            child: Error(
+              error: '',
+              message: 'No data found.',
+              onRefresh: refetch,
+            ),
           );
         }
 

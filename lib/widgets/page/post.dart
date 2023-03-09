@@ -49,7 +49,10 @@ class _PostPageState extends State<PostPage> {
                     onRefresh: () => refetch!(),
                     child: () {
                       if (result.hasException) {
-                        return Error(error: result.exception.toString());
+                        return Error(
+                          error: result.exception.toString(),
+                          onRefresh: refetch,
+                        );
                       }
 
                       if (result.isLoading && result.data == null) {

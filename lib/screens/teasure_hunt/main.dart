@@ -27,7 +27,10 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
           return Scaffold(
             body: (() {
               if (result.hasException) {
-                return Error(error: result.exception.toString());
+                return Error(
+                  error: result.exception.toString(),
+                  onRefresh: refetch,
+                );
               }
 
               if (result.isLoading) {

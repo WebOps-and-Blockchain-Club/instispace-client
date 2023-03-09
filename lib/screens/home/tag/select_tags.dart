@@ -46,7 +46,10 @@ class _SelectTagsState extends State<SelectTags> {
           ),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
-              return Error(error: result.exception.toString());
+              return Error(
+                error: result.exception.toString(),
+                onRefresh: refetch,
+              );
             }
 
             if (result.isLoading && result.data == null) {
@@ -60,7 +63,11 @@ class _SelectTagsState extends State<SelectTags> {
             }
 
             if (categorys.isEmpty) {
-              return const Error(message: "No Tags Found", error: "");
+              return Error(
+                message: "No Tags Found",
+                error: "",
+                onRefresh: refetch,
+              );
             }
 
             return Column(

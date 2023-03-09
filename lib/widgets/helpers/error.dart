@@ -7,7 +7,10 @@ import '../../themes.dart';
 class Error extends StatelessWidget {
   final String error;
   final String? message;
-  const Error({Key? key, required this.error, this.message}) : super(key: key);
+  final void Function()? onRefresh;
+  const Error(
+      {Key? key, required this.error, this.message, required this.onRefresh})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,11 @@ class Error extends StatelessWidget {
             child: SvgPicture.asset(getAsset(error, message),
                 height: 250, semanticsLabel: 'A red up arrow'),
           ),
-          ErrorText(error: error, message: message)
+          ErrorText(error: error, message: message),
+          TextButton(
+            child: const Text('Refresh'),
+            onPressed: onRefresh,
+          )
         ],
       ),
     );

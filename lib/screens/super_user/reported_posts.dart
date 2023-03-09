@@ -48,7 +48,10 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                         ListView(),
                         (() {
                           if (result.hasException) {
-                            return Error(error: result.exception.toString());
+                            return Error(
+                              error: result.exception.toString(),
+                              onRefresh: refetch,
+                            );
                           }
 
                           if (result.isLoading && result.data == null) {
@@ -59,8 +62,11 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                               ReportsModel.fromJson(result.data!["getReports"]);
 
                           if (posts.netops == null && posts.queries == null) {
-                            return const Error(
-                                message: 'No reports', error: "");
+                            return Error(
+                              message: 'No reports',
+                              error: "",
+                              onRefresh: refetch,
+                            );
                           }
 
                           return ListView(

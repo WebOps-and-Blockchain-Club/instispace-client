@@ -801,7 +801,11 @@ class _ReportState extends State<Report> {
                 .cast<String>();
 
             if (reasons.isEmpty) {
-              return const Error(message: "No Report Reasons Found", error: "");
+              return Error(
+                message: "No Report Reasons Found",
+                error: "",
+                onRefresh: refetch,
+              );
             }
 
             return Column(
