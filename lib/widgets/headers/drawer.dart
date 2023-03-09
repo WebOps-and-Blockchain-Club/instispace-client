@@ -132,7 +132,7 @@ class CustomDrawer extends StatelessWidget {
                                   ),
 
                                   // E ID Card
-                                  if (user != null)
+                                  if (user.role == 'USER')
                                     ListTile(
                                       visualDensity:
                                           const VisualDensity(vertical: -4),
@@ -167,24 +167,24 @@ class CustomDrawer extends StatelessWidget {
                               ),
                             ),
 
-                            // Mess Menu
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: ViewMessMenu(),
-                            ),
+                            // // Mess Menu
+                            // const Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 5),
+                            //   child: ViewMessMenu(),
+                            // ),
                             // Notifications
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: ListTile(
-                                title: const Text("Notifications"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const NotificationPage()));
-                                },
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: ListTile(
+                            //     title: const Text("Notifications"),
+                            //     onTap: () {
+                            //       Navigator.pop(context);
+                            //       Navigator.of(context).push(MaterialPageRoute(
+                            //           builder: (BuildContext context) =>
+                            //               const NotificationPage()));
+                            //     },
+                            //   ),
+                            // ),
 
                             //Super User Actions
                             if (user != null &&
@@ -512,7 +512,7 @@ class CustomDrawer extends StatelessWidget {
                                             textAlign: TextAlign.justify,
                                           ),
                                           Text(
-                                            '© ${DateTime.now().year}. Version: 1.0.0',
+                                            '© ${DateTime.now().year}. Version: 2.0.0',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .labelSmall,
@@ -567,7 +567,10 @@ Future<dynamic> logoutAlert(BuildContext context, void Function() callback) {
                   ),
                 ),
                 CustomElevatedButton(
-                  onPressed: callback,
+                  onPressed: () {
+                    callback();
+                    Navigator.pop(context);
+                  },
                   text: "Logout",
                   color: ColorPalette.palette(context).warning,
                 ),

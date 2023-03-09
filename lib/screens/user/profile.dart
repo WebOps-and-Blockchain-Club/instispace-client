@@ -1,8 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/screens/super_user/approve_post.dart';
+import 'package:client/widgets/app_bar.dart';
+import 'package:client/widgets/helpers/navigate.dart';
+import 'package:client/widgets/profile_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../models/post/query_variable.dart';
 import '../../widgets/card/image_view.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../../widgets/button/elevated_button.dart';
@@ -21,8 +26,15 @@ class Profile extends StatelessWidget {
   final Map<String, String>? userDetails;
   final AuthService auth = AuthService();
   final Future<QueryResult<Object?>?> Function()? refetch;
+  final bool isMyProfile;
 
-  Profile({Key? key, this.user, this.result, this.userDetails, this.refetch})
+  Profile(
+      {Key? key,
+      this.user,
+      this.result,
+      this.userDetails,
+      this.refetch,
+      this.isMyProfile = true})
       : super(key: key);
 
   String? encodeQueryParameters(Map<String, String> params) {
@@ -59,7 +71,7 @@ class Profile extends StatelessWidget {
               ? UserModel(
                   role: "USER",
                   roll: userDetails!["roll"],
-                  ldapName: userDetails!["name"],
+                  ldapName: userDetails!["ldapName"],
                   photo: userDetails!["photo"]!,
                   isNewUser: true,
                   permissions: [])
@@ -70,218 +82,239 @@ class Profile extends StatelessWidget {
       children: [
         Scaffold(
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: NestedScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _scrollController,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return CustomAppBar(
-                            title: 'PROFILE',
-                            leading: CustomIconButton(
-                              icon: Icons.arrow_back,
-                              onPressed: () => Navigator.of(context).pop(),
+            child: NestedScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [secondaryAppBar(title: 'PROFILE')];
+                },
+                body: RefreshIndicator(
+                  onRefresh: () => refetch != null
+                      ? refetch!()
+                      : Future.delayed(const Duration(seconds: 0)),
+                  child: Stack(children: [
+                    ListView(),
+                    (() {
+                      if (result != null && result!.isLoading) {
+                        return const Loading();
+                      }
+
+                      if ((result != null && result!.hasException) ||
+                          _user == null) {
+                        return Error(
+                          error: result!.exception.toString(),
+                          onRefresh: refetch,
+                        );
+                      }
+
+                      return ListView(
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              List<String> images =
+                                  await imageCachePath([_user!.photo]);
+                              openImageView(context, 0, images);
+                            },
+                            child: ProfileIconWidget(
+                                photo: _user.photo, size: 100),
+                          ),
+                          const SizedBox(height: 10),
+                          Center(
+                            child: Text(
+                              _user.ldapName == null || _user.ldapName!.isEmpty
+                                  ? _user.name?.toUpperCase() ?? ""
+                                  : _user.ldapName?.toUpperCase() ?? "",
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w400),
                             ),
-                          );
-                        }, childCount: 1),
-                      ),
-                    ];
-                  },
-                  body: RefreshIndicator(
-                    onRefresh: () => refetch != null
-                        ? refetch!()
-                        : Future.delayed(const Duration(seconds: 0)),
-                    child: Stack(children: [
-                      ListView(),
-                      (() {
-                        if (result != null && result!.isLoading) {
-                          return const Loading();
-                        }
-
-                        if ((result != null && result!.hasException) ||
-                            _user == null) {
-                          return Error(error: result!.exception.toString());
-                        }
-
-                        return ListView(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                List<String> images =
-                                    await imageCachePath([_user!.photo]);
-                                openImageView(context, 0, images);
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl: _user.photo,
-                                placeholder: (_, __) => Icon(
-                                    Icons.account_circle_rounded,
-                                    color:
-                                        ColorPalette.palette(context).primary,
-                                    size: 100),
-                                errorWidget: (_, __, ___) => Icon(
-                                    Icons.account_circle_rounded,
-                                    color:
-                                        ColorPalette.palette(context).primary,
-                                    size: 100),
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 5),
+                          Center(
+                            child: Text(
+                              _user.roll?.toUpperCase() ?? "",
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          if (_user.role != "USER")
+                            Center(
+                              child: Text('Role : ${_user.role!}',
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
+                            ),
+                          if (isMyProfile)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CustomElevatedButton(
+                                      textSize: 12,
+                                      onPressed: (() => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => EditProfile(
+                                                    auth: auth,
+                                                    user: user!,
+                                                  )))),
+                                      text: "EDIT PROFILE"),
+                                ],
+                              ),
+                            ),
+                          if (isMyProfile)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 30),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xFFE1E0EC),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => navigate(
+                                          context,
+                                          SuperUserPostPage(
+                                            title: "Posts Created",
+                                            filterVariables:
+                                                PostQueryVariableModel(
+                                                    createdByMe: true),
+                                          )),
+                                      child: const Text(
+                                        "Posts Created by you",
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 4),
+                                      child: Divider(
+                                        color: Color(0xFFBEBEBE),
+                                      ),
+                                    ),
+                                    // const GestureDetector(
+                                    //   child: Text(
+                                    //     "Reminder Posts",
+                                    //     style: TextStyle(fontSize: 17),
+                                    //   ),
+                                    // ),
+                                    // const Padding(
+                                    //   padding: EdgeInsets.symmetric(
+                                    //       vertical: 8.0, horizontal: 4),
+                                    //   child: Divider(
+                                    //     color: Color(0xFFBEBEBE),
+                                    //   ),
+                                    // ),
+                                    GestureDetector(
+                                      onTap: () => navigate(
+                                          context,
+                                          SuperUserPostPage(
+                                            title: "Liked Posts",
+                                            filterVariables:
+                                                PostQueryVariableModel(
+                                                    isLiked: true),
+                                          )),
+                                      child: const Text(
+                                        "Posts Liked by you",
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+                          if (_user.interets != null &&
+                              _user.interets!.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: Text(
+                                      "Followed tags",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, bottom: 20),
+                                    child: Wrap(
+                                      spacing: 5,
+                                      runSpacing: 5,
+                                      children: List.generate(
+                                          _user.interets!.length, (index) {
+                                        return Chip(
+                                          label: Text(
+                                              _user!.interets![index].title),
+                                          padding: const EdgeInsets.all(4),
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Center(
-                              child: Text(
-                                _user.ldapName == null ||
-                                        _user.ldapName!.isEmpty
-                                    ? _user.name!
-                                    : _user.ldapName!,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Center(
-                              child: Text(
-                                _user.roll!.toUpperCase(),
-                                style: _user.role == "USER"
-                                    ? Theme.of(context).textTheme.titleLarge
-                                    : Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(color: Colors.black),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            if (_user.role != "USER")
-                              Center(
-                                child: Text('Role : ${_user.role!}',
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall),
-                              ),
-                            const SizedBox(height: 20),
-                            if (_user.interets != null &&
-                                _user.interets!.isNotEmpty)
-                              Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                ),
+                          if ((_user.id == null || _user.id!.isEmpty) &&
+                              _user.ldapName != null &&
+                              _user.ldapName!.isNotEmpty)
+                            Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(top: 15.0),
                                       child: Text(
-                                        "Followed tags",
+                                        "User is not registered.\nDo you like to invite the user?",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .titleLarge,
+                                            .titleMedium,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 15.0, bottom: 20),
-                                      child: Wrap(
-                                        spacing: 5,
-                                        runSpacing: 5,
-                                        children: List.generate(
-                                            _user.interets!.length, (index) {
-                                          return Chip(
-                                            label: Text(
-                                                _user!.interets![index].title),
-                                            padding: const EdgeInsets.all(4),
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
-                                          );
-                                        }),
+                                      padding: const EdgeInsets.all(20),
+                                      child: CustomElevatedButton(
+                                        onPressed: () {
+                                          _sendInviteMail(
+                                              _user!.roll! +
+                                                  "@smail.iitm.ac.in",
+                                              _user.ldapName!);
+                                        },
+                                        text: "Invite ${_user.ldapName}",
                                       ),
-                                    ),
+                                    )
                                   ],
-                                ),
-                              ),
-                            if ((_user.id == null || _user.id!.isEmpty) &&
-                                _user.ldapName != null &&
-                                _user.ldapName!.isNotEmpty)
-                              Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1.5,
-                                      color: ColorPalette.palette(context)
-                                          .secondary,
-                                    ),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 15.0),
-                                        child: Text(
-                                          "User is not registered.\nDo you like to invite the user?",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: CustomElevatedButton(
-                                          onPressed: () {
-                                            _sendInviteMail(
-                                                _user!.roll! +
-                                                    "@smail.iitm.ac.in",
-                                                _user.ldapName!);
-                                          },
-                                          text: "Invite ${_user.ldapName}",
-                                        ),
-                                      )
-                                    ],
-                                  )),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CustomElevatedButton(
-                                    textSize: 12,
-                                    onPressed: (() => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => EditProfile(
-                                                  auth: auth,
-                                                  user: user!,
-                                                )))),
-                                    text: "EDIT PROFILE"),
-                              ],
-                            ),
-                          ],
-                        );
-                      }()),
-                    ]),
-                  )),
-            ),
+                                )),
+                        ],
+                      );
+                    }()),
+                  ]),
+                )),
           ),
         ),
-        const Positioned(
-            top: -50,
-            right: -90,
-            child: Image(
-                width: 300,
-                image: AssetImage('assets/illustrations/decor.png')))
+        // const Positioned(
+        //     top: -50,
+        //     right: -90,
+        //     child: Image(
+        //         width: 300,
+        //         image: AssetImage('assets/illustrations/decor.png')))
       ],
     );
   }

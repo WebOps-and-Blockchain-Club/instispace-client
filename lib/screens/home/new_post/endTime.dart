@@ -25,7 +25,7 @@ class _EndTimeState extends State<EndTime> {
   @override
   void initState() {
     setState(() {
-      endTime = widget.endTime ?? DateTime.now();
+      endTime = widget.endTime ?? DateTime.now().add(const Duration(days: 5));
     });
 
     super.initState();

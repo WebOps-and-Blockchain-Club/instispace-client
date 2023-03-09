@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/widgets/app_bar.dart';
 import 'package:client/widgets/headers/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,18 +26,19 @@ class _EIDCardState extends State<EIDCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: Column(
+        child: NestedScrollView(
+          controller: ScrollController(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+            return <Widget>[
+              // AppBar
+              secondaryAppBar(title: 'E-ID Card'),
+            ];
+          },
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomAppBar(
-                  title: "E-ID Card",
-                  leading: CustomIconButton(
-                    icon: Icons.arrow_back,
-                    onPressed: () => Navigator.of(context).pop(),
-                  )),
               const SizedBox(height: 30),
               Container(
                 margin: const EdgeInsets.all(10),
@@ -105,22 +107,23 @@ class _EIDCardState extends State<EIDCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.user.ldapName!,
+                          "Name: " + (widget.user.ldapName ?? ""),
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.user.roll!.toUpperCase(),
+                          "Roll Number: " +
+                              (widget.user.roll?.toUpperCase() ?? ""),
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.user.program!,
+                          "Program: " + (widget.user.program ?? ''),
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.user.department!,
+                          "Department: " + (widget.user.department ?? ""),
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],

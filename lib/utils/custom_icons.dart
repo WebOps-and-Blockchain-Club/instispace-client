@@ -31,8 +31,8 @@ class CustomIcons {
       IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData delete =
       IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye =
-      IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  // static const IconData eye =
+  //     IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData save =
       IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData found =
@@ -61,8 +61,8 @@ class CustomIcons {
       IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData thoughts =
       IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData tick =
-      IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  // static const IconData tick =
+  //     IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData home =
       IconData(0xe818, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData academics =

@@ -55,7 +55,10 @@ class _SuperUserPostPageState extends State<SuperUserPostPage> {
             ),
           ];
         },
-        body: PostQuery(options: options),
+        body: PostQuery(
+          options: options,
+          endofwidget: false,
+        ),
       ),
     );
   }

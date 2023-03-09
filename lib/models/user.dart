@@ -1,6 +1,58 @@
 import 'hostel.dart';
-import 'post.dart';
+// import 'post.dart';
 import 'tag.dart';
+
+class LdapUsersModel {
+  final List<LdapUserModel> list;
+  final int total;
+
+  LdapUsersModel({required this.list, required this.total});
+
+  LdapUsersModel.fromJson(dynamic data)
+      : list = (data["getLdapStudents"]["list"] as List<dynamic>)
+            .map((e) => LdapUserModel.fromJson(e))
+            .toList(),
+        total = data["getLdapStudents"]['total'];
+}
+
+class LdapUserModel {
+  String id;
+  String ldapName;
+  String roll;
+  String photo;
+  String program;
+  String department;
+
+  LdapUserModel(
+      {required this.id,
+      required this.ldapName,
+      required this.roll,
+      required this.photo,
+      required this.program,
+      required this.department});
+
+  LdapUserModel.fromJson(Map<String, dynamic> data)
+      : id = data["id"],
+        ldapName = data["ldapName"],
+        roll = data["roll"],
+        photo = data["photo"] ??
+            'https://instispace.iitm.ac.in/photos/byroll.php?roll=${data["roll"].toString().toUpperCase()}',
+        program = data["program"],
+        department = data["department"];
+
+  Map<String, String> toJson() {
+    return {
+      "__typename": "User",
+      "id": id,
+      "ldapName": ldapName,
+      "roll": roll,
+      "role": 'USER',
+      "photo": photo,
+      "program": program,
+      "department": department
+    };
+  }
+}
 
 class UserModel {
   String? id;
@@ -111,12 +163,12 @@ class CreatePostPermissionModel {
       {required this.hasPermission, this.allowedCategory});
 }
 
-class HomeModel {
-  final String title;
-  final List<PostModel> posts;
+// class HomeModel {
+//   final String title;
+//   final List<PostModel> posts;
 
-  HomeModel({required this.title, required this.posts});
-}
+//   HomeModel({required this.title, required this.posts});
+// }
 
 class CreatedByModel {
   final String id;
@@ -156,4 +208,37 @@ class User {
       required this.hostelName,
       required this.role,
       required this.roll});
+}
+
+class UserQueryVariableModel {
+  final int take;
+  final String lastUserId;
+  final String? search;
+  final String? batch;
+  final String? department;
+  final String? gender;
+  final String? program;
+
+  UserQueryVariableModel(
+      {this.take = 20,
+      this.lastUserId = '',
+      this.search,
+      this.batch,
+      this.department,
+      this.gender,
+      this.program});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "take": take,
+      "lastUserId": lastUserId,
+      "filteringconditions": {
+        "search": search?.trim(),
+        "batch": batch,
+        "department": department,
+        "gender": gender,
+        "program": gender,
+      },
+    };
+  }
 }

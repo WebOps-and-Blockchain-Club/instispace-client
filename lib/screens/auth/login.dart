@@ -144,12 +144,11 @@ class _LogInState extends State<LogIn> {
                                   obscureText: passwordVisible,
                                   maxLines: 1,
                                   decoration: InputDecoration(
-                                      suffixIcon: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () => setState(() {
+                                      suffixIcon: InkWell(
+                                        onTap: () => setState(() {
                                           passwordVisible = !passwordVisible;
                                         }),
-                                        icon: Icon(
+                                        child: Icon(
                                             passwordVisible
                                                 ? Icons.visibility
                                                 : Icons.visibility_off,
@@ -157,7 +156,7 @@ class _LogInState extends State<LogIn> {
                                       ),
                                       suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
-                                          const BoxConstraints(maxHeight: 0),
+                                          const BoxConstraints(maxHeight: 10),
                                       labelText: "Password"),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

@@ -12,8 +12,13 @@ import '../../../models/post/main.dart';
 class PostQuery extends StatefulWidget {
   final QueryOptions<Object?> options;
   final List<PostCategoryModel>? categories;
+  final bool endofwidget;
 
-  const PostQuery({Key? key, required this.options, this.categories})
+  const PostQuery(
+      {Key? key,
+      required this.options,
+      this.categories,
+      this.endofwidget = true})
       : super(key: key);
 
   @override
@@ -29,8 +34,10 @@ class _PostQueryState extends State<PostQuery> {
       builder: (result, {fetchMore, refetch}) {
         if (result.hasException) {
           return Center(
-            child: Text(formatErrorMessage(result.exception.toString())),
-          );
+              child: Error(
+            error: result.exception.toString(),
+            onRefresh: refetch,
+          ));
         }
 
         if (result.hasException && result.data != null) {
@@ -93,19 +100,22 @@ class _PostQueryState extends State<PostQuery> {
                   child: result.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : total == posts.length
-                          ? TextButton(
-                              onPressed: () {
-                                navigate(
-                                    context,
-                                    SuperUserPostPage(
-                                      title: 'OLDER POST',
-                                      filterVariables: PostQueryVariableModel(
-                                        showOldPost: true,
-                                        categories: widget.categories,
-                                      ),
-                                    ));
-                              },
-                              child: const Text("View Older Posts"))
+                          ? widget.endofwidget
+                              ? TextButton(
+                                  onPressed: () {
+                                    navigate(
+                                        context,
+                                        SuperUserPostPage(
+                                          title: 'OLDER POST',
+                                          filterVariables:
+                                              PostQueryVariableModel(
+                                            showOldPost: true,
+                                            categories: widget.categories,
+                                          ),
+                                        ));
+                                  },
+                                  child: const Text("View Older Posts"))
+                              : null
                           : TextButton(
                               onPressed: fetchMore != null
                                   ? () => fetchMore(opts)

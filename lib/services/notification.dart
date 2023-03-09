@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../database/academic.dart';
 import '../utils/image_data_from_url.dart';
 
 class LocalNotificationService {
@@ -151,16 +152,20 @@ class LocalNotificationService {
   Future<void> scheduleWeeklyNotification({
     required String title,
     required String description,
-    required day,
-    required int hours,
-    required int minutes,
+    required int courseId,
   }) async {
+    print('schedule notification called=========================');
     tz.initializeTimeZones();
+    AcademicDatabaseService acadDb = AcademicDatabaseService.instance;
+    DateTime? nextNotificationTime = await acadDb.getNextClassTime(courseId);
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
     await _localNotificationService.zonedSchedule(
-        Random().nextInt(1000),
+        courseId,
         title,
         description,
-        getNextInstanceOfTime(day, hours, minutes),
+        tz.TZDateTime.from(
+            nextNotificationTime ?? DateTime(2000), now.location),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'High_importance_channel',

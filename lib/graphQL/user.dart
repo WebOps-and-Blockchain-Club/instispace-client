@@ -30,14 +30,26 @@ class UserGQL {
   """;
 
   String searchUser = """
-    query(\$search: String!) {
-      searchLDAPUser(search: \$search) {
-        roll
-        name
-        department
-        photo
-      }
+query GetLdapStudents(
+  \$take: Float!
+  \$filteringconditions: LdapFilteringConditions!
+  \$lastUserId: String!
+) {
+  getLdapStudents(
+    take: \$take
+    filteringconditions: \$filteringconditions
+    lastUserId: \$lastUserId
+  ) {
+    total
+    list {
+      id
+      roll
+      ldapName
+      program
+      department
     }
+  }
+}
   """;
   String getSuperUsers = """
   query(\$take: Float!, \$lastUserId: String!, \$rolesFilter: [UserRole!]!){
@@ -57,9 +69,9 @@ class UserGQL {
 
 """;
   String getUser = """
-    query(\$getUserInput: GetUserInput!) {
-      getUser(GetUserInput: \$getUserInput) {
-        interest {
+    query(\$userId: String, \$roll: String) {
+      getUser(userId: \$userId, roll: \$roll) {
+        interests {
           title
           id
           category

@@ -243,7 +243,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
             appBar: AppBar(
               centerTitle: true,
               title: Text(
-                "${widget.post == null ? 'NEW' : 'EDIT'} POST",
+                "${widget.post == null ? 'NEW' : 'EDIT'} ${widget.category.name.toUpperCase()}",
                 style: const TextStyle(
                     letterSpacing: 2.64,
                     color: Color(0xFF3C3C3C),
@@ -343,11 +343,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                         context: context,
                                                         initialDate:
                                                             DateTime.now(),
-                                                        firstDate:
-                                                            DateTime.now(),
+                                                        firstDate: widget
+                                                                        .category
+                                                                        .name ==
+                                                                    'Lost' ||
+                                                                widget.category
+                                                                        .name ==
+                                                                    'Found'
+                                                            ? DateTime.now().subtract(
+                                                                const Duration(
+                                                                    days: 30))
+                                                            : DateTime.now(),
                                                         lastDate: DateTime.now()
-                                                            .add(const Duration(
-                                                                days: 30 * 5)))
+                                                            .add(const Duration(days: 30 * 5)))
                                                     .then(
                                                   (value) {
                                                     if (value != null) {
@@ -356,8 +364,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                       });
                                                     }
                                                   },
-                                                ).then((value) =>
-                                                        showTimePicker(
+                                                ).then((value) => showTimePicker(
                                                           context: context,
                                                           initialTime:
                                                               TimeOfDay.now(),
@@ -605,7 +612,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         null) &&
                                 widget.fieldConfiguration.endTime != null)
                               EndTime(
-                                endTime: endTime,
+                                endTime: (widget
+                                        .fieldConfiguration.endTime!.enableEdit)
+                                    ? endTime
+                                    : DateTime.now()
+                                        .add(const Duration(days: 30)),
                                 setEndtime: setEndTime,
                                 edit: widget
                                     .fieldConfiguration.endTime!.enableEdit,
