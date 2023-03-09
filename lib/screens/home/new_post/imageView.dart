@@ -26,11 +26,16 @@ class _ImageViewState extends State<ImageView> {
                 style: IconButton.styleFrom(
                     padding: const EdgeInsets.all(10),
                     backgroundColor: const Color.fromRGBO(0, 0, 0, 0.4)),
-                icon: const Icon(
-                  Icons.clear,
-                  color: Colors.white,
-                  size: 40,
-                ),
+                icon: const Icon(Icons.clear,
+                    color: Colors.white,
+                    size: 40,
+                    shadows: <Shadow>[
+                      BoxShadow(
+                          color: Colors.black,
+                          blurRadius: 20,
+                          spreadRadius: 20,
+                          offset: Offset(2, 2))
+                    ]),
                 onPressed: () => widget.onDelete(imgs[index]),
               ),
               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),

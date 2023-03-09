@@ -4,6 +4,7 @@ import 'package:client/screens/super_user/approve_post.dart';
 import 'package:client/widgets/card/image_view.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
+import 'package:client/widgets/utils/image_cache_path.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -151,21 +152,22 @@ class _PostCardState extends State<PostCard>
                     comment: post.comments!,
                   ),
                 ),
-              if (post.permissions.contains('Share'))
-                Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: SharePostButton(post: post),
-                ),
-              if (post.permissions.contains('Set_Reminder'))
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: SetReminderButton(post: post),
-                ),
+              // if (post.permissions.contains('Share'))
+              //   Padding(
+              //     padding: const EdgeInsets.only(right: 15.0),
+              //     child: SharePostButton(post: post),
+              //   ),
+              // if (post.permissions.contains('Set_Reminder'))
+              //   Padding(
+              //     padding: const EdgeInsets.only(right: 10.0),
+              //     child: SetReminderButton(post: post),
+              //   ),
               // Padding(
               //   padding: const EdgeInsets.only(right: 10.0),
               //   child: SavePostButton(postId: post.id, save: post.saved!),
               // ),
-              if (post.permissions.contains('Report'))
+              if (post.permissions.contains('Report') &&
+                  !post.permissions.contains('Edit'))
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: ReportPostButton(
@@ -178,10 +180,8 @@ class _PostCardState extends State<PostCard>
                       icon: const Icon(Icons.edit),
                       onPressed: () =>
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => NewPostScreen(
+                            builder: (context) => NewPostWrapper(
                               category: post.category,
-                              fieldConfiguration:
-                                  getCreatePostFields[post.category.name]!,
                               post: post,
                               options: widget.options,
                             ),
@@ -271,7 +271,12 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: GestureDetector(
-                onTap: () => openImageView(context, 0, post.attachement!),
+                onTap: () async {
+                  final List<String> attachments =
+                      await imageCachePath(post.attachement!);
+
+                  openImageView(context, 0, attachments);
+                },
                 child: Row(
                   children: [
                     const Icon(Icons.attachment, color: Color(0xFF342f81)),

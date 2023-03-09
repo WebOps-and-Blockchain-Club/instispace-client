@@ -5,6 +5,7 @@ import 'package:client/models/category.dart';
 import 'package:client/screens/home/new_post/endTime.dart';
 import 'package:client/screens/home/new_post/imageService.dart';
 import 'package:client/screens/home/new_post/imageView.dart';
+import 'package:client/widgets/card/image.dart';
 
 import '../../../models/post/main.dart';
 import '../../../services/local_storage.dart';
@@ -49,6 +50,7 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
   List<io.File> imgs = [];
+  Map<dynamic, String> img_map = {};
   bool isLoading = false;
   bool proceed = false;
   final formKey = GlobalKey<FormState>();
@@ -67,14 +69,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late DateTime? endTime = null;
   late DateTime? date = null;
   late DateTime? time = null;
-  late String? endTimeFormated;
+  late String? endTimeFormated = null;
 
   final localStorage = LocalStorageService();
 
-  void onDelete(io.File f) {
-    setState(() {
-      imgs.remove(f);
-    });
+  void onDelete(dynamic f) {
+    if (widget.post != null) {
+      setState(() {
+        img_map.remove(f);
+      });
+    } else {
+      setState(() {
+        imgs.remove(f);
+      });
+    }
   }
 
   void setEndTime(DateTime e) {
@@ -91,10 +99,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
       location.text = post.location ?? '';
       setState(() {
         date = post.eventTime != null
-            ? DateTimeFormatModel.fromString(post.eventTime!) as DateTime?
+            ? DateTimeFormatModel.fromString(post.eventTime!).dateTime
             : null;
         time = post.eventTime != null
-            ? DateTimeFormatModel.fromString(post.eventTime!) as DateTime?
+            ? DateTimeFormatModel.fromString(post.eventTime!).dateTime
             : null;
 
         dateTimeFormated.text = date != null
@@ -108,7 +116,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         selectedTags = post.tags ?? TagsModel.fromJson([]);
       });
     } else {
-      var data = await localStorage.getData("new_post");
+      var data = await localStorage.getData(widget.category.name);
       if (data != null) {
         title.text = data["title"];
         desc.text = data["description"];
@@ -152,10 +160,27 @@ class _NewPostScreenState extends State<NewPostScreen> {
     if (widget.images != null) {
       setState(() {
         imgs = widget.images!;
-        if (widget.fieldConfiguration.postTime == null) {
-          endTime = DateTime.now().add(widget.fieldConfiguration.endTime!.time);
-        }
       });
+    }
+    if (widget.fieldConfiguration.postTime == null &&
+        widget.fieldConfiguration.endTime != null) {
+      setState(() {
+        endTime = DateTime.now().add(widget.fieldConfiguration.endTime!.time);
+      });
+    }
+    if (widget.post != null && widget.post!.attachement != null) {
+      for (var img in widget.post!.attachement!) {
+        setState(() {
+          img_map[img] = 'link';
+        });
+      }
+    }
+    if (widget.post != null && widget.post!.photo != null) {
+      for (var img in widget.post!.photo!) {
+        setState(() {
+          img_map[img] = 'link';
+        });
+      }
     }
     super.initState();
   }
@@ -217,9 +242,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: const Text(
-                "NEW POST",
-                style: TextStyle(
+              title: Text(
+                "${widget.post == null ? 'NEW' : 'EDIT'} POST",
+                style: const TextStyle(
                     letterSpacing: 2.64,
                     color: Color(0xFF3C3C3C),
                     fontSize: 24,
@@ -233,11 +258,19 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     children: [
                       const SizedBox(height: 10),
 
-                      //images
+                      // images
                       if (imgs.isNotEmpty)
                         ImageView(
                           images: imgs,
                           onDelete: onDelete,
+                        ),
+                      if (img_map.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: ImageCard(
+                              dynamic_images:
+                                  (img_map.isNotEmpty) ? img_map : null,
+                              onDelete: onDelete),
                         ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 42),
@@ -422,7 +455,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         selectedTags = value;
                                       })),
 
-                            // pick images (if imageSecondary)
+                            // pick images (if imageSecondary or edit post)
                             Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 15),
@@ -451,7 +484,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 if (widget.fieldConfiguration.imageSecondary !=
-                                    null)
+                                        null ||
+                                    widget.post != null)
                                   CustomElevatedButton(
                                       color: Colors.white,
                                       leading: Icons.camera_alt,
@@ -477,13 +511,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                           final io.File? photo =
                                                               await imgService
                                                                   .pickCamera();
-                                                          setState(() {
-                                                            if (photo != null) {
-                                                              imgs.add(photo);
-                                                              Navigator.pop(
-                                                                  context);
+
+                                                          if (photo != null) {
+                                                            if (widget.post !=
+                                                                null) {
+                                                              setState(() {
+                                                                img_map[photo] =
+                                                                    'file';
+                                                              });
+                                                            } else {
+                                                              setState(() {
+                                                                imgs.add(photo);
+                                                              });
                                                             }
-                                                          });
+
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
                                                         },
                                                         child: const Text(
                                                             'Camera')),
@@ -496,12 +540,24 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
                                                           if (photos
                                                               .isNotEmpty) {
-                                                            setState(() {
-                                                              imgs.addAll(
-                                                                  photos);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            });
+                                                            if (widget.post !=
+                                                                null) {
+                                                              for (var photo
+                                                                  in photos) {
+                                                                setState(() {
+                                                                  img_map[photo] =
+                                                                      'file';
+                                                                });
+                                                              }
+                                                            } else {
+                                                              setState(() {
+                                                                imgs.addAll(
+                                                                    photos);
+                                                              });
+                                                            }
+
+                                                            Navigator.pop(
+                                                                context);
                                                           }
                                                         },
                                                         child: const Text(
@@ -609,102 +665,134 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         String mut_inp = widget.post == null
                                             ? "postInput"
                                             : "updatePostInput";
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                  content: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Text(
-                                                      "Think before you post"),
-                                                  TextButton(
-                                                      onPressed: () async {
-                                                        List<String>?
-                                                            uploadResult;
-                                                        if (imgs.isNotEmpty) {
-                                                          setState(() {
-                                                            isLoading = true;
-                                                          });
 
-                                                          try {
-                                                            uploadResult =
-                                                                await imgService
-                                                                    .upload(
-                                                                        imgs);
-                                                          } catch (e) {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                content: const Text(
-                                                                    'Image Upload Failed'),
-                                                                backgroundColor:
-                                                                    Theme.of(
-                                                                            context)
-                                                                        .errorColor,
-                                                              ),
-                                                            );
-                                                            setState(() {
-                                                              isLoading = false;
-                                                            });
-                                                            return;
-                                                          }
+                                        List<String>? uploadResult;
 
-                                                          setState(() {
-                                                            isLoading = false;
-                                                          });
-                                                        }
+                                        if (imgs.isNotEmpty) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
 
-                                                        runMutation({
-                                                          "updatePostId":
-                                                              widget.post?.id,
-                                                          mut_inp: {
-                                                            "category": widget
-                                                                .category.name,
-                                                            "title": title.text,
-                                                            "content":
-                                                                desc.text,
-                                                            "location":
-                                                                location.text,
-                                                            "tagIds":
-                                                                selectedTags
-                                                                    .getTagIds(),
-                                                            "link": link.text,
-                                                            "postTime": widget
-                                                                        .fieldConfiguration
-                                                                        .postTime !=
-                                                                    null
-                                                                ? date
-                                                                        .toString()
-                                                                        .split(
-                                                                            " ")
-                                                                        .first +
-                                                                    " " +
-                                                                    time
-                                                                        .toString()
-                                                                        .split(
-                                                                            " ")
-                                                                        .last
-                                                                : null,
-                                                            "endTime": endTime!
-                                                                .toIso8601String(),
-                                                            "photoList":
-                                                                uploadResult
-                                                                    ?.join(
-                                                                        " AND ")
-                                                          },
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child:
-                                                          const Text('proceed'))
-                                                ],
-                                              ));
+                                          try {
+                                            uploadResult =
+                                                await imgService.upload(imgs);
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: const Text(
+                                                    'Image Upload Failed'),
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .errorColor,
+                                              ),
+                                            );
+                                            setState(() {
+                                              isLoading = false;
                                             });
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        } else if (img_map.isNotEmpty) {
+                                          uploadResult = [];
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+
+                                          List<io.File> files = [];
+
+                                          for (var img in img_map.keys) {
+                                            if (img_map[img] == 'file') {
+                                              files.add(img);
+                                            } else {
+                                              uploadResult.add(img);
+                                            }
+                                          }
+
+                                          try {
+                                            var res =
+                                                await imgService.upload(files);
+                                            uploadResult.addAll(res);
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: const Text(
+                                                    'Image Upload Failed'),
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .errorColor,
+                                              ),
+                                            );
+                                            setState(() {
+                                              isLoading = false;
+                                            });
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+                                        final List<String> tags = selectedTags
+                                            .getTagIds()
+                                            .cast<String>();
+                                        print('upload result : ');
+                                        print(
+                                          widget.fieldConfiguration.postTime !=
+                                                  null
+                                              ? date
+                                                      .toString()
+                                                      .split(" ")
+                                                      .first +
+                                                  " " +
+                                                  time
+                                                      .toString()
+                                                      .split(" ")
+                                                      .last
+                                              : null,
+                                        );
+                                        runMutation({
+                                          "updatePostId":
+                                              widget.post?.id.toString(),
+                                          mut_inp: {
+                                            "category": widget.category.name,
+                                            "title": title.text,
+                                            "content": desc.text,
+                                            "location": location.text,
+                                            "link": link.text,
+                                            "tagIds": tags,
+                                            "postTime": widget
+                                                        .fieldConfiguration
+                                                        .postTime !=
+                                                    null
+                                                ? date
+                                                        .toString()
+                                                        .split(" ")
+                                                        .first +
+                                                    " " +
+                                                    time
+                                                        .toString()
+                                                        .split(" ")
+                                                        .last
+                                                : null,
+                                            "endTime":
+                                                endTime?.toIso8601String(),
+                                            "photoList":
+                                                uploadResult?.join(" AND ") ??
+                                                    ''
+                                          },
+                                        });
                                       }
                                     },
                                     text: 'Post',
+                                    isLoading: isLoading ||
+                                        (result != null
+                                            ? result.isLoading
+                                            : false),
                                     color:
                                         ColorPalette.palette(context).primary,
                                   ),
@@ -742,7 +830,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void dispose() {
     if (widget.post == null) {
-      localStorage.setData("new_post", {
+      localStorage.setData(widget.category.name, {
         "title": title.text,
         "description": desc.text,
         "selectedTags": jsonEncode(selectedTags.toJson()),

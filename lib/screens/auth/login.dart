@@ -46,7 +46,6 @@ class _LogInState extends State<LogIn> {
           document: gql(AuthGQL().login),
           onCompleted: (dynamic resultData) {
             if (resultData["login"] != null) {
-              print(resultData["login"]);
               widget.auth.login(
                 resultData["login"]["token"],
               );
@@ -186,14 +185,18 @@ class _LogInState extends State<LogIn> {
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
-                                        children: const [
-                                          Text(
+                                        children: [
+                                          const Text(
                                             'Sign in',
                                             style: TextStyle(
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.normal),
                                           ),
-                                          Icon(Icons.arrow_forward)
+                                          (result != null && result.isLoading)
+                                              ? const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                )
+                                              : const Icon(Icons.arrow_forward)
                                         ],
                                       ),
                                     ),
@@ -204,7 +207,7 @@ class _LogInState extends State<LogIn> {
 
                                       if (isValid) {
                                         runMutation({
-                                          // 'fcmToken': fcmToken,
+                                          'fcmToken': fcmToken,
                                           'loginInputs': {
                                             "roll":
                                                 name.text.trim().toLowerCase(),
@@ -215,48 +218,48 @@ class _LogInState extends State<LogIn> {
                                     },
                                   ),
                                 ),
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.73)),
-                                            side: const BorderSide(
-                                                style: BorderStyle.none),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 15),
-                                            backgroundColor: Colors.white),
-                                        onPressed: () {},
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 8),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: const [
-                                              Image(
-                                                  height: 31,
-                                                  image: AssetImage(
-                                                      'assets/google.png')),
-                                              SizedBox(width: 15),
-                                              Text(
-                                                'Sign in with Google',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontSize: 16),
-                                              )
-                                            ],
-                                          ),
-                                        )),
-                                  ],
-                                )
+                                // const SizedBox(height: 20),
+                                // Row(
+                                //   mainAxisAlignment:
+                                //       MainAxisAlignment.spaceEvenly,
+                                //   children: [
+                                //     ElevatedButton(
+                                //         style: ElevatedButton.styleFrom(
+                                //             shape: RoundedRectangleBorder(
+                                //                 borderRadius:
+                                //                     BorderRadius.circular(
+                                //                         15.73)),
+                                //             side: const BorderSide(
+                                //                 style: BorderStyle.none),
+                                //             padding: const EdgeInsets.symmetric(
+                                //                 vertical: 2, horizontal: 15),
+                                //             backgroundColor: Colors.white),
+                                //         onPressed: () {},
+                                //         child: Padding(
+                                //           padding: const EdgeInsets.symmetric(
+                                //               horizontal: 15, vertical: 8),
+                                //           child: Row(
+                                //             mainAxisAlignment:
+                                //                 MainAxisAlignment.spaceBetween,
+                                //             children: const [
+                                //               Image(
+                                //                   height: 31,
+                                //                   image: AssetImage(
+                                //                       'assets/google.png')),
+                                //               SizedBox(width: 15),
+                                //               Text(
+                                //                 'Sign in with Google',
+                                //                 style: TextStyle(
+                                //                     color: Colors.black,
+                                //                     fontWeight:
+                                //                         FontWeight.normal,
+                                //                     fontSize: 16),
+                                //               )
+                                //             ],
+                                //           ),
+                                //         )),
+                                //   ],
+                                // )
                               ],
                             ),
                           ),

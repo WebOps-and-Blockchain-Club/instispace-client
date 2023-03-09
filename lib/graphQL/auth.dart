@@ -1,7 +1,7 @@
 class AuthGQL {
   String login = """
-    mutation(\$loginInputs: LoginInput!){
-      login(loginInput: \$loginInputs) {
+    mutation(\$loginInputs: LoginInput! , \$fcmToken: String!){
+      login(loginInput: \$loginInputs, fcmToken: \$fcmToken) {
         token
       }
     }

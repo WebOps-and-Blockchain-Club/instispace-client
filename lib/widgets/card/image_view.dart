@@ -90,7 +90,7 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
     final String item = widget.galleryItems[index];
     if (widget.type == 'file') {
       return PhotoViewGalleryPageOptions(
-        imageProvider: NetworkImage(item),
+        imageProvider: FileImage(File(item)),
         initialScale: PhotoViewComputedScale.contained,
         minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
         maxScale: PhotoViewComputedScale.covered * 4.1,
@@ -98,7 +98,7 @@ class _ImageViewViewWrapperState extends State<ImageViewViewWrapper> {
       );
     }
     return PhotoViewGalleryPageOptions(
-      imageProvider: FileImage(File(item)),
+      imageProvider: NetworkImage(item),
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,

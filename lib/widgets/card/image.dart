@@ -6,8 +6,12 @@ import '../utils/image_cache_path.dart';
 import 'image_view.dart';
 
 class ImageCard extends StatefulWidget {
-  final List<String> imageUrls;
-  const ImageCard({Key? key, required this.imageUrls}) : super(key: key);
+  final List<String>? imageUrls;
+  final Function? onDelete;
+  final Map<dynamic, String>? dynamic_images;
+  const ImageCard(
+      {Key? key, this.imageUrls, this.dynamic_images, this.onDelete})
+      : super(key: key);
 
   @override
   State<ImageCard> createState() => _ImageCardState();
@@ -16,11 +20,15 @@ class ImageCard extends StatefulWidget {
 class _ImageCardState extends State<ImageCard> {
   double minHeight = 0;
   var imageProviders = [];
+  Map<dynamic, String>? dynamic_images;
 
-  void getMinHeight(List<String> imageUrls) {
+  void getMinHeight(List<dynamic> images) {
     var _imageProviders = [];
-    for (var imageUrl in imageUrls) {
-      var imageProvider = CachedNetworkImageProvider(imageUrl);
+    for (var imageUrl in images) {
+      var imageProvider = (widget.dynamic_images != null &&
+              widget.dynamic_images![imageUrl] == 'file')
+          ? FileImage(imageUrl) as ImageProvider
+          : CachedNetworkImageProvider(imageUrl);
       Image image = Image(
         image: imageProvider,
       );
@@ -49,65 +57,103 @@ class _ImageCardState extends State<ImageCard> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      dynamic_images = widget.dynamic_images;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.imageUrls.isNotEmpty) {
-      getMinHeight(widget.imageUrls);
+    if (widget.imageUrls != null && widget.imageUrls!.isNotEmpty) {
+      getMinHeight(widget.imageUrls!);
+    } else if (widget.dynamic_images != null &&
+        widget.dynamic_images!.isNotEmpty) {
+      getMinHeight(widget.dynamic_images!.keys.toList());
     }
-    final imageUrls = widget.imageUrls;
+    final imageUrls = widget.imageUrls ?? widget.dynamic_images!.keys;
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(29)),
       constraints: BoxConstraints(maxHeight: min(500, minHeight), minHeight: 0),
-      child: Swiper(
-        onTap: (index) async {
-          List<String> images = await imageCachePath(imageUrls);
-          openImageView(context, index, images);
-        },
-        loop: imageProviders.length != 1,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: EdgeInsets.only(bottom: imageProviders.length > 1 ? 15 : 0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(29),
-                image: DecorationImage(
-                  image: imageProviders[index],
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-            ),
-          );
-        },
-        itemCount: imageProviders.length,
-        pagination: imageProviders.length > 1
-            ? SwiperCustomPagination(
-                builder: (BuildContext context, SwiperPluginConfig config) {
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        for (var i = 0; i < imageProviders.length; i++)
-                          Container(
-                            margin: const EdgeInsets.all(3),
-                            width: 5,
-                            height: 5,
-                            decoration: BoxDecoration(
-                                color: config.activeIndex == i
-                                    ? Colors.black
-                                    : Colors.black26,
-                                shape: BoxShape.circle),
+      child: Stack(
+        children: [
+          Swiper(
+            onTap: (index) async {
+              List<String> images = (widget.imageUrls != null)
+                  ? await imageCachePath(imageUrls as List<String>)
+                  : imageUrls.map((e) async {
+                      return (e.value) == 'file'
+                          ? e.key.path
+                          : (await imageCachePath([e.key] as List<String>))
+                              .first;
+                    }) as List<String>;
+              openImageView(context, index, images);
+            },
+            loop: imageProviders.length != 1,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                margin:
+                    EdgeInsets.only(bottom: imageProviders.length > 1 ? 15 : 0),
+                child: Container(
+                  child: (widget.onDelete != null)
+                      ? IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                            size: 40,
+                            shadows: <Shadow>[
+                              BoxShadow(
+                                  color: Colors.black,
+                                  blurRadius: 20,
+                                  spreadRadius: 20,
+                                  offset: Offset(2, 2))
+                            ],
                           ),
-                        const Spacer()
-                      ],
+                          onPressed: () {
+                            widget.onDelete!(
+                                dynamic_images!.keys.elementAt(index));
+                          },
+                        )
+                      : null,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(29),
+                    image: DecorationImage(
+                      image: imageProviders[index],
+                      fit: BoxFit.fitWidth,
                     ),
-                  );
-                },
-              )
-            : null,
+                  ),
+                ),
+              );
+            },
+            itemCount: imageProviders.length,
+            pagination: imageProviders.length > 1
+                ? SwiperCustomPagination(
+                    builder: (BuildContext context, SwiperPluginConfig config) {
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          children: [
+                            const Spacer(),
+                            for (var i = 0; i < imageProviders.length; i++)
+                              Container(
+                                margin: const EdgeInsets.all(3),
+                                width: 5,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                    color: config.activeIndex == i
+                                        ? Colors.black
+                                        : Colors.black26,
+                                    shape: BoxShape.circle),
+                              ),
+                            const Spacer()
+                          ],
+                        ),
+                      );
+                    },
+                  )
+                : null,
+          ),
+        ],
       ),
     );
   }

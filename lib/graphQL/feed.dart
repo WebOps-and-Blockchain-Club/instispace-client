@@ -25,6 +25,7 @@ class FeedGQL {
       }
       photo
       attachment
+      postTime
       location
       linkName
       likeCount
@@ -150,10 +151,13 @@ class FeedGQL {
         isLiked
         isDisliked
         likeCount
+        dislikeCount
+        photo
         isHidden
       }
       photo
       attachment
+      postTime
       location
       linkName
       likeCount

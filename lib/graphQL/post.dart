@@ -4,6 +4,7 @@ class PostGQl {
       createPost(postInput: \$postInput) {
          updatedAt
       title
+      
       postComments {
         id
         createdAt
@@ -17,10 +18,14 @@ class PostGQl {
         content
         isLiked
         isDisliked
+        dislikeCount
+        photo
         likeCount
         isHidden
       }
       photo
+      attachment
+      postTime
       location
       linkName
       likeCount
@@ -59,6 +64,7 @@ class PostGQl {
   updatePost(updatePostInput: \$updatePostInput, id: \$updatePostId) {
     updatedAt
       title
+      
       postComments {
         id
         createdAt
@@ -72,10 +78,14 @@ class PostGQl {
         content
         isLiked
         isDisliked
+        dislikeCount
+        photo
         likeCount
         isHidden
       }
       photo
+      attachment
+      postTime
       location
       linkName
       likeCount
@@ -97,7 +107,72 @@ class PostGQl {
       content
       category
       Link
+      status
+      tags {
+        id
+        title
+        category
+      }
+      permissions
+      actions
 }
 }
 """;
+  static const getOne = """
+query FindOnePost(\$postid: String!) {
+  findOnePost(Postid: \$postid) {
+      updatedAt
+      title
+      postComments {
+        id
+        createdAt
+        createdBy {
+          id
+          roll
+          role
+          name
+          photo
+        }
+        content
+        isLiked
+        isDisliked
+        likeCount
+        dislikeCount
+        photo
+        isHidden
+      }
+      photo
+      attachment
+      postTime
+      location
+      linkName
+      likeCount
+      isLiked
+      isDisliked
+      isHidden
+      id
+      isSaved
+      endTime
+      dislikeCount
+      createdBy{
+        id
+        roll
+        role
+        name
+        photo
+      }
+      createdAt
+      content
+      category
+      Link
+      status
+      tags {
+        id
+        title
+        category
+      }
+      permissions
+      actions
+  }
+}""";
 }

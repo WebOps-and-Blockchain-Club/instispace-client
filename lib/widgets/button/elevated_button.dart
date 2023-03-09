@@ -45,15 +45,6 @@ class CustomElevatedButton extends StatelessWidget {
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceBetween,
           children: [
-            if (isLoading)
-              const Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: SizedBox(
-                    width: 15,
-                    height: 15,
-                    child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2)),
-              ),
             Padding(
               padding: padding != null
                   ? EdgeInsets.symmetric(
@@ -90,6 +81,15 @@ class CustomElevatedButton extends StatelessWidget {
                 ],
               ),
             ),
+            if (isLoading)
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: SizedBox(
+                    width: 15,
+                    height: 15,
+                    child: CircularProgressIndicator(
+                        color: Colors.white, strokeWidth: 2)),
+              ),
           ],
         ));
   }

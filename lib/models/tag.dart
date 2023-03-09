@@ -32,7 +32,7 @@ class TagsModel {
   }
 
   List<String> getTagIds() {
-    return tags.map((e) => e.id).toList();
+    return tags.map((e) => e.id.toString()).toList();
   }
 
   List<CategoryModel> getCategorysModel() {

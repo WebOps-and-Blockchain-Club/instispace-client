@@ -77,8 +77,10 @@ class PostModel {
             count: data['dislikeCount'], isDislikedByUser: data['isDisliked']),
         saved = SavePostModel(isSavedByUser: data['isSaved']),
         tags = data['tags'] != null ? TagsModel.fromJson(data['tags']) : null,
-        comments = CommentsModel.fromJson(
-            data['postComments'], data['postComments'].length),
+        comments = data['postComments'] != null
+            ? CommentsModel.fromJson(
+                data['postComments'], data['postComments'].length)
+            : CommentsModel(comments: [], count: 0),
         photo = data['photo'] != '' && data['photo'] != null
             ? data['photo'].split(' AND ')
             : null,
@@ -93,7 +95,8 @@ class PostModel {
         status = data['status'],
         link = data['Link'] != null && data['Link'] != ""
             ? LinkModel(
-                name: data['linkName'], link: (data['Link'] as String).trim())
+                name: data['linkName'] ?? 'Click Here!',
+                link: (data['Link'] as String).trim())
             : null,
         createdAt = data['createdAt'],
         createdBy = CreatedByModel.fromJson(

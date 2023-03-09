@@ -7,6 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../../graphQL/feed.dart';
 
+import '../../../models/post/main.dart';
 import '../../../widgets/form/warning_popup.dart';
 import 'newPost.dart';
 
@@ -86,7 +87,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),
-    tag: FieldModel(),
+    tag: FieldModel(required: false),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Lost": CreatePostModel(
@@ -108,8 +109,9 @@ Map<String, CreatePostModel> getCreatePostFields = {
 class NewPostWrapper extends StatefulWidget {
   final PostCategoryModel category;
   final QueryOptions options;
+  final PostModel? post;
   const NewPostWrapper(
-      {Key? key, required this.category, required this.options})
+      {Key? key, required this.category, required this.options, this.post})
       : super(key: key);
 
   @override
@@ -127,7 +129,7 @@ class _NewPostWrapperState extends State<NewPostWrapper> {
   Widget build(BuildContext context) {
     final fieldConfiguration = getCreatePostFields[widget.category.name] ??
         getCreatePostFields["Event"]!;
-    if (fieldConfiguration.imagePrimary != null) {
+    if (widget.post == null && fieldConfiguration.imagePrimary != null) {
       return SelectImageScreen(
         category: widget.category,
         fieldConfiguration: fieldConfiguration,
@@ -135,9 +137,9 @@ class _NewPostWrapperState extends State<NewPostWrapper> {
       );
     }
     return NewPostScreen(
-      category: widget.category,
-      fieldConfiguration: fieldConfiguration,
-      options: widget.options,
-    );
+        category: widget.category,
+        fieldConfiguration: fieldConfiguration,
+        options: widget.options,
+        post: widget.post);
   }
 }
