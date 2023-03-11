@@ -74,6 +74,7 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
 
   @override
   void initState() {
+    print(DateTime.now().hour);
     setIndexMap();
 
     if (day > 4) {
@@ -234,6 +235,10 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
                   itemCount: 7,
                   itemScrollController: itemScrollController,
                   itemPositionsListener: itemPositionsListener,
+                  initialAlignment:
+                      (DateTime.now().hour > 10 && DateTime.now().hour < 24)
+                          ? -0.5
+                          : 0,
                   itemBuilder: ((context, index) {
                     return DayMenu(
                       mess: mess,
