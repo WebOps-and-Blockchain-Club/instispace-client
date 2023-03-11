@@ -78,7 +78,7 @@ class Themes {
       // fillColor: Colors.white,
       // constraints: const BoxConstraints(minHeight: 50),
       // prefixIconColor: ColorPalette._secondary,
-      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+      // contentPadding: EdgeInsets.zero,
       alignLabelWithHint: true,
       labelStyle: TextStyle(
           color: ColorPalette._text[900], fontWeight: FontWeight.normal),

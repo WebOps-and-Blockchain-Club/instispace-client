@@ -1,5 +1,6 @@
 import 'package:client/screens/academics/main.dart';
 import 'package:client/screens/home/post/main.dart';
+import 'package:client/screens/home/post/single_post.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/home_app_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/category.dart';
+import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
 import '../../services/auth.dart';
 import '../../services/client.dart';
@@ -18,6 +20,9 @@ import '../../graphQL/auth.dart';
 // import 'events/event.dart';
 // import 'netops/netop.dart';
 // import 'queries/query.dart';
+import '../../widgets/helpers/navigate.dart';
+import '../super_user/approve_post.dart';
+import '../super_user/reported_posts.dart';
 import 'main/home.dart';
 // import 'lost_and_found.dart/main.dart';
 // import 'lost_and_found.dart/lost_and_found.dart';
@@ -28,7 +33,7 @@ import 'main/home.dart';
 class HomeWrapper extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  // final String? navigatePath;
+  final String? navigatePath;
   // final Future<void> Function() refetch;
 
   const HomeWrapper({
@@ -36,7 +41,7 @@ class HomeWrapper extends StatefulWidget {
     required this.auth,
     required this.user,
     // required this.refetch,
-    // required this.navigatePath,
+    required this.navigatePath,
   }) : super(key: key);
 
   @override
@@ -134,10 +139,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
       graphQLClient(token).mutate(_options);
     });
 
-    // if (widget.navigatePath != null && widget.navigatePath!.isNotEmpty) {
-    //   WidgetsBinding.instance
-    //       .addPostFrameCallback((_) => navigateToPath(widget.navigatePath!));
-    // }
+    if (widget.navigatePath != null && widget.navigatePath!.isNotEmpty) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => navigateToPath(widget.navigatePath!));
+    }
 
     super.initState();
   }
@@ -271,27 +276,30 @@ class _HomeWrapperState extends State<HomeWrapper> {
     final id = path.split("/")[1];
 
     if (type != "" && type.isNotEmpty && id != "" && id.isNotEmpty) {
-      // switch (type) {
-      //   case "event":
-      //     navigate(context, EventPage(id: id));
-      //     break;
-      //   case "netop":
-      //     navigate(context, NetopPage(id: id));
-      //     break;
-      //   case "query":
-      //     navigate(context, QueryPage(id: id));
-      //     break;
-      //   case "lostnfound":
-      //     navigate(context, LostnFoundPage(id: id));
-      //     break;
-      //   case "hostel":
-      //     navigate(context, HostelWrapper(user: widget.auth.user!));
-      //     break;
-      //   case "admin/reports":
-      //     navigate(context, const ReportedPostPage());
-      //     break;
-      //   default:
-      // }
+      switch (type) {
+        case "post":
+          navigate(context, SinglePostScreen(id: id));
+          break;
+        case "reports":
+          navigate(
+            context,
+            SuperUserPostPage(
+              title: 'MODERATE POST',
+              filterVariables: PostQueryVariableModel(viewReportedPosts: true),
+            ),
+          );
+          break;
+        case "approve":
+          navigate(
+            context,
+            SuperUserPostPage(
+              title: 'APPROVE POST',
+              filterVariables: PostQueryVariableModel(postToBeApproved: true),
+            ),
+          );
+          break;
+        default:
+      }
     }
   }
 }
