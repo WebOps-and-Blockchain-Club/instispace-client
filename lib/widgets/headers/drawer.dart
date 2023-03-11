@@ -165,11 +165,19 @@ class CustomDrawer extends StatelessWidget {
                               ),
                             ),
 
-                            // // Mess Menu
-                            // const Padding(
-                            //   padding: EdgeInsets.symmetric(vertical: 5),
-                            //   child: ViewMessMenu(),
-                            // ),
+                            // Mess Menu
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Mess"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const MessMenuScreen()));
+                                },
+                              ),
+                            ),
                             // Notifications
                             // Padding(
                             //   padding: const EdgeInsets.symmetric(vertical: 5),
