@@ -147,23 +147,21 @@ class CustomDrawer extends StatelessWidget {
                                                         EIDCard(user: user)));
                                       },
                                     ),
-
-                                  // Search User
-                                  ListTile(
-                                    visualDensity:
-                                        const VisualDensity(vertical: -4),
-                                    tileColor: Colors.transparent,
-                                    minVerticalPadding: 0,
-                                    title: const Text("Find People"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  const SearchUser()));
-                                    },
-                                  ),
                                 ],
+                              ),
+                            ),
+
+                            // Search User
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Find People"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const SearchUser()));
+                                },
                               ),
                             ),
 

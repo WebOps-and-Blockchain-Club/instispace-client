@@ -245,9 +245,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
               title: Text(
                 "${widget.post == null ? 'NEW' : 'EDIT'} ${widget.category.name.toUpperCase()}",
                 style: const TextStyle(
-                    letterSpacing: 2.64,
+                    letterSpacing: 1,
                     color: Color(0xFF3C3C3C),
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700),
               ),
             ),

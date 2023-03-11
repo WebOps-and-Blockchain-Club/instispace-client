@@ -11,7 +11,7 @@ Widget buildSheet(
         builder: (_, controller) => Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: child(controller),
         ),

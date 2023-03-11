@@ -95,8 +95,8 @@ class UserModel {
         role = data["role"],
         photo = data["photo"],
         isNewUser = data["isNewUser"],
-        // program = data["program"],
-        // department = data["department"],
+        program = data["programme"],
+        department = data["department"],
         mobile = data["mobile"],
         interets = TagsModel.fromJson(data["interests"] ?? []).tags,
         hostel = data["hostel"] != null

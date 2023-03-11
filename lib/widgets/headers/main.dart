@@ -121,61 +121,46 @@ class _SearchBarState extends State<SearchBar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 50,
-            child: Expanded(
-                child: Theme(
-              data: ThemeData(
-                primarySwatch: ColorPalette.palette(context).primary,
-              ),
-              child: TextField(
-                textAlignVertical: TextAlignVertical.center,
-                maxLength: 50,
-                controller: search,
-                decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xFFE1E0EC),
-                    contentPadding: EdgeInsets.all(5),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(35)),
-                    //hintText: 'What are you looking for?',
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      size: 25,
-                      color: Color(0xFFB5B4CA),
-                    ),
-                    suffixIcon: search.text == ""
-                        ? null
-                        : IconButton(
-                            onPressed: () {
-                              search.clear();
-                              widget.onSubmitted("");
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              size: 25,
-                            )),
-                    counterText: ""),
-                onSubmitted: widget.onSubmitted,
-                onChanged: (value) {
-                  _debouncer.run(() {
-                    widget.onSubmitted(value);
-                  });
-                },
-              ),
-            )),
-            /*if (widget.onFilterClick != null)
-                  Card(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: InkWell(
-                      onTap: widget.onFilterClick,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(Icons.filter_alt_outlined),
-                      ),
-                    ),
-                  )*/
+          Theme(
+            data: ThemeData(
+              primarySwatch: ColorPalette.palette(context).primary,
+            ),
+            child: TextField(
+              textAlignVertical: TextAlignVertical.center,
+              maxLength: 50,
+              controller: search,
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: const Color(0xFFE1E0EC),
+                  contentPadding: const EdgeInsets.all(5),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(35)),
+                  //hintText: 'What are you looking for?',
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    size: 25,
+                    color: Color(0xFFB5B4CA),
+                  ),
+                  suffixIcon: search.text == ""
+                      ? null
+                      : IconButton(
+                          onPressed: () {
+                            search.clear();
+                            widget.onSubmitted("");
+                          },
+                          icon: const Icon(
+                            Icons.close,
+                            size: 25,
+                          )),
+                  counterText: ""),
+              onSubmitted: widget.onSubmitted,
+              onChanged: (value) {
+                _debouncer.run(() {
+                  widget.onSubmitted(value);
+                });
+              },
+            ),
           ),
           if (widget.error != null && widget.error != "")
             SizedBox(

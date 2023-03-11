@@ -94,9 +94,6 @@ class CreatedByModel {
         name = data["name"],
         roll = data["roll"],
         role = data["role"],
-        photo = data["photo"] != ""
-            ? data['photo']
-            : data['roll'] == 'cfi@smail.iitm.ac.in'
-                ? "https://media.licdn.com/dms/image/C4D0BAQGEK-WB5mNx4g/company-logo_200_200/0/1519911884159?e=2147483647&v=beta&t=4Tsb5Gx2LoQXmCk_wN1jqdCGX5qAY8ejRpFMgcTpSHE"
-                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ835BghQCqBsROIiDKH37nh68eOOCCsiq1WGGrYG8Cfw&s';
+        photo =
+            data["photo"] != null || data['photo'] != '' ? data['photo'] : null;
 }

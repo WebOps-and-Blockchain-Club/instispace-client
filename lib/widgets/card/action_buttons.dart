@@ -74,9 +74,7 @@ class TagButton extends StatelessWidget {
 class LikePostButton extends StatefulWidget {
   final String postId;
   final LikeModel like;
-  final String type;
-  const LikePostButton(
-      {Key? key, required this.postId, required this.like, this.type = "like"})
+  const LikePostButton({Key? key, required this.postId, required this.like})
       : super(key: key);
 
   @override
@@ -126,55 +124,24 @@ class _LikePostButtonState extends State<LikePostButton>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: widget.type == "like"
-                      ? widget.like.isLikedByUser
-                          ? const Icon(
-                              CustomIcons.likefilled,
-                              color: Colors.red,
-                              size: 21,
-                            )
-                          : const Icon(
-                              CustomIcons.like,
-                              size: 21,
-                            )
-                      : Icon(
-                          widget.like.isLikedByUser
-                              ? Icons.thumb_up_alt
-                              : Icons.thumb_up_alt_outlined,
-                          size: 26,
+                InkWell(
+                  child: widget.like.isLikedByUser
+                      ? const Icon(
+                          CustomIcons.likefilled,
+                          color: Colors.red,
+                          size: 20,
+                        )
+                      : const Icon(
+                          CustomIcons.like,
+                          size: 20,
                         ),
-                  onPressed: () {
+                  onTap: () {
                     if (!(result != null && result.isLoading)) {
                       runMutation({"postId": widget.postId});
                     }
                   },
                 ),
-                // ScaleTransition(
-                //   scale: Tween(begin: 0.7, end: 1.0).animate(CurvedAnimation(
-                //       parent: _likeController, curve: Curves.easeOut)),
-                //   child: IconButton(
-                //     icon: widget.like.isLikedByUser
-                //         ? const Icon(
-                //             CustomIcons.likefilled,
-                //             color: Colors.red,
-                //             size: 25,
-                //           )
-                //         : const Icon(
-                //             CustomIcons.like,
-                //             size: 25,
-                //           ),
-                //     onPressed: () {
-                //       //print(result);
-                //       _likeController
-                //           .reverse()
-                //           .then((value) => _likeController.forward());
-                //       if (!(result != null && result.isLoading)) {
-                //         runMutation({"postId": widget.postId});
-                //       }
-                //     },
-                //   ),
-                // ),
+                const SizedBox(width: 5),
                 Text(widget.like.count.toString(),
                     style: Theme.of(context).textTheme.labelLarge)
               ],
@@ -182,18 +149,113 @@ class _LikePostButtonState extends State<LikePostButton>
   }
 }
 
-class DisLikePostButton extends StatefulWidget {
+class UpvotePostButton extends StatefulWidget {
+  final String postId;
+  final LikeModel like;
+  const UpvotePostButton({Key? key, required this.postId, required this.like})
+      : super(key: key);
+
+  @override
+  State<UpvotePostButton> createState() => _UpvotePostButtonState();
+}
+
+class _UpvotePostButtonState extends State<UpvotePostButton>
+// with SingleTickerProviderStateMixin
+{
+  // late final AnimationController _likeController = AnimationController(
+  //     duration: const Duration(milliseconds: 200), vsync: this, value: 1.0);
+  @override
+  Widget build(BuildContext context) {
+    final like = widget.like;
+    return Mutation(
+        options: MutationOptions(
+            document: gql(FeedGQL().toggleLikePost),
+            update: (cache, result) {
+              if (result != null && (!result.hasException)) {
+                final Map<String, dynamic> updated = {
+                  "__typename": "Post",
+                  "id": widget.postId,
+                  "isLiked": !(like.isLikedByUser),
+                  "likeCount":
+                      like.isLikedByUser ? like.count - 1 : like.count + 1
+                };
+                cache.writeFragment(
+                  Fragment(document: gql('''
+                      fragment LikeField on Post{
+                        id
+                        isLiked
+                        likeCount
+                      }
+                    ''')).asRequest(idFields: {
+                    '__typename': updated['__typename'],
+                    'id': updated['id'],
+                  }),
+                  data: updated,
+                  broadcast: false,
+                );
+              }
+            }),
+        builder: (
+          RunMutation runMutation,
+          QueryResult? result,
+        ) =>
+            GestureDetector(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                    color: widget.like.isLikedByUser
+                        ? Colors.lightBlue
+                        : Colors.white,
+                    border: Border.all(
+                      color: Colors.lightBlue,
+                    ),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomLeft: Radius.circular(20))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3),
+                  child: Row(
+                    children: [
+                      Icon(
+                        CustomIcons.upvote,
+                        size: 16,
+                        color: widget.like.isLikedByUser ? Colors.white : null,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(widget.like.count.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                  color: widget.like.isLikedByUser
+                                      ? Colors.white
+                                      : null))
+                    ],
+                  ),
+                ),
+              ),
+              onTap: () {
+                if (!(result != null && result.isLoading)) {
+                  runMutation({"postId": widget.postId});
+                }
+              },
+            ));
+  }
+}
+
+class DownvotePostButton extends StatefulWidget {
   final String postId;
   final DisLikeModel dislike;
-  const DisLikePostButton(
+  const DownvotePostButton(
       {Key? key, required this.postId, required this.dislike})
       : super(key: key);
 
   @override
-  State<DisLikePostButton> createState() => _DisLikePostButtonState();
+  State<DownvotePostButton> createState() => _DownvotePostButtonState();
 }
 
-class _DisLikePostButtonState extends State<DisLikePostButton> {
+class _DownvotePostButtonState extends State<DownvotePostButton> {
   @override
   Widget build(BuildContext context) {
     final dislike = widget.dislike;
@@ -230,26 +292,84 @@ class _DisLikePostButtonState extends State<DisLikePostButton> {
           RunMutation runMutation,
           QueryResult? result,
         ) =>
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    widget.dislike.isDislikedByUser
-                        ? Icons.thumb_down_alt
-                        : Icons.thumb_down_alt_outlined,
-                    size: 26,
+            InkWell(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                    color: widget.dislike.isDislikedByUser
+                        ? Colors.lightBlue
+                        : Colors.white,
+                    border: Border.all(
+                      color: Colors.lightBlue,
+                    ),
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3),
+                  child: Row(
+                    children: [
+                      Icon(
+                        CustomIcons.downvote,
+                        size: 16,
+                        color: widget.dislike.isDislikedByUser
+                            ? Colors.white
+                            : null,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(widget.dislike.count.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                  color: widget.dislike.isDislikedByUser
+                                      ? Colors.white
+                                      : null))
+                    ],
                   ),
-                  onPressed: () {
-                    if (!(result != null && result.isLoading)) {
-                      runMutation({"postId": widget.postId});
-                    }
-                  },
                 ),
-                Text(widget.dislike.count.toString(),
-                    style: Theme.of(context).textTheme.labelLarge)
-              ],
+              ),
+              onTap: () {
+                if (!(result != null && result.isLoading)) {
+                  runMutation({"postId": widget.postId});
+                }
+              },
             ));
+  }
+}
+
+class VotePostButton extends StatelessWidget {
+  final String postId;
+  final LikeModel? like;
+  final DisLikeModel? dislike;
+  const VotePostButton(
+      {Key? key,
+      required this.postId,
+      required this.like,
+      required this.dislike})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      padding: EdgeInsets.zero,
+      child: SizedBox(
+        height: 28,
+        child: Row(
+          children: [
+            if (like != null)
+              UpvotePostButton(
+                postId: postId,
+                like: like!,
+              ),
+            if (dislike != null)
+              DownvotePostButton(postId: postId, dislike: dislike!)
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -271,7 +391,7 @@ class CommentPostButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.comment, size: 25),
+          const Icon(CustomIcons.comment, size: 20),
           const SizedBox(width: 5),
           Text(comment.count.toString(),
               style: Theme.of(context).textTheme.labelLarge),
@@ -748,7 +868,7 @@ class _ReportPostButtonState extends State<ReportPostButton> {
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20)),
+                            BorderRadius.vertical(top: Radius.circular(30)),
                       ),
                       child: Report(
                         postId: widget.postId,
@@ -759,7 +879,7 @@ class _ReportPostButtonState extends State<ReportPostButton> {
               ),
             );
           }),
-      child: const Icon(Icons.warning_rounded, size: 25),
+      child: const Icon(CustomIcons.report, size: 20),
     );
   }
 }
@@ -986,7 +1106,7 @@ class _SuperUserActionButtonState extends State<SuperUserActionButton> {
               icon: Icons.check,
               onPressed: () {
                 String _status =
-                    '${widget.type == 'approve' ? '' : "REPORT_"}ACCEPTED';
+                    widget.type == 'approve' ? 'APPROVED' : 'REPORT_ACCEPTED';
                 setState(() {
                   status = _status;
                 });
@@ -1002,7 +1122,7 @@ class _SuperUserActionButtonState extends State<SuperUserActionButton> {
                 icon: Icons.close,
                 onPressed: () {
                   String _status =
-                      '${widget.type == 'approve' ? '' : "REPORT_"}REJECTED';
+                      widget.type == 'approve' ? 'REJECTED' : 'REPORT_REJECTED';
                   setState(() {
                     status = _status;
                   });

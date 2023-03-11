@@ -7,21 +7,24 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String assetName = 'assets/illustrations/loading.gif';
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          assetName,
-          height: 125.0,
-          width: 125.0,
-        ),
-        Text(
-          message ?? "Loading...",
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        )
-      ],
+    return const Center(
+      child: CircularProgressIndicator(),
     );
+    // return Column(
+    //   crossAxisAlignment: CrossAxisAlignment.stretch,
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     Image.asset(
+    //       assetName,
+    //       height: 125.0,
+    //       width: 125.0,
+    //     ),
+    //     Text(
+    //       message ?? "Loading...",
+    //       style: Theme.of(context).textTheme.titleLarge,
+    //       textAlign: TextAlign.center,
+    //     )
+    //   ],
+    // );
   }
 }

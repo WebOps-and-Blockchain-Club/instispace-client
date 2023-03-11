@@ -1,5 +1,6 @@
 import 'package:client/models/academic/course.dart';
 import 'package:client/screens/academics/add_course.dart';
+import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/card.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: IconButton(
-                        icon: const Icon(Icons.edit),
+                        icon: const Icon(CustomIcons.edit),
                         onPressed: () =>
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => AddCourseScreenWrapper(
@@ -68,7 +69,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: IconButton(
-                        icon: const Icon(Icons.delete),
+                        icon: const Icon(CustomIcons.delete),
                         onPressed: course.id == null
                             ? null
                             : () => academicService.deleteCourse(course.id!)),

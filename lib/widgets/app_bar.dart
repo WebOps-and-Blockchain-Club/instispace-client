@@ -6,9 +6,9 @@ SliverAppBar secondaryAppBar({required String title}) {
     title: Text(
       title,
       style: const TextStyle(
-          letterSpacing: 2.64,
+          letterSpacing: 1,
           color: Color(0xFF3C3C3C),
-          fontSize: 24,
+          fontSize: 20,
           fontWeight: FontWeight.w700),
     ),
   );

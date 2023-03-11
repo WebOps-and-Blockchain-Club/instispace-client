@@ -1,3 +1,4 @@
+import 'package:client/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -42,17 +43,7 @@ class _SuperUserPostPageState extends State<SuperUserPostPage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            SliverAppBar(
-              centerTitle: true,
-              title: Text(
-                widget.title,
-                style: const TextStyle(
-                    letterSpacing: 2.64,
-                    color: Color(0xFF3C3C3C),
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
+            secondaryAppBar(title: widget.title),
           ];
         },
         body: PostQuery(

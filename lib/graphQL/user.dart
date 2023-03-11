@@ -25,6 +25,8 @@ class UserGQL {
           handleReports
           account
         }
+        programme
+        department
       }
     }
   """;

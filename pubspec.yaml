@@ -121,9 +121,9 @@ flutter:
         - asset: assets/ProximaNovaFont.otf
         - asset: assets/ProximaNovaBold.otf
           weight: 900
-    - family: MyFlutterApp
+    - family: CustomIcons
       fonts:
-        - asset: assets/MyFlutterApp.ttf
+        - asset: assets/font/CustomIcons.ttf
 
   #
   # For details regarding fonts from package dependencies,

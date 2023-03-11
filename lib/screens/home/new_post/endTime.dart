@@ -2,6 +2,8 @@ import 'package:client/models/date_time_format.dart';
 import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 
+import '../../../utils/custom_icons.dart';
+
 class EndTime extends StatefulWidget {
   final DateTime? endTime;
   final bool edit;
@@ -90,7 +92,7 @@ class _EndTimeState extends State<EndTime> {
                   })
                   .then((value) => widget.setEndtime(endTime));
             },
-            icon: const Icon(Icons.edit),
+            icon: const Icon(CustomIcons.edit),
             color: ColorPalette.palette(context).secondary,
           )
       ],

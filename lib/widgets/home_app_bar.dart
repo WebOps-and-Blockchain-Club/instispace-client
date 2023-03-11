@@ -34,10 +34,10 @@ class HomeAppBar extends StatelessWidget {
         centerTitle: true,
         title: Text(
           title.toUpperCase(),
-          style: TextStyle(
-              letterSpacing: title.length <= 9 ? 2.64 : null,
-              color: const Color(0xFF3C3C3C),
-              fontSize: 24,
+          style: const TextStyle(
+              letterSpacing: 1,
+              color: Color(0xFF3C3C3C),
+              fontSize: 20,
               fontWeight: FontWeight.w700),
         ),
         actions: [

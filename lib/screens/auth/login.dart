@@ -148,15 +148,18 @@ class _LogInState extends State<LogIn> {
                                         onTap: () => setState(() {
                                           passwordVisible = !passwordVisible;
                                         }),
-                                        child: Icon(
-                                            passwordVisible
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            size: 20),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                              passwordVisible
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                              size: 20),
+                                        ),
                                       ),
                                       suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
-                                          const BoxConstraints(maxHeight: 10),
+                                          const BoxConstraints(maxHeight: 25),
                                       labelText: "Password"),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

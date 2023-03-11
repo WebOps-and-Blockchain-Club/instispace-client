@@ -121,25 +121,25 @@ class _PostCardState extends State<PostCard>
           padding: const EdgeInsets.only(top: 20.0),
           child: Row(
             children: [
-              const SizedBox(width: 5),
+              // const SizedBox(width: 5),
               if (post.permissions.contains('Upvote_Downvote'))
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
-                  child: LikePostButton(
+                  child: VotePostButton(
                     postId: post.id,
-                    like: post.like!,
-                    type: 'upvote',
+                    like: post.like,
+                    dislike: post.dislike,
                   ),
                 ),
-              if (post.permissions.contains('Upvote_Downvote'))
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: DisLikePostButton(
-                    postId: post.id,
-                    dislike: post.dislike!,
-                  ),
-                ),
-              if (post.permissions.contains('Like'))
+              // if (post.permissions.contains('Upvote_Downvote'))
+              //   Padding(
+              //     padding: const EdgeInsets.only(right: 10.0),
+              //     child: DisLikePostButton(
+              //       postId: post.id,
+              //       dislike: post.dislike!,
+              //     ),
+              //   ),
+              if (post.permissions.contains('Like') && post.like != null)
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: LikePostButton(postId: post.id, like: post.like!),
@@ -152,11 +152,11 @@ class _PostCardState extends State<PostCard>
                     comment: post.comments!,
                   ),
                 ),
-              // if (post.permissions.contains('Share'))
-              //   Padding(
-              //     padding: const EdgeInsets.only(right: 15.0),
-              //     child: SharePostButton(post: post),
-              //   ),
+              if (post.permissions.contains('Share'))
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: SharePostButton(post: post),
+                ),
               // if (post.permissions.contains('Set_Reminder'))
               //   Padding(
               //     padding: const EdgeInsets.only(right: 10.0),
@@ -176,10 +176,12 @@ class _PostCardState extends State<PostCard>
               if (post.permissions.contains('Edit'))
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
-                  child: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
+                  child: InkWell(
+                      child: const Icon(
+                        CustomIcons.edit,
+                        size: 20,
+                      ),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => NewPostWrapper(
                               category: post.category,
                               post: post,
@@ -208,6 +210,7 @@ class _PostCardState extends State<PostCard>
             ],
           ),
         ),
+        const SizedBox(height: 10),
       ],
     ));
   }
@@ -279,12 +282,16 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
                 },
                 child: Row(
                   children: [
-                    const Icon(Icons.attachment, color: Color(0xFF342f81)),
+                    const Icon(
+                      CustomIcons.attachment,
+                      color: Color(0xFF342f81),
+                      size: 15,
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       'Attachement (${post.attachement!.length})',
                       style: const TextStyle(
-                          color: Color(0xFF342f81), fontSize: 16),
+                          color: Color(0xFF342f81), fontSize: 15),
                     ),
                   ],
                 )),

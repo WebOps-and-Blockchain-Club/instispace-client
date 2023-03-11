@@ -20,22 +20,35 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.academicService.slots != null
-        ? Padding(
-            padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: days
-                      .map((e) => DayButton(
-                            onPressed: () => widget.academicService.setDay(e),
-                            text: e,
-                            isSelected: widget.academicService.day == e,
-                          ))
-                      .toList(),
+        ? Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 20, left: 15, top: 20),
+                child: SizedBox(
+                  height: 45,
+                  child: ListView.builder(
+                    physics: const ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: days.length,
+                    itemBuilder: (context, index) {
+                      final e = days[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        child: DayButton(
+                          onPressed: () => widget.academicService.setDay(e),
+                          text: e,
+                          isSelected: widget.academicService.day == e,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                Expanded(
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
                   child: ListView.builder(
                       itemCount: widget.academicService.slots!.length,
                       itemBuilder: (context, index) {
@@ -43,8 +56,8 @@ class _TimeTableScreenState extends State<TimeTableScreen> {
                             slot: widget.academicService.slots![index]);
                       }),
                 ),
-              ],
-            ),
+              ),
+            ],
           )
         : const Center(child: CircularProgressIndicator());
   }
@@ -144,7 +157,7 @@ class SlotCard extends StatelessWidget {
 }
 
 class DayButton extends StatelessWidget {
-  final bool? isSelected;
+  final bool isSelected;
   final void Function()? onPressed;
   final String text;
   const DayButton({
@@ -160,25 +173,62 @@ class DayButton extends StatelessWidget {
         ? ColorPalette.palette(context).secondary
         : Colors.white;
 
-    return ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          elevation: 3,
-          backgroundColor: primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: BorderSide(color: primaryColor),
+    return GestureDetector(
+      onTap: onPressed,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadiusDirectional.circular(15),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 3,
+                spreadRadius: 1,
+              )
+            ]),
+        child: SizedBox(
+          width: 65,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: Text(
+                text,
+                style: TextStyle(
+                    color: isSelected == true
+                        ? Colors.white
+                        : const Color(0xFF505050),
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-              fontFamily: 'Proxima Nova',
-              color:
-                  isSelected == true ? Colors.white : const Color(0xFF505050),
-              fontSize: 14,
-              fontWeight: FontWeight.normal),
-        ));
+      ),
+    );
+
+    // return SizedBox(
+    //   height: 20,
+    //   child: ElevatedButton(
+    //       onPressed: onPressed,
+    //       style: ElevatedButton.styleFrom(
+    //         padding: EdgeInsets.zero,
+    //         elevation: 3,
+    //         backgroundColor: primaryColor,
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(30),
+    //           side: BorderSide(color: primaryColor),
+    //         ),
+    //       ),
+    //       child: Text(
+    //         text,
+    //         style: TextStyle(
+    //             fontFamily: 'Proxima Nova',
+    //             color:
+    //                 isSelected == true ? Colors.white : const Color(0xFF505050),
+    //             fontSize: 14,
+    //             fontWeight: FontWeight.normal),
+    //       )),
+    // );
   }
 }

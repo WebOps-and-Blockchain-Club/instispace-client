@@ -41,7 +41,7 @@ List<PostCategoryModel> forumCategories = [
   PostCategoryModel(name: "Query", icon: CustomIcons.queries),
   PostCategoryModel(name: "Connect", icon: CustomIcons.connect),
   PostCategoryModel(name: "Help", icon: CustomIcons.help),
-  PostCategoryModel(name: "Review", icon: CustomIcons.help),
+  PostCategoryModel(name: "Survery", icon: CustomIcons.survey),
   PostCategoryModel(name: "Random Thought", icon: CustomIcons.thoughts),
 ];
 List<PostCategoryModel> lnfCategories = [
