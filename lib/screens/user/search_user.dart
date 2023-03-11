@@ -243,6 +243,7 @@ class _QueryListState<T> extends State<QueryList<T>> {
                         child: const Text("Retry"),
                         onPressed: () {
                           refetch!();
+                          Navigator.pop(context);
                         },
                       ),
                     ],

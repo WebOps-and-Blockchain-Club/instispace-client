@@ -75,7 +75,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
-  "Review": CreatePostModel(
+  "Survey": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(),
     imageSecondary: FieldModel(required: false),

@@ -74,6 +74,7 @@ class _SelectTagsState extends State<SelectTags> {
                             child: const Text("Retry"),
                             onPressed: () {
                               refetch!();
+                              Navigator.pop(context);
                             },
                           ),
                         ],

@@ -78,6 +78,7 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                                           child: const Text("Retry"),
                                           onPressed: () {
                                             refetch!();
+                                            Navigator.pop(context);
                                           },
                                         ),
                                       ],

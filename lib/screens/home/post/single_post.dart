@@ -68,6 +68,7 @@ class _SinglePostScreenState extends State<SinglePostScreen> {
                           child: const Text("Retry"),
                           onPressed: () {
                             refetch!();
+                            Navigator.pop(context);
                           },
                         ),
                       ],

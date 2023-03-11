@@ -62,6 +62,7 @@ class _PostQueryState extends State<PostQuery> {
                         child: const Text("Retry"),
                         onPressed: () {
                           refetch!();
+                          Navigator.pop(context);
                         },
                       ),
                     ],
