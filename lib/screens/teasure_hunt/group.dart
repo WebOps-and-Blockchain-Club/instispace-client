@@ -95,7 +95,9 @@ class _JoinGroupState extends State<JoinGroup> {
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(formatErrorMessage(error.toString()))),
+                  SnackBar(
+                      content:
+                          Text(formatErrorMessage(error.toString(), context))),
                 );
               }
             }),
@@ -188,7 +190,8 @@ class _CreateGroupState extends State<CreateGroup> {
           },
           onError: (error) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(formatErrorMessage(error.toString()))),
+              SnackBar(
+                  content: Text(formatErrorMessage(error.toString(), context))),
             );
           },
         ),
@@ -285,7 +288,9 @@ class _LeaveGroupState extends State<LeaveGroup> {
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(formatErrorMessage(error.toString()))),
+                SnackBar(
+                    content:
+                        Text(formatErrorMessage(error.toString(), context))),
               );
             }
           },

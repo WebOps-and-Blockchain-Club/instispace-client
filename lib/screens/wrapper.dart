@@ -56,6 +56,20 @@ class _WrapperState extends State<Wrapper> {
             return Scaffold(
               resizeToAvoidBottomInset: false,
               body: (() {
+                if (result.hasException && result.data == null) {
+                  return Center(
+                      child: Error(
+                    error: result.exception.toString(),
+                    onRefresh: refetch,
+                  ));
+                }
+
+                if (result.isLoading && result.data == null) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
                 if (result.parsedData != null) {
                   final UserModel user = result.parsedData as UserModel;
                   if (user.isNewUser == true) {
@@ -72,22 +86,17 @@ class _WrapperState extends State<Wrapper> {
                       //   navigatePath = null;
                       //   refetch!();
                       // },
-                      // navigatePath: navigatePath,
+                      navigatePath: navigatePath,
                     );
                   }
                 }
 
-                if (result.hasException) {
-                  return Text(formatErrorMessage(result.exception.toString()));
-                }
-
-                if (result.isLoading) {
-                  return const Loading(
-                    message: "Connecting to InstiSpace...",
-                  );
-                }
-
-                return Text(formatErrorMessage(result.exception.toString()));
+                return Center(
+                    child: Error(
+                  error: '',
+                  message: 'Server Error!',
+                  onRefresh: refetch,
+                ));
               }()),
             );
           });

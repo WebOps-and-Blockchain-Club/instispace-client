@@ -57,7 +57,9 @@ class _CreateNotificationState extends State<CreateNotification> {
             },
             onError: (dynamic error) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(formatErrorMessage(error.toString()))),
+                SnackBar(
+                    content:
+                        Text(formatErrorMessage(error.toString(), context))),
               );
             }),
         builder: (

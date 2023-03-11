@@ -231,7 +231,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
           }),
           onError: (dynamic error) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(formatErrorMessage(error.toString()))),
+              SnackBar(
+                  content: Text(formatErrorMessage(error.toString(), context))),
             );
           },
         ),
@@ -788,10 +789,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                     time
                                                         .toString()
                                                         .split(" ")
-                                                        .last
+                                                        .last +
+                                                    '+05:30'
                                                 : null,
-                                            "endTime":
-                                                endTime?.toIso8601String(),
+                                            "endTime": endTime != null
+                                                ? endTime!.toIso8601String() +
+                                                    '+05:30'
+                                                : null,
                                             "photoList":
                                                 uploadResult?.join(" AND ") ??
                                                     ''

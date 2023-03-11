@@ -1004,8 +1004,8 @@ class _ReportState extends State<Report> {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content:
-                                  Text(formatErrorMessage(error.toString()))),
+                              content: Text(formatErrorMessage(
+                                  error.toString(), context))),
                         );
                       },
                     ),
@@ -1081,7 +1081,8 @@ class _SuperUserActionButtonState extends State<SuperUserActionButton> {
         },
         onError: (dynamic error) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(formatErrorMessage(error.toString()))),
+            SnackBar(
+                content: Text(formatErrorMessage(error.toString(), context))),
           );
         },
       ),

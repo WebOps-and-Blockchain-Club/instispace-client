@@ -379,7 +379,7 @@ class _CreateCommentState extends State<CreateComment> {
                             padding: const EdgeInsets.only(top: 4.0),
                             child: ErrorText(
                               error: formatErrorMessage(
-                                  result.exception.toString()),
+                                  result.exception.toString(), context),
                             ),
                           ),
                         )

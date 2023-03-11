@@ -27,7 +27,7 @@ class _SearchUserState extends State<SearchUser> {
   //   '21 Batch',
   //   '22 Batch'
   // ];
-  final List<String> genderOptions = ['Male', 'Female'];
+  // final List<String> genderOptions = ['Male', 'Female'];
   final List<String> programOptions = [
     'B.Tech',
     'Dual Degree',
@@ -86,15 +86,17 @@ class _SearchUserState extends State<SearchUser> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: PrimaryFilter<String>(
-                    options: [...genderOptions, ...programOptions],
+                    options: programOptions,
+                    // options: [...genderOptions, ...programOptions],
                     optionTextBuilder: (e) => e,
                     onSelect: (value) {
                       List<String> _selectedGender = [];
                       List<String> _selectedProgram = [];
                       for (var i = 0; i < value.length; i++) {
-                        if (genderOptions.contains(value[i])) {
-                          _selectedGender.add(value[i]);
-                        } else if (programOptions.contains(value[i])) {
+                        // if (genderOptions.contains(value[i])) {
+                        //   _selectedGender.add(value[i]);
+                        // } else
+                        if (programOptions.contains(value[i])) {
                           _selectedProgram.contains(value[i]);
                         }
                       }
@@ -208,17 +210,44 @@ class _QueryListState<T> extends State<QueryList<T>> {
     return Query(
       options: options,
       builder: (result, {fetchMore, refetch}) {
-        if (result.hasException) {
+        if (result.hasException && result.data == null) {
           return Center(
-            child: Text(formatErrorMessage(result.exception.toString())),
-          );
+              child: Error(
+            error: result.exception.toString(),
+            onRefresh: refetch,
+          ));
         }
 
         if (result.hasException && result.data != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(formatErrorMessage(result.exception.toString()))),
-          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Use Future.delayed to delay the execution of showDialog
+            Future.delayed(Duration.zero, () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Center(child: Text("Error")),
+                    content: Text(formatErrorMessage(
+                        result.exception.toString(), context)),
+                    actions: [
+                      TextButton(
+                        child: const Text("Ok"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Retry"),
+                        onPressed: () {
+                          refetch!();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            });
+          });
         }
 
         if (result.isLoading && result.data == null) {

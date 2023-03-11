@@ -48,15 +48,50 @@ class _PostPageState extends State<PostPage> {
                   child: RefreshIndicator(
                     onRefresh: () => refetch!(),
                     child: () {
-                      if (result.hasException) {
-                        return Error(
+                      if (result.hasException && result.data == null) {
+                        return Center(
+                            child: Error(
                           error: result.exception.toString(),
                           onRefresh: refetch,
-                        );
+                        ));
+                      }
+
+                      if (result.hasException && result.data != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          // Use Future.delayed to delay the execution of showDialog
+                          Future.delayed(Duration.zero, () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Center(child: Text("Error")),
+                                  content: Text(formatErrorMessage(
+                                      result.exception.toString(), context)),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text("Retry"),
+                                      onPressed: () {
+                                        refetch!();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          });
+                        });
                       }
 
                       if (result.isLoading && result.data == null) {
-                        return const Loading();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       final PostModel post = widget.toPostsModel(result.data);

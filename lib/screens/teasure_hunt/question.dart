@@ -302,7 +302,9 @@ class _AddSubmissionState extends State<AddSubmission> {
               widget.refetch!();
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(formatErrorMessage(error.toString()))),
+                SnackBar(
+                    content:
+                        Text(formatErrorMessage(error.toString(), context))),
               );
             }
           },

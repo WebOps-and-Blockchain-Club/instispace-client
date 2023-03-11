@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -42,7 +43,7 @@ class ErrorText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SelectableText(
-      message ?? formatErrorMessage(error),
+      message ?? formatErrorMessage(error, context),
       style: Theme.of(context)
           .textTheme
           .bodyMedium
@@ -63,19 +64,24 @@ String getAsset(String error, String? message) {
   }
 }
 
-String formatErrorMessage(String error) {
+String formatErrorMessage(String error, BuildContext context) {
   print(error);
   // return error;
   if (error.contains("Failed host lookup")) {
     return "No network connection";
+  } else if (error.contains('UNAUTHENTICATED')) {
+    Provider.of<AuthService>(context, listen: false).logout();
+    return "Login to continue";
   } else if (error.contains(
       "Access denied! You need to be authorized to perform this action!")) {
-    AuthService().logout();
+    Provider.of<AuthService>(context, listen: false).logout();
     return "Login to continue";
   } else if (error
       .contains("Access denied! You don't have permission for this action!")) {
     return "Not Allowed to perform this action";
   } else if (error.contains("Invalid Credentials")) {
+    return "Invalid Credentials";
+  } else if (error.contains("Email or password are invalid")) {
     return "Invalid Credentials";
   } else if (error.contains("Email Not Registered!")) {
     return "Account not found";

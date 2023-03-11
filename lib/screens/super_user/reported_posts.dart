@@ -47,11 +47,45 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                       children: [
                         ListView(),
                         (() {
-                          if (result.hasException) {
-                            return Error(
+                          if (result.hasException && result.data == null) {
+                            return Center(
+                                child: Error(
                               error: result.exception.toString(),
                               onRefresh: refetch,
-                            );
+                            ));
+                          }
+
+                          if (result.hasException && result.data != null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              // Use Future.delayed to delay the execution of showDialog
+                              Future.delayed(Duration.zero, () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Center(child: Text("Error")),
+                                      content: Text(formatErrorMessage(
+                                          result.exception.toString(),
+                                          context)),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text("Ok"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text("Retry"),
+                                          onPressed: () {
+                                            refetch!();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              });
+                            });
                           }
 
                           if (result.isLoading && result.data == null) {
@@ -62,10 +96,12 @@ class _ReportedPostPageState extends State<ReportedPostPage> {
                               ReportsModel.fromJson(result.data!["getReports"]);
 
                           if (posts.netops == null && posts.queries == null) {
-                            return Error(
-                              message: 'No reports',
-                              error: "",
-                              onRefresh: refetch,
+                            return Center(
+                              child: Error(
+                                message: 'No reports',
+                                error: "",
+                                onRefresh: refetch,
+                              ),
                             );
                           }
 
@@ -247,8 +283,8 @@ class _ReportCardState extends State<ReportCard> {
                       onError: (dynamic error) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content:
-                                  Text(formatErrorMessage(error.toString()))),
+                              content: Text(formatErrorMessage(
+                                  error.toString(), context))),
                         );
                       },
                     ),

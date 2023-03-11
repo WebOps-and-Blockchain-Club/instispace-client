@@ -32,7 +32,7 @@ class _PostQueryState extends State<PostQuery> {
     return Query(
       options: options,
       builder: (result, {fetchMore, refetch}) {
-        if (result.hasException) {
+        if (result.hasException && result.data == null) {
           return Center(
               child: Error(
             error: result.exception.toString(),
@@ -41,10 +41,35 @@ class _PostQueryState extends State<PostQuery> {
         }
 
         if (result.hasException && result.data != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(formatErrorMessage(result.exception.toString()))),
-          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // Use Future.delayed to delay the execution of showDialog
+            Future.delayed(Duration.zero, () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Center(child: Text("Error")),
+                    content: Text(formatErrorMessage(
+                        result.exception.toString(), context)),
+                    actions: [
+                      TextButton(
+                        child: const Text("Ok"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Retry"),
+                        onPressed: () {
+                          refetch!();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            });
+          });
         }
 
         if (result.isLoading && result.data == null) {
