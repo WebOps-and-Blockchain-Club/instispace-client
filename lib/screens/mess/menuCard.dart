@@ -4,21 +4,18 @@ import 'package:client/screens/mess/main.dart';
 import 'package:client/utils/mess.dart';
 import 'package:flutter/material.dart';
 
-const Map<int, String> weekdayName = {
-  1: "monday",
-  2: "tuesday",
-  3: "wednesday",
-  4: "thursday",
-  5: "friday",
-  6: "saturday",
-  7: "sunday"
-};
-
 class MenuCard extends StatelessWidget {
+  final String week;
+  final String mess;
   final String meal;
   final String day;
 
-  const MenuCard({Key? key, required this.meal, required this.day})
+  const MenuCard(
+      {Key? key,
+      required this.meal,
+      required this.day,
+      required this.week,
+      required this.mess})
       : super(key: key);
 
   @override
@@ -26,7 +23,7 @@ class MenuCard extends StatelessWidget {
     final data = mealMap[meal];
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(35),
@@ -68,12 +65,12 @@ class MenuCard extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: List.generate(
-                    mess["Vindhya-South"]["1"][day][meal].length,
+                    messMap[mess][week][day][meal].length,
                     (index) => Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 3, horizontal: 25),
                           child: Text(
-                            mess["Vindhya-South"]["1"][day][meal][index],
+                            messMap[mess][week][day][meal][index],
                             style: const TextStyle(fontSize: 16),
                           ),
                         ))),

@@ -135,7 +135,7 @@ class _SearchBarState extends State<SearchBar> {
                 decoration: InputDecoration(
                     filled: true,
                     fillColor: const Color(0xFFE1E0EC),
-                    contentPadding: EdgeInsets.all(5),
+                    contentPadding: const EdgeInsets.all(5),
                     border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(35)),
