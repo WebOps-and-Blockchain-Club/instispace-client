@@ -130,16 +130,19 @@ class _SearchUserState extends State<SearchUser> {
                         children: [
                           ProfileIconWidget(photo: user.photo),
                           const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                user.ldapName,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
-                              ),
-                              Text(user.roll + ', ' + user.program)
-                            ],
+                          IntrinsicWidth(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  user.ldapName,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                Text(user.roll + ', ' + user.program)
+                              ],
+                            ),
                           ),
                         ],
                       ),
