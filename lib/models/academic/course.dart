@@ -154,9 +154,9 @@ class SlotModel {
   CourseModel? course;
 
   String get fromTimeStr =>
-      DateTimeFormatModel(dateTime: fromTime.toDateTime()).toFormat('h:mm a');
+      DateTimeFormatModel(fromTime.toDateTime()).toFormat('h:mm a');
   String get toTimeStr =>
-      DateTimeFormatModel(dateTime: toTime.toDateTime()).toFormat('h:mm a');
+      DateTimeFormatModel(toTime.toDateTime()).toFormat('h:mm a');
 
   SlotModel({
     required this.id,
@@ -197,10 +197,9 @@ class SlotModel {
   Map<String, dynamic> toJson() => {
         'slotId': id,
         'slotName': slotName,
-        'fromTime': DateTimeFormatModel(dateTime: fromTime.toDateTime())
-            .toFormat('HH:mm'),
-        'toTime': DateTimeFormatModel(dateTime: toTime.toDateTime())
-            .toFormat('HH:mm'),
+        'fromTime':
+            DateTimeFormatModel(fromTime.toDateTime()).toFormat('HH:mm'),
+        'toTime': DateTimeFormatModel(toTime.toDateTime()).toFormat('HH:mm'),
         'day': day,
         'course': course != null ? course!.toJson() : null,
       };

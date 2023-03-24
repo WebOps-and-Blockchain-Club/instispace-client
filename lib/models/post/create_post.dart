@@ -28,11 +28,14 @@ class FieldModel {
   final bool enableEdit;
   final int maxImgs;
   final Duration time;
+  final DateTime? initTime;
 
   FieldModel(
       {this.required = true,
       this.label,
       this.enableEdit = true,
       this.maxImgs = 4,
-      this.time = const Duration(hours: 2)});
+      DateTime? initTime,
+      this.time = const Duration(hours: 2)})
+      : initTime = initTime ?? DateTime.now();
 }

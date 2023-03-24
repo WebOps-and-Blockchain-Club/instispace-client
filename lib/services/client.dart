@@ -3,7 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
 
 HttpLink httpLink = HttpLink(
-  'https://instispace.iitm.ac.in/api2/graphql',
+  'https://instispace.iitm.ac.in/api3/graphql',
   defaultHeaders: {
     "apikey": "b5fde0ea-307a-4e83-999f-28b64092425d",
   },

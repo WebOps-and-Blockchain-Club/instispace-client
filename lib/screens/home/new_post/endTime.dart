@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/custom_icons.dart';
 
 class EndTime extends StatefulWidget {
-  final DateTime? endTime;
+  final DateTime endTime;
   final bool edit;
   final Function setEndtime;
   const EndTime(
@@ -26,8 +26,13 @@ class _EndTimeState extends State<EndTime> {
 
   @override
   void initState() {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   print('endTime');
+    //   print(widget.endTime);
+    //   widget.setEndtime(widget.endTime);
+    // });
     setState(() {
-      endTime = widget.endTime ?? DateTime.now().add(const Duration(days: 5));
+      endTime = widget.endTime;
     });
 
     super.initState();
@@ -35,6 +40,9 @@ class _EndTimeState extends State<EndTime> {
 
   @override
   Widget build(BuildContext context) {
+    print('object12');
+    print('for lost');
+    print(endTime);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -45,8 +53,7 @@ class _EndTimeState extends State<EndTime> {
           ),
           const SizedBox(height: 3),
           Text(
-            DateTimeFormatModel(dateTime: endTime)
-                .toFormat("MMM dd, yyyy h:mm a"),
+            DateTimeFormatModel(endTime).toFormat("MMM dd, yyyy h:mm a"),
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!

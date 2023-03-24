@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:client/widgets/search_bar.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'query.dart';
@@ -8,7 +9,7 @@ import '../../../models/category.dart';
 import '../../../models/post/query_variable.dart';
 import '../../../models/post/main.dart';
 import '../../../widgets/primary_filter.dart';
-import '../../../widgets/search_bar.dart';
+import '../../../widgets/search_bar.dart' as search;
 
 class PostPage extends StatefulWidget {
   final Widget appBar;

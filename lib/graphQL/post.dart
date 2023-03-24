@@ -60,8 +60,8 @@ class PostGQl {
 """;
 
   String editPost = """
-    mutation UpdatePost(\$updatePostInput: UpdatePostInput!, \$updatePostId: String!) {
-  updatePost(updatePostInput: \$updatePostInput, id: \$updatePostId) {
+    mutation UpdatePost(\$postInput: UpdatePostInput!, \$updatePostId: String!) {
+  updatePost(updatePostInput: \$postInput, id: \$updatePostId) {
     updatedAt
       title
       

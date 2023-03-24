@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class DateTimeFormatModel {
   final DateTime dateTime;
 
-  DateTimeFormatModel({required this.dateTime});
+  DateTimeFormatModel(this.dateTime);
 
   DateTimeFormatModel.fromString(String _dateTime)
       : dateTime = DateTime.parse(_dateTime).toLocal();
@@ -13,7 +13,17 @@ class DateTimeFormatModel {
   }
 
   String toISOFormat() {
-    return dateTime.toIso8601String() + '+05:30';
+    return '${dateTime.toIso8601String()}+05:30';
+  }
+
+  String dateTimeFormatted({required DateTime date, required DateTime time}) {
+    return "${DateTimeFormatModel(date).toFormat("MMM dd, yyyy")} ${DateTimeFormatModel(time).toFormat("h:mm a")}";
+  }
+
+  DateTime addDateTime(DateTime date, DateTime time) {
+    return DateTimeFormatModel.fromString(
+            "${date.toString().split(" ").first} ${time.toString().split(" ").last}")
+        .dateTime;
   }
 
   String toDiffString({bool? abs}) {

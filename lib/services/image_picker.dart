@@ -17,7 +17,7 @@ class ImagePickerService extends ChangeNotifier {
   final int noOfImages;
   final int quality;
   ImagePicker? _picker;
-  dynamic _imageFileList;
+  List? imageFileList;
   dynamic _pickImageError;
 
   ImagePickerService({this.noOfImages = 1, this.quality = 20}) {
@@ -30,7 +30,11 @@ class ImagePickerService extends ChangeNotifier {
   }
 
   void clearPreview() {
-    _imageFileList = null;
+    imageFileList = null;
+  }
+
+  void deleteImage(XFile file) {
+    imageFileList?.remove(file);
   }
 
   Future<List<String>> getCam() async {
@@ -58,7 +62,7 @@ class ImagePickerService extends ChangeNotifier {
                       'Not allowed to select more that $noOfImages images')),
             );
           } else {
-            _imageFileList = (_imageFileList ?? []) + (pickedFileList ?? []);
+            imageFileList = (imageFileList ?? []) + (pickedFileList ?? []);
           }
         } catch (e) {
           _pickImageError = e;
@@ -69,7 +73,7 @@ class ImagePickerService extends ChangeNotifier {
             source: source,
             imageQuality: quality,
           );
-          _imageFileList = (_imageFileList ?? []) +
+          imageFileList = (imageFileList ?? []) +
               (pickedFile != null ? <XFile>[pickedFile] : []);
         } catch (e) {
           _pickImageError = e;
@@ -116,11 +120,11 @@ class ImagePickerService extends ChangeNotifier {
         });
   }
 
-  dynamic get() => _imageFileList;
+  dynamic get() => imageFileList;
 
   Future<List<MultipartFile>?> getMultipartFiles(List? images) async {
     List<MultipartFile> files = [];
-    List? imgs = images ?? _imageFileList;
+    List? imgs = images ?? imageFileList;
     if (imgs != null && imgs.isNotEmpty) {
       for (var item in imgs) {
         var byteData = await item.readAsBytes();
@@ -134,6 +138,7 @@ class ImagePickerService extends ChangeNotifier {
 
         files.add(multipartFile);
       }
+
       return files;
     } else {
       return null;
@@ -143,12 +148,19 @@ class ImagePickerService extends ChangeNotifier {
   Future<List<String>> uploadImage({List? imgs}) async {
     List<MultipartFile>? images = await getMultipartFiles(imgs);
     if (images == null || images.isEmpty) return [];
+
+    print(images); // gives [Instance of 'MultiPartFile']
+
     var request = uploadClient();
+    request.files.addAll(images);
+
     try {
       http.StreamedResponse response = await request.send();
+
       if (response.statusCode == 200) {
         dynamic res = await response.stream.bytesToString();
 
+        print(jsonDecode(res)); //gives {message: Uploaded!, urls: []}
         return jsonDecode(res)["urls"].cast<String>();
       } else {
         throw (await response.stream.bytesToString());
@@ -164,7 +176,7 @@ class ImagePickerService extends ChangeNotifier {
       {EdgeInsetsGeometry padding = const EdgeInsets.only(top: 10),
       List<String>? imageUrls,
       Function? removeImageUrl}) {
-    if ((_imageFileList != null && _imageFileList!.isNotEmpty) ||
+    if ((imageFileList != null && imageFileList!.isNotEmpty) ||
         (imageUrls != null && imageUrls.isNotEmpty)) {
       return Padding(
         padding: padding,
@@ -216,9 +228,9 @@ class ImagePickerService extends ChangeNotifier {
                             ],
                           ),
                         )),
-              if (_imageFileList != null && _imageFileList!.isNotEmpty)
+              if (imageFileList != null && imageFileList!.isNotEmpty)
                 ListView.builder(
-                    itemCount: _imageFileList!.length,
+                    itemCount: imageFileList!.length,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     itemBuilder: (context, index) => Container(
@@ -231,7 +243,7 @@ class ImagePickerService extends ChangeNotifier {
                                 constraints:
                                     const BoxConstraints(maxHeight: 250),
                                 child: Image.file(
-                                    File(_imageFileList![index].path),
+                                    File(imageFileList![index].path),
                                     fit: BoxFit.fitWidth),
                               ),
                               Positioned(
@@ -240,7 +252,7 @@ class ImagePickerService extends ChangeNotifier {
                                   child: CustomIconButton(
                                     icon: Icons.close,
                                     onPressed: () {
-                                      _imageFileList!.removeAt(index);
+                                      imageFileList!.removeAt(index);
                                       notifyListeners();
                                     },
                                     size: 3,
@@ -267,7 +279,7 @@ class ImagePickerService extends ChangeNotifier {
     _initImagePicker();
     return CustomElevatedButton(
       onPressed: () {
-        if (((_imageFileList != null ? _imageFileList!.length : 0) +
+        if (((imageFileList != null ? imageFileList!.length : 0) +
                 preSelectedNoOfImages) >=
             noOfImages) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -280,9 +292,10 @@ class ImagePickerService extends ChangeNotifier {
               preSelectedNoOfImages: preSelectedNoOfImages, context: context);
         }
       },
-      text: "Select Image",
-      color: ColorPalette.palette(context).primary,
-      type: ButtonType.outlined,
+      text: "Images",
+      color: Colors.white,
+      leading: Icons.camera_alt,
+      textColor: Colors.black,
     );
   }
 
@@ -291,7 +304,7 @@ class ImagePickerService extends ChangeNotifier {
     _initImagePicker();
     return IconButton(
       onPressed: () {
-        if (((_imageFileList != null ? _imageFileList!.length : 0) +
+        if (((imageFileList != null ? imageFileList!.length : 0) +
                 preSelectedNoOfImages) >=
             noOfImages) {
           ScaffoldMessenger.of(context).showSnackBar(

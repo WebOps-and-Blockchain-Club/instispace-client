@@ -4,6 +4,7 @@ import 'package:client/screens/home/new_post/main.dart';
 import 'package:client/screens/home/new_post/newPost.dart';
 import 'package:client/services/image_picker.dart';
 import 'package:client/themes.dart';
+import 'package:client/utils/custom_icons.dart';
 import 'package:client/utils/my_flutter_app_icons.dart';
 import 'package:client/widgets/card/image_view.dart';
 import 'package:client/widgets/headers/main.dart';
@@ -37,10 +38,7 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
   final ImagePicker _picker = ImagePicker();
   late List images = [];
   int page = 0;
-  late List<io.File> chosenImgs = [
-    // "https://i.imgflip.com/51mkbd.png",
-    // "https://thumbs.gfycat.com/PoorRealisticGermanpinscher-size_restricted.gif"
-  ];
+  late List<io.File> chosenImgs = [];
   bool initialized = false;
   int len = 0;
 
@@ -178,11 +176,12 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                                 mainAxisSpacing: 0,
                                 crossAxisSpacing: 0,
                                 childAspectRatio: 1),
-                        itemCount: (images.length),
+                        itemCount: (images.length + 2),
                         itemBuilder: (BuildContext context, index) {
                           bool contains = (index == 0 || index == 1)
                               ? false
                               : chosenImgs.contains(images[index - 2]);
+
                           return Container(
                             color: const Color.fromRGBO(52, 47, 129, 0.4),
                             padding: contains
@@ -199,9 +198,9 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                                     }
                                   });
                                 } else if (index == 1) {
-                                  final List<XFile>? photos =
+                                  final List<XFile> photos =
                                       await _picker.pickMultiImage();
-                                  if (photos != null && photos.isNotEmpty) {
+                                  if (photos.isNotEmpty) {
                                     List<io.File> files = [];
                                     for (XFile photo in photos) {
                                       files.add(io.File(photo.path));
@@ -223,22 +222,31 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: (index == 0)
-                                          ? const AssetImage(
-                                              'assets/pick_images/camera.png')
-                                          : (index == 1)
-                                              ? const AssetImage(
-                                                  'assets/pick_images/gallery.png')
-                                              : FileImage(
-                                                  images[index - 2],
-                                                  scale: 1.5,
-                                                ) as ImageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    image: (index != 0 && index != 1)
+                                        ? DecorationImage(
+                                            image: FileImage(
+                                              images[index - 2],
+                                              scale: 1.5,
+                                            ),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
                                     borderRadius: contains
                                         ? BorderRadius.circular(13)
                                         : BorderRadius.zero),
+                                child: (index == 0)
+                                    ? const Icon(
+                                        CustomIcons.camera,
+                                        color: Colors.black,
+                                        size: 30,
+                                      )
+                                    : (index == 1)
+                                        ? const Icon(
+                                            CustomIcons.gallery,
+                                            color: Colors.black,
+                                            size: 30,
+                                          )
+                                        : null,
                               ),
                             ),
                           );

@@ -551,8 +551,7 @@ class SetReminderButton extends StatelessWidget {
                                       if (value != null) {
                                         date.text = value.toString();
                                         DateTimeFormatModel _date =
-                                            DateTimeFormatModel(
-                                                dateTime: value);
+                                            DateTimeFormatModel(value);
                                         dateFormated.text =
                                             _date.toFormat("MMM dd, yyyy");
                                       }
@@ -589,8 +588,7 @@ class SetReminderButton extends StatelessWidget {
                                           2021, 1, 1, value.hour, value.minute);
                                       time.text = _dateTime.toString();
                                       DateTimeFormatModel _time =
-                                          DateTimeFormatModel(
-                                              dateTime: _dateTime);
+                                          DateTimeFormatModel(_dateTime);
                                       timeFormated.text =
                                           _time.toFormat("h:mm a");
                                     }

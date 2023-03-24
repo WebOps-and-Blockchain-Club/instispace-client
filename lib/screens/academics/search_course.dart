@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '../../graphQL/academics/course.dart';

@@ -185,9 +185,7 @@ class AcademicDatabaseService {
          ORDER BY slots.fromTime''',
           [
             DateFormat('E').format(currTime),
-            itr == 0
-                ? DateTimeFormatModel(dateTime: currTime).toFormat('HH:mm')
-                : '%',
+            itr == 0 ? DateTimeFormatModel(currTime).toFormat('HH:mm') : '%',
             DateTime.now().toIso8601String(),
             DateTime.now().toIso8601String()
           ]);
@@ -222,9 +220,7 @@ class AcademicDatabaseService {
           [
             courseId,
             DateFormat('E').format(currTime),
-            itr == 0
-                ? DateTimeFormatModel(dateTime: currTime).toFormat('HH:mm')
-                : '%',
+            itr == 0 ? DateTimeFormatModel(currTime).toFormat('HH:mm') : '%',
             DateTime.now().toIso8601String(),
             DateTime.now().toIso8601String()
           ]);

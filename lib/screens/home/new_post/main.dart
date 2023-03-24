@@ -15,7 +15,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   "Event": CreatePostModel(
     imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     link: FieldModel(required: false),
     tag: FieldModel(),
     location: FieldModel(required: false),
@@ -25,7 +25,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   "Competition": CreatePostModel(
     imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     link: FieldModel(required: false),
     tag: FieldModel(),
     postTime: FieldModel(required: false),
@@ -34,7 +34,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   "Recruitment": CreatePostModel(
     imagePrimary: FieldModel(required: false, maxImgs: 8),
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     link: FieldModel(required: false),
     tag: FieldModel(),
     postTime: FieldModel(required: false),
@@ -42,7 +42,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   ),
   "Announcement": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     link: FieldModel(required: false),
     imageSecondary: FieldModel(required: false, maxImgs: 8),
     tag: FieldModel(),
@@ -50,7 +50,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   ),
   "Opportunity": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     link: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
@@ -58,26 +58,26 @@ Map<String, CreatePostModel> getCreatePostFields = {
   ),
   "Connect": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Query": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Describe the question'),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
   ),
   "Help": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Survey": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
     link: FieldModel(required: false),
@@ -85,22 +85,26 @@ Map<String, CreatePostModel> getCreatePostFields = {
   ),
   "Random Thought": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
+    description: FieldModel(label: 'Description'),
     imageSecondary: FieldModel(required: false),
     tag: FieldModel(required: false),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
   "Lost": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
-    postTime: FieldModel(required: false),
+    description: FieldModel(label: 'Item description, Contact info'),
+    postTime: FieldModel(
+        required: false,
+        initTime: DateTime.now().subtract(const Duration(days: 30))),
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),
   "Found": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(),
-    postTime: FieldModel(required: false),
+    description: FieldModel(label: 'Item description, Contact info'),
+    postTime: FieldModel(
+        required: false,
+        initTime: DateTime.now().subtract(const Duration(days: 30))),
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),

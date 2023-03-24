@@ -5,7 +5,9 @@ import 'package:client/models/category.dart';
 import 'package:client/screens/home/new_post/endTime.dart';
 import 'package:client/screens/home/new_post/imageService.dart';
 import 'package:client/screens/home/new_post/imageView.dart';
+import 'package:client/services/image_picker.dart';
 import 'package:client/widgets/card/image.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/post/main.dart';
 import '../../../services/local_storage.dart';
@@ -69,7 +71,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late DateTime? endTime = null;
   late DateTime? date = null;
   late DateTime? time = null;
-  late String? endTimeFormated = null;
 
   final localStorage = LocalStorageService();
 
@@ -106,9 +107,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
             : null;
 
         dateTimeFormated.text = date != null
-            ? DateTimeFormatModel(dateTime: date!).toFormat("MMM dd, yyyy") +
-                " " +
-                DateTimeFormatModel(dateTime: time!).toFormat("h:mm a")
+            ? DateTimeFormatModel(date!)
+                .dateTimeFormatted(date: date!, time: time!)
             : '';
         if (widget.fieldConfiguration.endTime != null) {
           endTime = DateTimeFormatModel.fromString(post.endTime!).dateTime;
@@ -127,7 +127,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         link.text = data["link"];
         setState(() {
           selectedTags = TagsModel.fromJson(jsonDecode(data["selectedTags"]));
-          endTimeFormated = data['endTimeFormated'];
+
           date = data['date'];
           time = data['time'];
           endTime = data['endTime'];
@@ -137,7 +137,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void clearForm() {
-    localStorage.clearData("new_post");
+    localStorage.clearData(widget.category.name);
     title.clear();
     desc.clear();
     link.clear();
@@ -150,7 +150,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
       date = null;
       time = null;
       endTime = null;
-      endTimeFormated = null;
     });
   }
 
@@ -162,8 +161,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
         imgs = widget.images!;
       });
     }
-    if (widget.fieldConfiguration.postTime == null &&
-        widget.fieldConfiguration.endTime != null) {
+
+    if (widget.fieldConfiguration.endTime != null &&
+        (widget.fieldConfiguration.endTime!.enableEdit == false ||
+            widget.fieldConfiguration.postTime == null)) {
       setState(() {
         endTime = DateTime.now().add(widget.fieldConfiguration.endTime!.time);
       });
@@ -182,6 +183,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         });
       }
     }
+
     super.initState();
   }
 
@@ -194,6 +196,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           document: gql(mutation),
           update: ((cache, result) {
             if (result != null && (!result.hasException)) {
+              print(result);
               if (widget.post != null) {
                 cache.writeFragment(
                   Fragment(document: gql(FeedGQL().editFragment))
@@ -240,589 +243,378 @@ class _NewPostScreenState extends State<NewPostScreen> {
           RunMutation runMutation,
           QueryResult? result,
         ) {
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text(
-                "${widget.post == null ? 'NEW' : 'EDIT'} ${widget.category.name.toUpperCase()}",
-                style: const TextStyle(
-                    letterSpacing: 1,
-                    color: Color(0xFF3C3C3C),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
-            body: SafeArea(
-              child: Form(
-                  key: formKey,
-                  child: ListView(
-                    children: [
-                      const SizedBox(height: 10),
+          return ChangeNotifierProvider(
+            create: (_) => ImagePickerService(noOfImages: 4),
+            child: Consumer<ImagePickerService>(
+                builder: (context, imagePickerService, child) {
+              return Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    "${widget.post == null ? 'NEW' : 'EDIT'} ${widget.category.name.toUpperCase()}",
+                    style: const TextStyle(
+                        letterSpacing: 1,
+                        color: Color(0xFF3C3C3C),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+                body: SafeArea(
+                  child: Form(
+                      key: formKey,
+                      child: ListView(
+                        children: [
+                          const SizedBox(height: 10),
 
-                      // images
-                      if (imgs.isNotEmpty)
-                        ImageView(
-                          images: imgs,
-                          onDelete: onDelete,
-                        ),
-                      if (img_map.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: ImageCard(
-                              dynamic_images:
-                                  (img_map.isNotEmpty) ? img_map : null,
-                              onDelete: onDelete),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 42),
-                        child: Column(
-                          children: [
-                            //title
-                            if (widget.fieldConfiguration.title != null)
-                              TextFormField(
-                                maxLength: 40,
-                                minLines: 1,
-                                maxLines: null,
-                                controller: title,
-                                decoration:
-                                    const InputDecoration(label: Text("Title")),
-                                validator: (value) {
-                                  if (widget
-                                          .fieldConfiguration.title!.required &&
-                                      (value == null || value.isEmpty)) {
-                                    return "Enter the title of the post";
-                                  }
-                                  return null;
-                                },
-                              ),
-
-                            //description
-                            TextFormField(
-                              controller: desc,
-                              maxLength: 3000,
-                              maxLines: null,
-                              decoration: InputDecoration(
-                                  label: Text(widget.category.name == "Lost" ||
-                                          widget.category.name == "Found"
-                                      ? "Item description, Contact info"
-                                      : "Description")),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Enter the description of the post";
-                                }
-                                return null;
-                              },
+                          // images
+                          if (imagePickerService.imageFileList != null &&
+                              imagePickerService.imageFileList!.isNotEmpty)
+                            ImageView(
+                              images: imagePickerService.imageFileList!
+                                  .map((xFile) => io.File(xFile.path))
+                                  .toList()
+                                  .cast<io.File>(),
+                              onDelete: onDelete,
                             ),
-
-                            //date and time
-                            if (widget.fieldConfiguration.postTime != null)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('When?'),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                            controller: dateTimeFormated,
-                                            decoration: const InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                labelText: "Date & Time"),
-                                            readOnly: true,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return "Enter the date & time";
-                                              }
-                                              return null;
-                                            },
-                                            onTap: () => showDatePicker(
-                                                        context: context,
-                                                        initialDate:
-                                                            DateTime.now(),
-                                                        firstDate: widget
-                                                                        .category
-                                                                        .name ==
-                                                                    'Lost' ||
-                                                                widget.category
-                                                                        .name ==
-                                                                    'Found'
-                                                            ? DateTime.now().subtract(
-                                                                const Duration(
-                                                                    days: 30))
-                                                            : DateTime.now(),
-                                                        lastDate: DateTime.now()
-                                                            .add(const Duration(days: 30 * 5)))
-                                                    .then(
-                                                  (value) {
-                                                    if (value != null) {
-                                                      setState(() {
-                                                        date = value;
-                                                      });
-                                                    }
-                                                  },
-                                                ).then((value) => showTimePicker(
-                                                          context: context,
-                                                          initialTime:
-                                                              TimeOfDay.now(),
-                                                        ).then((value) {
-                                                          if (value != null) {
-                                                            DateTime _dateTime =
-                                                                DateTime(
-                                                                    2021,
-                                                                    1,
-                                                                    1,
-                                                                    value.hour,
-                                                                    value
-                                                                        .minute);
-                                                            setState(() {
-                                                              time = _dateTime;
-                                                            });
-
-                                                            dateTimeFormated
-                                                                .text = DateTimeFormatModel(
-                                                                        dateTime:
-                                                                            date!)
-                                                                    .toFormat(
-                                                                        "MMM dd, yyyy") +
-                                                                " " +
-                                                                DateTimeFormatModel(
-                                                                        dateTime:
-                                                                            time!)
-                                                                    .toFormat(
-                                                                        "h:mm a");
-
-                                                            setState(() {
-                                                              endTime = DateTimeFormatModel.fromString(date
-                                                                          .toString()
-                                                                          .split(
-                                                                              " ")
-                                                                          .first +
-                                                                      " " +
-                                                                      time
-                                                                          .toString()
-                                                                          .split(
-                                                                              " ")
-                                                                          .last)
-                                                                  .dateTime
-                                                                  .add(widget
-                                                                      .fieldConfiguration
-                                                                      .endTime!
-                                                                      .time);
-                                                            });
-                                                          }
-                                                        }))),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                    ],
+                          if (img_map.isNotEmpty)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              child: ImageCard(
+                                  dynamic_images:
+                                      (img_map.isNotEmpty) ? img_map : null,
+                                  onDelete: onDelete),
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 42),
+                            child: Column(
+                              children: [
+                                //title
+                                if (widget.fieldConfiguration.title != null)
+                                  TextFormField(
+                                    maxLength: 40,
+                                    minLines: 1,
+                                    maxLines: null,
+                                    controller: title,
+                                    decoration: const InputDecoration(
+                                        label: Text("Title")),
+                                    validator: (value) {
+                                      if (widget.fieldConfiguration.title!
+                                              .required &&
+                                          (value == null || value.isEmpty)) {
+                                        return "Enter the title of the post";
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                ],
-                              ),
 
-                            //location
-                            if (widget.fieldConfiguration.location != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: TextFormField(
+                                //description
+                                TextFormField(
+                                  controller: desc,
+                                  maxLength: 3000,
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                      label: Text(widget.fieldConfiguration
+                                          .description!.label!)),
                                   validator: (value) {
-                                    if (widget.fieldConfiguration.location!
-                                            .required &&
-                                        (value == null || value.isEmpty)) {
-                                      return "Location is a mandatory field";
+                                    if (value == null || value.isEmpty) {
+                                      return "Enter the description of the post";
                                     }
                                     return null;
                                   },
-                                  controller: location,
-                                  decoration: const InputDecoration(
-                                      label: Text("Where?")),
                                 ),
-                              ),
 
-                            //link
-                            if (widget.fieldConfiguration.link != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16),
-                                child: TextFormField(
-                                  controller: link,
-                                  decoration: const InputDecoration(
-                                      label: Text("link (optional)")),
-                                ),
-                              ),
+                                //date and time
+                                if (widget.fieldConfiguration.postTime != null)
+                                  TextFormField(
+                                    controller: dateTimeFormated,
+                                    decoration: const InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.symmetric(vertical: 10),
+                                        labelText: "Date & Time"),
+                                    readOnly: true,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Enter the date & time";
+                                      }
+                                      return null;
+                                    },
+                                    onTap: () => dateTimePicker(context),
+                                  ),
 
-                            //display chosen tags
-                            if (selectedTags.getTagIds().isNotEmpty)
-                              TagsDisplay(
-                                  tagsModel: selectedTags,
-                                  onDelete: (value) => setState(() {
-                                        selectedTags = value;
-                                      })),
+                                //location
+                                if (widget.fieldConfiguration.location != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (widget.fieldConfiguration.location!
+                                                .required &&
+                                            (value == null || value.isEmpty)) {
+                                          return "Location is a mandatory field";
+                                        }
+                                        return null;
+                                      },
+                                      controller: location,
+                                      decoration: const InputDecoration(
+                                          label: Text("Where?")),
+                                    ),
+                                  ),
 
-                            // pick images (if imageSecondary or edit post)
-                            Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15),
-                                child: Text(((widget.fieldConfiguration
+                                //link
+                                if (widget.fieldConfiguration.link != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16),
+                                    child: TextFormField(
+                                      controller: link,
+                                      decoration: const InputDecoration(
+                                          label: Text("link (optional)")),
+                                    ),
+                                  ),
+
+                                //display chosen tags
+                                if (selectedTags.getTagIds().isNotEmpty)
+                                  TagsDisplay(
+                                      tagsModel: selectedTags,
+                                      onDelete: (value) => setState(() {
+                                            selectedTags = value;
+                                          })),
+
+                                // pick images (if imageSecondary or edit post)
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: Text(((widget.fieldConfiguration
+                                                    .imageSecondary !=
+                                                null ||
+                                            widget.fieldConfiguration.tag !=
+                                                null))
+                                        ? "Choose a maximum of ${(widget.fieldConfiguration.imageSecondary != null) ? "${widget.fieldConfiguration.imageSecondary!.maxImgs} images " : ''}${(widget.fieldConfiguration.imageSecondary != null && widget.fieldConfiguration.tag != null) ? "and " : ''}${(widget.fieldConfiguration.tag != null) ? "7 tags" : ''}"
+                                        : '')),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    if (widget.fieldConfiguration
                                                 .imageSecondary !=
                                             null ||
-                                        widget.fieldConfiguration.tag != null))
-                                    ? "Choose a maximum of " +
-                                        ((widget.fieldConfiguration
-                                                    .imageSecondary !=
-                                                null)
-                                            ? "${widget.fieldConfiguration.imageSecondary!.maxImgs} images "
-                                            : '') +
-                                        ((widget.fieldConfiguration
-                                                        .imageSecondary !=
-                                                    null &&
-                                                widget.fieldConfiguration.tag !=
-                                                    null)
-                                            ? "and "
-                                            : '') +
-                                        ((widget.fieldConfiguration.tag != null)
-                                            ? "7 tags"
-                                            : '')
-                                    : '')),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                if (widget.fieldConfiguration.imageSecondary !=
-                                        null ||
-                                    widget.post != null)
-                                  CustomElevatedButton(
-                                      color: Colors.white,
-                                      leading: Icons.camera_alt,
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25)),
-                                                title:
-                                                    const Text('Choose Images'),
-                                                content: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          final io.File? photo =
-                                                              await imgService
-                                                                  .pickCamera();
+                                        widget.post != null)
+                                      imagePickerService.pickImageButton(
+                                          context: context),
 
-                                                          if (photo != null) {
-                                                            if (widget.post !=
-                                                                null) {
-                                                              setState(() {
-                                                                img_map[photo] =
-                                                                    'file';
-                                                              });
-                                                            } else {
-                                                              setState(() {
-                                                                imgs.add(photo);
-                                                              });
-                                                            }
+                                    // select tags
+                                    if (widget.fieldConfiguration.tag != null)
+                                      CustomElevatedButton(
+                                          leading: Icons.tag,
+                                          padding: const [0, 2],
+                                          onPressed: () => selectTags(),
+                                          text: 'Tags'),
+                                  ],
+                                ),
 
-                                                            Navigator.pop(
-                                                                context);
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                            'Camera')),
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          final List<io.File>
-                                                              photos =
-                                                              await imgService
-                                                                  .pickGalley();
+                                //tag error
+                                if (tagError.isNotEmpty)
+                                  Text(tagError,
+                                      style: const TextStyle(
+                                          color: Colors.red, fontSize: 12)),
+                                const SizedBox(height: 10),
 
-                                                          if (photos
-                                                              .isNotEmpty) {
-                                                            if (widget.post !=
-                                                                null) {
-                                                              for (var photo
-                                                                  in photos) {
-                                                                setState(() {
-                                                                  img_map[photo] =
-                                                                      'file';
-                                                                });
-                                                              }
-                                                            } else {
-                                                              setState(() {
-                                                                imgs.addAll(
-                                                                    photos);
-                                                              });
-                                                            }
+                                //end time of the post
+                                if (endTime != null &&
+                                    widget.fieldConfiguration.endTime != null)
+                                  EndTime(
+                                    endTime: endTime!,
+                                    setEndtime: setEndTime,
+                                    edit: widget
+                                        .fieldConfiguration.endTime!.enableEdit,
+                                  ),
 
-                                                            Navigator.pop(
-                                                                context);
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                            'Gallegy')),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context),
-                                                            child: const Text(
-                                                                "Cancel"))
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              );
+                                //clear and post buttons
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 25),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      CustomElevatedButton(
+                                          onPressed: () => clearForm(),
+                                          text: "Clear",
+                                          textSize: 18,
+                                          padding: const [25, 15],
+                                          textColor: Colors.black,
+                                          color: Colors.white),
+                                      CustomElevatedButton(
+                                        padding: const [25, 15],
+                                        textSize: 18,
+                                        onPressed: () async {
+                                          if ((widget.fieldConfiguration.tag !=
+                                                      null &&
+                                                  widget.fieldConfiguration.tag!
+                                                      .required) &&
+                                              selectedTags.tags.isEmpty) {
+                                            setState(() {
+                                              tagError = "Tags not selected";
                                             });
-                                      },
-                                      textColor: Colors.black,
-                                      text: 'Images'),
+                                          } else if (selectedTags.tags.length >
+                                              7) {
+                                            setState(() {
+                                              tagError =
+                                                  "Not allowed to select more than 7 tags";
+                                            });
+                                          } else if (tagError.isNotEmpty &&
+                                              selectedTags.tags.isNotEmpty) {
+                                            setState(() {
+                                              tagError = "";
+                                            });
+                                          }
+                                          final isValid = formKey
+                                                  .currentState!
+                                                  .validate() &&
+                                              (widget.fieldConfiguration.tag !=
+                                                          null &&
+                                                      ((widget.fieldConfiguration
+                                                                  .tag!.required &&
+                                                              selectedTags.tags
+                                                                  .isNotEmpty &&
+                                                              selectedTags.tags
+                                                                      .length <=
+                                                                  7) ||
+                                                          !widget
+                                                              .fieldConfiguration
+                                                              .tag!
+                                                              .required) ||
+                                                  widget.fieldConfiguration
+                                                          .tag ==
+                                                      null);
 
-                                // select tags
-                                if (widget.fieldConfiguration.tag != null)
-                                  CustomElevatedButton(
-                                      leading: Icons.tag,
-                                      padding: const [0, 2],
-                                      onPressed: () => selectTags(),
-                                      text: 'Tags'),
+                                          FocusScope.of(context).unfocus();
+
+                                          if (isValid) {
+                                            List<String>? uploadResult;
+
+                                            if (img_map.isNotEmpty) {
+                                              uploadResult =
+                                                  await imageMapUpload(img_map,
+                                                      imagePickerService);
+                                            } else {
+                                              try {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                uploadResult =
+                                                    await imagePickerService
+                                                        .uploadImage();
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: const Text(
+                                                        'Image Upload Failed'),
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .errorColor,
+                                                  ),
+                                                );
+                                                setState(() {
+                                                  isLoading = false;
+                                                });
+                                                return;
+                                              }
+                                            }
+                                            final List<String> tags =
+                                                selectedTags
+                                                    .getTagIds()
+                                                    .cast<String>();
+
+                                            runMutation({
+                                              "updatePostId":
+                                                  widget.post?.id.toString(),
+                                              "postInput": {
+                                                "category":
+                                                    widget.category.name,
+                                                "title": title.text,
+                                                "content": desc.text,
+                                                "location": location.text,
+                                                "link": link.text,
+                                                "tagIds": tags.isNotEmpty
+                                                    ? tags
+                                                    : null,
+                                                "postTime": widget
+                                                            .fieldConfiguration
+                                                            .postTime !=
+                                                        null
+                                                    ? '${DateTimeFormatModel(date!).addDateTime(date!, time!)}+05:30'
+                                                    : null,
+                                                "endTime": endTime != null
+                                                    ? '${endTime!.toIso8601String()}+05:30'
+                                                    : null,
+                                                "photoList":
+                                                    uploadResult.join(" AND ")
+                                              },
+                                            });
+                                          }
+                                        },
+                                        text: 'Post',
+                                        isLoading: isLoading ||
+                                            (result != null
+                                                ? result.isLoading
+                                                : false),
+                                        color: ColorPalette.palette(context)
+                                            .primary,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-
-                            //tag error
-                            if (tagError.isNotEmpty)
-                              Text(tagError,
-                                  style: const TextStyle(
-                                      color: Colors.red, fontSize: 12)),
-                            const SizedBox(height: 10),
-
-                            //end time of the post
-                            if ((endTime != null ||
-                                    widget.fieldConfiguration.postTime ==
-                                        null) &&
-                                widget.fieldConfiguration.endTime != null)
-                              EndTime(
-                                endTime: (widget
-                                        .fieldConfiguration.endTime!.enableEdit)
-                                    ? endTime
-                                    : DateTime.now()
-                                        .add(const Duration(days: 30)),
-                                setEndtime: setEndTime,
-                                edit: widget
-                                    .fieldConfiguration.endTime!.enableEdit,
-                              ),
-
-                            //clear and post buttons
-                            Padding(
-                              padding: const EdgeInsets.only(top: 25),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  CustomElevatedButton(
-                                      onPressed: () => clearForm(),
-                                      text: "Clear",
-                                      textSize: 18,
-                                      padding: const [25, 15],
-                                      textColor: Colors.black,
-                                      color: Colors.white),
-                                  CustomElevatedButton(
-                                    padding: const [25, 15],
-                                    textSize: 18,
-                                    onPressed: () async {
-                                      if ((widget.fieldConfiguration.tag !=
-                                                  null &&
-                                              widget.fieldConfiguration.tag!
-                                                  .required) &&
-                                          selectedTags.tags.isEmpty) {
-                                        setState(() {
-                                          tagError = "Tags not selected";
-                                        });
-                                      } else if (selectedTags.tags.length > 7) {
-                                        setState(() {
-                                          tagError =
-                                              "Not allowed to select more than 7 tags";
-                                        });
-                                      } else if (tagError.isNotEmpty &&
-                                          selectedTags.tags.isNotEmpty) {
-                                        setState(() {
-                                          tagError = "";
-                                        });
-                                      }
-                                      final isValid = formKey.currentState!
-                                              .validate() &&
-                                          (widget.fieldConfiguration.tag !=
-                                                      null &&
-                                                  selectedTags
-                                                      .tags.isNotEmpty &&
-                                                  selectedTags.tags.length <=
-                                                      7 ||
-                                              widget.fieldConfiguration.tag ==
-                                                  null);
-
-                                      FocusScope.of(context).unfocus();
-
-                                      if (isValid) {
-                                        String mut_inp = widget.post == null
-                                            ? "postInput"
-                                            : "updatePostInput";
-
-                                        List<String>? uploadResult;
-
-                                        if (imgs.isNotEmpty) {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-
-                                          try {
-                                            uploadResult =
-                                                await imgService.upload(imgs);
-                                          } catch (e) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: const Text(
-                                                    'Image Upload Failed'),
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .errorColor,
-                                              ),
-                                            );
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            return;
-                                          }
-
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                        } else if (img_map.isNotEmpty) {
-                                          uploadResult = [];
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-
-                                          List<io.File> files = [];
-
-                                          for (var img in img_map.keys) {
-                                            if (img_map[img] == 'file') {
-                                              files.add(img);
-                                            } else {
-                                              uploadResult.add(img);
-                                            }
-                                          }
-
-                                          try {
-                                            var res =
-                                                await imgService.upload(files);
-                                            uploadResult.addAll(res);
-                                          } catch (e) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: const Text(
-                                                    'Image Upload Failed'),
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .errorColor,
-                                              ),
-                                            );
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                            return;
-                                          }
-
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                        }
-                                        final List<String> tags = selectedTags
-                                            .getTagIds()
-                                            .cast<String>();
-                                        print('upload result : ');
-                                        print(
-                                          widget.fieldConfiguration.postTime !=
-                                                  null
-                                              ? date
-                                                      .toString()
-                                                      .split(" ")
-                                                      .first +
-                                                  " " +
-                                                  time
-                                                      .toString()
-                                                      .split(" ")
-                                                      .last
-                                              : null,
-                                        );
-                                        runMutation({
-                                          "updatePostId":
-                                              widget.post?.id.toString(),
-                                          mut_inp: {
-                                            "category": widget.category.name,
-                                            "title": title.text,
-                                            "content": desc.text,
-                                            "location": location.text,
-                                            "link": link.text,
-                                            "tagIds": tags,
-                                            "postTime": widget
-                                                        .fieldConfiguration
-                                                        .postTime !=
-                                                    null
-                                                ? date
-                                                        .toString()
-                                                        .split(" ")
-                                                        .first +
-                                                    " " +
-                                                    time
-                                                        .toString()
-                                                        .split(" ")
-                                                        .last +
-                                                    '+05:30'
-                                                : null,
-                                            "endTime": endTime != null
-                                                ? endTime!.toIso8601String() +
-                                                    '+05:30'
-                                                : null,
-                                            "photoList":
-                                                uploadResult?.join(" AND ") ??
-                                                    ''
-                                          },
-                                        });
-                                      }
-                                    },
-                                    text: 'Post',
-                                    isLoading: isLoading ||
-                                        (result != null
-                                            ? result.isLoading
-                                            : false),
-                                    color:
-                                        ColorPalette.palette(context).primary,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 30)
-                    ],
-                  )),
-            ),
+                          ),
+                          const SizedBox(height: 30)
+                        ],
+                      )),
+                ),
+              );
+            }),
           );
         });
+  }
+
+  Future<List<String>> imageMapUpload(
+      Map<dynamic, String> img_map, imagePickerService) async {
+    List<String> uploadResult = [];
+    setState(() {
+      isLoading = true;
+    });
+
+    List<io.File> files = [];
+
+    for (var img in img_map.keys) {
+      if (img_map[img] == 'file') {
+        files.add(img);
+      } else {
+        uploadResult.add(img);
+      }
+    }
+
+    try {
+      var res = await imagePickerService.uploadImage(imgs: files);
+      uploadResult.addAll(res);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Image Upload Failed'),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    return uploadResult;
   }
 
   void selectTags() {
@@ -842,9 +634,60 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
+  void dateTimePicker(context) {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: widget.fieldConfiguration.postTime?.initTime ??
+                DateTime.now().subtract(Duration(days: 30)),
+            lastDate: DateTime.now().add(const Duration(days: 30 * 5)))
+        .then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            date = value;
+          });
+        }
+      },
+    ).then((value) => showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            ).then((value) {
+              if (value != null) {
+                DateTime _dateTime =
+                    DateTime(2021, 1, 1, value.hour, value.minute);
+                setState(() {
+                  time = _dateTime;
+                });
+
+                dateTimeFormated.text = DateTimeFormatModel(date!)
+                    .dateTimeFormatted(date: date!, time: time!);
+
+                setState(() {
+                  endTime = DateTimeFormatModel(date!)
+                      .addDateTime(date!, time!)
+                      .add(widget.fieldConfiguration.endTime!.time);
+                });
+              }
+            }));
+  }
+
   @override
   void dispose() {
-    if (widget.post == null) {
+    if (widget.post == null &&
+        (title.text.isNotEmpty ||
+            desc.text.isNotEmpty ||
+            selectedTags.toJson().isNotEmpty ||
+            date != null ||
+            time != null ||
+            (widget.fieldConfiguration.endTime != null &&
+                endTime!.day !=
+                    DateTime.now()
+                        .add(widget.fieldConfiguration.endTime!.time)
+                        .day) ||
+            dateTimeFormated.text != '' ||
+            location.text.isNotEmpty ||
+            link.text.isNotEmpty)) {
       localStorage.setData(widget.category.name, {
         "title": title.text,
         "description": desc.text,
@@ -852,7 +695,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
         "date": date,
         "time": time,
         "endTime": endTime,
-        "endTimeFormated": endTimeFormated,
         "dateTimeFormated": dateTimeFormated.text,
         "location": location.text,
         "link": link.text,

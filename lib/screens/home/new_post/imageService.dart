@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageService {
   final ImagePicker _picker = ImagePicker();
+  List<dynamic> images = [];
   Future<List<MultipartFile>?> getMultipartFiles(List<dynamic> files) async {
     List<MultipartFile> multipart_files = [];
     if (files.isNotEmpty) {

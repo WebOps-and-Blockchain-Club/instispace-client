@@ -302,6 +302,10 @@ class _EditProfileUserState extends State<EditProfileUser> {
                                                   selectedTags.tags.isNotEmpty;
                                               FocusScope.of(context).unfocus();
 
+                                              // print(name.text);
+                                              // print(selectedTags.getTagIds());
+                                              // print(mobile.text);
+
                                               if (isValid) {
                                                 runMutation({
                                                   'userInput': {

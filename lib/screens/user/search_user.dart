@@ -1,6 +1,6 @@
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '/models/user.dart';

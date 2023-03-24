@@ -1,3 +1,4 @@
+import 'package:client/models/course.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:uni_links/uni_links.dart';
