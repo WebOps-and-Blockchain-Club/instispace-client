@@ -149,8 +149,6 @@ class ImagePickerService extends ChangeNotifier {
     List<MultipartFile>? images = await getMultipartFiles(imgs);
     if (images == null || images.isEmpty) return [];
 
-    print(images); // gives [Instance of 'MultiPartFile']
-
     var request = uploadClient();
     request.files.addAll(images);
 
@@ -160,7 +158,6 @@ class ImagePickerService extends ChangeNotifier {
       if (response.statusCode == 200) {
         dynamic res = await response.stream.bytesToString();
 
-        print(jsonDecode(res)); //gives {message: Uploaded!, urls: []}
         return jsonDecode(res)["urls"].cast<String>();
       } else {
         throw (await response.stream.bytesToString());

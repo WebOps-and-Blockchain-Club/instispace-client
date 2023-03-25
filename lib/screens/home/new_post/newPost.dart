@@ -134,9 +134,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   void initState() {
-    print('images');
-    print(widget.images);
-
     getPostData(widget.post);
     if (widget.images != null) {
       setState(() {
@@ -330,8 +327,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         .add(const Duration(days: 30 * 5)),
                                     onDateTimeChanged: (date) {
                                       setState(() {
-                                        print('date');
-                                        print(date);
                                         dateTime = date;
                                         if (widget.fieldConfiguration.endTime !=
                                             null) {
@@ -341,9 +336,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                               .time);
                                         }
                                       });
-
-                                      print('endTime');
-                                      print(endTime);
                                     },
                                   ),
 
@@ -501,15 +493,31 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                               uploadResult =
                                                   await imageMapUpload(img_map,
                                                       imagePickerService);
-                                            } else {
+                                            } else if ((imagePickerService
+                                                            .imageFileList !=
+                                                        null &&
+                                                    imagePickerService
+                                                        .imageFileList!
+                                                        .isNotEmpty) ||
+                                                imgs.isNotEmpty) {
                                               try {
                                                 setState(() {
                                                   isLoading = true;
                                                 });
-                                                uploadResult =
-                                                    await imagePickerService
-                                                        .uploadImage();
+                                                if (imagePickerService
+                                                        .imageFileList !=
+                                                    null) {
+                                                  uploadResult =
+                                                      await imagePickerService
+                                                          .uploadImage();
+                                                } else {
+                                                  uploadResult =
+                                                      await imagePickerService
+                                                          .uploadImage(
+                                                              imgs: imgs);
+                                                }
                                               } catch (e) {
+                                                print(e);
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   SnackBar(
@@ -523,16 +531,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                 setState(() {
                                                   isLoading = false;
                                                 });
-                                                return;
                                               }
                                             }
                                             final List<String> tags =
                                                 selectedTags
                                                     .getTagIds()
                                                     .cast<String>();
-
-                                            print('final endtime');
-                                            print(endTime);
 
                                             runMutation({
                                               "updatePostId":
@@ -557,7 +561,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                     ? '${endTime!.toIso8601String()}+05:30'
                                                     : null,
                                                 "photoList":
-                                                    uploadResult.join(" AND ")
+                                                    uploadResult?.join(" AND ")
                                               },
                                             });
                                           }
