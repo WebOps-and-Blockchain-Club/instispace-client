@@ -91,8 +91,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
       link.text = post.link?.link ?? '';
       location.text = post.location ?? '';
       setState(() {
-        if (widget.fieldConfiguration.postTime != null)
+        if (widget.fieldConfiguration.postTime != null) {
           dateTime = DateTimeFormatModel.fromString(post.eventTime!).dateTime;
+        }
         if (widget.fieldConfiguration.endTime != null) {
           endTime = DateTimeFormatModel.fromString(post.endTime!).dateTime;
         }
@@ -250,7 +251,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                               (imagePickerService.imageFileList != null &&
                                   imagePickerService
                                       .imageFileList!.isNotEmpty) ||
-                              widget.images != null)
+                              (widget.images != null && imgs.isNotEmpty))
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),

@@ -139,8 +139,6 @@ class _ImageCardState extends State<ImageCard> {
                             ],
                           ),
                           onPressed: () {
-                            print(io.File(widget.imageFiles![index].path)
-                                .runtimeType);
                             widget.onDelete!(
                                 dynamic_images?.keys.elementAt(index) ??
                                     io.File(widget.imageFiles![index].path));

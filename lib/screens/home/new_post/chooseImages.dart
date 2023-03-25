@@ -91,172 +91,163 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "NEW POST",
-          style: TextStyle(
-              letterSpacing: 1,
-              color: Color(0xFF3C3C3C),
-              fontSize: 20,
-              fontWeight: FontWeight.w700),
-        ),
-      ),
-      body: SafeArea(
-        child: initialized == true
-            ? Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ImageCard(
-                      imageFiles: chosenImgs
-                          .map((e) => XFile(e.path))
-                          .toList()
-                          .cast<XFile>(),
-                      // onDelete: onDelete,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                          onPressed: () async {
-                            setState(() {
-                              chosenImgs = [];
-                            });
-                          },
-                          child: const Text(
-                            'Clear',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          )),
-                      TextButton(
-                          onPressed: () {
-                            int max = getCreatePostFields[widget.category.name]!
-                                .imagePrimary!
-                                .maxImgs;
-                            if (chosenImgs.length > max) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text(
-                                        "Images cannot be more than $max")),
-                              );
-                            } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => NewPostScreen(
-                                            category: widget.category,
-                                            images: chosenImgs,
-                                            fieldConfiguration:
-                                                widget.fieldConfiguration,
-                                            options: widget.options,
-                                          )));
-                            }
-                          },
-                          child: Text(
-                            'Save & Proceed',
-                            style: TextStyle(
-                                color: ColorPalette.palette(context).secondary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          ))
-                    ],
-                  ),
-                  Expanded(
-                    child: GridView.builder(
-                        padding: EdgeInsets.zero,
-                        scrollDirection: Axis.vertical,
-                        controller: _controller,
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                                mainAxisSpacing: 0,
-                                crossAxisSpacing: 0,
-                                childAspectRatio: 1),
-                        itemCount: (images.length + 2),
-                        itemBuilder: (BuildContext context, index) {
-                          bool contains = (index == 0 || index == 1)
-                              ? false
-                              : chosenImgs.contains(images[index - 2]);
+        body: NestedScrollView(
+      headerSliverBuilder: (BuildContext context, innerBoxIsScrolled) {
+        return [
+          SliverList(
+              delegate: SliverChildListDelegate([
+            AppBar(
+              centerTitle: true,
+              title: const Text(
+                "PICK IMAGES",
+                style: TextStyle(
+                    letterSpacing: 1,
+                    color: Color(0xFF3C3C3C),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ImageCard(
+                imageFiles:
+                    chosenImgs.map((e) => XFile(e.path)).toList().cast<XFile>(),
+                // onDelete: onDelete,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(
+                    onPressed: () async {
+                      setState(() {
+                        chosenImgs = [];
+                      });
+                    },
+                    child: const Text(
+                      'Clear',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    )),
+                TextButton(
+                    onPressed: () {
+                      int max = getCreatePostFields[widget.category.name]!
+                          .imagePrimary!
+                          .maxImgs;
+                      if (chosenImgs.length > max) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text("Images cannot be more than $max")),
+                        );
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewPostScreen(
+                                      category: widget.category,
+                                      images: chosenImgs,
+                                      fieldConfiguration:
+                                          widget.fieldConfiguration,
+                                      options: widget.options,
+                                    )));
+                      }
+                    },
+                    child: Text(
+                      'Save & Proceed',
+                      style: TextStyle(
+                          color: ColorPalette.palette(context).secondary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ))
+              ],
+            ),
+          ]))
+        ];
+      },
+      body: GridView.builder(
+          padding: EdgeInsets.zero,
+          scrollDirection: Axis.vertical,
+          controller: _controller,
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              childAspectRatio: 1),
+          itemCount: (images.length + 2),
+          itemBuilder: (BuildContext context, index) {
+            bool contains = (index == 0 || index == 1)
+                ? false
+                : chosenImgs.contains(images[index - 2]);
 
-                          return Container(
-                            color: const Color.fromRGBO(52, 47, 129, 0.4),
-                            padding: contains
-                                ? const EdgeInsets.all(8)
-                                : EdgeInsets.zero,
-                            child: GestureDetector(
-                              onTap: () async {
-                                if (index == 0) {
-                                  final XFile? photo = await _picker.pickImage(
-                                      source: ImageSource.camera);
-                                  setState(() {
-                                    if (photo != null) {
-                                      chosenImgs.add(io.File(photo.path));
-                                    }
-                                  });
-                                } else if (index == 1) {
-                                  final List<XFile> photos =
-                                      await _picker.pickMultiImage();
-                                  if (photos.isNotEmpty) {
-                                    List<io.File> files = [];
-                                    for (XFile photo in photos) {
-                                      files.add(io.File(photo.path));
-                                    }
-                                    setState(() {
-                                      chosenImgs.addAll(files);
-                                      len++;
-                                    });
-                                  }
-                                } else if (contains) {
-                                  setState(() {
-                                    chosenImgs.remove(images[index - 2]);
-                                  });
-                                } else {
-                                  setState(() {
-                                    chosenImgs.add(images[index - 2]);
-                                  });
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    image: (index != 0 && index != 1)
-                                        ? DecorationImage(
-                                            image: FileImage(
-                                              images[index - 2],
-                                              scale: 1.5,
-                                            ),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                    borderRadius: contains
-                                        ? BorderRadius.circular(13)
-                                        : BorderRadius.zero),
-                                child: (index == 0)
-                                    ? const Icon(
-                                        CustomIcons.camera,
-                                        color: Colors.black,
-                                        size: 35,
-                                      )
-                                    : (index == 1)
-                                        ? const Icon(
-                                            CustomIcons.gallery,
-                                            color: Colors.black,
-                                            size: 35,
-                                          )
-                                        : null,
+            return Container(
+              color: const Color.fromRGBO(52, 47, 129, 0.4),
+              padding: contains ? const EdgeInsets.all(8) : EdgeInsets.zero,
+              child: GestureDetector(
+                onTap: () async {
+                  if (index == 0) {
+                    final XFile? photo =
+                        await _picker.pickImage(source: ImageSource.camera);
+                    setState(() {
+                      if (photo != null) {
+                        chosenImgs.add(io.File(photo.path));
+                      }
+                    });
+                  } else if (index == 1) {
+                    final List<XFile> photos = await _picker.pickMultiImage();
+                    if (photos.isNotEmpty) {
+                      List<io.File> files = [];
+                      for (XFile photo in photos) {
+                        files.add(io.File(photo.path));
+                      }
+                      setState(() {
+                        chosenImgs.addAll(files);
+                        len++;
+                      });
+                    }
+                  } else if (contains) {
+                    setState(() {
+                      chosenImgs.remove(images[index - 2]);
+                    });
+                  } else {
+                    setState(() {
+                      chosenImgs.add(images[index - 2]);
+                    });
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      image: (index != 0 && index != 1)
+                          ? DecorationImage(
+                              image: FileImage(
+                                images[index - 2],
+                                scale: 1.5,
                               ),
-                            ),
-                          );
-                        }),
-                  ),
-                ],
-              )
-            : const CircularProgressIndicator(),
-      ),
-    );
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                      borderRadius: contains
+                          ? BorderRadius.circular(13)
+                          : BorderRadius.zero),
+                  child: (index == 0)
+                      ? const Icon(
+                          CustomIcons.camera,
+                          color: Colors.black,
+                          size: 35,
+                        )
+                      : (index == 1)
+                          ? const Icon(
+                              CustomIcons.gallery,
+                              color: Colors.black,
+                              size: 35,
+                            )
+                          : null,
+                ),
+              ),
+            );
+          }),
+    ));
   }
 }
