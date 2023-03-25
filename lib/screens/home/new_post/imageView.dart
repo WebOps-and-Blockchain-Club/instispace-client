@@ -22,6 +22,14 @@ class _ImageViewState extends State<ImageView> {
           itemCount: imgs.length,
           itemBuilder: ((context, index) {
             return Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+              height: 280,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(35),
+                  image: DecorationImage(
+                    image: FileImage(imgs[index]),
+                    fit: BoxFit.cover,
+                  )),
               child: IconButton(
                 style: IconButton.styleFrom(
                     padding: const EdgeInsets.all(10),
@@ -38,14 +46,6 @@ class _ImageViewState extends State<ImageView> {
                     ]),
                 onPressed: () => widget.onDelete(imgs[index]),
               ),
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-              height: 280,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(35),
-                  image: DecorationImage(
-                    image: FileImage(imgs[index]),
-                    fit: BoxFit.cover,
-                  )),
             );
           })),
     );

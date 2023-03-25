@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:io' as io;
 import 'package:client/graphQL/feed.dart';
 import 'package:client/models/category.dart';
+import 'package:client/screens/home/new_post/dateTimePicker.dart';
 import 'package:client/screens/home/new_post/endTime.dart';
 import 'package:client/screens/home/new_post/imageService.dart';
 import 'package:client/screens/home/new_post/imageView.dart';
 import 'package:client/services/image_picker.dart';
 import 'package:client/widgets/card/image.dart';
+import 'package:date_time_picker/date_time_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/post/main.dart';
@@ -71,20 +74,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   late DateTime? endTime = null;
   late DateTime? date = null;
   late DateTime? time = null;
+  late DateTime? dateTime;
 
   final localStorage = LocalStorageService();
-
-  void onDelete(dynamic f) {
-    if (widget.post != null) {
-      setState(() {
-        img_map.remove(f);
-      });
-    } else {
-      setState(() {
-        imgs.remove(f);
-      });
-    }
-  }
 
   void setEndTime(DateTime e) {
     setState(() {
@@ -99,17 +91,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
       link.text = post.link?.link ?? '';
       location.text = post.location ?? '';
       setState(() {
-        date = post.eventTime != null
-            ? DateTimeFormatModel.fromString(post.eventTime!).dateTime
-            : null;
-        time = post.eventTime != null
-            ? DateTimeFormatModel.fromString(post.eventTime!).dateTime
-            : null;
-
-        dateTimeFormated.text = date != null
-            ? DateTimeFormatModel(date!)
-                .dateTimeFormatted(date: date!, time: time!)
-            : '';
+        if (widget.fieldConfiguration.postTime != null)
+          dateTime = DateTimeFormatModel.fromString(post.eventTime!).dateTime;
         if (widget.fieldConfiguration.endTime != null) {
           endTime = DateTimeFormatModel.fromString(post.endTime!).dateTime;
         }
@@ -120,7 +103,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
       if (data != null) {
         title.text = data["title"];
         desc.text = data["description"];
-        dateTimeFormated.text = data['dateTimeFormated'];
 
         location.text = data["location"];
 
@@ -128,8 +110,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         setState(() {
           selectedTags = TagsModel.fromJson(jsonDecode(data["selectedTags"]));
 
-          date = data['date'];
-          time = data['time'];
+          dateTime = data['dateTime'];
           endTime = data['endTime'];
         });
       }
@@ -143,18 +124,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
     link.clear();
     location.clear();
 
-    dateTimeFormated.clear();
-
     setState(() {
       selectedTags = TagsModel.fromJson([]);
-      date = null;
-      time = null;
+      dateTime = null;
       endTime = null;
     });
   }
 
   @override
   void initState() {
+    print('images');
+    print(widget.images);
+
     getPostData(widget.post);
     if (widget.images != null) {
       setState(() {
@@ -251,7 +232,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 appBar: AppBar(
                   centerTitle: true,
                   title: Text(
-                    "${widget.post == null ? 'NEW' : 'EDIT'} ${widget.category.name.toUpperCase()}",
+                    "${widget.post == null ? '' : 'EDIT'} ${widget.category.name.toUpperCase()}",
                     style: const TextStyle(
                         letterSpacing: 1,
                         color: Color(0xFF3C3C3C),
@@ -265,25 +246,38 @@ class _NewPostScreenState extends State<NewPostScreen> {
                       child: ListView(
                         children: [
                           const SizedBox(height: 10),
-
-                          // images
-                          if (imagePickerService.imageFileList != null &&
-                              imagePickerService.imageFileList!.isNotEmpty)
-                            ImageView(
-                              images: imagePickerService.imageFileList!
-                                  .map((xFile) => io.File(xFile.path))
-                                  .toList()
-                                  .cast<io.File>(),
-                              onDelete: onDelete,
-                            ),
-                          if (img_map.isNotEmpty)
+                          if (img_map.isNotEmpty ||
+                              (imagePickerService.imageFileList != null &&
+                                  imagePickerService
+                                      .imageFileList!.isNotEmpty) ||
+                              widget.images != null)
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
                               child: ImageCard(
+                                  imageFiles: (imgs.isNotEmpty)
+                                      ? imgs
+                                          .map((e) => XFile(e.path))
+                                          .toList()
+                                          .cast<XFile>()
+                                      : imagePickerService.imageFileList
+                                          ?.cast<XFile>(),
                                   dynamic_images:
                                       (img_map.isNotEmpty) ? img_map : null,
-                                  onDelete: onDelete),
+                                  onDelete: (f) {
+                                    if (imgs.isNotEmpty) {
+                                      for (var img in imgs) {
+                                        if (img.path == f.path) {
+                                          setState(() {
+                                            imgs.remove(img);
+                                          });
+
+                                          break;
+                                        }
+                                      }
+                                    }
+                                    imagePickerService.imageFileList?.remove(f);
+                                  }),
                             ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 42),
@@ -326,20 +320,30 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
                                 //date and time
                                 if (widget.fieldConfiguration.postTime != null)
-                                  TextFormField(
-                                    controller: dateTimeFormated,
-                                    decoration: const InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        labelText: "Date & Time"),
-                                    readOnly: true,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "Enter the date & time";
-                                      }
-                                      return null;
+                                  DateTimePickerWidget(
+                                    labelText: 'Date & time',
+                                    firstDate: widget.fieldConfiguration
+                                            .postTime!.initTime ??
+                                        DateTime.now(),
+                                    lastDate: DateTime.now()
+                                        .add(const Duration(days: 30 * 5)),
+                                    onDateTimeChanged: (date) {
+                                      setState(() {
+                                        print('date');
+                                        print(date);
+                                        dateTime = date;
+                                        if (widget.fieldConfiguration.endTime !=
+                                            null) {
+                                          endTime = date.add(widget
+                                              .fieldConfiguration
+                                              .endTime!
+                                              .time);
+                                        }
+                                      });
+
+                                      print('endTime');
+                                      print(endTime);
                                     },
-                                    onTap: () => dateTimePicker(context),
                                   ),
 
                                 //location
@@ -526,6 +530,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                     .getTagIds()
                                                     .cast<String>();
 
+                                            print('final endtime');
+                                            print(endTime);
+
                                             runMutation({
                                               "updatePostId":
                                                   widget.post?.id.toString(),
@@ -543,7 +550,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                             .fieldConfiguration
                                                             .postTime !=
                                                         null
-                                                    ? '${DateTimeFormatModel(date!).addDateTime(date!, time!)}+05:30'
+                                                    ? '${dateTime.toString()} +05:30'
                                                     : null,
                                                 "endTime": endTime != null
                                                     ? '${endTime!.toIso8601String()}+05:30'
@@ -634,43 +641,46 @@ class _NewPostScreenState extends State<NewPostScreen> {
     );
   }
 
-  void dateTimePicker(context) {
-    showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: widget.fieldConfiguration.postTime?.initTime ??
-                DateTime.now().subtract(Duration(days: 30)),
-            lastDate: DateTime.now().add(const Duration(days: 30 * 5)))
-        .then(
-      (value) {
-        if (value != null) {
-          setState(() {
-            date = value;
-          });
-        }
-      },
-    ).then((value) => showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.now(),
-            ).then((value) {
-              if (value != null) {
-                DateTime _dateTime =
-                    DateTime(2021, 1, 1, value.hour, value.minute);
-                setState(() {
-                  time = _dateTime;
-                });
+  // void dateTimePicker(context) {
+  //   showDatePicker(
+  //           context: context,
+  //           initialDate: DateTime.now(),
+  //           firstDate: widget.fieldConfiguration.postTime?.initTime ??
+  //               DateTime.now().subtract(Duration(days: 30)),
+  //           lastDate: DateTime.now().add(const Duration(days: 30 * 5)))
+  //       .then(
+  //     (value) {
+  //       if (value != null) {
+  //         setState(() {
+  //           date = value;
+  //         });
+  //       }
+  //     },
+  //   ).then((value) {
+  //     if (date != null) {
+  //       showTimePicker(
+  //         context: context,
+  //         initialTime: TimeOfDay.now(),
+  //       ).then((value) {
+  //         if (value != null) {
+  //           DateTime _dateTime = DateTime(2021, 1, 1, value.hour, value.minute);
+  //           setState(() {
+  //             time = _dateTime;
+  //           });
 
-                dateTimeFormated.text = DateTimeFormatModel(date!)
-                    .dateTimeFormatted(date: date!, time: time!);
+  //           // dateTimeFormated.text = DateTimeFormatModel(dateTime)
+  //           //     .dateTimeFormatted(date: date!, time: time!);
 
-                setState(() {
-                  endTime = DateTimeFormatModel(date!)
-                      .addDateTime(date!, time!)
-                      .add(widget.fieldConfiguration.endTime!.time);
-                });
-              }
-            }));
-  }
+  //           setState(() {
+  //             endTime = DateTimeFormatModel(date!)
+  //                 .addDateTime(date!, time!)
+  //                 .add(widget.fieldConfiguration.endTime!.time);
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -692,8 +702,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         "title": title.text,
         "description": desc.text,
         "selectedTags": jsonEncode(selectedTags.toJson()),
-        "date": date,
-        "time": time,
+        "dateTime": dateTime,
         "endTime": endTime,
         "dateTimeFormated": dateTimeFormated.text,
         "location": location.text,

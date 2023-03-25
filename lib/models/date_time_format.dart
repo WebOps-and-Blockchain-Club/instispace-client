@@ -16,15 +16,15 @@ class DateTimeFormatModel {
     return '${dateTime.toIso8601String()}+05:30';
   }
 
-  String dateTimeFormatted({required DateTime date, required DateTime time}) {
-    return "${DateTimeFormatModel(date).toFormat("MMM dd, yyyy")} ${DateTimeFormatModel(time).toFormat("h:mm a")}";
+  String dateTimeFormatted() {
+    return "${DateTimeFormatModel(dateTime).toFormat("MMM dd, yyyy")} ${DateTimeFormatModel(dateTime).toFormat("h:mm a")}";
   }
 
-  DateTime addDateTime(DateTime date, DateTime time) {
-    return DateTimeFormatModel.fromString(
-            "${date.toString().split(" ").first} ${time.toString().split(" ").last}")
-        .dateTime;
-  }
+  // DateTime addDateTime(DateTime date, DateTime time) {
+  //   return DateTimeFormatModel.fromString(
+  //           "${date.toString().split(" ").first} ${time.toString().split(" ").last}")
+  //       .dateTime;
+  // }
 
   String toDiffString({bool? abs}) {
     DateTime now = DateTime.now();

@@ -1,17 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 import '../utils/image_cache_path.dart';
 import 'image_view.dart';
+import 'dart:io' as io;
 
 class ImageCard extends StatefulWidget {
   final List<String>? imageUrls;
+  final List<XFile>? imageFiles;
   final Function? onDelete;
   final Map<dynamic, String>? dynamic_images;
-  const ImageCard(
-      {Key? key, this.imageUrls, this.dynamic_images, this.onDelete})
-      : super(key: key);
+
+  const ImageCard({
+    Key? key,
+    this.imageUrls,
+    this.dynamic_images,
+    this.onDelete,
+    this.imageFiles,
+  }) : super(key: key);
 
   @override
   State<ImageCard> createState() => _ImageCardState();
@@ -27,8 +35,11 @@ class _ImageCardState extends State<ImageCard> {
     for (var imageUrl in images) {
       var imageProvider = (widget.dynamic_images != null &&
               widget.dynamic_images![imageUrl] == 'file')
-          ? FileImage(imageUrl) as ImageProvider
-          : CachedNetworkImageProvider(imageUrl);
+          ? FileImage(imageUrl)
+          : (widget.imageFiles != null)
+              ? FileImage(io.File(imageUrl.path)) as ImageProvider
+              : CachedNetworkImageProvider(imageUrl);
+
       Image image = Image(
         image: imageProvider,
       );
@@ -49,6 +60,7 @@ class _ImageCardState extends State<ImageCard> {
         ),
       );
     }
+
     setState(() {
       imageProviders = _imageProviders;
     });
@@ -69,8 +81,15 @@ class _ImageCardState extends State<ImageCard> {
     } else if (widget.dynamic_images != null &&
         widget.dynamic_images!.isNotEmpty) {
       getMinHeight(widget.dynamic_images!.keys.toList());
+    } else if (widget.imageFiles != null) {
+      getMinHeight(widget.imageFiles!);
     }
-    final imageUrls = widget.imageUrls ?? widget.dynamic_images!.keys;
+    final imageUrls = (widget.imageFiles != null)
+        ? widget.imageFiles
+        : (widget.imageUrls != null)
+            ? widget.imageUrls
+            : dynamic_images?.keys;
+
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(29)),
       constraints: BoxConstraints(maxHeight: min(500, minHeight), minHeight: 0),
@@ -80,12 +99,15 @@ class _ImageCardState extends State<ImageCard> {
             onTap: (index) async {
               List<String> images = (widget.imageUrls != null)
                   ? await imageCachePath(imageUrls as List<String>)
-                  : imageUrls.map((e) async {
-                      return (e.value) == 'file'
-                          ? e.key.path
-                          : (await imageCachePath([e.key] as List<String>))
-                              .first;
-                    }) as List<String>;
+                  : (widget.imageFiles != null)
+                      ? imageUrls!.map((e) => e.path) as List<String>
+                      : imageUrls!.map((e) async {
+                          return (e.value) == 'file'
+                              ? e.key.path
+                              : (await imageCachePath([e.key] as List<String>))
+                                  .first;
+                        }) as List<String>;
+
               openImageView(context, index, images);
             },
             loop: imageProviders.length != 1,
@@ -94,6 +116,14 @@ class _ImageCardState extends State<ImageCard> {
                 margin:
                     EdgeInsets.only(bottom: imageProviders.length > 1 ? 15 : 0),
                 child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(29),
+                    image: DecorationImage(
+                      image: imageProviders[index],
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
                   child: (widget.onDelete != null)
                       ? IconButton(
                           icon: const Icon(
@@ -109,19 +139,14 @@ class _ImageCardState extends State<ImageCard> {
                             ],
                           ),
                           onPressed: () {
+                            print(io.File(widget.imageFiles![index].path)
+                                .runtimeType);
                             widget.onDelete!(
-                                dynamic_images!.keys.elementAt(index));
+                                dynamic_images?.keys.elementAt(index) ??
+                                    io.File(widget.imageFiles![index].path));
                           },
                         )
                       : null,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(29),
-                    image: DecorationImage(
-                      image: imageProviders[index],
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
                 ),
               );
             },

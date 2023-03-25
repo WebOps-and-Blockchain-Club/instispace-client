@@ -64,11 +64,10 @@ class ImageService {
     List<io.File> files = [];
     List<XFile>? imgs = await _picker.pickMultiImage();
 
-    if (imgs != null) {
-      for (XFile img in imgs) {
-        files.add(io.File(img.path));
-      }
+    for (XFile img in imgs) {
+      files.add(io.File(img.path));
     }
+
     return files;
   }
 }

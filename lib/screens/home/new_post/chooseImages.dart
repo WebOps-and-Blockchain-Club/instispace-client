@@ -6,6 +6,7 @@ import 'package:client/services/image_picker.dart';
 import 'package:client/themes.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/utils/my_flutter_app_icons.dart';
+import 'package:client/widgets/card/image.dart';
 import 'package:client/widgets/card/image_view.dart';
 import 'package:client/widgets/headers/main.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +42,6 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
   late List<io.File> chosenImgs = [];
   bool initialized = false;
   int len = 0;
-
-  void onDelete(io.File f) {
-    setState(() {
-      chosenImgs.remove(f);
-    });
-  }
 
   @override
   void initState() {
@@ -111,9 +106,15 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
         child: initialized == true
             ? Column(
                 children: [
-                  ImageView(
-                    images: chosenImgs,
-                    onDelete: onDelete,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ImageCard(
+                      imageFiles: chosenImgs
+                          .map((e) => XFile(e.path))
+                          .toList()
+                          .cast<XFile>(),
+                      // onDelete: onDelete,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -238,13 +239,13 @@ class _SelectImageScreenState extends State<SelectImageScreen> {
                                     ? const Icon(
                                         CustomIcons.camera,
                                         color: Colors.black,
-                                        size: 30,
+                                        size: 35,
                                       )
                                     : (index == 1)
                                         ? const Icon(
                                             CustomIcons.gallery,
                                             color: Colors.black,
-                                            size: 30,
+                                            size: 35,
                                           )
                                         : null,
                               ),
