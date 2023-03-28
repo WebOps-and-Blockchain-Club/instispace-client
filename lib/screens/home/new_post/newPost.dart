@@ -192,11 +192,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 );
               } else {
                 dynamic data = cache.readQuery(widget.options.asRequest);
-                data["findPosts"]["list"] =
-                    [result.data!["createPost"]] + data["findPosts"]["list"];
-                data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
 
-                cache.writeQuery(widget.options.asRequest, data: data);
+                if (result.data!["createPost"]["status"] != "TO_BE_APPROVED") {
+                  data["findPosts"]["list"] =
+                      [result.data!["createPost"]] + data["findPosts"]["list"];
+                  data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
+
+                  cache.writeQuery(widget.options.asRequest, data: data);
+                }
                 clearForm();
                 if (widget.fieldConfiguration.imageSecondary != null) {
                   Navigator.pop(context);

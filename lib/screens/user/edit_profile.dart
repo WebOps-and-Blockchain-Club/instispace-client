@@ -1,3 +1,4 @@
+import 'package:client/models/course.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,10 +26,15 @@ import '../../themes.dart';
 class EditProfile extends StatelessWidget {
   final AuthService auth;
   final UserModel user;
+  final bool password;
   final Future<QueryResult<Object?>?> Function()? refetch;
 
   const EditProfile(
-      {Key? key, required this.auth, required this.user, this.refetch})
+      {Key? key,
+      required this.auth,
+      required this.user,
+      this.refetch,
+      required this.password})
       : super(key: key);
 
   @override
@@ -42,6 +48,7 @@ class EditProfile extends StatelessWidget {
     } else {
       return EditPassword(
         auth: auth,
+        password: password,
         user: user,
         refetch: refetch,
       );
@@ -156,6 +163,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                             const SizedBox(height: 10),
 
                             // Name
+
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Column(

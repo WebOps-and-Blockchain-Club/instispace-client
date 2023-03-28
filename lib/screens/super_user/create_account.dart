@@ -1,3 +1,4 @@
+import 'package:client/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -15,8 +16,11 @@ import '../../widgets/text/label.dart';
 
 class CreateAccountPage extends StatefulWidget {
   final String role;
+  final PermissionModel permissions;
 
-  const CreateAccountPage({Key? key, required this.role}) : super(key: key);
+  const CreateAccountPage(
+      {Key? key, required this.role, required this.permissions})
+      : super(key: key);
 
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
@@ -36,12 +40,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String roleError = "";
   String hostelError = "";
 
-  Map<String, bool> permissions = {
-    "Create Notification": false,
-    "Create Tag": false,
-    "Approve Posts": false,
-    "Handle Reports": false
-  };
+  Map<String, bool> permissions = {};
 
   final List<String> feed = ["Events", "Announcements", "Recruitment"];
 
@@ -74,6 +73,24 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void initState() {
     roleList = getRole(widget.role);
     selectedRole = roleList[0];
+
+    final curr_permissions = widget.permissions;
+    print(curr_permissions);
+
+    final Map<String, bool> pers = {
+      "Create Notification": curr_permissions.createNotification,
+      "Create Tag": curr_permissions.createTag,
+      "Approve Posts": curr_permissions.approvePost,
+      "Handle Reports": curr_permissions.moderateReport,
+      "View Feedback": curr_permissions.viewFeeback,
+    };
+    pers.removeWhere(
+      (key, value) => value == false,
+    );
+
+    setState(() {
+      permissions = pers;
+    });
     super.initState();
   }
 
@@ -348,6 +365,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                           selectedRole.isNotEmpty;
                                   FocusScope.of(context).unfocus();
                                   if (isValid) {
+                                    print({
+                                      "account": accounts,
+                                      "livePosts": posts,
+                                      "createNotification":
+                                          permissions.values.elementAt(0),
+                                      "createTag":
+                                          permissions.values.elementAt(1),
+                                      "approvePosts":
+                                          permissions.values.elementAt(2),
+                                      "handleReports":
+                                          permissions.values.elementAt(3),
+                                      "hostel": ["Sarayu"],
+                                    });
                                     runMutation({
                                       "user": {
                                         "roll": name.text.trim(),
@@ -364,6 +394,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                             permissions.values.elementAt(2),
                                         "handleReports":
                                             permissions.values.elementAt(3),
+                                        "viewFeedback":
+                                            permissions.values.elementAt(4),
                                         "hostel": ["Sarayu"],
                                       }
                                     });

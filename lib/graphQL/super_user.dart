@@ -9,8 +9,11 @@ class SuperUserGQL {
   """;
 
   String createHostel = """
-    mutation(\$createHostelInput: CreateHostelInput!) {
-      createHostel(CreateHostelInput: \$createHostelInput)
+    mutation CreateHostel(\$name: String!) {
+      createHostel(name: \$name) {
+        id
+        name
+      }
     }
   """;
 

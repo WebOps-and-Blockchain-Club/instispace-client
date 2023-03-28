@@ -289,6 +289,8 @@ class CustomDrawer extends StatelessWidget {
                                                   builder:
                                                       (BuildContext context) =>
                                                           CreateAccountPage(
+                                                            permissions: user
+                                                                .permission!,
                                                             role: user.role!,
                                                           )));
                                         },

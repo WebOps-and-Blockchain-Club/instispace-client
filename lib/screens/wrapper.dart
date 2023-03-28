@@ -77,6 +77,7 @@ class _WrapperState extends State<Wrapper> {
                     return EditProfile(
                       auth: auth,
                       user: user,
+                      password: false,
                       refetch: refetch,
                     );
                   } else if (user.isNewUser == false) {
