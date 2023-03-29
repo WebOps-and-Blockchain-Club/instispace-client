@@ -333,7 +333,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                       if (value != null) {
                                         createAccount = value;
                                       }
-                                      // getRole(selectedRole);
+                                      getRole(selectedRole);
                                     });
                                   }),
 
@@ -356,7 +356,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     runSpacing: 6,
                                     children: List.generate(
                                         createAccList.length, (index) {
-                                      String role = createAccList![index];
+                                      String role = createAccList[index];
                                       return GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -451,6 +451,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                             feedCategories.map((e) => e.name));
                                       });
                                     }
+                                    print(hostels?.getId(selectedHostel));
                                     print({
                                       "user": {
                                         "roll": name.text.trim(),

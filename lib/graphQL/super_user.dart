@@ -1,7 +1,7 @@
 class SuperUserGQL {
   String createAccount = """
-    mutation CreateUser(\$user: CreateUserInput!, \$permission: PermissionInput!) {
-      createUser(user: \$user, permission: \$permission) {
+    mutation CreateUser(\$user: CreateUserInput!, \$permission: PermissionInput!, \$hostelId: String) {
+      createUser(user: \$user, permission: \$permission, hostelId: \$hostelId) {
         id
         isNewUser
         permission {
