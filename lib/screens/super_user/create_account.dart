@@ -1,3 +1,4 @@
+import 'package:client/models/category.dart';
 import 'package:client/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -27,31 +28,46 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  HostelsModel? hostels;
   late final List<String> roleList;
+  HostelsModel? hostels;
 
   final formKey = GlobalKey<FormState>();
 
   final TextEditingController name = TextEditingController();
   final TextEditingController mobile = TextEditingController();
   String selectedRole = "";
-  String? selectedHostel;
+
+  bool createTag = false;
+  bool reports = false;
+  bool createPost = false;
+  bool createAccount = false;
 
   String roleError = "";
   String hostelError = "";
+  List<String> roles = [];
+  String? selectedHostel;
 
   Map<String, bool> permissions = {};
-
-  final List<String> feed = ["Events", "Announcements", "Recruitment"];
 
   List<String> getRole(role) {
     switch (role) {
       case "ADMIN":
-        return ["SECRETARY", "LEADS", "HOSTEL_SEC", "MODERATOR", "DEV_TEAM"];
+        return ["SECRETARY", "LEADS", "HOSTEL_SEC", "DEV_TEAM"];
       case "SECRETARY":
-        return ["LEADS", "MODERATOR"];
+        return ["LEADS"];
       case "LEADS":
-        return ["LEADS", "MODERATOR"];
+        return ["LEADS"];
+      default:
+        return [];
+    }
+  }
+
+  List<String> getHostel(role) {
+    switch (role) {
+      case "SECRETARY":
+        return ["Hostel", "Contact", "Ameninity"];
+      case "HOSTEL_SEC":
+        return ["Contact", "Amenity"];
       default:
         return [];
     }
@@ -59,38 +75,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   List<String> accounts = [];
   List<String> posts = [
-    "Networking",
-    "Help",
-    "Connect",
-    "Random Thoughts",
-    "Opportunities",
-    "Queries",
-    "Lost",
-    "Found"
+    ...forumCategories.map((e) => e.name),
+    ...lnfCategories.map((e) => e.name)
   ];
 
   @override
   void initState() {
-    roleList = getRole(widget.role);
-    selectedRole = roleList[0];
-
-    final curr_permissions = widget.permissions;
-    print(curr_permissions);
-
-    final Map<String, bool> pers = {
-      "Create Notification": curr_permissions.createNotification,
-      "Create Tag": curr_permissions.createTag,
-      "Approve Posts": curr_permissions.approvePost,
-      "Handle Reports": curr_permissions.moderateReport,
-      "View Feedback": curr_permissions.viewFeeback,
-    };
-    pers.removeWhere(
-      (key, value) => value == false,
-    );
-
+    print(widget.permissions.createTag);
+    print(widget.permissions.approvePost);
+    print(widget.permissions.createPost?.allowedCategory);
     setState(() {
-      permissions = pers;
+      roles = widget.permissions.createAccount.allowedRoles == null
+          ? []
+          : [...widget.permissions.createAccount.allowedRoles!];
+      roles.remove("MODERATOR");
+      if (roles.isNotEmpty) selectedRole = roles[0];
+
+      if (widget.permissions.createTag) createTag = true;
     });
+
     super.initState();
   }
 
@@ -114,7 +117,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     options: MutationOptions(
                       document: gql(SuperUserGQL().createAccount),
                       onCompleted: (dynamic resultData) {
-                        if (resultData["createAccount"] == true) {
+                        print('result');
+                        print(resultData);
+                        if (resultData["createUser"] != null) {
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -158,9 +163,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             const SizedBox(height: 10),
 
                             const LabelText(text: "Select Role"),
+
                             CustomDropdownButton(
                               value: selectedRole,
-                              items: roleList,
+                              items: roles,
                               onChanged: (value) {
                                 setState(() {
                                   selectedRole = value!;
@@ -169,41 +175,41 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                             ),
 
                             // Hostel
-                            // if (selectedRole == "HOSTEL_SEC")
-                            //   const LabelText(text: "Select Hostel"),
-                            // if (selectedRole == "HOSTEL_SEC")
-                            //   Query(
-                            //       options: QueryOptions(
-                            //         document: gql(AuthGQL().getHostel),
-                            //       ),
-                            //       builder: (QueryResult queryResult,
-                            //           {fetchMore, refetch}) {
-                            //         if (queryResult.hasException) {
-                            //           return ErrorText(
-                            //               error:
-                            //                   queryResult.exception.toString());
-                            //         }
+                            if (selectedRole == "HOSTEL_SEC")
+                              const LabelText(text: "Select Hostel"),
+                            if (selectedRole == "HOSTEL_SEC")
+                              Query(
+                                  options: QueryOptions(
+                                    document: gql(AuthGQL().getHostel),
+                                  ),
+                                  builder: (QueryResult queryResult,
+                                      {fetchMore, refetch}) {
+                                    if (queryResult.hasException) {
+                                      return ErrorText(
+                                          error:
+                                              queryResult.exception.toString());
+                                    }
 
-                            //         if (queryResult.isLoading) {
-                            //           return const Text('Loading');
-                            //         }
+                                    if (queryResult.isLoading) {
+                                      return const Text('Loading');
+                                    }
 
-                            //         hostels = HostelsModel.fromJson(
-                            //             queryResult.data!["getHostels"]);
-                            //         List<String> hostelNames =
-                            //             HostelsModel.fromJson(
-                            //                     queryResult.data!["getHostels"])
-                            //                 .getNames();
-                            //         return CustomDropdownButton(
-                            //           value: selectedHostel,
-                            //           items: hostelNames,
-                            //           onChanged: (value) {
-                            //             setState(() {
-                            //               selectedHostel = value!;
-                            //             });
-                            //           },
-                            //         );
-                            //       }),
+                                    hostels = HostelsModel.fromJson(
+                                        queryResult.data!["getHostels"]);
+                                    List<String> hostelNames =
+                                        HostelsModel.fromJson(
+                                                queryResult.data!["getHostels"])
+                                            .getNames();
+                                    return CustomDropdownButton(
+                                      value: selectedHostel,
+                                      items: hostelNames,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedHostel = value!;
+                                        });
+                                      },
+                                    );
+                                  }),
 
                             if (hostelError.isNotEmpty &&
                                 selectedRole == "HOSTEL_SEC")
@@ -224,40 +230,108 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                       fontWeight: FontWeight.w500)),
                             ),
 
-                            Center(
-                              child: Wrap(
-                                  spacing: 4,
-                                  runSpacing: 6,
-                                  children: List.generate(permissions.length,
-                                      (index) {
-                                    String key =
-                                        permissions.keys.elementAt(index);
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          permissions[key] = !permissions.values
-                                              .elementAt(index);
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: permissions[key]!
-                                                ? const Color(0xFFE1E0EC)
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: const Color(0xFFE1E0EC)),
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 11),
-                                        child: Text(key,
-                                            style: const TextStyle(
-                                                color: Color(0xFF3C3C3C))),
-                                      ),
-                                    );
-                                  })),
-                            ),
-                            if (getRole(selectedRole).isNotEmpty)
+                            // Center(
+                            //   child: Wrap(
+                            //       spacing: 4,
+                            //       runSpacing: 6,
+                            //       children: List.generate(permissions.length,
+                            //           (index) {
+                            //         String key =
+                            //             permissions.keys.elementAt(index);
+                            //         return GestureDetector(
+                            //           onTap: () {
+                            //             setState(() {
+                            //               permissions[key] = !permissions.values
+                            //                   .elementAt(index);
+                            //             });
+                            //           },
+                            //           child: Container(
+                            //             decoration: BoxDecoration(
+                            //                 color: permissions[key]!
+                            //                     ? const Color(0xFFE1E0EC)
+                            //                     : Colors.transparent,
+                            //                 border: Border.all(
+                            //                     color: const Color(0xFFE1E0EC)),
+                            //                 borderRadius:
+                            //                     BorderRadius.circular(17)),
+                            //             padding: const EdgeInsets.symmetric(
+                            //                 vertical: 6, horizontal: 11),
+                            //             child: Text(key,
+                            //                 style: const TextStyle(
+                            //                     color: Color(0xFF3C3C3C))),
+                            //           ),
+                            //         );
+                            //       })),
+                            // ),
+
+                            //create tag
+                            if (widget.permissions.createTag)
+                              CheckboxListTile(
+                                title: const Text('Allow them to create tags'),
+                                value: createTag,
+                                tileColor: Colors.transparent,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (value != null) createTag = value;
+                                  });
+                                },
+                              ),
+
+                            //moderate report
+                            if (widget.permissions.moderateReport)
+                              CheckboxListTile(
+                                  title: const Text(
+                                      'Allow them to moderate reports'),
+                                  value: reports,
+                                  tileColor: Colors.transparent,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value != null) reports = value;
+                                    });
+                                  }),
+
+                            //create post (without approval)
+                            if (widget.permissions.createPost != null &&
+                                widget.permissions.createPost!.hasPermission)
+                              CheckboxListTile(
+                                  title: const Text(
+                                      'Allow them to post in feeds without approval'),
+                                  value: createPost,
+                                  tileColor: Colors.transparent,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value != null) createPost = value;
+                                    });
+                                  }),
+
+                            //create accounts
+                            if (widget.permissions.createAccount.hasPermission)
+                              CheckboxListTile(
+                                  title: const Text(
+                                      'Allow them to create an account'),
+                                  value: createAccount,
+                                  tileColor: Colors.transparent,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value != null) {
+                                        createAccount = value;
+                                      }
+                                    });
+                                  }),
+
+                            if (widget.permissions.createAccount.allowedRoles !=
+                                    null &&
+                                widget.permissions.createAccount.allowedRoles!
+                                    .isNotEmpty &&
+                                createAccount)
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 30),
                                 child: Text('Which accounts can they create?',
@@ -265,85 +339,90 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                         fontSize: 19,
                                         fontWeight: FontWeight.w500)),
                               ),
+                            if (widget.permissions.createAccount.allowedRoles !=
+                                    null &&
+                                createAccount)
+                              Center(
+                                child: Wrap(
+                                    spacing: 4,
+                                    runSpacing: 6,
+                                    children: List.generate(
+                                        widget.permissions.createAccount
+                                            .allowedRoles!.length, (index) {
+                                      String role = widget.permissions
+                                          .createAccount.allowedRoles![index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (accounts.contains(role)) {
+                                              accounts.remove(role);
+                                            } else {
+                                              accounts.add(role);
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: accounts.contains(role)
+                                                  ? const Color(0xFFE1E0EC)
+                                                  : Colors.transparent,
+                                              border: Border.all(
+                                                  color:
+                                                      const Color(0xFFE1E0EC)),
+                                              borderRadius:
+                                                  BorderRadius.circular(17)),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 11),
+                                          child: Text(role,
+                                              style: const TextStyle(
+                                                  color: Color(0xFF3C3C3C))),
+                                        ),
+                                      );
+                                    })),
+                              ),
 
-                            Center(
-                              child: Wrap(
-                                  spacing: 4,
-                                  runSpacing: 6,
-                                  children: List.generate(
-                                      getRole(selectedRole).length, (index) {
-                                    String role = getRole(selectedRole)[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (accounts.contains(role)) {
-                                            accounts.remove(role);
-                                          } else {
-                                            accounts.add(role);
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: accounts.contains(role)
-                                                ? const Color(0xFFE1E0EC)
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: const Color(0xFFE1E0EC)),
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 11),
-                                        child: Text(role,
-                                            style: const TextStyle(
-                                                color: Color(0xFF3C3C3C))),
-                                      ),
-                                    );
-                                  })),
-                            ),
+                            // const Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 30),
+                            //   child: Text('What Posts can they create?',
+                            //       style: TextStyle(
+                            //           fontSize: 19,
+                            //           fontWeight: FontWeight.w500)),
+                            // ),
 
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 30),
-                              child: Text('What Posts can they create?',
-                                  style: TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w500)),
-                            ),
-
-                            Center(
-                              child: Wrap(
-                                  spacing: 4,
-                                  runSpacing: 6,
-                                  children: List.generate(feed.length, (index) {
-                                    String p = feed[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (posts.contains(p)) {
-                                            posts.remove(p);
-                                          } else {
-                                            posts.add(p);
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: posts.contains(p)
-                                                ? const Color(0xFFE1E0EC)
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: const Color(0xFFE1E0EC)),
-                                            borderRadius:
-                                                BorderRadius.circular(17)),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 11),
-                                        child: Text(p,
-                                            style: const TextStyle(
-                                                color: Color(0xFF3C3C3C))),
-                                      ),
-                                    );
-                                  })),
-                            ),
+                            // Center(
+                            //   child: Wrap(
+                            //       spacing: 4,
+                            //       runSpacing: 6,
+                            //       children: List.generate(feed.length, (index) {
+                            //         String p = feed[index];
+                            //         return GestureDetector(
+                            //           onTap: () {
+                            //             setState(() {
+                            //               if (posts.contains(p)) {
+                            //                 posts.remove(p);
+                            //               } else {
+                            //                 posts.add(p);
+                            //               }
+                            //             });
+                            //           },
+                            //           child: Container(
+                            //             decoration: BoxDecoration(
+                            //                 color: posts.contains(p)
+                            //                     ? const Color(0xFFE1E0EC)
+                            //                     : Colors.transparent,
+                            //                 border: Border.all(
+                            //                     color: const Color(0xFFE1E0EC)),
+                            //                 borderRadius:
+                            //                     BorderRadius.circular(17)),
+                            //             padding: const EdgeInsets.symmetric(
+                            //                 vertical: 6, horizontal: 11),
+                            //             child: Text(p,
+                            //                 style: const TextStyle(
+                            //                     color: Color(0xFF3C3C3C))),
+                            //           ),
+                            //         );
+                            //       })),
+                            // ),
 
                             if (result != null && result.hasException)
                               ErrorText(error: result.exception.toString()),
@@ -351,32 +430,35 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               padding: const EdgeInsets.only(top: 10),
                               child: CustomElevatedButton(
                                 onPressed: () async {
-                                  setState(() {
-                                    hostelError = (selectedHostel == null ||
-                                            selectedHostel!.isEmpty)
-                                        ? "Select the hostel to create account"
-                                        : "";
-                                  });
                                   final isValid =
                                       formKey.currentState!.validate() &&
-                                          !((selectedHostel == null ||
-                                                  selectedHostel!.isEmpty) &&
-                                              selectedRole == "HOSTEL_SEC") &&
-                                          selectedRole.isNotEmpty;
+                                          selectedRole.isNotEmpty &&
+                                          (selectedRole == "HOSTEL_SEC"
+                                              ? selectedHostel != null &&
+                                                  selectedHostel!.isNotEmpty
+                                              : true);
                                   FocusScope.of(context).unfocus();
                                   if (isValid) {
+                                    if (createPost) {
+                                      setState(() {
+                                        posts.addAll(
+                                            feedCategories.map((e) => e.name));
+                                      });
+                                    }
                                     print({
-                                      "account": accounts,
-                                      "livePosts": posts,
-                                      "createNotification":
-                                          permissions.values.elementAt(0),
-                                      "createTag":
-                                          permissions.values.elementAt(1),
-                                      "approvePosts":
-                                          permissions.values.elementAt(2),
-                                      "handleReports":
-                                          permissions.values.elementAt(3),
-                                      "hostel": ["Sarayu"],
+                                      "user": {
+                                        "roll": name.text.trim(),
+                                        "role": selectedRole,
+                                      },
+                                      "permission": {
+                                        "account": accounts,
+                                        "livePosts": posts,
+                                        "createNotification": false,
+                                        "createTag": createTag,
+                                        "approvePosts": createPost,
+                                        "handleReports": reports,
+                                        "hostel": getHostel(selectedRole),
+                                      }
                                     });
                                     runMutation({
                                       "user": {
@@ -386,18 +468,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                       "permission": {
                                         "account": accounts,
                                         "livePosts": posts,
-                                        "createNotification":
-                                            permissions.values.elementAt(0),
-                                        "createTag":
-                                            permissions.values.elementAt(1),
-                                        "approvePosts":
-                                            permissions.values.elementAt(2),
-                                        "handleReports":
-                                            permissions.values.elementAt(3),
-                                        "viewFeedback":
-                                            permissions.values.elementAt(4),
-                                        "hostel": ["Sarayu"],
-                                      }
+                                        "createNotification": false,
+                                        "createTag": createTag,
+                                        "approvePosts": createPost,
+                                        "handleReports": reports,
+                                        "hostel": getHostel(selectedRole),
+                                      },
                                     });
                                   }
                                 },

@@ -95,6 +95,8 @@ String formatErrorMessage(String error, BuildContext context) {
     return "Roll number doesn't belongs to USER role";
   } else if (error.contains("No Tags found")) {
     return "No Tags found";
+  } else if (error.contains("duplicate key value violates unique constraint")) {
+    return "Already Exists";
   } else {
     return "Server Error";
   }

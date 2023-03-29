@@ -20,10 +20,12 @@ class UserGQL {
           name
         }
         permission {
+          createNotification
           approvePosts
           createTag
           handleReports
           account
+          livePosts
         }
         programme
         department

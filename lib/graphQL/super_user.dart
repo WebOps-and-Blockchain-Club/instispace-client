@@ -4,6 +4,13 @@ class SuperUserGQL {
       createUser(user: \$user, permission: \$permission) {
         id
         isNewUser
+        permission {
+          approvePosts
+          createTag
+          handleReports
+          account
+          livePosts
+        }
       }
     }
   """;

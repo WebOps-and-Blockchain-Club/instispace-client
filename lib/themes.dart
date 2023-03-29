@@ -11,7 +11,6 @@ class Themes {
       brightness: Brightness.light,
     ),
     scaffoldBackgroundColor: Colors.white,
-
     brightness: Brightness.light,
     visualDensity: VisualDensity.adaptivePlatformDensity,
 
@@ -33,7 +32,6 @@ class Themes {
             fontWeight: FontWeight.normal),
         labelSmall: const TextStyle(
             color: Colors.grey, letterSpacing: 0, fontSize: 12)),
-
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,

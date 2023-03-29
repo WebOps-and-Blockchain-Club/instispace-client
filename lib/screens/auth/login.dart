@@ -1,3 +1,4 @@
+import 'package:client/screens/auth/forgotPassword.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -95,10 +96,10 @@ class _LogInState extends State<LogIn> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
+                                      const Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
-                                        children: const [
+                                        children: [
                                           Text('L',
                                               style: TextStyle(
                                                   fontSize: 44,
@@ -169,6 +170,29 @@ class _LogInState extends State<LogIn> {
                                     return null;
                                   },
                                 ),
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ForgotPassword(
+                                                        roll: name.text)));
+                                      },
+                                      child: const Text('Forgot Password?'),
+                                    ),
+                                    Text(' (Not applicable for LDAP users)',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(color: Colors.grey[700])),
+                                  ],
+                                ),
+
                                 if (result != null && result.hasException)
                                   ErrorText(error: result.exception.toString()),
                                 Padding(

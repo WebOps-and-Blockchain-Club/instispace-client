@@ -42,6 +42,7 @@ class _EditPasswordState extends State<EditPassword> {
   String photoUrl = '';
 
   bool confirmPassVisible = true;
+  bool passVisible = true;
   bool isLoading = false;
 
   // Graphql
@@ -78,11 +79,15 @@ class _EditPasswordState extends State<EditPassword> {
               options: MutationOptions(
                 document: gql(AuthGQL().updateUser),
                 onCompleted: (dynamic resultData) {
+                  print(resultData);
                   if (resultData["updateUser"] == true) {
                     if (widget.refetch != null) widget.refetch!();
-                    // Navigator.pop(context);
+                    if (widget.user.isNewUser == false) Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Profile Updated')),
+                      SnackBar(
+                          content: Text(widget.password
+                              ? 'Password Changed'
+                              : 'Profile Updated')),
                     );
                   }
                 },
@@ -210,46 +215,59 @@ class _EditPasswordState extends State<EditPassword> {
                             padding: const EdgeInsets.only(top: 10),
                             child: TextFormField(
                               controller: pass,
-                              obscureText: true,
+                              obscureText: passVisible,
                               maxLines: 1,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => setState(() {
+                                      passVisible = !passVisible;
+                                    }),
+                                    icon: Icon(
+                                        passVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: 20),
+                                  ),
+                                  suffixIconConstraints:
+                                      Themes.inputIconConstraints,
                                   labelText: "New Password"),
                             ),
                           ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 10),
-                        //   child: TextFormField(
-                        //     controller: confirmPass,
-                        //     obscureText: confirmPassVisible,
-                        //     maxLines: 1,
-                        //     decoration: InputDecoration(
-                        //         suffixIcon: IconButton(
-                        //           padding: EdgeInsets.zero,
-                        //           onPressed: () => setState(() {
-                        //             confirmPassVisible =
-                        //                 !confirmPassVisible;
-                        //           }),
-                        //           icon: Icon(
-                        //               confirmPassVisible
-                        //                   ? Icons.visibility
-                        //                   : Icons.visibility_off,
-                        //               size: 20),
-                        //         ),
-                        //         prefixIconConstraints:
-                        //             Themes.inputIconConstraints,
-                        //         suffixIconConstraints:
-                        //             Themes.inputIconConstraints,
-                        //         labelText: "Confirm Password"),
-                        //     validator: (val) {
-                        //       if (val == null || val.isEmpty) {
-                        //         return "Re-enter the password to confirm";
-                        //       } else if (pass.text != val) {
-                        //         return "Password don't match";
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        // ),
+                        if (widget.password || widget.user.isNewUser)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: TextFormField(
+                              controller: confirmPass,
+                              obscureText: confirmPassVisible,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => setState(() {
+                                      confirmPassVisible = !confirmPassVisible;
+                                    }),
+                                    icon: Icon(
+                                        confirmPassVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: 20),
+                                  ),
+                                  prefixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  suffixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  labelText: "Confirm Password"),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return "Re-enter the password to confirm";
+                                } else if (pass.text != val) {
+                                  return "Password don't match";
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
 
                         if (result != null && result.hasException)
                           ErrorText(error: result.exception.toString()),
