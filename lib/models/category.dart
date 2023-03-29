@@ -24,7 +24,7 @@ class PostCategoryModel {
     "Query": CustomIcons.queries,
     "Help": CustomIcons.help,
     "Survey": CustomIcons.survey,
-    "Random thought": CustomIcons.thoughts,
+    "Random Thought": CustomIcons.thoughts,
     "Lost": CustomIcons.lost,
     "Found": CustomIcons.found
   };
@@ -42,9 +42,9 @@ List<PostCategoryModel> forumCategories = [
   PostCategoryModel(name: "Connect", icon: CustomIcons.connect),
   PostCategoryModel(name: "Help", icon: CustomIcons.help),
   PostCategoryModel(name: "Survey", icon: CustomIcons.survey),
-  PostCategoryModel(name: "Random thought", icon: CustomIcons.thoughts),
+  PostCategoryModel(name: "Random Thought", icon: CustomIcons.thoughts),
 ];
 List<PostCategoryModel> lnfCategories = [
-  PostCategoryModel(name: "LOST", icon: CustomIcons.lost),
-  PostCategoryModel(name: "FOUND", icon: CustomIcons.found),
+  PostCategoryModel(name: "Lost", icon: CustomIcons.lost),
+  PostCategoryModel(name: "Found", icon: CustomIcons.found),
 ];

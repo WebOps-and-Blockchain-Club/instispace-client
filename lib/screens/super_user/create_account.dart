@@ -47,18 +47,26 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   List<String> roles = [];
   String? selectedHostel;
 
+  List<String> createAccList = [];
+
   Map<String, bool> permissions = {};
 
-  List<String> getRole(role) {
-    switch (role) {
-      case "ADMIN":
-        return ["SECRETARY", "LEADS", "HOSTEL_SEC", "DEV_TEAM"];
-      case "SECRETARY":
-        return ["LEADS"];
-      case "LEADS":
-        return ["LEADS"];
-      default:
-        return [];
+  Map<String, List<String>> accs = {
+    "SECRETARY": ["LEADS", "MODERATOR", "HOSTEL_SEC"],
+    "LEADS": ["LEADS"],
+    "HOSTEL_SEC": ["HOSTEL_SEC"],
+  };
+
+  void getRole(role) {
+    List<String> base_accs = accs[role] ?? [];
+    if (widget.permissions.createAccount.allowedRoles != null) {
+      setState(() {
+        createAccList = base_accs
+            .where((e) =>
+                widget.permissions.createAccount.allowedRoles!.contains(e))
+            .toList()
+            .cast<String>();
+      });
     }
   }
 
@@ -171,6 +179,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 setState(() {
                                   selectedRole = value!;
                                 });
+                                getRole(value);
                               },
                             ),
 
@@ -324,13 +333,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                       if (value != null) {
                                         createAccount = value;
                                       }
+                                      // getRole(selectedRole);
                                     });
                                   }),
 
                             if (widget.permissions.createAccount.allowedRoles !=
                                     null &&
-                                widget.permissions.createAccount.allowedRoles!
-                                    .isNotEmpty &&
                                 createAccount)
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 30),
@@ -347,10 +355,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                     spacing: 4,
                                     runSpacing: 6,
                                     children: List.generate(
-                                        widget.permissions.createAccount
-                                            .allowedRoles!.length, (index) {
-                                      String role = widget.permissions
-                                          .createAccount.allowedRoles![index];
+                                        createAccList.length, (index) {
+                                      String role = createAccList![index];
                                       return GestureDetector(
                                         onTap: () {
                                           setState(() {
@@ -458,7 +464,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                         "approvePosts": createPost,
                                         "handleReports": reports,
                                         "hostel": getHostel(selectedRole),
-                                      }
+                                      },
+                                      "hostelId": hostels?.getId(selectedHostel)
                                     });
                                     runMutation({
                                       "user": {
@@ -466,7 +473,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                         "role": selectedRole,
                                       },
                                       "permission": {
-                                        "account": accounts,
+                                        "account": createAccount != false
+                                            ? accounts
+                                            : [],
                                         "livePosts": posts,
                                         "createNotification": false,
                                         "createTag": createTag,
@@ -474,6 +483,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                         "handleReports": reports,
                                         "hostel": getHostel(selectedRole),
                                       },
+                                      "hostelId": hostels?.getId(selectedHostel)
                                     });
                                   }
                                 },

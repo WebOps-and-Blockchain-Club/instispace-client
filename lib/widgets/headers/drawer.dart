@@ -297,7 +297,11 @@ class CustomDrawer extends StatelessWidget {
                                       ),
                                     // Update Role
                                     if (user.permission!.createAccount
-                                        .hasPermission)
+                                                .allowedRoles !=
+                                            null &&
+                                        user.permission!.createAccount
+                                            .allowedRoles!
+                                            .contains("MODERATOR"))
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
