@@ -261,7 +261,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                     label: 'Academics',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.lost_and_found, size: 21),
+                    icon: Icon(CustomIcons.lostandfound_1, size: 21),
                     label: 'L&F',
                   ),
                 ],

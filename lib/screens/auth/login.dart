@@ -96,10 +96,10 @@ class _LogInState extends State<LogIn> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Row(
+                                      Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
-                                        children: [
+                                        children: const [
                                           Text('L',
                                               style: TextStyle(
                                                   fontSize: 44,
@@ -159,7 +159,8 @@ class _LogInState extends State<LogIn> {
                                               size: 20),
                                         ),
                                       ),
-                                      suffixIconColor: const Color(0x00b674ff),
+                                      suffixIconColor: Colors.black,
+                                      // suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
                                           const BoxConstraints(maxHeight: 25),
                                       labelText: "Password"),
@@ -170,27 +171,36 @@ class _LogInState extends State<LogIn> {
                                     return null;
                                   },
                                 ),
-                                Row(
-                                  children: [
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                          padding: EdgeInsets.zero),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ForgotPassword(
-                                                        roll: name.text)));
-                                      },
-                                      child: const Text('Forgot Password?'),
-                                    ),
-                                    Text(' (Not applicable for LDAP users)',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(color: Colors.grey[700])),
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPassword(
+                                                          roll: name.text)));
+                                        },
+                                        child: Text(
+                                          'Forgot Password?',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                        ),
+                                      ),
+                                      Text('(Only for non-LDAP users)',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color: Colors.grey[700])),
+                                    ],
+                                  ),
                                 ),
 
                                 if (result != null && result.hasException)

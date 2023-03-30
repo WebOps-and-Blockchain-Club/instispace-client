@@ -210,7 +210,6 @@ class _PostCardState extends State<PostCard>
             ],
           ),
         ),
-        const SizedBox(height: 10),
       ],
     ));
   }
@@ -242,7 +241,7 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
               DateTimeFormatModel.fromString(post.eventTime!)
                   .toFormat("dd MMM h:mm a"),
               style: const TextStyle(
-                  fontSize: 19,
+                  fontSize: 15,
                   color: Colors.lightBlue,
                   fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
@@ -256,7 +255,7 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
             child: Text(
               "VENUE - ${post.location!}",
               style: const TextStyle(
-                  fontSize: 19,
+                  fontSize: 15,
                   color: Colors.lightBlue,
                   fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,

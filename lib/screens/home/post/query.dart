@@ -87,7 +87,7 @@ class _PostQueryState extends State<PostQuery> {
           return Center(
             child: Error(
               error: '',
-              message: 'No data found.',
+              message: 'Your posts feed is empty',
               onRefresh: refetch,
             ),
           );

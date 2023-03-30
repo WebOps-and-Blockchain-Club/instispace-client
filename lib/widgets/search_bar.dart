@@ -52,7 +52,7 @@ class _SearchBarState extends State<SearchBar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 50,
+            height: 44,
             child: Theme(
               data: ThemeData(
                 primarySwatch: ColorPalette.palette(context).primary,

@@ -2,7 +2,9 @@ import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../widgets/search_bar.dart';
 import '/models/user.dart';
 import 'get_user.dart';
 import '/widgets/app_bar.dart';
@@ -130,9 +132,9 @@ class _SearchUserState extends State<SearchUser> {
                         children: [
                           ProfileIconWidget(photo: user.photo),
                           const SizedBox(width: 10),
-                          IntrinsicWidth(
+                          Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   user.ldapName,
@@ -140,7 +142,15 @@ class _SearchUserState extends State<SearchUser> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400),
                                 ),
-                                Text(user.roll + ', ' + user.program)
+                                const SizedBox(height: 8),
+                                Text('${user.roll}, ${user.program}'),
+                                const SizedBox(height: 8),
+                                InkWell(
+                                  onTap: () => launchUrlString(
+                                      'mailto:${user.roll}@smail.iitm.ac.in'),
+                                  child: const Icon(Icons.forward_to_inbox,
+                                      size: 20),
+                                )
                               ],
                             ),
                           ),
@@ -170,7 +180,7 @@ class _SearchUserState extends State<SearchUser> {
                       : result.isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : TextButton(
-                              onPressed: () => fetchMore,
+                              onPressed: () => fetchMore(),
                               child: const Text("Load More")),
                 ),
               ),
@@ -190,9 +200,8 @@ class QueryList<T> extends StatefulWidget {
   final QueryOptions<Object?> options;
   final Widget Function(T) itemBuilder;
   final FetchMoreOptions Function(T) fetchMoreOption;
-  final Widget Function(
-          QueryResult result, Future<QueryResult<Object?>> fetchMore)?
-      endOfListWidget;
+  final Widget Function(QueryResult result,
+      Future<QueryResult<Object?>> Function() fetchMore)? endOfListWidget;
 
   const QueryList(
       {Key? key,
@@ -296,7 +305,10 @@ class _QueryListState<T> extends State<QueryList<T>> {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) => index == items.length
-                  ? widget.endOfListWidget!(result, fetchMore!(opts))
+                  ? widget.endOfListWidget!(
+                      result,
+                      () => fetchMore!(opts),
+                    )
                   : widget.itemBuilder(items[index]),
             ),
           ),

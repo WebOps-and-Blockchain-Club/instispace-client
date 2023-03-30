@@ -176,7 +176,7 @@ class AboutUsPage extends StatelessWidget {
                       const SizedBox(height: 5),
                       const Center(
                         child: Text(
-                          "Project Head:\nYatharth, Janith M S\n\nMembers:\nHarsh Trivedi, Rasagnya, Ganesh S, Vedant Khaire, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan\n\nSpecial Thanks:\nDhanveerraj J M, Abhigyan Chattopadhyay, Vaidehi Garodia, Abhiram V M, Nancy, Yashwanth, Faiza Nazrien",
+                          "Project Head:\nYatharth, Janith M S\n\nMembers:\nHarsh Trivedi, Rasagnya, Ganesh S, Vedant Khaire, Aman Kulwal, Anshul Mehta, Gautam Vaja, Sai Charan\n\nSpecial Thanks:\nDhanveerraj J M, Abhigyan Chattopadhyay, Vaidehi Garodia, Abhiram V M, S Naveen Prasad, Nancy, Yashwanth, Faiza Nazrien",
                           textAlign: TextAlign.center,
                         ),
                       ),
