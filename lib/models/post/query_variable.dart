@@ -4,8 +4,8 @@ import '../tag.dart';
 class PostQueryVariableModel {
   final int take;
   final String lastPostId;
-  final bool byLikes;
-  final bool byComments;
+  final bool? byLikes;
+  final bool? byComments;
   final String? search;
   final bool postToBeApproved;
   final bool followedTags;
@@ -13,6 +13,7 @@ class PostQueryVariableModel {
   final List<TagModel>? tags;
   final bool isSaved;
   final bool showOldPost;
+  final bool showNewPost;
   final bool isLiked;
   final List<PostCategoryModel>? categories;
   final bool createdByMe;
@@ -21,8 +22,8 @@ class PostQueryVariableModel {
   PostQueryVariableModel(
       {this.take = 10,
       this.lastPostId = '',
-      this.byLikes = false,
-      this.byComments = false,
+      this.byLikes,
+      this.byComments,
       this.search,
       this.postToBeApproved = false,
       this.followedTags = false,
@@ -30,6 +31,7 @@ class PostQueryVariableModel {
       this.tags,
       this.isSaved = false,
       this.showOldPost = false,
+      this.showNewPost = false,
       this.isLiked = false,
       this.categories,
       this.createdByMe = false,
@@ -48,6 +50,7 @@ class PostQueryVariableModel {
         "tags": tags?.map((e) => e.id).toList(),
         "isSaved": isSaved,
         "showOldPost": showOldPost,
+        "showNewPost": showNewPost,
         "isLiked": isLiked,
         "categories": categories?.map((e) => e.name).toList(),
         "createdByMe": createdByMe,

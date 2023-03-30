@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(FeedGQL().findPosts()),
-        variables: PostQueryVariableModel(categories: feedCategories).toJson(),
+        variables: PostQueryVariableModel(
+                categories: feedCategories, showNewPost: true)
+            .toJson(),
         parserFn: (data) => PostsModel.fromJson(data));
 
     return WillPopScope(

@@ -37,6 +37,7 @@ class _PostPageState extends State<PostPage> {
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(FeedGQL().findPosts()),
         variables: PostQueryVariableModel(
+                showNewPost: true,
                 search: search,
                 categories: selectedCategories.isEmpty
                     ? categories
