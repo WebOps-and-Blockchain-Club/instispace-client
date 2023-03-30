@@ -50,6 +50,7 @@ class LocalNotificationService {
       playSound: true,
       enableVibration: true,
       priority: Priority.max,
+      icon: '@mipmap/ic_launcher_bg',
     );
 
     const IOSNotificationDetails iosNotificationDetails =
@@ -87,7 +88,7 @@ class LocalNotificationService {
                 'This channel is used for important notifications.',
             color: const Color(0xFF2F247B),
             playSound: true,
-            icon: '@mipmap/ic_launcher',
+            icon: '@mipmap/ic_launcher_bg',
             styleInformation: bigPictureStyleInformation ??
                 BigTextStyleInformation(description)),
         iOS: const IOSNotificationDetails(
@@ -135,7 +136,7 @@ class LocalNotificationService {
                 'This channel is used for important notifications.',
             color: Color(0xFF2F247B),
             playSound: true,
-            icon: '@mipmap/ic_launcher',
+            icon: '@mipmap/ic_launcher_bg',
           ),
           iOS: IOSNotificationDetails(
             sound: 'default.wav',
@@ -174,7 +175,7 @@ class LocalNotificationService {
                 'This channel is used for important notifications.',
             color: Color(0xFF2F247B),
             playSound: true,
-            icon: '@mipmap/ic_launcher',
+            icon: '@mipmap/ic_launcher_bg',
           ),
           iOS: IOSNotificationDetails(
             sound: 'default.wav',
