@@ -85,10 +85,29 @@ class _PostQueryState extends State<PostQuery> {
 
         if (posts.isEmpty) {
           return Center(
-            child: Error(
-              error: '',
-              message: 'Your posts feed is empty',
-              onRefresh: refetch,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Error(
+                  error: '',
+                  message: 'Your feed is empty',
+                  onRefresh: refetch,
+                ),
+                if (widget.endofwidget)
+                  TextButton(
+                      onPressed: () {
+                        navigate(
+                            context,
+                            SuperUserPostPage(
+                              title: 'OLDER POST',
+                              filterVariables: PostQueryVariableModel(
+                                showOldPost: true,
+                                categories: widget.categories,
+                              ),
+                            ));
+                      },
+                      child: const Text("View Older Posts")),
+              ],
             ),
           );
         }

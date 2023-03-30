@@ -85,7 +85,7 @@ class CustomElevatedButton extends StatelessWidget {
             ),
             if (isLoading)
               const Padding(
-                padding: EdgeInsets.only(right: 10, left: 20),
+                padding: EdgeInsets.only(right: 10),
                 child: SizedBox(
                     width: 15,
                     height: 15,

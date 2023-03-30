@@ -37,9 +37,11 @@ class _PostCardState extends State<PostCard>
   @override
   Widget build(BuildContext context) {
     PostModel post = widget.post;
-    final isSuperUserPage =
-        (post.reports != null && post.reports!.isNotEmpty) ||
-            ["TO_BE_APPROVED", "APPROVED", "REJECTED"].contains(post.status);
+
+    final isSuperUserPage = (post.reports != null &&
+            post.reports!.isNotEmpty &&
+            post.permissions.contains('MODERATE_REPORT')) ||
+        post.permissions.contains('APPROVE_POST');
     return CustomCard(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,6 +230,7 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -329,8 +332,10 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
           ),
 
         //Display Approve or reject button
-        if ((post.reports != null && post.reports!.isNotEmpty) ||
-            ["TO_BE_APPROVED", "APPROVED", "REJECTED"].contains(post.status))
+        if ((post.reports != null &&
+                post.reports!.isNotEmpty &&
+                post.permissions.contains("MODERATE_REPORT")) ||
+            post.permissions.contains("APPROVE_POST"))
           Column(
             children: [
               const Divider(),
@@ -368,12 +373,14 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
                   },
                 ),
               //Report action button
-              if (post.reports != null && post.reports!.isNotEmpty)
+              if (post.reports != null &&
+                  post.reports!.isNotEmpty &&
+                  post.permissions.contains("MODERATE_REPORT"))
                 SuperUserActionButton(post: post, type: 'report'),
 
               //Approve post action
-              if (["TO_BE_APPROVED", "APPROVED", "REJECTED"]
-                  .contains(post.status))
+              if (post.reports == null &&
+                  post.permissions.contains("APPROVE_POST"))
                 SuperUserActionButton(post: post),
 
               const Divider(),

@@ -67,7 +67,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     title: FieldModel(),
     description: FieldModel(label: 'Describe the question'),
     imageSecondary: FieldModel(required: false),
-    tag: FieldModel(),
+    tag: FieldModel(required: false),
   ),
   "Help": CreatePostModel(
     title: FieldModel(),

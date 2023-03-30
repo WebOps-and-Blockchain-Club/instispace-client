@@ -87,7 +87,12 @@ class _PostPageState extends State<PostPage> {
             ),
           ];
         },
-        body: PostQuery(options: options, categories: widget.categories),
+        body: PostQuery(
+          options: options,
+          categories: selectedCategories.isNotEmpty
+              ? selectedCategories
+              : widget.categories,
+        ),
       ),
       floatingActionButton: widget.createPost
           ? NewPostButton(
