@@ -19,7 +19,9 @@ class CustomIcons {
   CustomIcons._();
 
   static const _kFontFam = 'CustomIcons';
+  static const _kFontFam1 = 'WhatsAppIcon';
   static const String? _kFontPkg = null;
+  static const String? _kFontPkg1 = null;
 
   static const IconData like =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -97,6 +99,6 @@ class CustomIcons {
       IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData edit =
       IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData survey =
-      IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData whatsapp =
+      IconData(0xe800, fontFamily: _kFontFam1, fontPackage: _kFontPkg1);
 }

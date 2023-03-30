@@ -126,6 +126,9 @@ flutter:
     - family: CustomIcons
       fonts:
         - asset: assets/font/CustomIcons.ttf
+    - family: WhatsAppIcon
+      fonts:
+        - asset: assets/font/WhatsAppIcon.ttf
 
   #
   # For details regarding fonts from package dependencies,
