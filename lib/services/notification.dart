@@ -103,8 +103,8 @@ class LocalNotificationService {
   }
 
   void showFirebaseNotification(RemoteMessage message) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    AuthService authService = AuthService();
+    String? token = await authService.getToken();
     if (token == null || token == "") {
       FirebaseMessaging.instance.deleteToken();
       return;

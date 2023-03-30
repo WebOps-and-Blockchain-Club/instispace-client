@@ -128,15 +128,13 @@ class _HomeWrapperState extends State<HomeWrapper> {
     FirebaseMessaging.onMessage.listen(service.showFirebaseNotification);
 
     FirebaseMessaging.instance.onTokenRefresh.listen((newFcmToken) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('token');
       final _options = MutationOptions(
         document: gql(AuthGQL.updateFCMToken),
         variables: <String, dynamic>{
           'fcmToken': newFcmToken,
         },
       );
-      graphQLClient(token).mutate(_options);
+      graphQLClient(widget.auth.token).mutate(_options);
     });
 
     if (widget.navigatePath != null && widget.navigatePath!.isNotEmpty) {
