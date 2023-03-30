@@ -159,10 +159,8 @@ class _LogInState extends State<LogIn> {
                                               size: 20),
                                         ),
                                       ),
-                                      suffixIconColor: Colors.black,
-                                      // suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
-                                          const BoxConstraints(maxHeight: 25),
+                                          Themes.inputIconConstraints,
                                       labelText: "Password"),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
