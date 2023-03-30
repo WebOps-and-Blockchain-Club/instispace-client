@@ -1,9 +1,9 @@
 import 'dart:math';
+import 'package:client/services/auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -51,6 +51,8 @@ class LocalNotificationService {
       enableVibration: true,
       priority: Priority.max,
       icon: '@mipmap/ic_launcher_bg',
+      visibility: NotificationVisibility.public,
+      fullScreenIntent: true,
     );
 
     const IOSNotificationDetails iosNotificationDetails =
@@ -87,8 +89,13 @@ class LocalNotificationService {
             channelDescription:
                 'This channel is used for important notifications.',
             color: const Color(0xFF2F247B),
+            importance: Importance.max,
             playSound: true,
+            enableVibration: true,
+            priority: Priority.max,
             icon: '@mipmap/ic_launcher_bg',
+            visibility: NotificationVisibility.public,
+            fullScreenIntent: true,
             styleInformation: bigPictureStyleInformation ??
                 BigTextStyleInformation(description)),
         iOS: const IOSNotificationDetails(
