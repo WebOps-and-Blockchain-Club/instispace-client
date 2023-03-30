@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../themes.dart';
 import '/models/academic/course.dart';
 import 'search_course.dart';
 import '../../database/config.dart';
@@ -68,7 +69,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   final _nameController = TextEditingController();
   var _selectedSlots = <SlotModel>[];
   final _additionalSlotController = TextEditingController();
-  final _notifyTime = TextEditingController();
+  final _notifyTime = TextEditingController(text: "10");
   List<SlotModel> _options = <SlotModel>[];
   bool notify = false;
 
@@ -80,7 +81,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       _nameController.text = _c.courseName;
       _options = _c.slots ?? [];
       _selectedSlots = _c.slots ?? [];
-      _notifyTime.text = _c.reminder.toString();
     }
     super.initState();
   }
@@ -96,7 +96,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.courseId != null ? 'Edit Course' : 'Add Course'),
+        title: Text(
+          widget.courseId != null ? 'Edit Course' : 'Add Course',
+          style: const TextStyle(
+              letterSpacing: 1,
+              color: Color(0xFF3C3C3C),
+              fontSize: 20,
+              fontWeight: FontWeight.w700),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -159,37 +166,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               //       );
               //     },
               //     text: 'Select Time Slots'),
-              ListView.builder(
-                itemCount: _options.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final slot = _options[index];
-                  return Row(
-                    children: [
-                      Checkbox(
-                        value: _selectedSlots.contains(slot),
-                        onChanged: (checked) {
-                          setState(() {
-                            if (checked!) {
-                              _selectedSlots.add(slot);
-                            } else {
-                              _selectedSlots.remove(slot);
-                            }
-                          });
-                        },
-                      ),
-                      Text(
-                          '${slot.slotName.toUpperCase()} Slot - ${slot.day}: ${slot.fromTimeStr} - ${slot.toTimeStr}'),
-                    ],
-                  );
-                },
-              ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _additionalSlotController,
                 decoration: InputDecoration(
-                    labelText: 'Enter Slot Code here',
+                    labelText: 'Slot Code (Click ✓ to add more slots)',
                     suffixIcon: IconButton(
                       onPressed: () {
                         final addOptions =
@@ -205,6 +186,36 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                       icon: const Icon(Icons.check),
                     )),
               ),
+              if (_options.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: ListView.builder(
+                    itemCount: _options.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final slot = _options[index];
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: _selectedSlots.contains(slot),
+                            onChanged: (checked) {
+                              setState(() {
+                                if (checked!) {
+                                  _selectedSlots.add(slot);
+                                } else {
+                                  _selectedSlots.remove(slot);
+                                }
+                              });
+                            },
+                          ),
+                          Text(
+                              '${slot.slotName.toUpperCase()} Slot - ${slot.day}: ${slot.fromTimeStr} - ${slot.toTimeStr}'),
+                        ],
+                      );
+                    },
+                  ),
+                ),
 
               const SizedBox(height: 20),
               Row(
@@ -244,8 +255,18 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               const SizedBox(height: 16.0),
               CustomElevatedButton(
                 text: widget.courseId != null ? 'Edit Course' : 'Add Course',
+                padding: const [25, 15],
+                textSize: 18,
+                color: ColorPalette.palette(context).primary,
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_selectedSlots.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Enter atleast one slot"),
+                    ));
+                    return;
+                  }
+                  if (_formKey.currentState!.validate() &&
+                      _selectedSlots.isNotEmpty) {
                     final code = _codeController.text;
                     final name = _nameController.text;
 
@@ -254,14 +275,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         widget.academicService.updateCourse(
                           widget.courseId!,
                           CourseModel(
-                              courseCode: code,
-                              courseName: name,
-                              fromDate: widget.course?.fromDate ??
-                                  DateTime(2023, 1, 15),
-                              toDate: widget.course?.toDate ??
-                                  DateTime(2023, 5, 15),
-                              slots: _selectedSlots,
-                              reminder: int.parse(_notifyTime.text)),
+                            courseCode: code,
+                            courseName: name,
+                            fromDate: widget.course?.fromDate ??
+                                DateTime(2023, 1, 15),
+                            toDate:
+                                widget.course?.toDate ?? DateTime(2023, 5, 15),
+                            slots: _selectedSlots,
+                            reminder: notify ? int.parse(_notifyTime.text) : 0,
+                          ),
                         );
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(

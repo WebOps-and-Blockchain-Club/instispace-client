@@ -11,6 +11,8 @@ class AcademicDatabaseService {
   static final AcademicDatabaseService instance =
       AcademicDatabaseService._init();
 
+  LocalNotificationService notificationService = LocalNotificationService();
+
   static Database? _database;
 
   AcademicDatabaseService._init();
@@ -76,7 +78,6 @@ class AcademicDatabaseService {
         batch.insert('slots', slotData);
       }
       await batch.commit();
-      LocalNotificationService notificationService = LocalNotificationService();
       notificationService.scheduleWeeklyNotification(
           title: course.courseName,
           description: course.courseCode,
@@ -113,12 +114,12 @@ class AcademicDatabaseService {
 
   Future<List<CourseModel>> fetchCoursesWithSlots() async {
     final db = await database;
-    final currentDate = DateTime.now().toIso8601String();
+    // final currentDate = DateTime.now().toIso8601String();
 
     final courseRows = await db.query(
       'courses LEFT JOIN slots ON courses.courseId = slots.courseId',
-      where: 'courses.fromDate <= ? AND courses.toDate >= ?',
-      whereArgs: [currentDate, currentDate],
+      // where: 'courses.fromDate <= ? AND courses.toDate >= ?',
+      // whereArgs: [currentDate, currentDate],
       orderBy: 'courses.courseId, slots.slotId',
     );
     // db.rawQuery('delete from slots');
@@ -205,13 +206,14 @@ class AcademicDatabaseService {
 
   Future<DateTime?> getNextClassTime(int courseId) async {
     TimeOfDay? result;
+    int reminder = 0;
     int itr = 0;
     final db = await database;
     DateTime currTime = DateTime.now();
 
     while ((itr <= 14 && result == null)) {
       final res = await db.rawQuery(
-          '''SELECT slots.*, courses.courseCode, courses.courseName, courses.fromDate, courses.toDate
+          '''SELECT slots.*, courses.courseCode, courses.courseName, courses.fromDate, courses.toDate, courses.reminder
          FROM slots 
          INNER JOIN courses 
          ON slots.courseId = courses.courseId 
@@ -230,15 +232,16 @@ class AcademicDatabaseService {
       result = res.isNotEmpty
           ? res.map((slot) => SlotModel.fromJson(slot)).toList()[0].fromTime
           : null;
+      reminder = res.isNotEmpty ? (res[0]["reminder"] as int) : 0;
     }
 
-    currTime.subtract(const Duration(hours: 24));
+    currTime = currTime.subtract(const Duration(hours: 24));
     if (result == null) {
       return null;
     }
 
     return DateTime(currTime.year, currTime.month, currTime.day, result.hour,
-        result.minute);
+        result.minute - reminder);
   }
 
   Future<void> deleteCourseWithSlots(int courseId) async {
@@ -248,5 +251,7 @@ class AcademicDatabaseService {
       await txn.delete('slots', where: 'courseId = ?', whereArgs: [courseId]);
       await txn.delete('courses', where: 'courseId = ?', whereArgs: [courseId]);
     });
+
+    await notificationService.deleteNotification(courseId);
   }
 }

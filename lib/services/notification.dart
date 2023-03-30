@@ -130,13 +130,18 @@ class LocalNotificationService {
         tz.TZDateTime.parse(tz.local, time),
         const NotificationDetails(
           android: AndroidNotificationDetails(
-            'High_importance_channel',
-            'High Importance Notifications',
+            'reminder_notification_channel1',
+            'Reminder Notifications',
             channelDescription:
-                'This channel is used for important notifications.',
+                'This channel is used for reminder notifications.',
             color: Color(0xFF2F247B),
+            importance: Importance.max,
             playSound: true,
+            enableVibration: true,
+            priority: Priority.max,
             icon: '@mipmap/ic_launcher_bg',
+            visibility: NotificationVisibility.public,
+            fullScreenIntent: true,
           ),
           iOS: IOSNotificationDetails(
             sound: 'default.wav',
@@ -160,23 +165,33 @@ class LocalNotificationService {
     AcademicDatabaseService acadDb = AcademicDatabaseService.instance;
     DateTime? nextNotificationTime = await acadDb.getNextClassTime(courseId);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-
+    print("=========================================nextNotificationTime");
+    print(nextNotificationTime);
+    if (nextNotificationTime == null) {
+      return;
+    }
+    final nextNotificationTimeTZ =
+        tz.TZDateTime.from(nextNotificationTime, now.location);
+    print("=========================================nextNotificationTimeTZ");
+    print(nextNotificationTimeTZ);
     await _localNotificationService.zonedSchedule(
         courseId,
         title,
         description,
-        tz.TZDateTime.from(
-            nextNotificationTime ?? DateTime(2000), now.location),
+        nextNotificationTimeTZ,
         const NotificationDetails(
           android: AndroidNotificationDetails(
-            'High_importance_channel',
-            'High Importance Notifications',
-            channelDescription:
-                'This channel is used for important notifications.',
-            color: Color(0xFF2F247B),
-            playSound: true,
-            icon: '@mipmap/ic_launcher_bg',
-          ),
+              'reminder_notification_channel', 'Reminder Notifications',
+              channelDescription:
+                  'This channel is used for reminder notifications.',
+              color: Color(0xFF2F247B),
+              importance: Importance.max,
+              playSound: true,
+              enableVibration: true,
+              priority: Priority.max,
+              icon: '@mipmap/ic_launcher_bg',
+              visibility: NotificationVisibility.public,
+              fullScreenIntent: true),
           iOS: IOSNotificationDetails(
             sound: 'default.wav',
             presentAlert: true,
@@ -184,10 +199,22 @@ class LocalNotificationService {
             presentSound: true,
           ),
         ),
+        payload: "$nextNotificationTimeTZ",
         androidAllowWhileIdle: true,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        matchDateTimeComponents: DateTimeComponents.dateAndTime,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
+
+    var a = await _localNotificationService.pendingNotificationRequests();
+    print(a);
+  }
+
+  Future<List<PendingNotificationRequest>> getScheduledNotification() async {
+    return await _localNotificationService.pendingNotificationRequests();
+  }
+
+  Future<void> deleteNotification(int id) async {
+    return await _localNotificationService.cancel(id);
   }
 
   tz.TZDateTime getNextInstanceOfTime(String day, int hours, int minutes) {
