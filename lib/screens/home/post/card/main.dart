@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/graphQL/badge.dart';
 import 'package:client/models/post/query_variable.dart';
+import 'package:client/screens/badges/show_qr.dart';
 import 'package:client/screens/super_user/approve_post.dart';
 import 'package:client/widgets/card/image_view.dart';
 import 'package:client/widgets/helpers/navigate.dart';
@@ -33,7 +35,7 @@ class _PostCardState extends State<PostCard>
     with SingleTickerProviderStateMixin {
   GlobalKey key = GlobalKey();
   bool _showContent = false;
-
+  void showDialogForQR() {}
   @override
   Widget build(BuildContext context) {
     PostModel post = widget.post;
@@ -173,7 +175,7 @@ class _PostCardState extends State<PostCard>
                   child: ReportPostButton(
                       postId: post.id, options: widget.options),
                 ),
-              if (post.permissions.contains('Edit'))
+              if (post.permissions.contains('Edit')) ...[
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: InkWell(
@@ -189,6 +191,68 @@ class _PostCardState extends State<PostCard>
                             ),
                           ))),
                 ),
+                Mutation(
+                    options: MutationOptions(
+                        document: gql(BadgeGQL().toggleIsQRActive),
+                        onCompleted: (dynamic resultData) {
+                          Navigator.of(context).pop();
+                        }),
+                    builder: (RunMutation runMutation, QueryResult? result) {
+                      return Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: InkWell(
+                            child: Icon(Icons.qr_code),
+                            onTap: () {
+                              if (widget.post.points == null) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      TextEditingController points =
+                                          TextEditingController();
+                                      return AlertDialog(
+                                          title: Text('Activate QR'),
+                                          content: Column(
+                                            children: [
+                                              TextFormField(
+                                                controller: points,
+                                                maxLength: 20,
+                                                decoration: InputDecoration(
+                                                  labelText: "Points",
+                                                ),
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "Enter the points";
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  runMutation({
+                                                    'postId': widget.post.id,
+                                                    'points':
+                                                        int.parse(points.text)
+                                                  });
+                                                },
+                                                child: Text('Start'))
+                                          ]);
+                                    }).then((_) => setState(() {}));
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ShowQRPage(
+                                    post: post,
+                                  ),
+                                ));
+                              }
+                            },
+                            //child: const Icon(Icons.qr_code)
+                          ));
+                    })
+              ],
               const Spacer(),
               if (post.photo != null &&
                   post.photo!.isNotEmpty &&

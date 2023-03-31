@@ -96,6 +96,6 @@ String formatErrorMessage(String error, BuildContext context) {
   } else if (error.contains("No Tags found")) {
     return "No Tags found";
   } else {
-    return "Server Error";
+    return error;
   }
 }

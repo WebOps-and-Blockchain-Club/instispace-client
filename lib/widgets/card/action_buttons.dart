@@ -1,3 +1,4 @@
+import 'package:client/graphQL/badge.dart';
 import 'package:client/graphQL/feed.dart';
 import 'package:client/models/post/query_variable.dart';
 import 'package:client/screens/home/comment/main.dart';
@@ -28,6 +29,24 @@ import '../../models/tag.dart';
 import '../../utils/string_extension.dart';
 import '../../themes.dart';
 import '../text/label.dart';
+import 'dart:async';
+
+class Debouncer {
+  int? seconds;
+  int? milliseconds;
+  VoidCallback? action;
+  Timer? timer;
+
+  run(VoidCallback action) {
+    if (null != timer) {
+      timer!.cancel();
+    }
+    timer = Timer(
+      Duration(milliseconds: milliseconds ?? 100),
+      action,
+    );
+  }
+}
 
 class CTAButton extends StatelessWidget {
   final LinkModel cta;
@@ -369,6 +388,97 @@ class VotePostButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class GamifyPostButton extends StatefulWidget {
+  final String postId;
+  final bool? isQRActive;
+  final int? pointsValue;
+  const GamifyPostButton(
+      {Key? key,
+      required this.postId,
+      required this.isQRActive,
+      this.pointsValue})
+      : super(key: key);
+
+  @override
+  State<GamifyPostButton> createState() => _GamifyPostButtonState();
+}
+
+class _GamifyPostButtonState extends State<GamifyPostButton> {
+  final _debouncer = Debouncer();
+  @override
+  Widget build(BuildContext context) {
+    return Mutation(
+      options: MutationOptions(
+          document: gql(BadgeGQL().toggleIsQRActive),
+          onCompleted: (dynamic resultData) {}),
+      builder: (RunMutation runMutation, QueryResult? result) {
+        print(result);
+        return CustomElevatedButton(
+            onPressed: () {
+              if (widget.isQRActive == false) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      TextEditingController points = TextEditingController();
+                      if (widget.pointsValue != null)
+                        points.text = widget.pointsValue.toString();
+                      return AlertDialog(
+                          title: Text('Activate QR'),
+                          content: Column(
+                            children: [
+                              TextFormField(
+                                controller: points,
+                                maxLength: 20,
+                                decoration: InputDecoration(
+                                  labelText: "Points",
+                                  prefixIcon: const Icon(Icons.account_balance,
+                                      size: 20),
+                                  prefixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Enter the points";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                _debouncer.run(
+                                  () {
+                                    runMutation({
+                                      'postId': widget.postId,
+                                      'points': int.parse(points.text)
+                                    });
+                                  },
+                                );
+
+                                Navigator.of(context).pop();
+                              },
+                              child: Text((widget.isQRActive == null ||
+                                      widget.isQRActive == false)
+                                  ? 'Start'
+                                  : 'Stop'),
+                            )
+                          ]);
+                    }).then((_) => setState(() {}));
+              } else {
+                runMutation(
+                    {'postId': widget.postId, 'points': widget.pointsValue});
+                setState(() {});
+              }
+            },
+            isLoading: result!.isLoading,
+            text: widget.isQRActive == false ? 'Start' : 'Stop');
+      },
     );
   }
 }

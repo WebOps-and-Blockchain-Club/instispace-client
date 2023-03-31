@@ -284,7 +284,7 @@ class _EditPasswordState extends State<EditPassword> {
                                 runMutation({
                                   "userInput": {
                                     "name": name.text,
-                                    "photoUrl":
+                                    "photo":
                                         uploadResult?.join(" AND ") ?? photoUrl
                                   }
                                 });

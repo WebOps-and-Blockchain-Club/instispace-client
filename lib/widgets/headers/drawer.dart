@@ -1,10 +1,13 @@
 import 'package:client/screens/academics/calendar.dart';
+import 'package:client/screens/badges/club_wrapper.dart';
+import 'package:client/screens/badges/create_club.dart';
+import 'package:client/screens/badges/view_club.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
+import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
 import '../../screens/super_user/approve_post.dart';
@@ -24,7 +27,8 @@ import '../../screens/info/feedback.dart';
 import '../../screens/super_user/view_feedback.dart';
 import '../../screens/info/about_us.dart';
 import '../../screens/super_user/super_user_list.dart';
-
+import '../../screens/badges/update_club.dart';
+import '../../screens/badges/create_badges.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -343,6 +347,66 @@ class CustomDrawer extends StatelessWidget {
                                                       const CreateTagPage()));
                                         },
                                       ),
+                                    if (user.role != "USER")
+                                      ListTile(
+                                        tileColor: Colors.transparent,
+                                        visualDensity:
+                                            const VisualDensity(vertical: -4),
+                                        title: const Text('Club Manager'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      const ClubWrapperPage()));
+                                        },
+                                      ),
+                                    /*if (user.role != "USER")
+                                      ListTile(
+                                        tileColor: Colors.transparent,
+                                        visualDensity:
+                                            const VisualDensity(vertical: -4),
+                                        title: const Text('View Club'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      const ViewClubPage()));
+                                        },
+                                      ),*/
+                                    /*if (user.role != "USER")
+                                      ListTile(
+                                        tileColor: Colors.transparent,
+                                        visualDensity:
+                                            const VisualDensity(vertical: -4),
+                                        title: const Text('Update Club'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      const UpdateClubPage()));
+                                        },
+                                      ),*/
+                                    /*if (user.role != "USER")
+                                      ListTile(
+                                        tileColor: Colors.transparent,
+                                        visualDensity:
+                                            const VisualDensity(vertical: -4),
+                                        title: const Text('Create Badges'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      const CreateBadgesPage()));
+                                        },
+                                      ),*/
                                     // Super User's Guide
                                     if (user.role != "USER")
                                       ListTile(
@@ -361,7 +425,18 @@ class CustomDrawer extends StatelessWidget {
                                   ],
                                 ),
                               ),
-
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Scan QR"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const ScannerScreen()));
+                                },
+                              ),
+                            ),
                             // Emergency SOS
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),

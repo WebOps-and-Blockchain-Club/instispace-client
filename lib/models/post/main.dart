@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:client/models/category.dart';
 
 import '../tag.dart';
@@ -33,6 +35,8 @@ class PostModel {
   final SavePostModel? saved;
   final String? status;
   final LinkModel? link;
+  final bool? isQRActive;
+  final int? points;
   final List<ReportModel>? reports;
   final String updatedAt;
   final String createdAt;
@@ -57,6 +61,8 @@ class PostModel {
     this.reports,
     this.dislike,
     this.saved,
+    this.isQRActive,
+    this.points,
     required this.updatedAt,
     required this.createdAt,
     required this.createdBy,
@@ -70,6 +76,8 @@ class PostModel {
         location = data['location'],
         eventTime = data['postTime'],
         endTime = data['endTime'],
+        isQRActive = data['isQRActive'],
+        points = data['pointsValue'],
         category = PostCategoryModel.fromJson(data['category']),
         like =
             LikeModel(count: data['likeCount'], isLikedByUser: data['isLiked']),

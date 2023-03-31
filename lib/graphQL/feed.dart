@@ -23,8 +23,9 @@ class FeedGQL {
         photo
         isHidden
       }
+      isQRActive
+      pointsValue
       photo
-      attachment
       postTime
       location
       linkName
@@ -72,6 +73,17 @@ class FeedGQL {
   }
 }
 """;
+  String findOnePost = """query FindOnePost(\$Postid: String!) {
+  findOnePost(Postid: \$Postid) {
+    id
+    title
+    pointsValue
+    isQRActive
+    attendedBy{
+      roll
+    }
+  }
+}""";
   String toggleLikePost = """mutation Mutation(\$postId: String!) {
   toggleLikePost(postId: \$postId) {
     title
@@ -156,7 +168,6 @@ class FeedGQL {
         isHidden
       }
       photo
-      attachment
       postTime
       location
       linkName

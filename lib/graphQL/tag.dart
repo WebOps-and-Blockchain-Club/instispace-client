@@ -52,7 +52,7 @@ class TagGQL {
           }
           likeCount
           photo
-          attachments
+
         }
         events {
           id
