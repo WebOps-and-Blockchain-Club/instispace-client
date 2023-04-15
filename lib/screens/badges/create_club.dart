@@ -1,3 +1,4 @@
+import 'package:client/screens/badges/view_club.dart';
 import 'package:client/screens/home/new_post/imageService.dart';
 import 'package:client/services/image_picker.dart';
 import 'package:client/widgets/button/elevated_button.dart';
@@ -55,6 +56,7 @@ class _CreateClubPageState extends State<CreateClubPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('New Club Created')),
                     );
+                    Navigator.of(context).push(MaterialPageRoute(builder: ((context) => ViewClubPage())));
                   }),
               builder: (
                 RunMutation runMutation,

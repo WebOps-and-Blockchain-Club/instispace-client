@@ -42,7 +42,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Mutation(
-        options: MutationOptions(document: gql(BadgeGQL().markAttendance)),
+        options: MutationOptions(document: gql(BadgeGQL().markAttendance), onCompleted: (dynamic resultData){
+          ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Attendance Marked')),
+                    );
+        },),
         builder: (
           RunMutation runMutation,
           QueryResult? result,
@@ -59,15 +63,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   onQRViewCreated: _onQRViewCreated,
                 ),
               ),
-              /*Expanded(
-                flex: 1,
-                child: Center(
-                    child: Row(children: [
-                  (scanResult != null)
-                      ? Text('Id: ${scanResult!.code}')
-                      : Text('Scan a code'),
-                ])),
-              ),*/
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 8),

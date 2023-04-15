@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/screens/badges/myBadges.dart';
 import 'package:client/screens/super_user/approve_post.dart';
 import 'package:client/widgets/app_bar.dart';
 import 'package:client/widgets/helpers/navigate.dart';
@@ -225,7 +226,23 @@ class Profile extends StatelessWidget {
                                         "Posts Liked by you",
                                         style: TextStyle(fontSize: 17),
                                       ),
-                                    )
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 4),
+                                      child: Divider(
+                                        color: Color(0xFFBEBEBE),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => navigate(
+                                          context,
+                                          MyBadgePage()),
+                                      child: const Text(
+                                        "My Badges",
+                                        style: TextStyle(fontSize: 17),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

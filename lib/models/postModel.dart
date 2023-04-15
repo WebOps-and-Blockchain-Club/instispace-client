@@ -1,5 +1,6 @@
 import 'package:client/models/actions.dart';
 import 'package:client/models/comment.dart';
+import 'package:client/models/event_points.dart';
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -17,6 +18,7 @@ class PostModel {
   final List<String>? photo;
   final List<String>? tags;
   final LikePostModel? like;
+  final EventPointsModel? eventPoints;
   final bool? isDisliked;
   final bool? isSaved;
   final bool? isHidden;
@@ -33,6 +35,7 @@ class PostModel {
     this.content,
     required this.category,
     this.like,
+    this.eventPoints,
     this.comments,
     this.tags,
     this.location,
@@ -56,6 +59,7 @@ class PostModel {
         location = data['location'],
         like = LikePostModel(
             count: data['likeCount'], isLikedByUser: data['isLiked']),
+        eventPoints = (data['isQRActive']!=null)? EventPointsModel(isQRActive: data['isQRActive'], pointsValue: data['pointsValue']): null,
         isDisliked = data['isDisliked'],
         isHidden = data['isHidden'],
         isSaved = data['isSaved'],

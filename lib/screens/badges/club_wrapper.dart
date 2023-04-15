@@ -20,14 +20,14 @@ class _ClubWrapperPageState extends State<ClubWrapperPage> {
         document: gql(BadgeGQL().getMyClub),
       ),
       builder: (QueryResult? result, {fetchMore, refetch}) {
-        if (result!.isLoading || result.data == null) {
-          return const Loading();
+        if (result!.isLoading) {
+          return Scaffold(body: const Loading());
         }
-        if (result.data!['getMyClub'] != null) {
-          //TODO: create model for club and pass
-          return const ViewClubPage();
-        } else {
+
+        else if (result.data == null || result.data!['getMyClub'] == null) {
           return const CreateClubPage();
+        } else {
+          return const ViewClubPage();
         }
       },
     );

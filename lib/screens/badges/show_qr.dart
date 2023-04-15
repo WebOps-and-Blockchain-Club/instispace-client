@@ -1,4 +1,5 @@
 import 'package:client/graphQL/feed.dart';
+import 'package:client/models/event_points.dart';
 import 'package:client/models/post/main.dart';
 import 'package:client/widgets/card/action_buttons.dart';
 import 'package:client/widgets/helpers/loading.dart';
@@ -50,14 +51,15 @@ class _ShowQRPageState extends State<ShowQRPage> {
               return SafeArea(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment:CrossAxisAlignment.center,
                     children: [
                       //Text(result!.data!['isQRActive'] ? 'true' : 'false'),
-
+                      Text('${result.data!['findOnePost']['pointsValue']} Points', style: TextStyle(fontSize: 24),),
                       if (result.data!['findOnePost']['isQRActive'] == null ||
                           result.data!['findOnePost']['isQRActive'] == false)
-                        Container(
-                          height: 50,
-                          child: Text('Event is not active'),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(height: 300, width: 300, child: Icon(Icons.image, size: 100,),),
                         )
                       else
                         Padding(
@@ -65,15 +67,27 @@ class _ShowQRPageState extends State<ShowQRPage> {
                           child: Image.network(
                               'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${widget.post.id}'),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: GamifyPostButton(
-                            postId: widget.post.id,
-                            isQRActive: result.data!['findOnePost']
-                                ['isQRActive'],
-                            pointsValue: result.data!['findOnePost']
-                                ['pointsValue']),
-                      ),
+                      Mutation(
+                        options: MutationOptions(document: gql(BadgeGQL().toggleIsQRActive), onCompleted: (data) {
+                          refetch!();
+                        },),
+                        builder: (runMutation, mutationResult) {
+                          return Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: CustomElevatedButton(
+                            text: result.data!['findOnePost']['isQRActive'] == true ? 'Stop' : 'Start',
+                            onPressed: (){
+                              if(result.data!['findOnePost']['isQRActive'] == true) {
+                                runMutation({
+                                  'postId': widget.post.id,
+                                  'points': result.data!['findOnePost']['pointsValue']
+                                });
+                              } else{
+                                showDialogForQR(context, widget.post.id);
+                                }
+                          },),
+                        );
+                        }),
                     ]),
               );
             }));

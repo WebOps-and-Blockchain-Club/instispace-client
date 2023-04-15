@@ -427,40 +427,27 @@ class _GamifyPostButtonState extends State<GamifyPostButton> {
                       if (widget.pointsValue != null)
                         points.text = widget.pointsValue.toString();
                       return AlertDialog(
-                          title: Text('Activate QR'),
-                          content: Column(
-                            children: [
-                              TextFormField(
-                                controller: points,
-                                maxLength: 20,
-                                decoration: InputDecoration(
-                                  labelText: "Points",
-                                  prefixIcon: const Icon(Icons.account_balance,
-                                      size: 20),
-                                  prefixIconConstraints:
-                                      Themes.inputIconConstraints,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Enter the points";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ],
+                          title: const Text('Activate QR'),
+                          content: TextFormField(
+                            controller: points,
+                            maxLength: 20,
+                            decoration: const InputDecoration(
+                              labelText: "Points",
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter the points";
+                              }
+                              return null;
+                            },
                           ),
                           actions: [
                             TextButton(
                               onPressed: () {
-                                _debouncer.run(
-                                  () {
-                                    runMutation({
+                                runMutation({
                                       'postId': widget.postId,
                                       'points': int.parse(points.text)
                                     });
-                                  },
-                                );
-
                                 Navigator.of(context).pop();
                               },
                               child: Text((widget.isQRActive == null ||
@@ -473,7 +460,6 @@ class _GamifyPostButtonState extends State<GamifyPostButton> {
               } else {
                 runMutation(
                     {'postId': widget.postId, 'points': widget.pointsValue});
-                setState(() {});
               }
             },
             isLoading: result!.isLoading,

@@ -13,7 +13,16 @@ class BadgeGQL {
   }
 }
 """;
-
+String getMyBadges = """query GetMyBadges {
+  getMyBadges {
+    list {
+      imageURL
+      threshold
+      tier
+    }
+    total
+  }
+}""";
   String updateClub = """mutation(\$updateClubInput: UpdateClubInput!) {
   updateClub(updateClubInput: \$updateClubInput) {
     clubId
