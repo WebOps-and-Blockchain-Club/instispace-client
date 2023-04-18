@@ -15,7 +15,8 @@ import '../../graphQL/badge.dart';
 import 'dart:io';
 
 class CreateClubPage extends StatefulWidget {
-  const CreateClubPage({Key? key}) : super(key: key);
+  
+  const CreateClubPage({Key? key,}) : super(key: key);
 
   @override
   State<CreateClubPage> createState() => _CreateClubPageState();
@@ -23,7 +24,7 @@ class CreateClubPage extends StatefulWidget {
 
 class _CreateClubPageState extends State<CreateClubPage> {
   TextEditingController clubName = TextEditingController();
-
+  int dummy = 0;
   File? image;
   String photoUrl = '';
   final imageService = ImageService();
@@ -56,7 +57,10 @@ class _CreateClubPageState extends State<CreateClubPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('New Club Created')),
                     );
-                    Navigator.of(context).push(MaterialPageRoute(builder: ((context) => ViewClubPage())));
+                    setState(() {
+                      dummy=0;
+                    });
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: ((context) => const ViewClubPage())));
                   }),
               builder: (
                 RunMutation runMutation,
@@ -192,6 +196,11 @@ class _CreateClubPageState extends State<CreateClubPage> {
                                 try {
                                   uploadResult =
                                       await imageService.upload([image]);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          const Text('Image Uploaded'),
+                                    ));
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

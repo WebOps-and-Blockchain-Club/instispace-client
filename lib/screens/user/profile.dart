@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/graphQL/badge.dart';
+import 'package:client/models/badge.dart';
 import 'package:client/screens/badges/myBadges.dart';
 import 'package:client/screens/super_user/approve_post.dart';
 import 'package:client/widgets/app_bar.dart';
@@ -17,15 +19,15 @@ import '../../../widgets/headers/main.dart';
 import '../../models/user.dart';
 import '../../themes.dart';
 import '../../widgets/helpers/error.dart';
+import '../../widgets/badge/main.dart';
 import '../../widgets/utils/image_cache_path.dart';
 import './edit_profile.dart';
 import '../../services/auth.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   final UserModel? user;
   final QueryResult? result;
   final Map<String, String>? userDetails;
-  final AuthService auth = AuthService();
   final Future<QueryResult<Object?>?> Function()? refetch;
   final bool isMyProfile;
 
@@ -37,6 +39,13 @@ class Profile extends StatelessWidget {
       this.refetch,
       this.isMyProfile = true})
       : super(key: key);
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  final AuthService auth = AuthService();
 
   String? encodeQueryParameters(Map<String, String> params) {
     return params.entries
@@ -64,21 +73,22 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel? _user;
-    if (user != null) {
-      _user = user;
-    } else if (result != null && result!.data != null) {
-      _user = (user == null && result != null)
-          ? ((result!.data!["getUser"] == null && userDetails != null)
+    if (widget.user != null) {
+      _user = widget.user;
+    } else if (widget.result != null && widget.result!.data != null) {
+      _user = (widget.user == null && widget.result != null)
+          ? ((widget.result!.data!["getUser"] == null && widget.userDetails != null)
               ? UserModel(
                   role: "USER",
-                  roll: userDetails!["roll"],
-                  ldapName: userDetails!["ldapName"],
-                  photo: userDetails!["photo"]!,
+                  roll: widget.userDetails!["roll"],
+                  ldapName: widget.userDetails!["ldapName"],
+                  photo: widget.userDetails!["photo"]!,
                   isNewUser: true,
                   permissions: [])
-              : UserModel.fromJson(result!.data!["getUser"]))
-          : user!;
+              : UserModel.fromJson(widget.result!.data!["getUser"]))
+          : widget.user!;
     }
+    
     return Stack(
       children: [
         Scaffold(
@@ -90,21 +100,21 @@ class Profile extends StatelessWidget {
                   return [secondaryAppBar(title: 'PROFILE')];
                 },
                 body: RefreshIndicator(
-                  onRefresh: () => refetch != null
-                      ? refetch!()
+                  onRefresh: () => widget.refetch != null
+                      ? widget.refetch!()
                       : Future.delayed(const Duration(seconds: 0)),
                   child: Stack(children: [
                     ListView(),
                     (() {
-                      if (result != null && result!.isLoading) {
+                      if (widget.result != null && widget.result!.isLoading) {
                         return const Loading();
                       }
 
-                      if ((result != null && result!.hasException) ||
+                      if ((widget.result != null && widget.result!.hasException) ||
                           _user == null) {
                         return Error(
-                          error: result!.exception.toString(),
-                          onRefresh: refetch,
+                          error: widget.result!.exception.toString(),
+                          onRefresh: widget.refetch,
                         );
                       }
 
@@ -144,7 +154,7 @@ class Profile extends StatelessWidget {
                                   style:
                                       Theme.of(context).textTheme.titleSmall),
                             ),
-                          if (isMyProfile)
+                          if (widget.isMyProfile)
                             Padding(
                               padding: const EdgeInsets.only(top: 5.0),
                               child: Row(
@@ -158,13 +168,13 @@ class Profile extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (context) => EditProfile(
                                                     auth: auth,
-                                                    user: user!,
+                                                    user: widget.user!,
                                                   )))),
                                       text: "EDIT PROFILE"),
                                 ],
                               ),
                             ),
-                          if (isMyProfile)
+                          if (widget.isMyProfile)
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
                               child: Container(
@@ -200,19 +210,6 @@ class Profile extends StatelessWidget {
                                         color: Color(0xFFBEBEBE),
                                       ),
                                     ),
-                                    // const GestureDetector(
-                                    //   child: Text(
-                                    //     "Reminder Posts",
-                                    //     style: TextStyle(fontSize: 17),
-                                    //   ),
-                                    // ),
-                                    // const Padding(
-                                    //   padding: EdgeInsets.symmetric(
-                                    //       vertical: 8.0, horizontal: 4),
-                                    //   child: Divider(
-                                    //     color: Color(0xFFBEBEBE),
-                                    //   ),
-                                    // ),
                                     GestureDetector(
                                       onTap: () => navigate(
                                           context,
@@ -227,27 +224,74 @@ class Profile extends StatelessWidget {
                                         style: TextStyle(fontSize: 17),
                                       ),
                                     ),
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 4),
-                                      child: Divider(
-                                        color: Color(0xFFBEBEBE),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => navigate(
-                                          context,
-                                          MyBadgePage()),
-                                      child: const Text(
-                                        "My Badges",
-                                        style: TextStyle(fontSize: 17),
-                                      ),
-                                    ),
+                                    
+                                    
                                   ],
                                 ),
                               ),
                             ),
                           const SizedBox(height: 20),
+                          if( _user.id!=null && _user.id!.isNotEmpty && _user.role == 'USER')
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: Text(
+                                      "Badges",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 15.0, bottom: 20),
+                                    child: Query(
+                                          options:QueryOptions(
+                                            document: gql(BadgeGQL().getUserBadges),
+                                            variables: {"userId":(widget.user!=null)? widget.user!.id : _user.id}),
+                                          builder: (badgeResult, {fetchMore, refetch}) {
+                                            List<BadgeModel> badges = [];
+                                            if(badgeResult.isLoading) {
+                                              return const Loading();
+                                            }
+                                            print('....');
+                                            print(badgeResult);
+                                            for(var data in badgeResult.data!['getMyBadges']['list']){
+                                              badges.add(BadgeModel.fromJson(data));
+                                            }
+                                            if(badges.isEmpty) {
+                                              return const Center(child: Text('No badges', style: TextStyle(fontSize: 18),),);
+                                            } else {
+                                              return Column(
+                                                children: [
+                                                  GridView(
+                                                  shrinkWrap: true,
+                                                  
+                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
+                                                  childAspectRatio: 1.5),
+                                            children: [
+                                                  for(var badge in badges)
+                                             CustomUserBadge(badgeModel: badge),
+                                            ],),
+                                            const SizedBox(height: 20,),
+                                                ],
+                                              );
+                                            
+                                            }
+                                          }
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            
                           if (_user.interets != null &&
                               _user.interets!.isNotEmpty)
                             Padding(
@@ -287,6 +331,8 @@ class Profile extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            
+
                           if ((_user.id == null || _user.id!.isEmpty) &&
                               _user.ldapName != null &&
                               _user.ldapName!.isNotEmpty)

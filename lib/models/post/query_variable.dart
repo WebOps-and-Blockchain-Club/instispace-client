@@ -50,8 +50,8 @@ class PostQueryVariableModel {
         "showOldPost": showOldPost,
         "isLiked": isLiked,
         "categories": categories?.map((e) => e.name).toList(),
-        //"createdByMe": createdByMe,
-        //"createBy": createdById,
+        "createdByMe": createdByMe,
+        "createBy": createdById,
       },
     };
   }

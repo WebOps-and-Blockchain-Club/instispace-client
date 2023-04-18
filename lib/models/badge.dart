@@ -16,7 +16,7 @@ class BadgeModel {
       : id = data['id'],
         tier = data['tier'],
         threshold = data['threshold'],
-        imageUrl = data['imageUrl'];
+        imageUrl = data['imageURL'];
 
   Map<String, dynamic> toJson() => {
         'tier': tier,

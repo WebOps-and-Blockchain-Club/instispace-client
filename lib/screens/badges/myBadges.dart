@@ -25,7 +25,7 @@ class _MyBadgePageState extends State<MyBadgePage> {
           ),
         
       ),
-      body: Query(options: QueryOptions(document: gql(BadgeGQL().getMyBadges)),
+      body: Query(options: QueryOptions(document: gql(BadgeGQL().getUserBadges)),
        builder:(result, {fetchMore, refetch}) {
         if(result.isLoading) {
           return const Loading();

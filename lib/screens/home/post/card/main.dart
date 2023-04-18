@@ -198,12 +198,13 @@ class _PostCardState extends State<PostCard>
                       child: const Icon(Icons.qr_code),
                       onTap: () {
                         if (widget.post.points == null) {
-                          showDialogForQR(context, widget.post.id);
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShowQRPage(postId: widget.post.id)));
+                          showDialogForQR(context, widget.post.id, false, false);
                         }
                         else {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ShowQRPage(
-                              post: post,
+                              postId: post.id,
                             ),
                           ));
                         }

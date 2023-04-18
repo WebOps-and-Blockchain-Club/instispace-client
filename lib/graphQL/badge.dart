@@ -13,16 +13,18 @@ class BadgeGQL {
   }
 }
 """;
-String getMyBadges = """query GetMyBadges {
-  getMyBadges {
+String getUserBadges = """query GetMyBadges(\$userId: String!) {
+  getMyBadges(userId: \$userId) {
     list {
+      id
       imageURL
       threshold
       tier
     }
     total
   }
-}""";
+}
+""";
   String updateClub = """mutation(\$updateClubInput: UpdateClubInput!) {
   updateClub(updateClubInput: \$updateClubInput) {
     clubId
@@ -36,6 +38,18 @@ String getMyBadges = """query GetMyBadges {
     id
   }
 }""";
+String updateBadge = """
+mutation UpdateBadge(\$badgeId: String!, \$updateBadgeInput: UpdateBadgeInput!) {
+  updateBadge(badgeId: \$badgeId, updateBadgeInput: \$updateBadgeInput) {
+    id
+    threshold
+  }
+}""";
+String updatePoints = """mutation UpdatePoints(\$postId: String!, \$points: Float!) {
+  updatePoints(postId: \$postId, points: \$points) {
+    id
+  }
+}""";
   String createBadges = """
 mutation CreateBadges(\$createBadgesInput: CreateBadgesInput!){
   createBadges(createBadgesInput : \$createBadgesInput){
@@ -46,6 +60,7 @@ mutation CreateBadges(\$createBadgesInput: CreateBadgesInput!){
   String getMyClub = """query GetMyClub {
   getMyClub {
     badges {
+      id
       imageURL
       threshold
       tier
