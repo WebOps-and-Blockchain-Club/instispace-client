@@ -191,7 +191,7 @@ class _LogInState extends State<LogIn> {
                                                   .primaryColor),
                                         ),
                                       ),
-                                      Text('(Only for non-LDAP users)',
+                                      Text('(Only for super users)',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium!

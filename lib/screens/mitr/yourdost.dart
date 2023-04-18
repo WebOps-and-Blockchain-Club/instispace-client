@@ -107,7 +107,7 @@ class YourDostScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      "Login through smail only to avail benefits at No Cost, since IITM has subscription for it.",
+                      "Login through smail to avail benefits at No Cost, since IITM has subscription for it.",
                       style: styleNormal,
                       textAlign: TextAlign.center,
                     )
