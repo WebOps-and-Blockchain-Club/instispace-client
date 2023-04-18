@@ -1,3 +1,4 @@
+import 'package:client/graphQL/badge.dart';
 import 'package:client/screens/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -20,11 +21,11 @@ class _GetUserState extends State<GetUser> {
             document: gql(UserGQL().getUser),
             variables: {"roll": widget.userDetails["roll"]?.toLowerCase()}),
         builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
-          return Profile(
-              result: result,
-              userDetails: widget.userDetails,
-              refetch: refetch,
-              isMyProfile: false);
-        });
+          return  Profile(
+                result: result,
+                userDetails: widget.userDetails,
+                refetch: refetch,
+                isMyProfile: false);
+            },);
   }
 }

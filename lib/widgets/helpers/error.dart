@@ -99,6 +99,6 @@ String formatErrorMessage(String error, BuildContext context) {
   } else if (error.contains("duplicate key value violates unique constraint")) {
     return "Already Exists";
   } else {
-    return "Server Error";
+    return error;
   }
 }

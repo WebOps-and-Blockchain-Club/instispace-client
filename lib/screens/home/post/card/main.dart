@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/graphQL/badge.dart';
+import 'package:client/models/event_points.dart';
 import 'package:client/models/post/query_variable.dart';
+import 'package:client/screens/badges/show_qr.dart';
 import 'package:client/screens/super_user/approve_post.dart';
 import 'package:client/widgets/card/image_view.dart';
 import 'package:client/widgets/helpers/navigate.dart';
@@ -33,7 +36,6 @@ class _PostCardState extends State<PostCard>
     with SingleTickerProviderStateMixin {
   GlobalKey key = GlobalKey();
   bool _showContent = false;
-
   @override
   Widget build(BuildContext context) {
     PostModel post = widget.post;
@@ -175,7 +177,7 @@ class _PostCardState extends State<PostCard>
                   child: ReportPostButton(
                       postId: post.id, options: widget.options),
                 ),
-              if (post.permissions.contains('Edit'))
+              if (post.permissions.contains('Edit')) ...[
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: InkWell(
@@ -191,6 +193,27 @@ class _PostCardState extends State<PostCard>
                             ),
                           ))),
                 ),
+                 
+                Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: InkWell(
+                      child: const Icon(Icons.qr_code),
+                      onTap: () {
+                        if (widget.post.points == null) {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShowQRPage(postId: widget.post.id)));
+                          showDialogForQR(context, widget.post.id, false, false);
+                        }
+                        else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ShowQRPage(
+                              postId: post.id,
+                            ),
+                          ));
+                        }
+                      },
+                      //child: const Icon(Icons.qr_code)
+                    )),
+              ],
               const Spacer(),
               if (post.photo != null &&
                   post.photo!.isNotEmpty &&

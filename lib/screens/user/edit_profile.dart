@@ -314,7 +314,8 @@ class _EditProfileUserState extends State<EditProfileUser> {
                                               // print(selectedTags.getTagIds());
                                               // print(mobile.text);
 
-                                              if (isValid) {
+                                              //changed for testing purposes
+                                              if (true) {
                                                 runMutation({
                                                   'userInput': {
                                                     'name': name.text,

@@ -29,9 +29,11 @@ class _PostQueryState extends State<PostQuery> {
   @override
   Widget build(BuildContext context) {
     final options = widget.options;
+
     return Query(
       options: options,
       builder: (result, {fetchMore, refetch}) {
+        print(result);
         if (result.hasException && result.data == null) {
           return Center(
               child: Error(

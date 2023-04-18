@@ -27,8 +27,6 @@ class UserGQL {
           account
           livePosts
         }
-        programme
-        department
       }
     }
   """;
