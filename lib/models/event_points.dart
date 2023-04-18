@@ -24,6 +24,7 @@ void showDialogForQR(BuildContext context, String postId, bool isFirst, bool upd
                   onCompleted:(data) {
                     if(isFirst) {
                     print('......');
+                    Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ShowQRPage(postId: postId)));
                   }
                 },),

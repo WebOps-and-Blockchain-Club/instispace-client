@@ -27,6 +27,7 @@ class UpdateClubPage extends StatefulWidget {
 class _UpdateClubPageState extends State<UpdateClubPage> {
    File? image;
   String photoUrl = '';
+  bool isImageLoading = false;
   final imageService = ImageService();
   final formKey = GlobalKey<FormState>();
   TextEditingController clubName = TextEditingController();
@@ -138,6 +139,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                                                           image = photos.last;
                                                           Navigator.pop(
                                                               context);
+                                                          
                                                         });
                                                       }
                                                     },
@@ -195,8 +197,14 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                               onPressed: () async {
                                 List<String> uploadResult;
                                 try {
+                                  setState(() {
+                                    isImageLoading = true;
+                                  });
                                   uploadResult =
                                       await imageService.upload([image]);
+                                      setState(() {
+                                        isImageLoading = false;
+                                      });
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -222,7 +230,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                                 }
                               },
                               text: "Update Club",
-                              isLoading: result!.isLoading,
+                              isLoading: result!.isLoading || isImageLoading,
                             ),
                           )
                         ],

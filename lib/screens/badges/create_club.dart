@@ -24,6 +24,7 @@ class CreateClubPage extends StatefulWidget {
 
 class _CreateClubPageState extends State<CreateClubPage> {
   TextEditingController clubName = TextEditingController();
+  bool isImageLoading = false;
   int dummy = 0;
   File? image;
   String photoUrl = '';
@@ -194,13 +195,14 @@ class _CreateClubPageState extends State<CreateClubPage> {
                               onPressed: () async {
                                 List<String> uploadResult;
                                 try {
+                                  setState(() {
+                                    isImageLoading = true;
+                                  });
                                   uploadResult =
                                       await imageService.upload([image]);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          const Text('Image Uploaded'),
-                                    ));
+                                    setState(() {
+                                      isImageLoading = false;
+                                    });
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -215,8 +217,9 @@ class _CreateClubPageState extends State<CreateClubPage> {
 
                                 final isValid =
                                     formKey.currentState!.validate();
+                                
                                 FocusScope.of(context).unfocus();
-                                if (isValid) {
+                                if (isValid && uploadResult.isNotEmpty) {
                                   runMutation({
                                     'createClubInput': {
                                       "clubName": clubName.text,
@@ -226,7 +229,7 @@ class _CreateClubPageState extends State<CreateClubPage> {
                                 }
                               },
                               text: "Create Club",
-                              isLoading: result!.isLoading,
+                              isLoading: result!.isLoading || isImageLoading,
                             ),
                           )
                         ],

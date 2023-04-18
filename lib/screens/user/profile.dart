@@ -301,7 +301,7 @@ class _ProfileState extends State<Profile> {
                                                   shrinkWrap: true,
                                                   
                                                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-                                                  childAspectRatio: 1.5),
+                                                  childAspectRatio: 1.5, crossAxisSpacing: 4, mainAxisSpacing: 4),
                                             children: [
                                                   for(var badge in badges)
                                              CustomUserBadge(badgeModel: badge),
