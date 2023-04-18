@@ -265,16 +265,7 @@ class _ProfileState extends State<Profile> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Text(
-                                      "Badges",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                                  
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         top: 15.0, bottom: 20),
@@ -293,10 +284,20 @@ class _ProfileState extends State<Profile> {
                                               badges.add(BadgeModel.fromJson(data));
                                             }
                                             if(badges.isEmpty) {
-                                              return const Center(child: Text('No badges', style: TextStyle(fontSize: 18),),);
+                                              return Container();
                                             } else {
                                               return Column(
                                                 children: [
+                                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: Text(
+                                      "Badges",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                                   GridView(
                                                   shrinkWrap: true,
                                                   
