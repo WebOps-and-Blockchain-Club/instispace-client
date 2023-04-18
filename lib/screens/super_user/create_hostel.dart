@@ -40,7 +40,7 @@ class _CreateHostelPageState extends State<CreateHostelPage> {
                     options: MutationOptions(
                       document: gql(SuperUserGQL().createHostel),
                       onCompleted: (dynamic resultData) {
-                        if (resultData["createHostel"] == true) {
+                        if (resultData["createHostel"]["id"] != true) {
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('New Hostel Created')),
@@ -95,9 +95,7 @@ class _CreateHostelPageState extends State<CreateHostelPage> {
                                   FocusScope.of(context).unfocus();
                                   if (isValid) {
                                     runMutation({
-                                      'createHostelInput': {
-                                        "name": name.text,
-                                      }
+                                      "name": name.text,
                                     });
                                   }
                                 },

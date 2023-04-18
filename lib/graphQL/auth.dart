@@ -39,4 +39,10 @@ class AuthGQL {
       }
     }
   """;
+
+  String forgotPassword = """
+  mutation ForgotPassword(\$forgotPasswordInput: ForgotPasswordInput!) {
+    forgotPassword(forgotPasswordInput: \$forgotPasswordInput)
+  }
+  """;
 }

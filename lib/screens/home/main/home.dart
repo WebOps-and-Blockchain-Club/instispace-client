@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(FeedGQL().findPosts()),
-        variables: PostQueryVariableModel(categories: feedCategories).toJson(),
+        variables: PostQueryVariableModel(
+                categories: feedCategories, showNewPost: true)
+            .toJson(),
         parserFn: (data) => PostsModel.fromJson(data));
 
     return WillPopScope(
@@ -122,7 +124,10 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 20, right: 20.0, left: 20),
-                                child: SlotCard(slot: snapshot.data!),
+                                child: SlotCard(
+                                  slot: snapshot.data!,
+                                  day: snapshot.data!.day,
+                                ),
                               ),
                             ],
                           );

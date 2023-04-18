@@ -40,10 +40,14 @@ class AuthService extends ChangeNotifier {
   }
 
   loadToken() async {
-    await _initAuth();
+    // await _initAuth();
     _token = await storage.read(key: 'token') ?? "";
     if (_token == "") FirebaseMessaging.instance.deleteToken();
     notifyListeners();
+  }
+
+  getToken() async {
+    return await storage.read(key: 'token') ?? "";
   }
 
   login(String token) async {

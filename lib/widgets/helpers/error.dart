@@ -55,7 +55,8 @@ class ErrorText extends StatelessWidget {
 
 String getAsset(String error, String? message) {
   if (error.contains("No Posts") ||
-      (message != null && message.contains("No"))) {
+      (message != null &&
+          (message.contains("No") || message.contains("is empty")))) {
     return "assets/illustrations/no_data.svg";
   } else if (error.contains("Failed host lookup")) {
     return "assets/illustrations/network_error.svg";
@@ -95,6 +96,8 @@ String formatErrorMessage(String error, BuildContext context) {
     return "Roll number doesn't belongs to USER role";
   } else if (error.contains("No Tags found")) {
     return "No Tags found";
+  } else if (error.contains("duplicate key value violates unique constraint")) {
+    return "Already Exists";
   } else {
     return error;
   }

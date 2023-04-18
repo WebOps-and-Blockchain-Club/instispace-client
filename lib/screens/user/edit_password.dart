@@ -17,10 +17,15 @@ import '../home/new_post/imageService.dart';
 class EditPassword extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
+  final bool password;
   final Future<QueryResult<Object?>?> Function()? refetch;
 
   const EditPassword(
-      {Key? key, required this.auth, required this.user, this.refetch})
+      {Key? key,
+      required this.auth,
+      required this.user,
+      this.refetch,
+      required this.password})
       : super(key: key);
 
   @override
@@ -37,6 +42,7 @@ class _EditPasswordState extends State<EditPassword> {
   String photoUrl = '';
 
   bool confirmPassVisible = true;
+  bool passVisible = true;
   bool isLoading = false;
 
   // Graphql
@@ -64,16 +70,24 @@ class _EditPasswordState extends State<EditPassword> {
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [secondaryAppBar(title: 'EDIT PROFILE')];
+            return [
+              secondaryAppBar(
+                  title: widget.password ? 'CHANGE PASSWORD' : 'EDIT PROFILE')
+            ];
           },
           body: Mutation(
               options: MutationOptions(
                 document: gql(AuthGQL().updateUser),
                 onCompleted: (dynamic resultData) {
+                  print(resultData);
                   if (resultData["updateUser"] == true) {
                     if (widget.refetch != null) widget.refetch!();
+                    if (widget.user.isNewUser == false) Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Profile Updated')),
+                      SnackBar(
+                          content: Text(widget.password
+                              ? 'Password Changed'
+                              : 'Profile Updated')),
                     );
                   }
                 },
@@ -101,145 +115,159 @@ class _EditPasswordState extends State<EditPassword> {
                             size: 100,
                             type: 'file',
                           ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomElevatedButton(
-                                color: Colors.white,
-                                leading: Icons.camera_alt,
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(25)),
-                                          title: const Text('Choose Images'),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    final io.File? photo =
-                                                        await imageService
-                                                            .pickCamera();
-                                                    setState(() {
-                                                      if (photo != null) {
-                                                        image = photo;
-                                                        Navigator.pop(context);
-                                                      }
-                                                    });
-                                                  },
-                                                  child: const Text('Camera')),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    final List<io.File> photos =
-                                                        await imageService
-                                                            .pickGalley();
-
-                                                    if (photos.isNotEmpty) {
+                        if (!widget.password)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomElevatedButton(
+                                  color: Colors.white,
+                                  leading: Icons.camera_alt,
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(25)),
+                                            title: const Text('Choose Images'),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      final io.File? photo =
+                                                          await imageService
+                                                              .pickCamera();
                                                       setState(() {
-                                                        image = photos.last;
-                                                        Navigator.pop(context);
-                                                      });
-                                                    }
-                                                  },
-                                                  child: const Text('Gallegy')),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  TextButton(
-                                                      onPressed: () =>
+                                                        if (photo != null) {
+                                                          image = photo;
                                                           Navigator.pop(
-                                                              context),
-                                                      child:
-                                                          const Text("Cancel"))
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      });
-                                },
-                                textColor: Colors.black,
-                                text: photoUrl == '' && image == null
-                                    ? 'Add Profile Photo'
-                                    : 'Edit Profile Photo'),
-                          ],
-                        ),
+                                                              context);
+                                                        }
+                                                      });
+                                                    },
+                                                    child:
+                                                        const Text('Camera')),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      final List<io.File>
+                                                          photos =
+                                                          await imageService
+                                                              .pickGalley();
+
+                                                      if (photos.isNotEmpty) {
+                                                        setState(() {
+                                                          image = photos.last;
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                      }
+                                                    },
+                                                    child:
+                                                        const Text('Gallegy')),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: const Text(
+                                                            "Cancel"))
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  textColor: Colors.black,
+                                  text: photoUrl == '' && image == null
+                                      ? 'Add Profile Photo'
+                                      : 'Edit Profile Photo'),
+                            ],
+                          ),
 
                         // Name
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextFormField(
-                            controller: name,
-                            decoration: const InputDecoration(
-                                labelText: "Profile Name"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter the name";
-                              }
-                              return null;
-                            },
+                        if (!widget.password)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: TextFormField(
+                              controller: name,
+                              decoration: const InputDecoration(
+                                  labelText: "Profile Name"),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Enter the name";
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
 
                         // Password
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 10),
-                        //   child: TextFormField(
-                        //     controller: pass,
-                        //     obscureText: true,
-                        //     maxLines: 1,
-                        //     decoration: const InputDecoration(
-                        //         labelText: "Password"),
-                        //     validator: (value) {
-                        //       if (value == null || value.isEmpty) {
-                        //         return "Enter the new password";
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        // ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(top: 10),
-                        //   child: TextFormField(
-                        //     controller: confirmPass,
-                        //     obscureText: confirmPassVisible,
-                        //     maxLines: 1,
-                        //     decoration: InputDecoration(
-                        //         suffixIcon: IconButton(
-                        //           padding: EdgeInsets.zero,
-                        //           onPressed: () => setState(() {
-                        //             confirmPassVisible =
-                        //                 !confirmPassVisible;
-                        //           }),
-                        //           icon: Icon(
-                        //               confirmPassVisible
-                        //                   ? Icons.visibility
-                        //                   : Icons.visibility_off,
-                        //               size: 20),
-                        //         ),
-                        //         prefixIconConstraints:
-                        //             Themes.inputIconConstraints,
-                        //         suffixIconConstraints:
-                        //             Themes.inputIconConstraints,
-                        //         labelText: "Confirm Password"),
-                        //     validator: (val) {
-                        //       if (val == null || val.isEmpty) {
-                        //         return "Re-enter the password to confirm";
-                        //       } else if (pass.text != val) {
-                        //         return "Password don't match";
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        // ),
+                        if (widget.password || widget.user.isNewUser)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: TextFormField(
+                              controller: pass,
+                              obscureText: passVisible,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => setState(() {
+                                      passVisible = !passVisible;
+                                    }),
+                                    icon: Icon(
+                                        passVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: 20),
+                                  ),
+                                  suffixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  labelText: "New Password"),
+                            ),
+                          ),
+                        if (widget.password || widget.user.isNewUser)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: TextFormField(
+                              controller: confirmPass,
+                              obscureText: confirmPassVisible,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => setState(() {
+                                      confirmPassVisible = !confirmPassVisible;
+                                    }),
+                                    icon: Icon(
+                                        confirmPassVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: 20),
+                                  ),
+                                  prefixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  suffixIconConstraints:
+                                      Themes.inputIconConstraints,
+                                  labelText: "Confirm Password"),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return "Re-enter the password to confirm";
+                                } else if (pass.text != val) {
+                                  return "Password don't match";
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
 
                         if (result != null && result.hasException)
                           ErrorText(error: result.exception.toString()),
@@ -285,7 +313,9 @@ class _EditPasswordState extends State<EditPassword> {
                                   "userInput": {
                                     "name": name.text,
                                     "photo":
-                                        uploadResult?.join(" AND ") ?? photoUrl
+                                        uploadResult?.join(" AND ") ?? photoUrl,
+                                    "password":
+                                        pass.text.isEmpty ? null : pass.text
                                   }
                                 });
                               }

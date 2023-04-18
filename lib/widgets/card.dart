@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
   final Widget child;
-  const CustomCard({Key? key, required this.child}) : super(key: key);
+  final EdgeInsetsGeometry padding;
+  const CustomCard(
+      {Key? key, required this.child, this.padding = const EdgeInsets.all(20)})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class CustomCard extends StatelessWidget {
             ),
           ]),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: padding,
         child: child,
       ),
     );

@@ -72,6 +72,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final user = widget.user;
     UserModel? _user;
     if (widget.user != null) {
       _user = widget.user;
@@ -157,20 +158,46 @@ class _ProfileState extends State<Profile> {
                           if (widget.isMyProfile)
                             Padding(
                               padding: const EdgeInsets.only(top: 5.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                              child: Column(
                                 children: [
-                                  CustomElevatedButton(
-                                      textSize: 12,
-                                      onPressed: (() => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => EditProfile(
-                                                    auth: auth,
-                                                    user: widget.user!,
-                                                  )))),
-                                      text: "EDIT PROFILE"),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      CustomElevatedButton(
+                                          textSize: 12,
+                                          onPressed: (() => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditProfile(
+                                                        auth: auth,
+                                                        user: user!,
+                                                        password: false,
+                                                      )))),
+                                          text: "EDIT PROFILE"),
+                                    ],
+                                  ),
+                                  if (user?.role != "USER" &&
+                                      user?.role != "MODERATOR")
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        CustomElevatedButton(
+                                            textSize: 12,
+                                            onPressed: (() => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditProfile(
+                                                          auth: auth,
+                                                          user: user!,
+                                                          password: true,
+                                                        )))),
+                                            text: "CHANGE PASSWORD"),
+                                      ],
+                                    ),
                                 ],
                               ),
                             ),

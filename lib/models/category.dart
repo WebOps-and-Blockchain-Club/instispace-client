@@ -24,7 +24,7 @@ class PostCategoryModel {
     "Query": CustomIcons.queries,
     "Help": CustomIcons.help,
     "Survey": CustomIcons.survey,
-    "Random thought": CustomIcons.thoughts,
+    "Random Thought": CustomIcons.thoughts,
     "Lost": CustomIcons.lost,
     "Found": CustomIcons.found
   };

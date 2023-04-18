@@ -7,7 +7,7 @@
         android:label="InstiSpace"
         android:allowBackup="false"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher_bg">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -43,7 +43,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="instispace.iitm.ac.in" />
+                <data android:scheme="http" android:host="instispace.iitm.ac.in" android:pathPrefix="/share"/>
                 <data android:scheme="https" />
             </intent-filter>
         </activity>

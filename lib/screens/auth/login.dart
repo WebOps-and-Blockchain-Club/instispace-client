@@ -1,3 +1,4 @@
+import 'package:client/screens/auth/forgotPassword.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -158,9 +159,8 @@ class _LogInState extends State<LogIn> {
                                               size: 20),
                                         ),
                                       ),
-                                      suffixIconColor: const Color(0x00b674ff),
                                       suffixIconConstraints:
-                                          const BoxConstraints(maxHeight: 25),
+                                          Themes.inputIconConstraints,
                                       labelText: "Password"),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -169,6 +169,38 @@ class _LogInState extends State<LogIn> {
                                     return null;
                                   },
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPassword(
+                                                          roll: name.text)));
+                                        },
+                                        child: Text(
+                                          'Forgot Password?',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                        ),
+                                      ),
+                                      Text('(Only for non-LDAP users)',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color: Colors.grey[700])),
+                                    ],
+                                  ),
+                                ),
+
                                 if (result != null && result.hasException)
                                   ErrorText(error: result.exception.toString()),
                                 Padding(

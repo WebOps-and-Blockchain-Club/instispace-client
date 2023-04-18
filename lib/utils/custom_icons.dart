@@ -19,7 +19,9 @@ class CustomIcons {
   CustomIcons._();
 
   static const _kFontFam = 'CustomIcons';
+  static const _kFontFam1 = 'WhatsAppIcon';
   static const String? _kFontPkg = null;
+  static const String? _kFontPkg1 = null;
 
   static const IconData like =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -77,13 +79,13 @@ class CustomIcons {
       IconData(0xe81a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData feed =
       IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData forums =
+  static const IconData survey =
       IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData events =
       IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData lost =
       IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData lost_and_found =
+  static const IconData lostandfound =
       IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData savefilled =
       IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -93,10 +95,14 @@ class CustomIcons {
       IconData(0xe822, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData search =
       IconData(0xe823, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lostandfound_1 =
+      IconData(0xe824, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData attachment =
       IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData forums =
+      IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData edit =
       IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData survey =
-      IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData whatsapp =
+      IconData(0xe800, fontFamily: _kFontFam1, fontPackage: _kFontPkg1);
 }

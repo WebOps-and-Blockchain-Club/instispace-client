@@ -132,14 +132,14 @@ class PermissionModel {
       required this.createPost});
 
   PermissionModel.fromJson(Map<String, dynamic> data)
-      : createNotification = true,
-        createTag = true,
-        createHostel = true,
-        moderateReport = true,
-        approvePost = true,
-        viewFeeback = true,
+      : createNotification = data['createNotification'] as bool,
+        createTag = data['createTag'] as bool,
+        createHostel = false,
+        moderateReport = data['handleReports'] as bool,
+        approvePost = data['approvePosts'] as bool,
+        viewFeeback = false,
         createAccount = CreateAccountPermissionModel.fromJson(data['account']),
-        createPost = null;
+        createPost = CreatePostPermissionModel.fromJson(data['livePosts']);
 }
 
 class CreateAccountPermissionModel {
@@ -150,8 +150,8 @@ class CreateAccountPermissionModel {
       {required this.hasPermission, this.allowedRoles});
 
   CreateAccountPermissionModel.fromJson(dynamic data)
-      : hasPermission = true,
-        // : hasPermission = data != null && data.cast<String>().length,
+      : hasPermission =
+            data != null && (data.cast<String>().length == 0 ? false : true),
         allowedRoles = data != null ? data.cast<String>() : [];
 }
 
@@ -161,6 +161,13 @@ class CreatePostPermissionModel {
 
   CreatePostPermissionModel(
       {required this.hasPermission, this.allowedCategory});
+
+  CreatePostPermissionModel.fromJson(dynamic data)
+      : hasPermission =
+            data != null && (data.cast<String>().length <= 8 ? false : true),
+        allowedCategory = data == null || (data != null && data.length <= 8)
+            ? []
+            : data.cast<String>();
 }
 
 // class HomeModel {

@@ -91,7 +91,7 @@ class CreatedByModel {
 
   CreatedByModel.fromJson(Map<String, dynamic> data)
       : id = data["id"],
-        name = data["name"],
+        name = data["name"] ?? "Null",
         roll = data["roll"],
         role = data["role"],
         photo =

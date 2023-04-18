@@ -67,7 +67,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     title: FieldModel(),
     description: FieldModel(label: 'Describe the question'),
     imageSecondary: FieldModel(required: false),
-    tag: FieldModel(),
+    tag: FieldModel(required: false),
   ),
   "Help": CreatePostModel(
     title: FieldModel(),
@@ -96,6 +96,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     postTime: FieldModel(
         required: false,
         initTime: DateTime.now().subtract(const Duration(days: 30))),
+    location: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),
@@ -105,6 +106,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
     postTime: FieldModel(
         required: false,
         initTime: DateTime.now().subtract(const Duration(days: 30))),
+    location: FieldModel(required: false),
     imageSecondary: FieldModel(required: false),
     endTime: FieldModel(enableEdit: false, time: const Duration(days: 30)),
   ),

@@ -42,9 +42,9 @@ class _CommentsPageState extends State<CommentsPage> {
         title: const Text(
           "COMMENTS",
           style: TextStyle(
-              letterSpacing: 2.64,
+              letterSpacing: 1,
               color: Color(0xFF3C3C3C),
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w700),
         ),
       ),
@@ -292,7 +292,7 @@ class _CreateCommentState extends State<CreateComment> {
                             spreadRadius: 0.0)
                       ],
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(35)),
+                      borderRadius: BorderRadius.circular(30)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,

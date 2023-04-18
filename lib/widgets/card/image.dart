@@ -118,7 +118,7 @@ class _ImageCardState extends State<ImageCard> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey,
-                    borderRadius: BorderRadius.circular(29),
+                    borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
                       image: imageProviders[index],
                       fit: BoxFit.fitWidth,

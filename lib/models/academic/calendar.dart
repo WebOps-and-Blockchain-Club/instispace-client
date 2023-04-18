@@ -38,7 +38,7 @@ class CalendarQueryVariableModel {
   final String? type;
 
   CalendarQueryVariableModel({
-    this.take = 180,
+    this.take = 20,
     this.lastEntryId = '',
     this.from = '',
     this.to = '',

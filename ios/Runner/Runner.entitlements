@@ -6,7 +6,8 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>https://instispace.iitm.ac.in</string>
+		<string>applinks:instispace.iitm.ac.in</string>
+		<string>webcredentials:example.com</string>
 	</array>
 </dict>
 </plist>

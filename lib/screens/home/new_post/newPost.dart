@@ -177,26 +177,45 @@ class _NewPostScreenState extends State<NewPostScreen> {
             if (result != null && (!result.hasException)) {
               print(result);
               if (widget.post != null) {
-                cache.writeFragment(
-                  Fragment(document: gql(FeedGQL().editFragment))
-                      .asRequest(idFields: {
-                    '__typename': "Post",
-                    'id': widget.post!.id,
-                  }),
-                  data: result.data!["updatePost"],
-                  broadcast: false,
-                );
+                if (result.data!["updatePost"]["status"] != "TO_BE_APPROVED") {
+                  cache.writeFragment(
+                    Fragment(document: gql(FeedGQL().editFragment))
+                        .asRequest(idFields: {
+                      '__typename': "Post",
+                      'id': widget.post!.id,
+                    }),
+                    data: result.data!["updatePost"],
+                    broadcast: false,
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Post Edited. Waiting for approval')),
+                  );
+                }
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Post Edited')),
                 );
               } else {
                 dynamic data = cache.readQuery(widget.options.asRequest);
-                data["findPosts"]["list"] =
-                    [result.data!["createPost"]] + data["findPosts"]["list"];
-                data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
+                bool approve =
+                    result.data!["createPost"]["status"] == "TO_BE_APPROVED";
+                if (approve == false) {
+                  data["findPosts"]["list"] =
+                      [result.data!["createPost"]] + data["findPosts"]["list"];
+                  data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
 
-                cache.writeQuery(widget.options.asRequest, data: data);
+                  cache.writeQuery(widget.options.asRequest, data: data);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Posted')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Post Created. Waiting for approval')),
+                  );
+                }
                 clearForm();
                 if (widget.fieldConfiguration.imageSecondary != null) {
                   Navigator.pop(context);
@@ -205,9 +224,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     ..pop()
                     ..pop();
                 }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Posted')),
-                );
               }
             }
           }),

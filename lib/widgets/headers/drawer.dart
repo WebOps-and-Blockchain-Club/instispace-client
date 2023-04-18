@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
+import '../../screens/mitr/counsellor.dart';
+import '../../screens/mitr/yourdost.dart';
 import '../../screens/super_user/approve_post.dart';
 import '../../screens/super_user/create_notification.dart';
 import '../../screens/teasure_hunt/main.dart';
@@ -151,6 +153,17 @@ class CustomDrawer extends StatelessWidget {
                                                         EIDCard(user: user)));
                                       },
                                     ),
+
+                                  // Logout Button
+                                  ListTile(
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    tileColor: Colors.transparent,
+                                    horizontalTitleGap: 0,
+                                    title: const Text("Logout"),
+                                    onTap: () => logoutAlert(context,
+                                        () async => await auth.logout()),
+                                  ),
                                 ],
                               ),
                             ),
@@ -195,6 +208,41 @@ class CustomDrawer extends StatelessWidget {
                             //     },
                             //   ),
                             // ),
+
+                            // Mitr
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ExpansionTile(
+                                title: const Text("Wellness Community Centre"),
+                                children: [
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListTile(
+                                    tileColor: Colors.transparent,
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title:
+                                        const Text("Wellness Centre of IITM"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      navigate(
+                                          context, const CounsellorScreen());
+                                    },
+                                  ),
+                                  ListTile(
+                                    tileColor: Colors.transparent,
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title: const Text("Your Dost"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      navigate(context, const YourDostScreen());
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
 
                             //Super User Actions
                             if (user != null &&
@@ -293,13 +341,19 @@ class CustomDrawer extends StatelessWidget {
                                                   builder:
                                                       (BuildContext context) =>
                                                           CreateAccountPage(
+                                                            permissions: user
+                                                                .permission!,
                                                             role: user.role!,
                                                           )));
                                         },
                                       ),
                                     // Update Role
                                     if (user.permission!.createAccount
-                                        .hasPermission)
+                                                .allowedRoles !=
+                                            null &&
+                                        user.permission!.createAccount
+                                            .allowedRoles!
+                                            .contains("MODERATOR"))
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -441,13 +495,20 @@ class CustomDrawer extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ListTile(
-                                title: const Text("SOS Instructions"),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Text("SOS Manual"),
+                                    Text("🔴")
+                                  ],
+                                ),
                                 onTap: () {
                                   Navigator.pop(context);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           const WebPage(
-                                            title: "SOS Instructions",
+                                            title: "SOS Manual",
                                             url:
                                                 "https://docs.google.com/document/u/3/d/e/2PACX-1vSRcTWgKoSsq3yPcVvMJVlACvyzaMpDn2l8hQDBZjZxVss6dnOROaZUwswsmjdteGHf67YsjMGLGopt/pub",
                                           )));
@@ -513,17 +574,6 @@ class CustomDrawer extends StatelessWidget {
                                 ],
                               ),
                             ),
-
-                            // Logout Button
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: ListTile(
-                                horizontalTitleGap: 0,
-                                title: const Text("Logout"),
-                                onTap: () =>
-                                    logoutAlert(context, () => auth.logout()),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -531,16 +581,17 @@ class CustomDrawer extends StatelessWidget {
                       Expanded(
                         child: Align(
                           alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // const Divider(indent: 15, endIndent: 15),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 15),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // const Divider(indent: 15, endIndent: 15),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     GestureDetector(
@@ -553,17 +604,44 @@ class CustomDrawer extends StatelessWidget {
                                       child: Container(
                                         padding: const EdgeInsets.all(6),
                                         decoration: BoxDecoration(
-                                            color: Colors.black,
+                                            color: Colors.transparent,
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: const CircleAvatar(
                                           radius: 30,
                                           backgroundImage: AssetImage(
                                               'assets/club_logo.png'),
-                                          backgroundColor: Colors.black,
+                                          backgroundColor: Colors.transparent,
                                         ),
                                       ),
                                     ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        launchUrlString(
+                                            'https://cfi.iitm.ac.in',
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: const CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage:
+                                              AssetImage('assets/cfi_logo.png'),
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
                                     Padding(
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: Column(
@@ -604,8 +682,8 @@ class CustomDrawer extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -621,11 +699,13 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-Future<dynamic> logoutAlert(BuildContext context, void Function() callback) {
+Future<dynamic> logoutAlert(
+    BuildContext context, Future<void> Function() callback) {
   return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context, _) {
+        bool loading = false;
+        return StatefulBuilder(builder: (context, StateSetter setState) {
           return AlertDialog(
             titlePadding: const EdgeInsets.only(top: 30),
             contentPadding: const EdgeInsets.all(20),
@@ -648,12 +728,20 @@ Future<dynamic> logoutAlert(BuildContext context, void Function() callback) {
                   ),
                 ),
                 CustomElevatedButton(
-                  onPressed: () {
-                    callback();
+                  onPressed: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                    // await Future.delayed(Duration(seconds: 5));
+                    await callback();
+                    setState(() {
+                      loading = false;
+                    });
                     Navigator.pop(context);
                   },
                   text: "Logout",
                   color: ColorPalette.palette(context).warning,
+                  isLoading: loading,
                 ),
               ],
             ),

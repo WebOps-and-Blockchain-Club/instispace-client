@@ -37,6 +37,7 @@ class _PostPageState extends State<PostPage> {
     final QueryOptions<Object?> options = QueryOptions(
         document: gql(FeedGQL().findPosts()),
         variables: PostQueryVariableModel(
+                showNewPost: true,
                 search: search,
                 categories: selectedCategories.isEmpty
                     ? categories
@@ -86,7 +87,12 @@ class _PostPageState extends State<PostPage> {
             ),
           ];
         },
-        body: PostQuery(options: options, categories: widget.categories),
+        body: PostQuery(
+          options: options,
+          categories: selectedCategories.isNotEmpty
+              ? selectedCategories
+              : widget.categories,
+        ),
       ),
       floatingActionButton: widget.createPost
           ? NewPostButton(
