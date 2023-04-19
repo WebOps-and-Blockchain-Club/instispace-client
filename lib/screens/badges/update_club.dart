@@ -67,6 +67,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                     RunMutation runMutation,
                     QueryResult? result,
                   ) {
+                    print(result);
                     return ChangeNotifierProvider(
                       create: (_) => ImagePickerService(noOfImages: 1),
                       child: Consumer<ImagePickerService>(
@@ -118,6 +119,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                                                       final File? photo =
                                                           await imageService
                                                               .pickCamera();
+                                                      
                                                       setState(() {
                                                         if (photo != null) {
                                                           image = photo;
@@ -197,6 +199,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                               onPressed: () async {
                                 List<String> uploadResult;
                                 try {
+                                  print('loading');
                                   setState(() {
                                     isImageLoading = true;
                                   });
@@ -205,6 +208,7 @@ class _UpdateClubPageState extends State<UpdateClubPage> {
                                       setState(() {
                                         isImageLoading = false;
                                       });
+                                  print('loaded');
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

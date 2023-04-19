@@ -177,7 +177,7 @@ class _PostCardState extends State<PostCard>
                   child: ReportPostButton(
                       postId: post.id, options: widget.options),
                 ),
-              if (post.permissions.contains('Edit')) ...[
+              if (post.permissions.contains('Edit')) 
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: InkWell(
@@ -193,7 +193,7 @@ class _PostCardState extends State<PostCard>
                             ),
                           ))),
                 ),
-                 
+                if(post.permissions.contains('ShowQR'))
                 Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: InkWell(
@@ -213,7 +213,6 @@ class _PostCardState extends State<PostCard>
                       },
                       //child: const Icon(Icons.qr_code)
                     )),
-              ],
               const Spacer(),
               if (post.photo != null &&
                   post.photo!.isNotEmpty &&

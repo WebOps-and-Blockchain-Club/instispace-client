@@ -89,6 +89,7 @@ class _ShowQRPageState extends State<ShowQRPage> {
                           refetch!();
                         },),
                         builder: (runMutation, mutationResult) {
+                          print(mutationResult);
                           return Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: CustomElevatedButton(

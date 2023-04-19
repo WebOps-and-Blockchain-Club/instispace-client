@@ -79,9 +79,7 @@ class FeedGQL {
     title
     pointsValue
     isQRActive
-    attendedBy{
-      roll
-    }
+    
   }
 }""";
   String toggleLikePost = """mutation Mutation(\$postId: String!) {
