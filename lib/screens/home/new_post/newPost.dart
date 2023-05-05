@@ -175,7 +175,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
           document: gql(mutation),
           update: ((cache, result) {
             if (result != null && (!result.hasException)) {
-              print(result);
               if (widget.post != null) {
                 if (result.data!["updatePost"]["status"] != "TO_BE_APPROVED") {
                   cache.writeFragment(
@@ -201,12 +200,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 dynamic data = cache.readQuery(widget.options.asRequest);
                 bool approve =
                     result.data!["createPost"]["status"] == "TO_BE_APPROVED";
+                print(result.data!["createPost"]);
                 if (approve == false) {
                   data["findPosts"]["list"] =
                       [result.data!["createPost"]] + data["findPosts"]["list"];
                   data["findPosts"]["total"] = data["findPosts"]["total"] + 1;
-
                   cache.writeQuery(widget.options.asRequest, data: data);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Posted')),
                   );
@@ -216,10 +216,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
                         content: Text('Post Created. Waiting for approval')),
                   );
                 }
+
                 clearForm();
                 if (widget.fieldConfiguration.imageSecondary != null) {
+                  print('object');
                   Navigator.pop(context);
                 } else {
+                  print('object1');
                   Navigator.of(context)
                     ..pop()
                     ..pop();

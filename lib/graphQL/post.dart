@@ -23,6 +23,8 @@ class PostGQl {
         likeCount
         isHidden
       }
+      isQRActive
+      pointsValue
       photo
       attachment
       postTime

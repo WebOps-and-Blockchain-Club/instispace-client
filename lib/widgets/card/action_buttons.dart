@@ -416,7 +416,6 @@ class _GamifyPostButtonState extends State<GamifyPostButton> {
           document: gql(BadgeGQL().toggleIsQRActive),
           onCompleted: (dynamic resultData) {}),
       builder: (RunMutation runMutation, QueryResult? result) {
-        print(result);
         return CustomElevatedButton(
             onPressed: () {
               if (widget.isQRActive == false) {
@@ -445,9 +444,9 @@ class _GamifyPostButtonState extends State<GamifyPostButton> {
                             TextButton(
                               onPressed: () {
                                 runMutation({
-                                      'postId': widget.postId,
-                                      'points': int.parse(points.text)
-                                    });
+                                  'postId': widget.postId,
+                                  'points': int.parse(points.text)
+                                });
                                 Navigator.of(context).pop();
                               },
                               child: Text((widget.isQRActive == null ||

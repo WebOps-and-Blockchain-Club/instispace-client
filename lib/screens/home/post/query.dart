@@ -33,7 +33,6 @@ class _PostQueryState extends State<PostQuery> {
     return Query(
       options: options,
       builder: (result, {fetchMore, refetch}) {
-        print(result);
         if (result.hasException && result.data == null) {
           return Center(
               child: Error(
