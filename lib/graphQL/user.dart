@@ -27,6 +27,9 @@ class UserGQL {
           account
           livePosts
         }
+        notifConfig {
+          fcmToken
+        }
       }
     }
   """;

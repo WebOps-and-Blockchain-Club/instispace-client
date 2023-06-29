@@ -22,4 +22,12 @@ class NotificationGQL {
       createNotification(NotificationData: \$notificationData)
     }
   """;
+
+  static const addNewToken = """
+    mutation AddNewToken(\$fcmToken: String!) {
+      addNewToken(fcmToken: \$fcmToken) {
+        id
+      }
+    }
+  """;
 }

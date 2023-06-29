@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:client/graphQL/badge.dart';
+import 'package:client/graphQL/post.dart';
 import 'package:client/models/event_points.dart';
 import 'package:client/models/post/query_variable.dart';
 import 'package:client/screens/badges/show_qr.dart';
 import 'package:client/screens/super_user/approve_post.dart';
+import 'package:client/themes.dart';
+import 'package:client/widgets/button/elevated_button.dart';
 import 'package:client/widgets/card/image_view.dart';
+import 'package:client/widgets/helpers/error.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
 import 'package:client/widgets/utils/image_cache_path.dart';
@@ -177,7 +181,7 @@ class _PostCardState extends State<PostCard>
                   child: ReportPostButton(
                       postId: post.id, options: widget.options),
                 ),
-              if (post.permissions.contains('Edit')) 
+              if (post.permissions.contains('Edit'))
                 Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: InkWell(
@@ -193,17 +197,29 @@ class _PostCardState extends State<PostCard>
                             ),
                           ))),
                 ),
-                if(post.permissions.contains('ShowQR'))
+              if (post.permissions.contains('Delete'))
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: InkWell(
+                      child: const Icon(
+                        CustomIcons.delete,
+                        size: 20,
+                      ),
+                      onTap: () => delete()),
+                ),
+              if (post.permissions.contains('ShowQR'))
                 Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: InkWell(
                       child: const Icon(Icons.qr_code),
                       onTap: () {
                         if (widget.post.points == null) {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ShowQRPage(postId: widget.post.id)));
-                          showDialogForQR(context, widget.post.id, false, false);
-                        }
-                        else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  ShowQRPage(postId: widget.post.id)));
+                          showDialogForQR(
+                              context, widget.post.id, false, false);
+                        } else {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ShowQRPage(
                               postId: post.id,
@@ -236,6 +252,69 @@ class _PostCardState extends State<PostCard>
         ),
       ],
     ));
+  }
+
+  delete() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, _) {
+            return AlertDialog(
+              titlePadding: const EdgeInsets.only(top: 30),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              actionsPadding: const EdgeInsets.all(10),
+              title: const Text('Delete', textAlign: TextAlign.center),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text("Are you sure you want to delete this post?",
+                      textAlign: TextAlign.center),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  Mutation(
+                      options: MutationOptions(
+                        document: gql(PostGQl().deletePost),
+                        update: (cache, result) {
+                          if (result != null && (!result.hasException)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Post Deleted')),
+                            );
+                          }
+                        },
+                        onError: (dynamic error) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Couldn't delete the post"),
+                              backgroundColor: Theme.of(context).errorColor,
+                            ),
+                          );
+                        },
+                      ),
+                      builder: (
+                        RunMutation runMutation,
+                        QueryResult? result,
+                      ) {
+                        return CustomElevatedButton(
+                          onPressed: () {
+                            runMutation({"postId": widget.post.id});
+                          },
+                          text: "Delete",
+                          isLoading: result!.isLoading,
+                          color: ColorPalette.palette(context).warning,
+                        );
+                      }),
+                ],
+              ),
+            );
+          });
+        });
   }
 }
 

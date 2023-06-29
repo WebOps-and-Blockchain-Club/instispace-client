@@ -177,4 +177,11 @@ query FindOnePost(\$postid: String!) {
       actions
   }
 }""";
+  String deletePost = """
+  mutation RemovePost(\$postId: String!) {
+  removePost(postId: \$postId) {
+    id
+  }
+}
+""";
 }

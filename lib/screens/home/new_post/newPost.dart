@@ -140,7 +140,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
         imgs = widget.images!;
       });
     }
-
     if (widget.fieldConfiguration.endTime != null &&
         (widget.fieldConfiguration.endTime!.enableEdit == false ||
             widget.fieldConfiguration.postTime == null)) {
@@ -288,7 +287,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           setState(() {
                                             imgs.remove(img);
                                           });
-
                                           break;
                                         }
                                       }
