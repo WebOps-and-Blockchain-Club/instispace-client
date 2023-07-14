@@ -18,7 +18,7 @@ class _ComplaintPortalState extends State<ComplaintPortal> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "Complain",
+            "Complaint",
             style: TextStyle(
                 letterSpacing: 1,
                 color: Color(0xFF262626),

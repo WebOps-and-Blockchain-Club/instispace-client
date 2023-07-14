@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SubmitComplain extends StatefulWidget {
   const SubmitComplain({super.key});
@@ -18,10 +19,33 @@ class _SubmitComplainState extends State<SubmitComplain> {
   String description = '';
   String attachmentLink = '';
 
+  String? encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map((MapEntry<String, String> e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+  }
+
+  _submitComplain(
+      String rollno, String name, String description, attachmentLink) async {
+    final Map<String, String> queryParameters = {
+      'subject': 'Complaint from $name RollNumber: $rollno',
+      if (attachmentLink.isEmpty) 'body': description,
+      if (!attachmentLink.isEmpty)
+        'body': '$description \n\n\nAttachedLink: $attachmentLink',
+    };
+    final Uri _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'secc@smail.iitm.ac.in',
+      query: encodeQueryParameters(queryParameters),
+    );
+    await launchUrlString(_emailLaunchUri.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("SubmitComplain")),
+      appBar: AppBar(title: const Text("SubmitComplaint")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -253,8 +277,13 @@ class _SubmitComplainState extends State<SubmitComplain> {
                         },
                       );
                     } else {
-                      if (kDebugMode) {
-                        print("sent");
+                      try {
+                        _submitComplain(studentRollno, studentName, description,
+                            attachmentLink);
+                      } catch (e) {
+                        if (kDebugMode) {
+                          print(e);
+                        }
                       }
                     }
                   },
