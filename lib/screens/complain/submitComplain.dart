@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:client/models/user.dart';
 
 class SubmitComplain extends StatefulWidget {
-  const SubmitComplain({super.key});
+  final UserModel user;
+  const SubmitComplain({super.key, required this.user});
 
   @override
   State<SubmitComplain> createState() => _SubmitComplainState();
@@ -18,6 +20,14 @@ class _SubmitComplainState extends State<SubmitComplain> {
   String studentName = '';
   String description = '';
   String attachmentLink = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _studentName.text = widget.user.ldapName.toString();
+    _studentRollno.text = widget.user.roll.toString();
+  }
 
   String? encodeQueryParameters(Map<String, String> params) {
     return params.entries
@@ -90,6 +100,7 @@ class _SubmitComplainState extends State<SubmitComplain> {
                     studentRollno = value;
                   });
                 },
+                readOnly: true,
               ),
               const SizedBox(height: 16.0),
               const Align(
@@ -121,6 +132,7 @@ class _SubmitComplainState extends State<SubmitComplain> {
                     studentName = value;
                   });
                 },
+                readOnly: true,
               ),
               const SizedBox(height: 16.0),
               const Align(
@@ -303,11 +315,12 @@ class _SubmitComplainState extends State<SubmitComplain> {
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
-
+  final bool readOnly;
   const CustomTextField({
     super.key,
     required this.controller,
     required this.onChanged,
+    required this.readOnly,
   });
 
   @override
@@ -315,13 +328,17 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      readOnly: readOnly,
       maxLength: 50,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-        border: OutlineInputBorder(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+        border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
         ),
+        filled: true,
+        fillColor: Colors.grey[300],
       ),
     );
   }

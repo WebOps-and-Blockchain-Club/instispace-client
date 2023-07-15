@@ -500,7 +500,9 @@ class CustomDrawer extends StatelessWidget {
                                   Navigator.pop(context);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          const ComplaintPortal()));
+                                          ComplaintPortal(
+                                            user: user,
+                                          )));
                                 },
                               ),
                             ),

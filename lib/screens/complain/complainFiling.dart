@@ -1,9 +1,12 @@
+import 'package:client/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'submitComplain.dart';
 
 class ComplaintPortal extends StatefulWidget {
-  const ComplaintPortal({super.key});
+  final UserModel user;
+
+  ComplaintPortal({super.key, required this.user});
 
   @override
   State<ComplaintPortal> createState() => _ComplaintPortalState();
@@ -137,7 +140,7 @@ class _ComplaintPortalState extends State<ComplaintPortal> {
                       if (checked) {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                const SubmitComplain()));
+                                SubmitComplain(user: widget.user)));
                       } else {
                         showDialog(
                           context: context,
