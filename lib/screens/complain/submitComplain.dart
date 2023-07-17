@@ -26,6 +26,8 @@ class _SubmitComplainState extends State<SubmitComplain> {
     // TODO: implement initState
     super.initState();
     _studentName.text = widget.user.ldapName.toString();
+    studentName = widget.user.ldapName.toString();
+    studentRollno = widget.user.roll.toString();
     _studentRollno.text = widget.user.roll.toString();
   }
 
