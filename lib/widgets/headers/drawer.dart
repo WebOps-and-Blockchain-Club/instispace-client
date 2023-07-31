@@ -31,6 +31,7 @@ import '../../screens/info/about_us.dart';
 import '../../screens/super_user/super_user_list.dart';
 import '../../screens/badges/update_club.dart';
 import '../../screens/badges/create_badges.dart';
+import '../../screens/complain/complainFiling.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -491,17 +492,28 @@ class CustomDrawer extends StatelessWidget {
                                 },
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Complaints to SECC"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ComplaintPortal(
+                                            user: user,
+                                          )));
+                                },
+                              ),
+                            ),
                             // Emergency SOS
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ListTile(
-                                title: Row(
+                                title: const Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Text("SOS Manual"),
-                                    Text("🔴")
-                                  ],
+                                  children: [Text("SOS Manual"), Text("🔴")],
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
