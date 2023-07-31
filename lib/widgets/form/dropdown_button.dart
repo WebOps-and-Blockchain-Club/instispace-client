@@ -7,8 +7,10 @@ class CustomDropdownButton extends StatelessWidget {
   final List<String>? items;
   final void Function(String?)? onChanged;
   final EdgeInsets padding;
-  const CustomDropdownButton({
+  bool? isError;
+  CustomDropdownButton({
     Key? key,
+    this.isError,
     this.value,
     this.items,
     this.onChanged,
@@ -17,11 +19,16 @@ class CustomDropdownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color theme = isError != null && isError!
+        ? ColorPalette.palette(context).error
+        : ColorPalette.palette(context).primary;
     return Padding(
       padding: padding,
       child: Container(
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(width: 1)),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1, color: theme),
+            ),
           ),
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -30,13 +37,19 @@ class CustomDropdownButton extends StatelessWidget {
                 items: items?.map((String items) {
                   return DropdownMenuItem(
                     value: items,
-                    child: Text(items),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(items),
+                    ),
                   );
                 }).toList(),
                 onChanged: onChanged,
-                icon: const Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Icon(Icons.keyboard_arrow_down)),
+                icon: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: theme,
+                    )),
                 iconEnabledColor: ColorPalette.palette(context).primary,
                 underline: Container(),
                 isExpanded: true,

@@ -495,7 +495,7 @@ class CustomDrawer extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ListTile(
-                                title: const Text("Complaint"),
+                                title: const Text("Complaints to SECC"),
                                 onTap: () {
                                   Navigator.pop(context);
                                   Navigator.of(context).push(MaterialPageRoute(

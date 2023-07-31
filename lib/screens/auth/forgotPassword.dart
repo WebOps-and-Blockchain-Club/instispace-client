@@ -187,10 +187,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               final isValid = formKey.currentState!.validate();
                               FocusScope.of(context).unfocus();
 
-                              print(email.text);
-                              print(mailSent ? password.text : null);
-                              print(mailSent ? newpass.text : null);
-
                               if (isValid) {
                                 runMutation({
                                   "forgotPasswordInput": {

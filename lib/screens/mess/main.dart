@@ -74,7 +74,6 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
 
   @override
   void initState() {
-    print(DateTime.now().hour);
     setIndexMap();
 
     if (day > 4) {
