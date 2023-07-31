@@ -40,7 +40,7 @@ class MessMenuScreen extends StatefulWidget {
 
 class _MessMenuScreenState extends State<MessMenuScreen> {
   final localStorage = LocalStorageService();
-  late String mess = 'Vindhya-South';
+  late String mess = 'South Veg';
   int day = DateTime.now().weekday;
   late String week = 'odd';
   late Map<int, int> indexMap = {};
@@ -86,15 +86,15 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
               ));
     }
 
-    getData().then((data) => {
-          if (data != null)
-            {
-              setState(() {
-                if (data['menu'] != null) mess = data['menu'];
-                if (data['week'] != null) week = data['week'];
-              })
-            }
-        });
+    //   getData().then((data) => {
+    //         if (data != null)
+    //           {
+    //             setState(() {
+    //               if (data['menu'] != null) mess = data['menu'];
+    //               if (data['week'] != null) week = data['week'];
+    //             })
+    //           }
+    //       });
 
     super.initState();
   }
@@ -182,10 +182,10 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
                 padding: const EdgeInsets.all(0),
                 value: mess,
                 items: const [
-                  'Vindhya-South',
-                  'Vindhya-North',
-                  'North',
-                  'South'
+                  'South Veg',
+                  'South Non-Veg',
+                  'North Veg',
+                  'North Non-Veg',
                 ],
                 onChanged: (p0) {
                   if (p0 != null) {
