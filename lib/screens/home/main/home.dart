@@ -1,3 +1,4 @@
+import 'package:client/screens/teasure_hunt/main.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -162,6 +163,15 @@ class _HomePageState extends State<HomePage> {
             endofwidget: false,
           ),
         ),
+        floatingActionButton: widget.user.permissions.contains("TREASURE_HUNT")
+            ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const TeasureHuntWrapper()));
+                },
+                child: const Icon(Icons.wallet_giftcard))
+            : null,
       ),
     );
   }
