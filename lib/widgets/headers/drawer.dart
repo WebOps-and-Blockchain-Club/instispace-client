@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
+import '../../screens/mess/eateries.dart';
 import '../../screens/mitr/counsellor.dart';
 import '../../screens/mitr/yourdost.dart';
 import '../../screens/super_user/approve_post.dart';
@@ -185,14 +186,43 @@ class CustomDrawer extends StatelessWidget {
                             // Mess Menu
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: ListTile(
-                                title: const Text("Mess"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const MessMenuScreen()));
-                                },
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                    child: ExpansionTile(
+                                      title: const Text("Mess and Eateries"),
+                                      children:[
+                                        const SizedBox(height: 10), 
+                                        ListTile(
+                                          visualDensity:
+                                            const VisualDensity(vertical: -4) ,
+                                         title: const Text("Mess"),
+                                         tileColor : Colors.transparent,
+                                         onTap: () {
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const MessMenuScreen()));
+                                        },
+                                      ),
+                                      ListTile(
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    tileColor: Colors.transparent,
+                                    horizontalTitleGap: 0,
+                                    title: const Text("Eateries"),
+                                     onTap:(){
+                                          Navigator.pop(context);
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const EateriesMenuScreen()));
+                                     }
+                                  ),
+                                      ]
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             // Notifications

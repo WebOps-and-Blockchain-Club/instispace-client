@@ -200,7 +200,6 @@ Map<String, dynamic> eateriesMap = {
     "price": "67",
     "isVeg": true
   },
-  "": {"supplier": "Usha", "price": "", "isVeg": true},
   "Grape Juice ": {"supplier": "Coolbiz usha", "price": "29", "isVeg": true},
   "Pineapple Juice": {"supplier": "Coolbiz usha", "price": "29", "isVeg": true},
   "Cucumber": {"supplier": "Coolbiz usha", "price": "17", "isVeg": true},
@@ -617,13 +616,13 @@ Map<String, dynamic> eateriesMap = {
     "price": "67",
     "isVeg": true
   },
-  "Item Name": {"supplier": "Usha", "price": "Price", "isVeg": true},
+  // "Item Name": {"supplier": "Usha", "price": "Price", "isVeg": true},
   "Tea": {"supplier": "Usha", "price": "10", "isVeg": true},
   "Black Tea": {"supplier": "Usha", "price": "9", "isVeg": true},
   "Black Coffee": {"supplier": "Usha", "price": "12", "isVeg": true},
   "Milk / Filter Coffee": {"supplier": "Usha", "price": "13", "isVeg": true},
   "Green Tea / Lemon Tea": {"supplier": "Usha", "price": "12", "isVeg": true},
-  "Dry Ginger (Sukku) Coffee without Milk": {
+  "Dry Ginger Coffee without Milk": {
     "supplier": "Usha",
     "price": "15",
     "isVeg": true
