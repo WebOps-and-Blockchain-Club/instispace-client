@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
+import 'package:toggle_switch/toggle_switch.dart';
 import '../../utils/eateries.dart';
 import '../../widgets/form/dropdown_button.dart';
-import 'dayMenu.dart';
-import 'menuCard.dart';
 
-// const eateriesMap = {"tea": {"supplier": "Zaitoon", "price": "10", "isVeg": false}, "Black Tea": {"supplier": "Usha", "price": "12", "isVeg": true},"yellow tea": {"supplier": "Zaitoon", "price": "10", "isVeg": true},"green tea": {"supplier": "Zaitoon", "price": "10", "isVeg": true},"blue tea": {"supplier": "Usha", "price": "10", "isVeg": true},"white tea": {"supplier": "Usha", "price": "10", "isVeg": true}};
 class EateriesMenuScreen extends StatefulWidget {
   const EateriesMenuScreen({super.key});
 
@@ -17,21 +14,23 @@ class EateriesMenuScreen extends StatefulWidget {
 class _EateriesMenuScreenState extends State<EateriesMenuScreen> {
   bool isVegetarian = true;
   bool isNonVegetarian = true;
-
-  void toggleVeg(bool value) {
-    setState(() {
-      isVegetarian = value;
-    });
-  }
-  void toggleNonVeg(bool value) {
-    setState(() {
-      isNonVegetarian = value;
-    });
-  }
-
   late String eatery = 'Zaitoon';
+  Map filteredEateriesMap = {};
+  Map timings = {'Usha':'8:30 am - 2:00 am','Zaitoon':'8:30 am - 1:00 am','Coolbiz usha':'9:00 am - 1:00 am','CCD':'24/7','Hotel Ananda':'6:00 am - 11:00 pm','Deli Pizzeria':'11:00 am - 11:30 pm','Vineyard':'10:00 am - 2:00 am','Waah Hyderabadi':'12:00 pm - 12:00 am','Chaat Corner':'11:00 am - 9:30 pm','Chai waale':'8:00 am - 2:00 am','Cool Biz':'9:30 am - 1:00 am'};
+
+  void updateFilteredEateries() {
+    filteredEateriesMap.clear();
+    eateriesMap.forEach((key, value) {
+      if (((isVegetarian && value["isVeg"]) ||
+          (isNonVegetarian && !value["isVeg"])) &&
+          value["supplier"] == eatery) {
+        filteredEateriesMap[key] = value;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    updateFilteredEateries();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -54,14 +53,14 @@ class _EateriesMenuScreenState extends State<EateriesMenuScreen> {
                   'Zaitoon',
                   'Usha',
                   'Coolbiz usha',
-                  'Chaat Corner',
-                  'Deli pizzeria',
+                  'CCD',
+                  'Deli Pizzeria',
                   'Hotel Ananda',
-                  'Vineyard',
-                  'Chai Waale',
                   'Waah Hyderabadi',
-                  'Coolbiz(HFC)',
-                  'CCD'
+                  'Chaat Corner',
+                  'Vineyard',
+                  'Cool Biz',
+                  'Chai Waale'
                 ],
                 onChanged: (p0) {
                   if (p0 != null) {
@@ -72,7 +71,6 @@ class _EateriesMenuScreenState extends State<EateriesMenuScreen> {
                 },
               ),
             ),
-            // MapCardWidget(heading:"TIMINGS", dataMap: eateriesMap, eatery: eatery,),
             Expanded(
               child: ScrollablePositionedList.builder(
                   padding: EdgeInsets.zero,
@@ -104,62 +102,68 @@ class _EateriesMenuScreenState extends State<EateriesMenuScreen> {
                 mainAxisAlignment:  MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Timings",
-                    style: TextStyle(
+                    "Timings: ${timings[eatery]}",
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.bold),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.food_bank,
                     color: Colors.black,
                   ),
                 ],
               )),
-          Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.eco,
-        ),
-        Switch(
-          value: isVegetarian,
-          onChanged: toggleVeg,
-        ),
-        Icon(
-          Icons.egg,
-        ),
-        Switch(
-          value: isNonVegetarian,
-          onChanged: toggleNonVeg,
-        ),
-      ],
-    ),
+          ToggleSwitch(
+            initialLabelIndex: isVegetarian
+                ? (isNonVegetarian ? 2 : 0)
+                : (isNonVegetarian ? 1 : 2),
+            totalSwitches: 3,
+            customWidths: [50.0, 75.0, 50.0],
+            labels: const ['Veg', 'Non Veg', 'All'],
+            activeBgColors: const [ [Colors.green] ,[Colors.red],[Colors.blue]],
+            onToggle: (index) {
+                  setState(() {
+                    if (index == 0) {
+                      isVegetarian = true;
+                      isNonVegetarian = false;
+                    } else if (index == 1) {
+                      isVegetarian = false;
+                      isNonVegetarian = true;
+                    } else if (index == 2) {
+                      isVegetarian = true;
+                      isNonVegetarian = true;
+                    }
+                    updateFilteredEateries();
+                  });
+            }
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: List.generate(
-                    eateriesMap.keys.where((key) => eateriesMap[key]?['supplier']==eatery && eateriesMap[key]?['isVeg']== isVegetarian).length,
+                    (filteredEateriesMap.keys).length,
+                    // eateriesMap.keys.where((key) => eateriesMap[key]?['supplier']==eatery && eateriesMap[key]?['isVeg']== isVegetarian).length,
                     (index) => Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 3, horizontal: 25),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 225,
-                                child: Expanded(
-                                  child: Text(
-                                    eateriesMap.keys.where((key) => (eateriesMap[key]?['supplier']==eatery && eateriesMap[key]?['isVeg']== isVegetarian ) ).elementAt(index) ,
-                                    style: const TextStyle(fontSize: 14),
-                                    // overflow: TextOverflow.ellipsis,
-                                    // softWrap: true,
-                                    // maxLines: 3
-                                  ),
+                                child: Text(
+                                  filteredEateriesMap.keys.elementAt(index),
+                                  // eateriesMap.keys.where((key) => (eateriesMap[key]?['supplier']==eatery && eateriesMap[key]?['isVeg']== isVegetarian ) ).elementAt(index) ,
+                                  style: const TextStyle(fontSize: 14),
+                                  // softWrap: true,
+                                  // maxLines: 3
                                 ),
                               ),
-                              Text("${eateriesMap.values.where((value) => value['supplier']== eatery && value['isVeg']== isVegetarian).elementAt(index)["price"]}"
+                              Text(
+                                filteredEateriesMap.values.elementAt(index)['price']
+                                // "${eateriesMap.values.where((value) => value['supplier']== eatery && value['isVeg']== isVegetarian).elementAt(index)["price"]}"
                               )
                             ],
                           ),
@@ -176,53 +180,3 @@ class _EateriesMenuScreenState extends State<EateriesMenuScreen> {
     );
   }
 }
-
-
-
-// class MapCardWidget extends StatelessWidget {
-//   final String heading;
-//   final Map<String, dynamic> dataMap;
-//   final String eatery;
-
-//   MapCardWidget({required this.heading, required this.dataMap,required this.eatery});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(15.0),
-//       ),
-//       elevation: 4,
-//       margin: EdgeInsets.all(16),
-//       child: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               heading,
-//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 10),
-//             Column(
-//           children: eateriesMap.keys
-//               .where((key) => eateriesMap[key]?['supplier'] == eatery)
-//               .map((key) => Card(
-//                     child: ListTile(
-//                       title: Text(key),
-//                       subtitle: Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           Text('Price: ${eateriesMap[key]?['price']}'),
-//                           Text('Is Veg: ${eateriesMap[key]?['isVeg']}'),
-//                         ],
-//                       ),
-//                     ),
-//                   ))
-//               .toList(),
-//         ),
-//       ]
-//       ),
-//         ));
-//   }
-// }

@@ -1291,86 +1291,86 @@ Map<String, dynamic> eateriesMap = {
   "Cheese Bhel ": {"supplier": "Chaat Corner", "price": "54.15", "isVeg": true},
   "Cheese Pav Bhaji": {
     "supplier": "Chaat Corner",
-    "price": "57.95",
+    "price": "58",
     "isVeg": true
   },
   "Fafda ": {"supplier": "Chaat Corner", "price": "23.75", "isVeg": true},
   "Papdi ": {"supplier": "Chaat Corner", "price": "23.75", "isVeg": true},
   "Cheese Corn Canape's ": {
     "supplier": "Chaat Corner",
-    "price": "88.35",
+    "price": "88",
     "isVeg": true
   },
   "Cheese Murukku Chaat ": {
     "supplier": "Chaat Corner",
-    "price": "88.35",
+    "price": "88",
     "isVeg": true
   },
   "": {"supplier": "Chai Waale", "price": "", "isVeg": true},
   "Elachi Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Masala Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Ginger Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Lemon Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Ginger Lemon Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Sulaimani Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Ginger Lemon Iced Chai": {
     "supplier": "Chai Waale",
-    "price": "66.5",
+    "price": "67",
     "isVeg": true
   },
   "Very Berry Iced Chai": {
     "supplier": "Chai Waale",
-    "price": "66.5",
+    "price": "67",
     "isVeg": true
   },
   "Chairman's Special": {
     "supplier": "Chai Waale",
-    "price": "49.875",
+    "price": "50",
     "isVeg": true
   },
   "Indori Poha": {"supplier": "Chai Waale", "price": "59.85", "isVeg": true},
   "Hot Chocolate": {
     "supplier": "Chai Waale",
-    "price": "149.625",
+    "price": "150",
     "isVeg": true
   },
   "Boost ( Medium)": {
     "supplier": "Chai Waale",
-    "price": "34.9125",
+    "price": "35",
     "isVeg": true
   },
   "Horlicks (Medium)": {
     "supplier": "Chai Waale",
-    "price": "34.9125",
+    "price": "35",
     "isVeg": true
   },
   "Corn Momos - Steamed ": {
     "supplier": "Chai Waale",
-    "price": "49.875",
+    "price": "50",
     "isVeg": true
   },
   "Osmania Biscuits": {"supplier": "Chai Waale", "price": "9.5", "isVeg": true},
@@ -1381,12 +1381,12 @@ Map<String, dynamic> eateriesMap = {
   },
   "Dum Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Sugarless Milk Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Peach Passion Iced Chai": {
@@ -1396,43 +1396,43 @@ Map<String, dynamic> eateriesMap = {
   },
   "Filter Coffee Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Filter Coffee Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Badam Milk Hot": {"supplier": "Chai Waale", "price": "57", "isVeg": true},
   "Veg Momos - Steamed ": {
     "supplier": "Chai Waale",
-    "price": "49.875",
+    "price": "50",
     "isVeg": true
   },
   "Ginger Lemon Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Green Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Green Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Tulsi Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Tulsi Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Lemon Iced Chai": {"supplier": "Chai Waale", "price": "66.5", "isVeg": true},
@@ -1463,42 +1463,42 @@ Map<String, dynamic> eateriesMap = {
   },
   "Dum Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Elachi Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Masala Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Ginger Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Lemon Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Sulaimani Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Hibiscus Chai Regular": {
     "supplier": "Chai Waale",
-    "price": "14.9625",
+    "price": "15",
     "isVeg": true
   },
   "Hibiscus Chai Medium": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Cold Coffee": {"supplier": "Chai Waale", "price": "66.5", "isVeg": true},
@@ -1522,12 +1522,12 @@ Map<String, dynamic> eateriesMap = {
   },
   "Eggless Banana Bread  ": {
     "supplier": "Chai Waale",
-    "price": "34.9125",
+    "price": "35",
     "isVeg": true
   },
   "Bread Butter Sandwich": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Veg Chutney Grill Sandwich ": {
@@ -1547,64 +1547,64 @@ Map<String, dynamic> eateriesMap = {
   },
   "Paneer Momos - Fried ": {
     "supplier": "Chai Waale",
-    "price": "69.825",
+    "price": "70",
     "isVeg": true
   },
   "Butter Toast Sandwich ": {
     "supplier": "Chai Waale",
-    "price": "29.925",
+    "price": "30",
     "isVeg": true
   },
   "Veg Chutney Cheese Grill Sandwich": {
     "supplier": "Chai Waale",
-    "price": "69.825",
+    "price": "70",
     "isVeg": true
   },
   "Vegetable Maggi ": {
     "supplier": "Chai Waale",
-    "price": "54.8625",
+    "price": "55",
     "isVeg": true
   },
   "Chilli Cheese Maggi ": {
     "supplier": "Chai Waale",
-    "price": "54.8625",
+    "price": "55",
     "isVeg": true
   },
   "Schezwan Maggi ": {
     "supplier": "Chai Waale",
-    "price": "54.8625",
+    "price": "55",
     "isVeg": true
   },
   "Elaichi Chai ": {"supplier": "Chai Waale", "price": "51.87", "isVeg": true},
   "Veg Samosa ": {"supplier": "Chai Waale", "price": "19.95", "isVeg": true},
   "Noodle Samosa  ": {
     "supplier": "Chai Waale",
-    "price": "21.945",
+    "price": "22",
     "isVeg": true
   },
   "Eggless Brownie ": {
     "supplier": "Chai Waale",
-    "price": "34.9125",
+    "price": "35",
     "isVeg": true
   },
   "French Fries ": {
     "supplier": "Chai Waale",
-    "price": "34.9125",
+    "price": "35",
     "isVeg": true
   },
   "Tandoori Paneer Toast Sandwich ": {
     "supplier": "Chai Waale",
-    "price": "69.825",
+    "price": "70",
     "isVeg": true
   },
   "Paneer Maggi ": {
     "supplier": "Chai Waale",
-    "price": "64.8375",
+    "price": "65",
     "isVeg": true
   },
   "Dum Chai ": {"supplier": "Chai Waale", "price": "51.87", "isVeg": true},
   "Veg Puff  ": {"supplier": "Chai Waale", "price": "19.95", "isVeg": true},
-  "Paneer Puff  ": {"supplier": "Chai Waale", "price": "21.945", "isVeg": true},
+  "Paneer Puff  ": {"supplier": "Chai Waale", "price": "22", "isVeg": true},
   "Peri Peri Fries ": {
     "supplier": "Chai Waale",
     "price": "39.9",
@@ -1613,26 +1613,26 @@ Map<String, dynamic> eateriesMap = {
   "Veg Sandwich": {"supplier": "Chai Waale", "price": "39.9", "isVeg": true},
   "Chilli Chutney Cheese Toast Sandwich ": {
     "supplier": "Chai Waale",
-    "price": "49.875",
+    "price": "50",
     "isVeg": true
   },
   "Aloo Masala Cheese Toast Sandwich ": {
     "supplier": "Chai Waale",
-    "price": "69.825",
+    "price": "70",
     "isVeg": true
   },
   "Classic Maggi ": {"supplier": "Chai Waale", "price": "39.9", "isVeg": true},
   "Dum Chai 500ml ": {
     "supplier": "Chai Waale",
-    "price": "94.7625",
+    "price": "95",
     "isVeg": true
   },
   "Ginger Chai ": {"supplier": "Chai Waale", "price": "51.87", "isVeg": true},
-  "Masala Chai ": {"supplier": "Chai Waale", "price": "94.7625", "isVeg": true},
-  "Lemon Chai": {"supplier": "Chai Waale", "price": "94.7625", "isVeg": true},
-  "Tulsi Chai ": {"supplier": "Chai Waale", "price": "94.7625", "isVeg": true},
+  "Masala Chai ": {"supplier": "Chai Waale", "price": "95", "isVeg": true},
+  "Lemon Chai": {"supplier": "Chai Waale", "price": "95", "isVeg": true},
+  "Tulsi Chai ": {"supplier": "Chai Waale", "price": "95", "isVeg": true},
   "Boost ": {"supplier": "Chai Waale", "price": "99.75", "isVeg": true},
-  "Ginger Chai": {"supplier": "Chai Waale", "price": "94.7625", "isVeg": true},
+  "Ginger Chai": {"supplier": "Chai Waale", "price": "95", "isVeg": true},
   "Ginger Lemon Chai ": {
     "supplier": "Chai Waale",
     "price": "51.87",
@@ -1640,24 +1640,24 @@ Map<String, dynamic> eateriesMap = {
   },
   "Sulaimani Chai ": {
     "supplier": "Chai Waale",
-    "price": "94.7625",
+    "price": "95",
     "isVeg": true
   },
-  "Green Chai ": {"supplier": "Chai Waale", "price": "94.7625", "isVeg": true},
+  "Green Chai ": {"supplier": "Chai Waale", "price": "95", "isVeg": true},
   "Hibiscus Chai ": {
     "supplier": "Chai Waale",
-    "price": "94.7625",
+    "price": "95",
     "isVeg": true
   },
   "Horlicks ": {"supplier": "Chai Waale", "price": "99.75", "isVeg": true},
   "Filter Coffee ": {
     "supplier": "Chai Waale",
-    "price": "94.7625",
+    "price": "95",
     "isVeg": true
   },
   "Badam Milk Hot ": {
     "supplier": "Chai Waale",
-    "price": "149.625",
+    "price": "150",
     "isVeg": true
   },
   "JACK FALOODA SPECIAL ICE CREAM": {
@@ -1722,10 +1722,10 @@ Map<String, dynamic> eateriesMap = {
     "price": "65",
     "isVeg": true
   },
-  "\"POMPI SALAD ( PINEAPPLE ": {
+  "\"POMPI SALAD ( PINEAPPLE POMEGRANATE) FRESH FRUIT SALAD": {
     "supplier": "Cool Biz",
-    "price": " POMEGRANATE) FRESH FRUIT SALAD\"",
-    "isVeg": "70"
+    "price": "70",
+    "isVeg": true
   },
   "KIWI FALOODA SPECIAL ICE CREAM": {
     "supplier": "Cool Biz",
@@ -3293,7 +3293,7 @@ Map<String, dynamic> eateriesMap = {
     "price": "62",
     "isVeg": true
   },
-  "Demo Item": {"supplier": "Deli Pizzeria", "price": "", "isVeg": true},
+  // "Demo Item": {"supplier": "Deli Pizzeria", "price": "", "isVeg": true},
   "Cheese And Chutney Between The Breads(250gm)": {
     "supplier": "Deli Pizzeria",
     "price": "62",
@@ -3544,11 +3544,11 @@ Map<String, dynamic> eateriesMap = {
     "price": "195",
     "isVeg": true
   },
-  "Item Name": {
-    "supplier": "Waah Hyderabadi",
-    "price": "Actual Rs.",
-    "isVeg": true
-  },
+  // "Item Name": {
+  //   "supplier": "Waah Hyderabadi",
+  //   "price": "Actual Rs.",
+  //   "isVeg": true
+  // },
   "Americana Pizza 9 Inch(300gm)": {
     "supplier": "Deli Pizzeria",
     "price": "205",
@@ -4077,16 +4077,17 @@ Map<String, dynamic> eateriesMap = {
     "isVeg": true
   },
   "Dhal Tadka ": {"supplier": "Hotel Ananda", "price": "114", "isVeg": true},
-  "\"Mini Tiffen (Idli-50grm": {
+  "\"Mini Tiffen (Idli-50grm , Vada-30grm , Pongal-80grm , Mini Dosa or Pori , Sweet": {
     "supplier": "Hotel Ananda",
-    "price": "Vada-30grm",
-    "isVeg": "Pongal-80grm"
+    "price": "90",
+    "isVeg": true
   },
-  "\"Mini Meals (Sambar Rice Or Variety Rice-150Grm": {
+  "\"Mini Meals (Sambar Rice Or Variety Rice-150Grm, curd rice , mini chapati, kurma , poriyal and sweet": {
     "supplier": "Hotel Ananda",
-    "price": "Curd Rice-150 Grm",
-    "isVeg": " Mini Chapathi-30Grm"
+    "price": "90",
+    "isVeg": true
   },
+  
   "Veg Noodles": {"supplier": "Waah Hyderabadi", "price": "86", "isVeg": true},
   "Paneer Noodles": {
     "supplier": "Waah Hyderabadi",
@@ -4890,10 +4891,10 @@ Map<String, dynamic> eateriesMap = {
     "isVeg": false
   },
   "Egg Baji ": {"supplier": "Waah Hyderabadi", "price": "85", "isVeg": false},
-  "\"Andhra Mix Veg Bhaji(Potato": {
+  "\"Andhra Mix Veg Bhaji(Potato Onion And Mirchi)": {
     "supplier": "Waah Hyderabadi",
-    "price": " Onion And Mirchi) \"",
-    "isVeg": "85"
+    "price": " 85",
+    "isVeg": true
   },
   "Andhra Palak Dal ": {
     "supplier": "Waah Hyderabadi",
