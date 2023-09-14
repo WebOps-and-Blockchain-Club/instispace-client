@@ -115,10 +115,10 @@ class ReportGQL {
   """;
 
   static const getReportReasons = """
-    query GetReportReasons {
-      getReportReasons {
-        reason
-      }
-    }
+    query Reportreasons {
+  reportreasons {
+    reason
+  }
+}
   """;
 }

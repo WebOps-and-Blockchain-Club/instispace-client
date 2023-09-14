@@ -42,7 +42,7 @@ class _PostCardState extends State<PostCard> {
                     child: SelectableText(post.title.capitalize(),
                         style: Theme.of(context).textTheme.titleLarge)),
                 // Action Menu
-                if (post.permissions.contains("EDIT") ||
+                /*if (post.permissions.contains("EDIT") ||
                     post.permissions.contains("DELETE") ||
                     post.permissions.contains("RESOLVE_ITEM"))
                   PopupMenuButton(
@@ -71,7 +71,7 @@ class _PostCardState extends State<PostCard> {
                                 child: ResolvePostButton(
                                     resolve: actions.resolve)),
                         ];
-                      })
+                      })*/
               ],
             ),
             // Posted By & Time
@@ -203,7 +203,8 @@ class _PostCardState extends State<PostCard> {
                 (post.permissions.contains("SET_REMINDER")))
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: Row(
+                child:
+                    Container(), /*Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Wrap(
@@ -240,7 +241,7 @@ class _PostCardState extends State<PostCard> {
                         report: actions.report,
                       ),
                   ],
-                ),
+                ),*/
               ),
           ],
         ),

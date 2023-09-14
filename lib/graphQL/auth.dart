@@ -1,10 +1,8 @@
 class AuthGQL {
   String login = """
-    mutation(\$fcmToken: String!, \$loginInputs: LoginInput!){
-      login(fcmToken: \$fcmToken, LoginInputs: \$loginInputs) {
+    mutation(\$loginInputs: LoginInput!, \$fcmToken: String!){
+      login(loginInput: \$loginInputs,fcmToken: \$fcmToken ) {
         token
-        role
-        isNewUser
       }
     }
   """;
@@ -22,8 +20,8 @@ class AuthGQL {
   """;
 
   String updateUser = """
-    mutation(\$userInput: UserInput!){
-      updateUser(UserInput: \$userInput)
+    mutation UpdateUser(\$userInput: UpdateUserInput!) {
+      updateUser(userInput: \$userInput)
     }
   """;
 

@@ -1,29 +1,28 @@
+import 'package:client/models/post/actions.dart';
+import 'package:client/screens/home/new_post/newPostButton.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'actions.dart';
-import '../../teasure_hunt/main.dart';
-import '../../hostel/main.dart';
-import '../../../widgets/helpers/navigate.dart';
+import '../../../graphQL/user.dart';
 import '../../../services/auth.dart';
+import '/themes.dart';
+import 'actions.dart';
+import '../post/query.dart';
+import '../../../widgets/button/catList.dart';
+import '../../../graphQL/feed.dart';
 import '../../../models/user.dart';
 import '../../../models/post.dart';
-import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/main.dart';
-import '../../../widgets/headers/main.dart';
-import '../../../widgets/helpers/error.dart';
 
 class HomePage extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
-  final Future<void> Function() refetch;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final Widget appBar;
+  // final Future<void> Function() refetch;
+  // final GlobalKey<ScaffoldState> scaffoldKey;
 
   const HomePage(
-      {Key? key,
-      required this.auth,
-      required this.user,
-      required this.refetch,
-      required this.scaffoldKey})
+      {Key? key, required this.auth, required this.user, required this.appBar})
       : super(key: key);
 
   @override
@@ -32,10 +31,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  bool show = false;
+
+  int take = 10;
 
   @override
   Widget build(BuildContext context) {
-    final List<HomeModel>? home = widget.user.toHomeModel();
+    // final List<HomeModel>? home = widget.user.toHomeModel();
+    final Map<String, dynamic> variables = {
+      "take": take,
+      "lastEventId": "",
+      "orderInput": {"byLikes": false, "byComments": false},
+      "filteringCondition": {
+        "search": null,
+        "posttobeApproved": false,
+        "isSaved": false,
+        "showOldPost": false,
+        "isLiked": false,
+        "categories": null,
+      },
+    };
+    final QueryOptions<Object?> options =
+        QueryOptions(document: gql(FeedGQL().findPosts), variables: variables);
+
     return WillPopScope(
       onWillPop: () async {
         if (_scrollController.offset != 0.0) {
@@ -48,83 +66,80 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: RefreshIndicator(
-              onRefresh: () => widget.refetch(),
-              child: NestedScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        return CustomAppBar(
-                          title: "InstiSpace",
-                          leading: CustomIconButton(
-                              icon: Icons.menu,
-                              onPressed: () => {
-                                    widget.scaffoldKey.currentState!
-                                        .openDrawer()
-                                  }),
-                          action: (widget.user.hostelId != null ||
-                                  widget.user.permissions
-                                      .contains("HOSTEL_ADMIN"))
-                              ? CustomIconButton(
-                                  icon: Icons.account_balance_outlined,
-                                  onPressed: () => navigate(context,
-                                      HostelWrapper(user: widget.user)))
-                              : null,
-                        );
-                      }, childCount: 1),
+        body: NestedScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: ScrollController(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+            return <Widget>[
+              // AppBar
+              widget.appBar,
+
+              // SearchBar & Categories Filter
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      widget.user.name!.toUpperCase(),
+                      // "JANITH",
+                      style: const TextStyle(
+                        color: Color(0xFF3C3C3C),
+                        fontFamily: 'Proxima Nova',
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2.64,
+                      ),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Header(
-                              title: "Hi ${widget.user.name}",
-                              subTitle: "Get InstiSpace feed here"),
-                        );
-                      }, childCount: 1),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      widget.user.roll!.toUpperCase(),
+                      // "MM19B035",
+                      style: const TextStyle(
+                        color: Color(0xFF3C3C3C),
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Proxima Nova',
+                        fontSize: 20,
+                        letterSpacing: 2.64,
+                      ),
                     ),
-                  ];
-                },
-                body: RefreshIndicator(
-                  onRefresh: () => widget.refetch(),
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: (home == null || home.isEmpty)
-                          ? const Error(error: "No Posts")
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: home.length,
-                              itemBuilder: (context, index) => Section(
-                                  user: widget.user,
-                                  title: home[index].title,
-                                  posts: home[index].posts))),
-                ),
+                  ),
+                  const SizedBox(height: 15),
+                ]),
               ),
-            ),
+            ];
+          },
+          body: Query(
+            options: QueryOptions(document: gql(UserGQL().getMe)),
+            builder: (result, {fetchMore, refetch}) {
+              print("\n\n\n\ngetme query called");
+              if (result.hasException) {
+                return Text(result.exception.toString());
+              }
+
+              if (result.isLoading) {
+                return const Text(
+                  "Connecting to InstiSpace...",
+                );
+              }
+
+              final UserModel user = UserModel.fromJson(result.data!["getMe"]);
+
+              // widget.auth.updateUser(user);
+
+              return PostQuery(options: options);
+            },
           ),
         ),
-        floatingActionButton: widget.user.permissions.contains("TREASURE_HUNT")
-            ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const TeasureHuntWrapper()));
-                },
-                child: const Icon(Icons.wallet_giftcard))
-            : null,
       ),
     );
   }
 }
-
+/*
 class Section extends StatefulWidget {
   final String title;
   final List<PostModel> posts;
@@ -186,3 +201,4 @@ class _SectionState extends State<Section> {
     );
   }
 }
+*/

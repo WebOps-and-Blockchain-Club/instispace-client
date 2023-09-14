@@ -20,10 +20,8 @@ class CustomDropdownButton extends StatelessWidget {
     return Padding(
       padding: padding,
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: ColorPalette.palette(context).primary),
-            borderRadius: BorderRadius.circular(10),
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1)),
           ),
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

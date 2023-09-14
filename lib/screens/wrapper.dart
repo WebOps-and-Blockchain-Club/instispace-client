@@ -48,10 +48,35 @@ class _WrapperState extends State<Wrapper> {
       return LogIn(auth: auth);
     } else {
       return Query(
-          options: QueryOptions(document: gql(UserGQL().getMe)),
+          options: QueryOptions(
+            document: gql(UserGQL().getMe),
+            parserFn: (data) => UserModel.fromJson(data['getMe']),
+          ),
           builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               body: (() {
+                if (result.parsedData != null) {
+                  final UserModel user = result.parsedData as UserModel;
+                  if (user.isNewUser == true) {
+                    return EditProfile(
+                      auth: auth,
+                      user: user,
+                      refetch: refetch,
+                    );
+                  } else if (user.isNewUser == false) {
+                    return HomeWrapper(
+                      auth: auth,
+                      user: user,
+                      // refetch: () async {
+                      //   navigatePath = null;
+                      //   refetch!();
+                      // },
+                      // navigatePath: navigatePath,
+                    );
+                  }
+                }
+
                 if (result.hasException) {
                   return Error(error: result.exception.toString());
                 }
@@ -59,27 +84,6 @@ class _WrapperState extends State<Wrapper> {
                 if (result.isLoading) {
                   return const Loading(
                     message: "Connecting to InstiSpace...",
-                  );
-                }
-
-                final UserModel user =
-                    UserModel.fromJson(result.data!["getMe"]);
-
-                if (user.isNewUser == true) {
-                  return EditProfile(
-                    auth: auth,
-                    user: user,
-                    refetch: refetch,
-                  );
-                } else if (user.isNewUser == false) {
-                  return HomeWrapper(
-                    auth: auth,
-                    user: user,
-                    refetch: () async {
-                      navigatePath = null;
-                      refetch!();
-                    },
-                    navigatePath: navigatePath,
                   );
                 }
 

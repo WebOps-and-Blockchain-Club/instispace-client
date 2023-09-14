@@ -56,7 +56,10 @@ class CustomAppBar extends StatelessWidget {
                 child: MarqueeWidget(
                   child: Text(
                     title,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -78,6 +81,7 @@ class SearchBar extends StatefulWidget {
   final List<ChipModel>? chips;
   final List<String>? selectedChips;
   final Function? onChipFilter;
+  final int? time;
   const SearchBar(
       {Key? key,
       required this.onSubmitted,
@@ -86,7 +90,8 @@ class SearchBar extends StatefulWidget {
       this.padding,
       this.chips,
       this.selectedChips,
-      this.onChipFilter})
+      this.onChipFilter,
+      this.time})
       : super(key: key);
 
   @override
@@ -94,58 +99,73 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final _debouncer = Debouncer();
+  int? time;
+  Debouncer _debouncer = Debouncer();
   final search = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        time = widget.time;
+        _debouncer = Debouncer(milliseconds: time);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ColorPalette.palette(context).secondary[50],
+      color: Colors.white,
       padding: widget.padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 40,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                    child: Card(
-                        margin: const EdgeInsets.all(0),
-                        child: Theme(
-                          data: ThemeData(
-                            primarySwatch:
-                                ColorPalette.palette(context).primary,
-                          ),
-                          child: TextField(
-                            maxLength: 50,
-                            controller: search,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'What are you looking for?',
-                                prefixIcon: const Icon(Icons.search, size: 25),
-                                suffixIcon: search.text == ""
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          search.clear();
-                                          widget.onSubmitted("");
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          size: 25,
-                                        )),
-                                counterText: ""),
-                            onSubmitted: widget.onSubmitted,
-                            onChanged: (value) {
-                              _debouncer.run(() {
-                                widget.onSubmitted(value);
-                              });
+          Container(
+            height: 50,
+            child: Expanded(
+                child: Theme(
+              data: ThemeData(
+                primarySwatch: ColorPalette.palette(context).primary,
+              ),
+              child: TextField(
+                textAlignVertical: TextAlignVertical.center,
+                maxLength: 50,
+                controller: search,
+                decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFE1E0EC),
+                    contentPadding: const EdgeInsets.all(5),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(35)),
+                    //hintText: 'What are you looking for?',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 25,
+                      color: Color(0xFFB5B4CA),
+                    ),
+                    suffixIcon: search.text == ""
+                        ? null
+                        : IconButton(
+                            onPressed: () {
+                              search.clear();
+                              widget.onSubmitted("");
                             },
-                          ),
-                        ))),
-                if (widget.onFilterClick != null)
+                            icon: const Icon(
+                              Icons.close,
+                              size: 25,
+                            )),
+                    counterText: ""),
+                onSubmitted: widget.onSubmitted,
+                onChanged: (value) {
+                  _debouncer.run(() {
+                    widget.onSubmitted(value);
+                  });
+                },
+              ),
+            )),
+            /*if (widget.onFilterClick != null)
                   Card(
                     margin: const EdgeInsets.only(left: 10),
                     child: InkWell(
@@ -155,9 +175,7 @@ class _SearchBarState extends State<SearchBar> {
                         child: Icon(Icons.filter_alt_outlined),
                       ),
                     ),
-                  )
-              ],
-            ),
+                  )*/
           ),
           if (widget.error != null && widget.error != "")
             SizedBox(
@@ -230,13 +248,19 @@ class Debouncer {
   int? seconds;
   VoidCallback? action;
   Timer? timer;
+  int? milliseconds;
+  Debouncer({
+    this.seconds,
+    this.milliseconds,
+  });
 
   run(VoidCallback action) {
     if (null != timer) {
       timer!.cancel();
     }
     timer = Timer(
-      Duration(seconds: seconds ?? 2),
+      //Duration(seconds: seconds ?? 2),
+      Duration(milliseconds: milliseconds ?? 2000),
       action,
     );
   }

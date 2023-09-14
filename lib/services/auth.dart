@@ -1,3 +1,4 @@
+import 'package:client/models/user.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -7,13 +8,17 @@ class AuthService extends ChangeNotifier {
   SharedPreferences? prefs;
   String? _token;
   bool? _newUserOnApp;
+  UserModel? _user;
+
   String? get token => _token;
   bool? get newUserOnApp => _newUserOnApp;
+  // UserModel? get user => _user;
 
   AuthService() {
     notifyListeners();
     _token = null;
     _newUserOnApp = null;
+    _user = null;
     loadToken();
     getNewUserOnApp();
   }
@@ -41,15 +46,16 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  login(String token, String role, bool isNewUser) async {
+  login(String token) async {
     await _setToken(token);
     notifyListeners();
   }
 
-  updateUser(Map<String, dynamic> data) async {
-    await Future.delayed(const Duration(milliseconds: 1));
-    notifyListeners();
-  }
+  // updateUser(UserModel user) async {
+  //   print("\n\n\n\nupdate user called");
+  //   _user = user;
+  //   notifyListeners();
+  // }
 
   logout() async {
     HiveStore().reset();

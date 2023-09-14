@@ -66,218 +66,223 @@ class Profile extends StatelessWidget {
               : UserModel.fromJson(result!.data!["getUser"]))
           : user!;
     }
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: NestedScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      return CustomAppBar(
-                        title: _user == null
-                            ? ""
-                            : _user.name == null
-                                ? _user.ldapName!
-                                : _user.name!,
-                        leading: CustomIconButton(
-                          icon: Icons.arrow_back,
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        action: user != null
-                            ? CustomIconButton(
-                                icon: Icons.edit,
-                                onPressed: () {
-                                  //Navigator.pop(context);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditProfile(
-                                                auth: auth,
-                                                user: user!,
-                                              )));
-                                },
-                              )
-                            : Container(),
-                      );
-                    }, childCount: 1),
-                  ),
-                ];
-              },
-              body: RefreshIndicator(
-                onRefresh: () => refetch != null
-                    ? refetch!()
-                    : Future.delayed(const Duration(seconds: 0)),
-                child: Stack(children: [
-                  ListView(),
-                  (() {
-                    if (result != null && result!.isLoading) {
-                      return const Loading();
-                    }
-
-                    if ((result != null && result!.hasException) ||
-                        _user == null) {
-                      return Error(error: result!.exception.toString());
-                    }
-
-                    return ListView(
-                      children: [
-                        GestureDetector(
-                          onTap: () async {
-                            List<String> images =
-                                await imageCachePath([_user!.photo]);
-                            openImageView(context, 0, images);
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: _user.photo,
-                            placeholder: (_, __) => const Icon(
-                                Icons.account_circle_rounded,
-                                size: 100),
-                            errorWidget: (_, __, ___) => const Icon(
-                                Icons.account_circle_rounded,
-                                size: 100),
-                            imageBuilder: (context, imageProvider) => Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+    return Stack(
+      children: [
+        Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: NestedScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return CustomAppBar(
+                            title: 'PROFILE',
+                            leading: CustomIconButton(
+                              icon: Icons.arrow_back,
+                              onPressed: () => Navigator.of(context).pop(),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Center(
-                          child: Text(
-                            _user.ldapName == null || _user.ldapName!.isEmpty
-                                ? _user.name!
-                                : _user.ldapName!,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Center(
-                          child: Text(
-                            _user.roll!.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
+                          );
+                        }, childCount: 1),
+                      ),
+                    ];
+                  },
+                  body: RefreshIndicator(
+                    onRefresh: () => refetch != null
+                        ? refetch!()
+                        : Future.delayed(const Duration(seconds: 0)),
+                    child: Stack(children: [
+                      ListView(),
+                      (() {
+                        if (result != null && result!.isLoading) {
+                          return const Loading();
+                        }
+
+                        if ((result != null && result!.hasException) ||
+                            _user == null) {
+                          return Error(error: result!.exception.toString());
+                        }
+
+                        return ListView(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                List<String> images =
+                                    await imageCachePath([_user!.photo]);
+                                openImageView(context, 0, images);
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: _user.photo,
+                                placeholder: (_, __) => Icon(
+                                    Icons.account_circle_rounded,
                                     color:
-                                        ColorPalette.palette(context).secondary,
-                                    fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        if (_user.role != "USER")
-                          Center(
-                            child: Text(
-                              'Role : ${_user.role!}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  ?.copyWith(
-                                      color:
-                                          ColorPalette.palette(context).primary,
-                                      fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        const SizedBox(height: 20),
-                        if (_user.interets != null &&
-                            _user.interets!.isNotEmpty)
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.5,
-                                color: ColorPalette.palette(context).secondary,
+                                        ColorPalette.palette(context).primary,
+                                    size: 100),
+                                errorWidget: (_, __, ___) => Icon(
+                                    Icons.account_circle_rounded,
+                                    color:
+                                        ColorPalette.palette(context).primary,
+                                    size: 100),
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
                             ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Text(
-                                    "Followed tags",
+                            const SizedBox(height: 10),
+                            Center(
+                              child: Text(
+                                _user.ldapName == null ||
+                                        _user.ldapName!.isEmpty
+                                    ? _user.name!
+                                    : _user.ldapName!,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Center(
+                              child: Text(
+                                _user.roll!.toUpperCase(),
+                                style: _user.role == "USER"
+                                    ? Theme.of(context).textTheme.titleLarge
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(color: Colors.black),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            if (_user.role != "USER")
+                              Center(
+                                child: Text('Role : ${_user.role!}',
                                     style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
+                                        Theme.of(context).textTheme.titleSmall),
+                              ),
+                            const SizedBox(height: 20),
+                            if (_user.interets != null &&
+                                _user.interets!.isNotEmpty)
+                              Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0, bottom: 20),
-                                  child: Wrap(
-                                    spacing: 5,
-                                    runSpacing: 5,
-                                    children: List.generate(
-                                        _user.interets!.length, (index) {
-                                      return Chip(
-                                        label:
-                                            Text(_user!.interets![index].title),
-                                        padding: const EdgeInsets.all(4),
-                                        materialTapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                      );
-                                    }),
-                                  ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15.0),
+                                      child: Text(
+                                        "Followed tags",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 15.0, bottom: 20),
+                                      child: Wrap(
+                                        spacing: 5,
+                                        runSpacing: 5,
+                                        children: List.generate(
+                                            _user.interets!.length, (index) {
+                                          return Chip(
+                                            label: Text(
+                                                _user!.interets![index].title),
+                                            padding: const EdgeInsets.all(4),
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                            if ((_user.id == null || _user.id!.isEmpty) &&
+                                _user.ldapName != null &&
+                                _user.ldapName!.isNotEmpty)
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1.5,
+                                      color: ColorPalette.palette(context)
+                                          .secondary,
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
+                                        child: Text(
+                                          "User is not registered.\nDo you like to invite the user?",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: CustomElevatedButton(
+                                          onPressed: () {
+                                            _sendInviteMail(
+                                                _user!.roll! +
+                                                    "@smail.iitm.ac.in",
+                                                _user.ldapName!);
+                                          },
+                                          text: "Invite ${_user.ldapName}",
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                CustomElevatedButton(
+                                    textSize: 12,
+                                    onPressed: (() => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => EditProfile(
+                                                  auth: auth,
+                                                  user: user!,
+                                                )))),
+                                    text: "EDIT PROFILE"),
                               ],
                             ),
-                          ),
-                        if ((_user.id == null || _user.id!.isEmpty) &&
-                            _user.ldapName != null &&
-                            _user.ldapName!.isNotEmpty)
-                          Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1.5,
-                                  color:
-                                      ColorPalette.palette(context).secondary,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Text(
-                                      "User is not registered.\nDo you like to invite the user?",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: CustomElevatedButton(
-                                      onPressed: () {
-                                        _sendInviteMail(
-                                            _user!.roll! + "@smail.iitm.ac.in",
-                                            _user.ldapName!);
-                                      },
-                                      text: "Invite ${_user.ldapName}",
-                                    ),
-                                  )
-                                ],
-                              )),
-                      ],
-                    );
-                  }()),
-                ]),
-              )),
+                          ],
+                        );
+                      }()),
+                    ]),
+                  )),
+            ),
+          ),
         ),
-      ),
+        const Positioned(
+            top: -50,
+            right: -90,
+            child: Image(
+                width: 300,
+                image: AssetImage('assets/illustrations/decor.png')))
+      ],
     );
   }
 }

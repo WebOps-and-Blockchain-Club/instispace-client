@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:client/graphQL/feed.dart';
 import 'package:client/services/image_picker.dart';
 import 'package:client/themes.dart';
+import 'package:client/widgets/card.dart';
 import 'package:client/widgets/card/image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/comment.dart';
+// import '../../../models/comment.dart';
 import '../../../models/date_time_format.dart';
+import '../../../models/post/actions.dart';
 import '../../../themes.dart';
 import '../../../widgets/button/icon_button.dart';
 import '../../../widgets/card/description.dart';
@@ -16,20 +19,22 @@ import '../../../widgets/headers/main.dart';
 import '../../../widgets/helpers/error.dart';
 
 class CommentsPage extends StatefulWidget {
+  final String postId;
   final CommentsModel comments;
-  final String? id;
-  final String? type;
-  final String? document;
-  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
-      updateCache;
+  // final String? id;
+  // final String? type;
+  // final String? document;
+  // final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)?
+  //     updateCache;
 
   const CommentsPage({
     Key? key,
+    required this.postId,
     required this.comments,
-    this.id,
-    this.type,
-    this.document,
-    this.updateCache,
+    // this.id,
+    // this.type,
+    // this.document,
+    // this.updateCache,
   }) : super(key: key);
 
   @override
@@ -38,6 +43,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   final TextEditingController comment = TextEditingController();
+
   late List<CommentModel> comments;
 
   @override
@@ -48,17 +54,19 @@ class _CommentsPageState extends State<CommentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-          title: CustomAppBar(
-              title: "Comments",
-              leading: CustomIconButton(
-                icon: Icons.arrow_back,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )),
-          automaticallyImplyLeading: false),
+        centerTitle: true,
+        title: const Text(
+          "COMMENTS",
+          style: TextStyle(
+              letterSpacing: 2.64,
+              color: Color(0xFF3C3C3C),
+              fontSize: 24,
+              fontWeight: FontWeight.w700),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(right: 15.0, left: 15.0, top: 15.0),
         child: Column(
@@ -68,48 +76,76 @@ class _CommentsPageState extends State<CommentsPage> {
                   shrinkWrap: true,
                   itemCount: widget.comments.comments.length,
                   itemBuilder: (context, index) {
-                    final CommentModel commet = widget.comments.comments[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 15),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Images
-                            if (commet.images != null &&
-                                commet.images!.isNotEmpty)
-                              Container(
+                    final CommentModel comment =
+                        widget.comments.comments[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: CustomCard(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Images
+                          if (comment.images != null &&
+                              comment.images!.isNotEmpty &&
+                              comment.images!.first != "")
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: Container(
                                   margin: const EdgeInsets.all(10),
-                                  child: ImageCard(imageUrls: commet.images!)),
+                                  child: ImageCard(
+                                    imageUrls: comment.images!,
+                                  )),
+                            ),
 
-                            // Description
-                            Description(content: commet.content),
+                          // Description
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5.0),
+                            child: Description(content: comment.content),
+                          ),
 
-                            // Posted By & Time
-                            SelectableText(
-                                'Commented by ${commet.createdBy.name}, ${DateTimeFormatModel.fromString(commet.createdAt).toDiffString()} ago',
-                                style: Theme.of(context).textTheme.labelSmall),
-                          ],
-                        ),
-                      ),
+                          // Posted By & Time
+                          SelectableText(
+                            '${comment.createdBy.name}, ${DateTimeFormatModel.fromString(comment.createdAt).toDiffString()} ago',
+                            style: const TextStyle(color: Colors.black45),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      )),
                     );
+                    // return Card(
+                    //   margin: const EdgeInsets.only(bottom: 15),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(15),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //       children: [
+                    //         // Images
+                    //         if (commet.images != null &&
+                    //             commet.images!.isNotEmpty)
+                    //           Container(
+                    //               margin: const EdgeInsets.all(10),
+                    //               child: ImageCard(imageUrls: commet.images!)),
+
+                    //         // Description
+                    //         Description(content: commet.content),
+
+                    //         // Posted By & Time
+                    //         SelectableText(
+                    //             'Commented by ${commet.createdBy.name}, ${DateTimeFormatModel.fromString(commet.createdAt).toDiffString()} ago',
+                    //             style: Theme.of(context).textTheme.labelSmall),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // );
                   }),
             ),
-            if (widget.id != null &&
-                widget.type != null &&
-                widget.document != null &&
-                widget.updateCache != null)
-              CreateComment(
-                  id: widget.id!,
-                  type: widget.type!,
-                  document: widget.document!,
-                  updateCache: widget.updateCache!,
-                  updateComments: (CommentModel comment) {
-                    setState(() {
-                      comments.add(comment);
-                    });
-                  })
+            CreateComment(
+                postId: widget.postId,
+                updateComments: (CommentModel comment) {
+                  setState(() {
+                    comments.add(comment);
+                  });
+                }),
           ],
         ),
       ),
@@ -118,19 +154,10 @@ class _CommentsPageState extends State<CommentsPage> {
 }
 
 class CreateComment extends StatefulWidget {
-  final String id;
-  final String type;
-  final String document;
-  final FutureOr<void> Function(GraphQLDataProxy, QueryResult<Object?>)
-      updateCache;
+  final String postId;
   final Function updateComments;
   const CreateComment(
-      {Key? key,
-      required this.id,
-      required this.type,
-      required this.document,
-      required this.updateCache,
-      required this.updateComments})
+      {Key? key, required this.postId, required this.updateComments})
       : super(key: key);
 
   @override
@@ -144,12 +171,60 @@ class _CreateCommentState extends State<CreateComment> {
   Widget build(BuildContext context) {
     return Mutation(
         options: MutationOptions(
-            document: gql(widget.document),
+            document: gql(FeedGQL().createComment),
             update: (cache, result) {
               if (result != null) {
-                widget.updateCache(cache, result);
-                widget.updateComments(CommentModel.fromJson(
-                    result.data!["createComment${widget.type}"]));
+                var data = cache.readFragment(Fragment(document: gql('''
+                      fragment PostCommentField on Post{
+                        id
+                        postComments {
+                          id
+                          createdAt
+                          createdBy {
+                            id
+                            roll
+                            role
+                            name
+                            photo
+                          }
+                          content
+                          isLiked
+                          isDisliked
+                          likeCount
+                          isHidden
+                        }
+                      }
+                    ''')).asRequest(idFields: {
+                  '__typename': "Post",
+                  'id': widget.postId,
+                }));
+                final Map<String, dynamic> updated = {
+                  "__typename": "Post",
+                  "id": widget.postId,
+                  "postComments":
+                      data!["postComments"] + [result.data!["createComment"]],
+                };
+                cache.writeFragment(
+                  Fragment(document: gql('''
+                      fragment PostCommentField on Post {
+                        id
+                        postComments {
+                          content
+                          createdBy {
+                            name
+                            id
+                          }
+                        }
+                      }
+                    ''')).asRequest(idFields: {
+                    '__typename': "Post",
+                    'id': widget.postId,
+                  }),
+                  data: updated,
+                  broadcast: false,
+                );
+                widget.updateComments(
+                    CommentModel.fromJson(result.data!["createComment"]));
                 comment.clear();
               }
             }),
@@ -163,92 +238,101 @@ class _CreateCommentState extends State<CreateComment> {
                   builder: (context, imagePickerService, child) {
                 if (result != null &&
                     result.data != null &&
-                    result.data!["createComment${widget.type}"] != null) {
+                    result.data!["createComment"] != null) {
                   imagePickerService.clearPreview();
                 }
                 return Container(
-                  color: ColorPalette.palette(context).secondary[50],
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+                  margin: const EdgeInsets.only(bottom: 30),
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromARGB(255, 192, 192, 192),
+                            offset: Offset(1, 1),
+                            blurRadius: 10,
+                            spreadRadius: 0.0)
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(35)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                imagePickerService.previewImages(),
-                                const SizedBox(height: 10),
-                                TextField(
-                                  controller: comment,
-                                  maxLength: 3000,
-                                  minLines: 1,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    prefixIcon:
-                                        imagePickerService.pickImageIconButton(
-                                      context: context,
-                                    ),
-                                    suffixIcon: InkWell(
-                                      onTap: () async {
-                                        List<String> uploadResult;
-                                        try {
-                                          uploadResult =
-                                              await imagePickerService
-                                                  .uploadImage();
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: const Text(
-                                                  'Image Upload Failed'),
-                                              backgroundColor:
-                                                  Theme.of(context).errorColor,
-                                            ),
-                                          );
-
-                                          return;
-                                        }
-                                        if (!(result != null &&
-                                                result.isLoading) &&
-                                            comment.text.isNotEmpty) {
-                                          runMutation({
-                                            "commentData": {
-                                              "content": comment.text,
-                                              "imageUrls": uploadResult
-                                            },
-                                            "id": widget.id,
-                                          });
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: (result != null &&
-                                                result.isLoading)
-                                            ? const CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                              )
-                                            : const Icon(Icons.send),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide.none),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide.none),
-                                    hintText: 'Enter your comment',
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              imagePickerService.previewImages(),
+                              const SizedBox(height: 10),
+                              TextField(
+                                controller: comment,
+                                maxLength: 3000,
+                                minLines: 1,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  counterText: "",
+                                  prefixIcon:
+                                      imagePickerService.pickImageIconButton(
+                                    context: context,
                                   ),
+                                  contentPadding: EdgeInsets.zero,
+                                  suffixIcon: InkWell(
+                                    onTap: () async {
+                                      List<String> uploadResult;
+                                      try {
+                                        uploadResult = await imagePickerService
+                                            .uploadImage();
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Image Upload Failed'),
+                                            backgroundColor:
+                                                Theme.of(context).errorColor,
+                                          ),
+                                        );
+                                        return;
+                                      }
+                                      if (!(result != null &&
+                                              result.isLoading) &&
+                                          comment.text.isNotEmpty) {
+                                        runMutation({
+                                          "postId": widget.postId,
+                                          "createCommentInput": {
+                                            "content": comment.text,
+                                            "photoList": uploadResult,
+                                            "isHidden": false,
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      child:
+                                          (result != null && result.isLoading)
+                                              ? const CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                )
+                                              : const Icon(Icons.send),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide.none),
+                                  hintText: 'Add your comment.....',
                                 ),
-                              ],
-                            )),
-                          ],
-                        ),
+                              ),
+                            ],
+                          )),
+                        ],
                       ),
                       if (result != null && result.hasException)
                         IntrinsicHeight(

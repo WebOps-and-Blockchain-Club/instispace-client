@@ -5,18 +5,17 @@ import '../../../models/tag.dart';
 class TagsDisplay extends StatelessWidget {
   final TagsModel tagsModel;
   final Function onDelete;
-  final EdgeInsetsGeometry padding;
-  const TagsDisplay(
-      {Key? key,
-      required this.tagsModel,
-      required this.onDelete,
-      this.padding = const EdgeInsets.only(top: 10)})
-      : super(key: key);
+
+  const TagsDisplay({
+    Key? key,
+    required this.tagsModel,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding,
+      padding: const EdgeInsets.symmetric(vertical: 25),
       child: Wrap(
         spacing: 5,
         runSpacing: 5,

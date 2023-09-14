@@ -68,6 +68,11 @@ dependencies:
   rxdart: ^0.27.5
   uni_links: ^0.5.1
   webview_flutter: ^3.0.4
+  sqflite: ^2.0.3+1
+  table_calendar: ^3.0.8
+  photo_manager: ^2.5.2
+  google_sign_in: ^6.0.1
+  scrollable_positioned_list: ^0.3.5
 
 dev_dependencies:
   flutter_test:
@@ -97,8 +102,9 @@ flutter:
     - assets/logo/
     - assets/illustrations/
     - assets/splash/
+    - assets/pick_images/camera.png
+    - assets/pick_images/gallery.png
     - assets/
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -110,17 +116,16 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  fonts:
+    - family: Proxima Nova
+      fonts:
+        - asset: assets/ProximaNovaFont.otf
+        - asset: assets/ProximaNovaBold.otf
+          weight: 900
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/MyFlutterApp.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

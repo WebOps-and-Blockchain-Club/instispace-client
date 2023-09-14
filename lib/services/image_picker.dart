@@ -17,7 +17,7 @@ class ImagePickerService extends ChangeNotifier {
   final int noOfImages;
   final int quality;
   ImagePicker? _picker;
-  List<XFile>? _imageFileList;
+  dynamic _imageFileList;
   dynamic _pickImageError;
 
   ImagePickerService({this.noOfImages = 1, this.quality = 20}) {
@@ -31,6 +31,12 @@ class ImagePickerService extends ChangeNotifier {
 
   void clearPreview() {
     _imageFileList = null;
+  }
+
+  Future<List<String>> getCam() async {
+    final XFile? photo = await _picker!.pickImage(source: ImageSource.camera);
+
+    return await uploadImage(imgs: [photo]);
   }
 
   Future<void> _onImageButtonPressed({
@@ -110,12 +116,13 @@ class ImagePickerService extends ChangeNotifier {
         });
   }
 
-  List<XFile>? get() => _imageFileList;
+  dynamic get() => _imageFileList;
 
-  Future<List<MultipartFile>?> getMultipartFiles() async {
+  Future<List<MultipartFile>?> getMultipartFiles(List? images) async {
     List<MultipartFile> files = [];
-    if (_imageFileList != null && _imageFileList!.isNotEmpty) {
-      for (var item in _imageFileList!) {
+    List? imgs = images ?? _imageFileList;
+    if (imgs != null && imgs.isNotEmpty) {
+      for (var item in imgs) {
         var byteData = await item.readAsBytes();
 
         var multipartFile = MultipartFile.fromBytes(
@@ -133,16 +140,15 @@ class ImagePickerService extends ChangeNotifier {
     }
   }
 
-  Future<List<String>> uploadImage() async {
-    List<MultipartFile>? images = await getMultipartFiles();
+  Future<List<String>> uploadImage({List? imgs}) async {
+    List<MultipartFile>? images = await getMultipartFiles(imgs);
     if (images == null || images.isEmpty) return [];
     var request = uploadClient();
-    request.files.addAll(images);
     try {
       http.StreamedResponse response = await request.send();
-
       if (response.statusCode == 200) {
         dynamic res = await response.stream.bytesToString();
+
         return jsonDecode(res)["urls"].cast<String>();
       } else {
         throw (await response.stream.bytesToString());

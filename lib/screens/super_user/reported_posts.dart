@@ -163,12 +163,12 @@ class _ReportCardState extends State<ReportCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PostCard(
-          post: widget.post,
-          actions: PostActions(
-              comment: NavigateAction(
-                  to: CommentsPage(comments: widget.post.comments!))),
-        ),
+        // PostCard(
+        //   post: widget.post,
+        //   actions: PostActions(
+        //       comment: NavigateAction(
+        //           to: CommentsPage(comments: widget.post.comments!))),
+        // ),
 
         Card(
           margin: const EdgeInsets.only(bottom: 5),
