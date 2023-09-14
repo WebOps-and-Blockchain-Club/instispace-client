@@ -4,6 +4,8 @@ import 'package:client/screens/badges/create_club.dart';
 import 'package:client/screens/badges/view_club.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/helpers/navigate.dart';
+import '../../models/category.dart';
+import 'package:client/widgets/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -12,6 +14,7 @@ import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
 import '../../screens/mitr/counsellor.dart';
 import '../../screens/mitr/yourdost.dart';
+import '../../screens/mitr/mentalHealth.dart';
 import '../../screens/super_user/approve_post.dart';
 import '../../screens/super_user/create_notification.dart';
 import '../../screens/teasure_hunt/main.dart';
@@ -39,7 +42,7 @@ import '../page/webpage.dart';
 import '../button/elevated_button.dart';
 import '../helpers/error.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   final AuthService auth;
   final UserModel user;
   final String fcmToken;
@@ -50,6 +53,12 @@ class CustomDrawer extends StatelessWidget {
       required this.fcmToken})
       : super(key: key);
 
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -133,13 +142,13 @@ class CustomDrawer extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
                                                   Profile(
-                                                    user: user,
+                                                    user: widget.user,
                                                   )));
                                     },
                                   ),
 
                                   // E ID Card
-                                  if (user.role == 'USER')
+                                  if (widget.user.role == 'USER')
                                     ListTile(
                                       visualDensity:
                                           const VisualDensity(vertical: -4),
@@ -151,7 +160,9 @@ class CustomDrawer extends StatelessWidget {
                                             MaterialPageRoute(
                                                 builder:
                                                     (BuildContext context) =>
-                                                        EIDCard(user: user)));
+                                                        EIDCard(
+                                                            user:
+                                                                widget.user)));
                                       },
                                     ),
 
@@ -163,7 +174,7 @@ class CustomDrawer extends StatelessWidget {
                                     horizontalTitleGap: 0,
                                     title: const Text("Logout"),
                                     onTap: () => logoutAlert(context,
-                                        () async => await auth.logout()),
+                                        () async => await widget.auth.logout()),
                                   ),
                                 ],
                               ),
@@ -241,14 +252,34 @@ class CustomDrawer extends StatelessWidget {
                                       navigate(context, const YourDostScreen());
                                     },
                                   ),
+                                  ListTile(
+                                    tileColor: Colors.transparent,
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title: const Text("Mental Health"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      navigate(
+                                          context,
+                                          mentalHealth(
+                                            appBar: HomeAppBar(
+                                              title: "Mental Health",
+                                              scaffoldKey: _scaffoldKey,
+                                              user: widget.user,
+                                            ),
+                                            categories: forumCategories,
+                                            createPost: true,
+                                          ));
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
 
                             //Super User Actions
-                            if (user != null &&
-                                user.permission != null &&
-                                user.role != "USER")
+                            if (widget.user != null &&
+                                widget.user.permission != null &&
+                                widget.user.role != "USER")
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 5),
@@ -257,7 +288,7 @@ class CustomDrawer extends StatelessWidget {
                                   children: [
                                     const SizedBox(height: 10),
                                     //Super User List
-                                    if (user.permission!.createAccount
+                                    if (widget.user.permission!.createAccount
                                         .hasPermission)
                                       ListTile(
                                           tileColor: Colors.transparent,
@@ -273,7 +304,7 @@ class CustomDrawer extends StatelessWidget {
                                                         const SuperUserList()));
                                           }),
                                     // Reports
-                                    if (user.permission!.moderateReport)
+                                    if (widget.user.permission!.moderateReport)
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -293,7 +324,7 @@ class CustomDrawer extends StatelessWidget {
                                               ));
                                         },
                                       ),
-                                    if (user.permission!.approvePost)
+                                    if (widget.user.permission!.approvePost)
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -312,7 +343,8 @@ class CustomDrawer extends StatelessWidget {
                                         },
                                       ),
                                     // Create Notification
-                                    if (user.permission!.createNotification)
+                                    if (widget
+                                        .user.permission!.createNotification)
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -328,7 +360,7 @@ class CustomDrawer extends StatelessWidget {
                                         },
                                       ),
                                     // Create Account
-                                    if (user.permission!.createAccount
+                                    if (widget.user.permission!.createAccount
                                         .hasPermission)
                                       ListTile(
                                         tileColor: Colors.transparent,
@@ -342,17 +374,19 @@ class CustomDrawer extends StatelessWidget {
                                                   builder:
                                                       (BuildContext context) =>
                                                           CreateAccountPage(
-                                                            permissions: user
+                                                            permissions: widget
+                                                                .user
                                                                 .permission!,
-                                                            role: user.role!,
+                                                            role: widget
+                                                                .user.role!,
                                                           )));
                                         },
                                       ),
                                     // Update Role
-                                    if (user.permission!.createAccount
+                                    if (widget.user.permission!.createAccount
                                                 .allowedRoles !=
                                             null &&
-                                        user.permission!.createAccount
+                                        widget.user.permission!.createAccount
                                             .allowedRoles!
                                             .contains("MODERATOR"))
                                       ListTile(
@@ -370,7 +404,7 @@ class CustomDrawer extends StatelessWidget {
                                         },
                                       ),
                                     // Create Hostel
-                                    if (user.permission!.createHostel)
+                                    if (widget.user.permission!.createHostel)
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -387,7 +421,7 @@ class CustomDrawer extends StatelessWidget {
                                       ),
 
                                     // Create Tag
-                                    if (user.permission!.createTag)
+                                    if (widget.user.permission!.createTag)
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -402,7 +436,7 @@ class CustomDrawer extends StatelessWidget {
                                                       const CreateTagPage()));
                                         },
                                       ),
-                                    if (user.role != "USER")
+                                    if (widget.user.role != "USER")
                                       ListTile(
                                         tileColor: Colors.transparent,
                                         visualDensity:
@@ -463,7 +497,7 @@ class CustomDrawer extends StatelessWidget {
                                         },
                                       ),*/
                                     // Super User's Guide
-                                    if (user.role != "USER")
+                                    if (widget.user.role != "USER")
                                       ListTile(
                                         visualDensity:
                                             const VisualDensity(vertical: -4),
@@ -501,7 +535,7 @@ class CustomDrawer extends StatelessWidget {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           ComplaintPortal(
-                                            user: user,
+                                            user: widget.user,
                                           )));
                                 },
                               ),
@@ -551,8 +585,9 @@ class CustomDrawer extends StatelessWidget {
                                   ),
 
                                   // Feedback
-                                  (user != null && user.permission != null) &&
-                                          user.permission!.viewFeeback
+                                  (widget.user != null &&
+                                              widget.user.permission != null) &&
+                                          widget.user.permission!.viewFeeback
                                       ? const ViewFeedback()
                                       : ListTile(
                                           visualDensity:
