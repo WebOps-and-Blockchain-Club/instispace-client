@@ -41,7 +41,7 @@ class _CategoryListState extends State<CategoryList>
   Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding:
-          const EdgeInsets.only(bottom: 0, left: 180, top: 330, right: 15),
+          const EdgeInsets.only(bottom: 0, left: 180, top: 320, right: 15),
       contentPadding: const EdgeInsets.all(10),
       backgroundColor: const Color(0xFFE1E0EC),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

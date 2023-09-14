@@ -633,12 +633,12 @@ Map<String, dynamic> eateriesMap = {
   "Bournvita": {"supplier": "Usha", "price": "15", "isVeg": true},
   "Badaam Milk / Raagimalt": {"supplier": "Usha", "price": "15", "isVeg": true},
   "Veg Puff": {"supplier": "Usha", "price": "13", "isVeg": true},
-  "Egg Puff": {"supplier": "Usha", "price": "16", "isVeg": true},
-  "Chicken Puff": {"supplier": "Usha", "price": "20", "isVeg": true},
+  "Egg Puff": {"supplier": "Usha", "price": "16", "isVeg": false},
+  "Chicken Puff": {"supplier": "Usha", "price": "20", "isVeg": false},
   "Paneer Puff": {"supplier": "Usha", "price": "20", "isVeg": true},
   "Mushroom Puff": {"supplier": "Usha", "price": "20", "isVeg": true},
   "Chenna Puff": {"supplier": "Usha", "price": "20", "isVeg": true},
-  "Chicken Roll": {"supplier": "Usha", "price": "23", "isVeg": true},
+  "Chicken Roll": {"supplier": "Usha", "price": "23", "isVeg": false},
   "Paneer Roll": {"supplier": "Usha", "price": "23", "isVeg": true},
   "Veg Roll": {"supplier": "Usha", "price": "22", "isVeg": true},
   "Plain Cake": {"supplier": "Usha", "price": "13", "isVeg": true},
@@ -656,14 +656,14 @@ Map<String, dynamic> eateriesMap = {
   "Veg Maggi": {"supplier": "Usha", "price": "28", "isVeg": true},
   "Veg Cheese Maggi": {"supplier": "Usha", "price": "38", "isVeg": true},
   "Plain Cheese Maggi": {"supplier": "Usha", "price": "35", "isVeg": true},
-  "Plain Boiled Egg": {"supplier": "Usha", "price": "10", "isVeg": true},
-  "Boiled Egg with Onion": {"supplier": "Usha", "price": "12", "isVeg": true},
+  "Plain Boiled Egg": {"supplier": "Usha", "price": "10", "isVeg": false},
+  "Boiled Egg with Onion": {"supplier": "Usha", "price": "12", "isVeg": false},
   "Bread Roast 2pcs": {"supplier": "Usha", "price": "18", "isVeg": true},
   "Cheese Roast ": {"supplier": "Usha", "price": "30", "isVeg": true},
   "Veg Sadwich": {"supplier": "Usha", "price": "28", "isVeg": true},
   "Veg Cheese Sandwich": {"supplier": "Usha", "price": "40", "isVeg": true},
-  "Egg Sandwich": {"supplier": "Usha", "price": "33", "isVeg": true},
-  "Egg Cheese Sandwich": {"supplier": "Usha", "price": "43", "isVeg": true},
+  "Egg Sandwich": {"supplier": "Usha", "price": "33", "isVeg": false},
+  "Egg Cheese Sandwich": {"supplier": "Usha", "price": "43", "isVeg": false},
   "Medu Vadai": {"supplier": "Usha", "price": "10", "isVeg": true},
   "Masala Vadai": {"supplier": "Usha", "price": "10", "isVeg": true},
   "Keera Vadai(Spinach)": {"supplier": "Usha", "price": "10", "isVeg": true},
@@ -4642,7 +4642,7 @@ Map<String, dynamic> eateriesMap = {
   "Waah !! Egg Biryani  (Non Veg Rice)": {
     "supplier": "Waah Hyderabadi",
     "price": "108",
-    "isVeg": true
+    "isVeg": false
   },
   "Waah !! Chicken Hyderabadi Dum Biryani ": {
     "supplier": "Waah Hyderabadi",
@@ -4996,7 +4996,7 @@ Map<String, dynamic> eateriesMap = {
   "Veg Biryani + Chilli Egg": {
     "supplier": "Waah Hyderabadi",
     "price": "149",
-    "isVeg": true
+    "isVeg": false
   },
   "\"Veg Biryani + Chilli Paneer\t\"": {
     "supplier": "Waah Hyderabadi",

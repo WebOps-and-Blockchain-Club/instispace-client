@@ -90,6 +90,22 @@ Map<String, CreatePostModel> getCreatePostFields = {
     tag: FieldModel(required: false),
     endTime: FieldModel(time: const Duration(days: 5)),
   ),
+  "Academics": CreatePostModel(
+    title: FieldModel(),
+    description: FieldModel(label: 'Description'),
+    link: FieldModel(required: false),
+    imageSecondary: FieldModel(required: false),
+    tag: FieldModel(label: 'Academics'),
+    endTime: FieldModel(time: const Duration(days: 5)),
+  ),
+  "Study Resources": CreatePostModel(
+    title: FieldModel(),
+    description: FieldModel(label: 'Description'),
+    link: FieldModel(required: true),
+    imageSecondary: FieldModel(required: false),
+    tag: FieldModel(),
+    // endTime: FieldModel(time: const Duration(days: 5)),
+  ),
   "Lost": CreatePostModel(
     title: FieldModel(),
     description: FieldModel(label: 'Item description, Contact info'),

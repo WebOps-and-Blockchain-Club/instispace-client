@@ -1,3 +1,4 @@
+import 'package:client/screens/a-gate/study_resources.dart';
 import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
 import 'package:client/screens/badges/create_club.dart';
@@ -7,6 +8,7 @@ import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../../screens/a-gate/acad_connect.dart';
 import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
@@ -182,7 +184,65 @@ class CustomDrawer extends StatelessWidget {
                                 },
                               ),
                             ),
-
+                            
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                    child: ExpansionTile(
+                                      title: Text('A-Gate'),
+                                      children: [
+                                        ListTile(
+                                            visualDensity:
+                                                const VisualDensity(vertical: -4),
+                                            tileColor: Colors.transparent,
+                                            horizontalTitleGap: 0,
+                                            title: const Text("Acad Connect"),
+                                             onTap:(){
+                                                  Navigator.pop(context);
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      builder: (BuildContext context) =>
+                                                          const AcadConnectScreen()));
+                                             }
+                                          ),
+                                        ListTile(
+                                            visualDensity:
+                                                const VisualDensity(vertical: -4),
+                                            tileColor: Colors.transparent,
+                                            horizontalTitleGap: 0,
+                                            title: const Text("Study Resources"),
+                                             onTap:(){
+                                                  Navigator.pop(context);
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      builder: (BuildContext context) =>
+                                                          const 
+                                                          
+                                                          StudyResourcesScreen()
+                                                          
+                                                          ));
+                                             }
+                                          ),
+                                        ListTile(
+                                            visualDensity:
+                                                const VisualDensity(vertical: -4),
+                                            tileColor: Colors.transparent,
+                                            horizontalTitleGap: 0,
+                                            title: const Text("Course Feedback"),
+                                            onTap:(){
+                                                  Navigator.pop(context);
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      builder: (BuildContext context) =>
+                                                          const EateriesMenuScreen()));
+                                            }
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             // Mess Menu
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
