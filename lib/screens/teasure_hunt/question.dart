@@ -1,3 +1,4 @@
+import 'package:client/utils/custom_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,18 @@ class QuestionsPage extends StatefulWidget {
 class _QuestionsPageState extends State<QuestionsPage> {
   //Controllers
   final ScrollController _scrollController = ScrollController();
+
+  late String name;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    setState(() {
+      name = widget.group.name;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,22 +87,72 @@ class _QuestionsPageState extends State<QuestionsPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SelectableText(
-                            widget.group.name,
-                            style: Theme.of(context).textTheme.titleLarge,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SelectableText(
+                                    name,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Mutation(
+                                      options: MutationOptions(
+                                        document:
+                                            gql(TeasureHuntGQL.editGroupName),
+                                        onCompleted: (data) {
+                                          if (data != null &&
+                                              data["nameGroup"]["name"] !=
+                                                  null) {
+                                            Navigator.pop(context);
+                                            widget.refetch!();
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  backgroundColor:
+                                                      ColorPalette.palette(
+                                                              context)
+                                                          .error,
+                                                  content: const Text(
+                                                    "Couldn't edit the group name",
+                                                  )),
+                                            );
+                                          }
+                                          groupname.clear();
+                                        },
+                                        onError: (error) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                backgroundColor:
+                                                    ColorPalette.palette(
+                                                            context)
+                                                        .error,
+                                                content: const Text(
+                                                  "Couldn't edit the group name",
+                                                )),
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      builder: (
+                                        RunMutation runMutation,
+                                        QueryResult? result,
+                                      ) {
+                                        return CustomIconButton(
+                                          icon: CustomIcons.edit,
+                                          onPressed: () =>
+                                              showEditGroupDialogue(
+                                                  context, runMutation),
+                                        );
+                                      })
+                                ]),
                           ),
                           SelectableText(
-                            "Group Code: ${widget.group.code}",
+                            "Group Code: ${widget.group.code.toUpperCase()}",
                             style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          SelectableText(
-                            "(Use the code to invite your friends)",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    color:
-                                        ColorPalette.palette(context).primary),
                           ),
                           const SizedBox(height: 10),
                           if (DateTimeFormatModel.fromString(
@@ -97,7 +160,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                   .toDiffInSeconds() >
                               0)
                             SelectableText(
-                              "Treasure starts at ${DateTimeFormatModel.fromString(widget.group.startTime).toFormat("hh:mm a")}.",
+                              "Treasure Hunt starts at ${DateTimeFormatModel.fromString(widget.group.startTime).toFormat("hh:mm a")}.",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           if (questions.isNotEmpty)
@@ -396,4 +459,38 @@ class _AddSubmissionState extends State<AddSubmission> {
               }));
         });
   }
+}
+
+final TextEditingController groupname = TextEditingController();
+
+class EditName extends StatelessWidget {
+  final Function runMutation;
+  const EditName({super.key, required this.runMutation});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Center(child: Text("Edit Group Name")),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            controller: groupname,
+          ),
+          const SizedBox(height: 10),
+          CustomElevatedButton(
+              onPressed: () {
+                runMutation({"groupName": groupname.text});
+              },
+              text: "Submit")
+        ],
+      ),
+    );
+  }
+}
+
+void showEditGroupDialogue(context, runMutation) {
+  showDialog(
+      context: context,
+      builder: (context) => EditName(runMutation: runMutation));
 }

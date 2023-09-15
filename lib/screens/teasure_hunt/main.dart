@@ -1,3 +1,5 @@
+import 'package:client/services/local_storage.dart';
+
 import '../../widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -9,6 +11,8 @@ import '../../widgets/helpers/error.dart';
 import '../../widgets/page/webpage.dart';
 import 'question.dart';
 import 'group.dart';
+
+final localStorage = LocalStorageService();
 
 class TeasureHuntWrapper extends StatefulWidget {
   const TeasureHuntWrapper({Key? key}) : super(key: key);
@@ -43,7 +47,7 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
                   result.data != null && result.data!["getGroup"] != null
                       ? GroupModel.fromJson(result.data!["getGroup"])
                       : null;
-
+              print(group);
               if (group == null) {
                 return GroupPage(refetch: refetch);
               } else {

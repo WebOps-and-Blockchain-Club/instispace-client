@@ -40,6 +40,7 @@ class NewPostScreen extends StatefulWidget {
   final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
+
   const NewPostScreen(
       {Key? key,
       this.images,
@@ -85,6 +86,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   Future getPostData(PostModel? post) async {
+    // if we are editing the post
     if (widget.post != null) {
       title.text = post!.title ?? '';
       desc.text = post.content!;
@@ -99,7 +101,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
         }
         selectedTags = post.tags ?? TagsModel.fromJson([]);
       });
-    } else {
+    }
+
+    // fill the form with data from locat storage
+    else {
       var data = await localStorage.getData(widget.category.name);
       if (data != null) {
         title.text = data["title"];
@@ -305,8 +310,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                     minLines: 1,
                                     maxLines: null,
                                     controller: title,
-                                    decoration: const InputDecoration(
-                                        label: Text("Title")),
+                                    decoration: InputDecoration(
+                                        label: Text(widget.fieldConfiguration
+                                                .title!.label ??
+                                            "Title")),
                                     validator: (value) {
                                       if (widget.fieldConfiguration.title!
                                               .required &&

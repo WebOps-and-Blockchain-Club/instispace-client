@@ -10,8 +10,12 @@ class TeasureHuntGQL {
   """;
 
   static String joinGroup = """
-    mutation(\$groupCode: String!){
-      joinGroup(GroupCode: \$groupCode)
+    mutation AddUserToGroup(\$maxMembers: Float!, \$numberOfGroup: Float!) {
+      addUserToGroup(maxMembers: \$maxMembers, numberOfGroup: \$numberOfGroup) {
+        group {
+          id
+        }
+      }
     }
   """;
 
@@ -33,7 +37,7 @@ class TeasureHuntGQL {
             roll
             role
             photo
-            program
+            programme
             department
             mobile
             isNewUser
@@ -80,4 +84,12 @@ class TeasureHuntGQL {
       }
     }
   """;
+
+  static String editGroupName = """
+    mutation NameGroup(\$groupName: String!) {
+      nameGroup(groupName: \$groupName) {
+        name
+      }
+    }
+    """;
 }

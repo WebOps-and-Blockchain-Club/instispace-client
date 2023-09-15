@@ -1,3 +1,5 @@
+import 'package:client/screens/badges/scanner.dart';
+import 'package:client/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -7,6 +9,8 @@ import '../../widgets/button/icon_button.dart';
 import '../../widgets/headers/main.dart';
 import '../../widgets/helpers/error.dart';
 import '../../widgets/text/label.dart';
+
+final localStorage = LocalStorageService();
 
 class GroupPage extends StatefulWidget {
   final Future<QueryResult<Object?>?> Function()? refetch;
@@ -32,25 +36,13 @@ class _GroupPageState extends State<GroupPage> {
                 )),
             automaticallyImplyLeading: false),
         body: SafeArea(
-          child: RefreshIndicator(
-            onRefresh: widget.refetch!,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                SizedBox(
-                    height: 200, child: JoinGroup(refetch: widget.refetch)),
-                const SizedBox(height: 50),
-                SelectableText(
-                  "----------- OR -----------",
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 50),
-                SizedBox(
-                    height: 200, child: CreateGroup(refetch: widget.refetch))
-              ],
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 20),
+              SizedBox(height: 200, child: JoinGroup(refetch: widget.refetch)),
+              const SizedBox(height: 50),
+            ],
           ),
         ));
   }
@@ -72,93 +64,114 @@ class _JoinGroupState extends State<JoinGroup> {
 
   final joinGroup = TeasureHuntGQL.joinGroup;
 
+  bool scanned = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getScanned();
+  }
+
+  getScanned() async {
+    var data = await localStorage.getData("treasure_hunt");
+    if (data != null) {
+      setState(() {
+        scanned = data["scanned"];
+      });
+    } else {
+      setState(() {
+        scanned = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Mutation(
-        options: MutationOptions(
-            document: gql(joinGroup),
-            onCompleted: (dynamic resultData) {
-              if (resultData["joinGroup"] == true) {
-                widget.refetch!();
-              }
-            },
-            onError: (error) {
-              if (error.toString().contains("Invalid Group Code")) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Invalid Group Code")),
-                );
-              } else if (error.toString().contains("Memeber Limit Exceeded")) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text("Not Allowed to join, group limit exceeded")),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content:
-                          Text(formatErrorMessage(error.toString(), context))),
-                );
-              }
-            }),
-        builder: (
-          RunMutation runMutation,
-          QueryResult? result,
-        ) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Form(
-              key: formKey,
-              child: ListView(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  SelectableText(
-                    "Join Group",
-                    style: Theme.of(context).textTheme.titleLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const LabelText(text: "Group Code"),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: TextFormField(
-                      controller: name,
-                      maxLength: 10,
-                      minLines: 1,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        labelText: "Group Code",
+    return scanned
+        ? Mutation(
+            options: MutationOptions(
+                document: gql(joinGroup),
+                onCompleted: (dynamic resultData) {
+                  print(resultData);
+                  if (resultData["group"]["id"] != null) {
+                    widget.refetch!();
+                  }
+                },
+                onError: (error) {
+                  if (error.toString().contains("user is already in a group")) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("User is already in a group")),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              formatErrorMessage(error.toString(), context))),
+                    );
+                  }
+                }),
+            builder: (
+              RunMutation runMutation,
+              QueryResult? result,
+            ) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Form(
+                  key: formKey,
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      SelectableText(
+                        "Join Group",
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Enter the group code";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  if (result != null && result.hasException)
-                    ErrorText(error: result.exception.toString()),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        final isValid = formKey.currentState!.validate();
-                        FocusScope.of(context).unfocus();
+                      if (result != null && result.hasException)
+                        ErrorText(error: result.exception.toString()),
+                      if (scanned)
+                        Center(
+                          child: CustomElevatedButton(
+                            onPressed: () {
+                              final isValid = formKey.currentState!.validate();
+                              FocusScope.of(context).unfocus();
 
-                        if (isValid) {
-                          runMutation({"groupCode": name.text});
-                        }
-                      },
-                      text: "Join Group",
-                      isLoading: result!.isLoading,
-                    ),
-                  )
-                ],
-              ),
+                              if (isValid) {
+                                runMutation(
+                                    {"maxMembers": 6, "numberOfGroup": 5});
+                              }
+                            },
+                            text: "Join Group",
+                            isLoading: result!.isLoading,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            })
+        : Center(
+            child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Text("Please Scan the QR to join a group",
+                    style: Theme.of(context).textTheme.headlineMedium),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: CustomElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const ScannerScreen())),
+                    text: "Scan The QR",
+                  ),
+                ),
+              ],
             ),
-          );
-        });
+          ));
   }
 }
 
@@ -281,18 +294,10 @@ class _LeaveGroupState extends State<LeaveGroup> {
             widget.refetch!();
           },
           onError: (error) {
-            if (error.toString().contains("Admin not allowed to leave group")) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text("Admin not allowed to leave group")),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content:
-                        Text(formatErrorMessage(error.toString(), context))),
-              );
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(formatErrorMessage(error.toString(), context))),
+            );
           },
         ),
         builder: (
