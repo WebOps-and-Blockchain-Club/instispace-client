@@ -47,7 +47,7 @@ class _TeasureHuntWrapperState extends State<TeasureHuntWrapper> {
                   result.data != null && result.data!["getGroup"] != null
                       ? GroupModel.fromJson(result.data!["getGroup"])
                       : null;
-              print(group);
+
               if (group == null) {
                 return GroupPage(refetch: refetch);
               } else {

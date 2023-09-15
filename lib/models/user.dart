@@ -69,6 +69,7 @@ class UserModel {
   HostelModel? hostel;
   List<String?> permissions;
   PermissionModel? permission;
+  bool isFreshie;
 
   UserModel({
     this.id,
@@ -78,6 +79,7 @@ class UserModel {
     required this.role,
     required this.photo,
     required this.isNewUser,
+    required this.isFreshie,
     this.program,
     this.department,
     this.mobile,
@@ -99,6 +101,7 @@ class UserModel {
         department = data["department"],
         mobile = data["mobile"],
         interets = TagsModel.fromJson(data["interests"] ?? []).tags,
+        isFreshie = data["isFreshie"],
         hostel = data["hostel"] != null
             ? HostelModel.fromJson(data["hostel"])
             : null,

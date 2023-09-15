@@ -41,6 +41,7 @@ class TeasureHuntGQL {
             department
             mobile
             isNewUser
+            isFreshie
           }
         }
         questions {
@@ -70,7 +71,7 @@ class TeasureHuntGQL {
 
   static String addSubmission = """
     mutation(\$questionId: String!, \$submissionData: CreateSubmissionInput!) {
-      addSubmission(QuestionId: \$questionId, SubmissionData: \$submissionData) {
+      addSubmissions(QuestionId: \$questionId, SubmissionData: \$submissionData) {
         id
         description
         createdAt
@@ -91,5 +92,11 @@ class TeasureHuntGQL {
         name
       }
     }
+    """;
+
+  static String removeSubmisison = """
+      mutation RemoveSubmission(\$questionId: String!) {
+        removeSubmission(QuestionId: \$questionId)
+      }
     """;
 }

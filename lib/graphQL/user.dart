@@ -10,6 +10,7 @@ class UserGQL {
         photo
         isNewUser
         mobile
+        isFreshie
         interests {
           id
           title
@@ -84,6 +85,7 @@ query GetLdapStudents(
         name
         photo
         ldapName
+        isFreshie
         roll
         role
         isNewUser

@@ -86,7 +86,8 @@ class _ProfileState extends State<Profile> {
                   ldapName: widget.userDetails!["ldapName"],
                   photo: widget.userDetails!["photo"]!,
                   isNewUser: true,
-                  permissions: [])
+                  permissions: [],
+                  isFreshie: false)
               : UserModel.fromJson(widget.result!.data!["getUser"]))
           : widget.user!;
     }

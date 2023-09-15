@@ -92,8 +92,7 @@ class _JoinGroupState extends State<JoinGroup> {
             options: MutationOptions(
                 document: gql(joinGroup),
                 onCompleted: (dynamic resultData) {
-                  print(resultData);
-                  if (resultData["group"]["id"] != null) {
+                  if (resultData["addUserToGroup"]["group"]["id"] != null) {
                     widget.refetch!();
                   }
                 },

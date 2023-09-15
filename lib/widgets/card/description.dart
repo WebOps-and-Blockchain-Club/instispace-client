@@ -19,14 +19,15 @@ class Description extends StatelessWidget {
           if (_data.contains(RegExp(r'\s'))) {
             List<String> _dataArr2 = _data.split(RegExp(r'\s'));
             return TextSpan(
-                children: [..._dataArr2, _dataArr.last == _data ? "" : "\n"]
-                    .map((_data2) => textWidget(_data2, " "))
-                    .toList());
+              children: [..._dataArr2, _dataArr.last == _data ? "" : "\n"]
+                  .map((_data2) => textWidget(_data2, " "))
+                  .toList(),
+            );
           } else {
             return textWidget(_data.trim(), _dataArr.last == _data ? "" : "\n");
           }
         }).toList(),
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
     );
   }

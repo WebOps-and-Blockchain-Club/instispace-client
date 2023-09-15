@@ -46,6 +46,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
   @override
   Widget build(BuildContext context) {
     final List<QuestionModel> questions = widget.group.questions ?? [];
+    print('hereeee');
+    print(widget.group.questions);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -165,7 +167,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                             ),
                           if (questions.isNotEmpty)
                             SelectableText(
-                              "Treasure ends in ${DateTimeFormatModel.fromString(widget.group.endTime).toDiffString(abs: true)}.",
+                              "Treasure Hunt ends in ${DateTimeFormatModel.fromString(widget.group.endTime).toDiffString(abs: true)}.",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           if (!(widget.group.users != null &&
@@ -207,6 +209,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
   }
 }
 
+GlobalKey key = GlobalKey();
+
 class QuestionCard extends StatefulWidget {
   final int index;
   final QuestionModel question;
@@ -223,8 +227,19 @@ class _QuestionCardState extends State<QuestionCard> {
   @override
   Widget build(BuildContext context) {
     final question = widget.question;
-    return Card(
-      margin: const EdgeInsets.only(bottom: 15),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 7,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.only(bottom: 15, right: 5, left: 5),
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -285,6 +300,19 @@ class _QuestionCardState extends State<QuestionCard> {
                     SelectableText(
                         'Submitted by ${question.submission!.createdBy.name}, ${DateTimeFormatModel.fromString(question.submission!.createdAt).toDiffString()} ago',
                         style: Theme.of(context).textTheme.labelSmall),
+
+                    Mutation(
+                        options: MutationOptions(
+                          document: gql(TeasureHuntGQL.removeSubmisison),
+                          onCompleted: (data) => widget.refetch!(),
+                        ),
+                        builder:
+                            (RunMutation runMutation, QueryResult? result) {
+                          return CustomElevatedButton(
+                              onPressed: () =>
+                                  runMutation({"questionId": question.id}),
+                              text: 'Remove Submission');
+                        })
                   ],
                 ),
               )
@@ -350,6 +378,7 @@ class _AddSubmissionState extends State<AddSubmission> {
               );
             }
           },
+          onCompleted: (data) => widget.refetch!(),
           onError: (error) {
             if (error.toString().contains("Invalid Time")) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -384,23 +413,20 @@ class _AddSubmissionState extends State<AddSubmission> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: SingleChildScrollView(
-                        child: TextFormField(
-                          controller: comment,
-                          maxLength: 3000,
-                          minLines: 3,
-                          maxLines: null,
-                          decoration:
-                              const InputDecoration(labelText: "Comment"),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter the comment for submission";
-                            }
-                            return null;
-                          },
-                        ),
+                    SingleChildScrollView(
+                      child: TextFormField(
+                        controller: comment,
+                        maxLength: 3000,
+                        minLines: 1,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                            labelText: "Type in your answer here...."),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter the comment for submission";
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     imagePickerService.previewImages(),
@@ -438,6 +464,14 @@ class _AddSubmissionState extends State<AddSubmission> {
                             },
                             "questionId": widget.id,
                           });
+                        } else if (comment.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                  'What\'s the point of an empty submission bro...'),
+                              backgroundColor: Theme.of(context).errorColor,
+                            ),
+                          );
                         }
                       },
                       text: "Add Submission",
