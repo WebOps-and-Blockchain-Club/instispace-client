@@ -40,10 +40,12 @@ class NewPostScreen extends StatefulWidget {
   final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
+  final bool isAgate;
   const NewPostScreen(
       {Key? key,
       this.images,
       this.post,
+      this.isAgate=false,
       required this.category,
       required this.fieldConfiguration,
       required this.options})

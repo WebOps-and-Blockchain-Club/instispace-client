@@ -43,8 +43,8 @@ List<PostCategoryModel> forumCategories = [
   PostCategoryModel(name: "Help", icon: CustomIcons.help),
   PostCategoryModel(name: "Survey", icon: CustomIcons.survey),
   PostCategoryModel(name: "Random Thought", icon: CustomIcons.thoughts),
-  PostCategoryModel(name: "Academics", icon: CustomIcons.opportunities),
-  PostCategoryModel(name: "Study Resources", icon: CustomIcons.opportunities),
+  // PostCategoryModel(name: "Academics", icon: CustomIcons.opportunities),
+  // PostCategoryModel(name: "Study Resources", icon: CustomIcons.opportunities),
 ];
 List<PostCategoryModel> lnfCategories = [
   PostCategoryModel(name: "Lost", icon: CustomIcons.lost),

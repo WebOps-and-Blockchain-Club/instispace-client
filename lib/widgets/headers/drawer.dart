@@ -1,3 +1,7 @@
+import 'package:client/graphQL/user.dart';
+import 'package:client/models/category.dart';
+import 'package:client/models/post/create_post.dart';
+import 'package:client/models/tag.dart';
 import 'package:client/screens/a-gate/study_resources.dart';
 import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
@@ -12,6 +16,7 @@ import '../../screens/a-gate/acad_connect.dart';
 import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
+import '../../screens/home/new_post/newPost.dart';
 import '../../screens/mess/eateries.dart';
 import '../../screens/mitr/counsellor.dart';
 import '../../screens/mitr/yourdost.dart';
@@ -44,12 +49,10 @@ import '../helpers/error.dart';
 class CustomDrawer extends StatelessWidget {
   final AuthService auth;
   final UserModel user;
-  final String fcmToken;
   const CustomDrawer(
       {Key? key,
       required this.auth,
-      required this.user,
-      required this.fcmToken})
+      required this.user,})
       : super(key: key);
 
   @override
@@ -202,9 +205,18 @@ class CustomDrawer extends StatelessWidget {
                                             title: const Text("Acad Connect"),
                                              onTap:(){
                                                   Navigator.pop(context);
-                                                  Navigator.of(context).push(MaterialPageRoute(
-                                                      builder: (BuildContext context) =>
-                                                          const AcadConnectScreen()));
+                                                  navigate(
+                                                    context,
+                                                    AcadConnectScreen());
+                                                    // SuperUserPostPage(
+                                                    //     title: 'A Gate',
+                                                    //     filterVariables: PostQueryVariableModel(tags: [TagModel(id:, title:'Agate', category: 'Query')])));
+                                                  // Navigator.of(context).push(MaterialPageRoute(
+                                                  //     builder: (BuildContext context) =>
+                                                  //       // AcadConnectScreen()
+                                                  //         // NewPostScreen(isAgate: true ,category: PostCategoryModel(name: "Query", icon: CustomIcons.queries),fieldConfiguration: CreatePostModel(imagePrimary: FieldModel(required: false),title: FieldModel(),description: FieldModel(label: 'add description here'),link: FieldModel(),imageSecondary: FieldModel()),options: QueryOptions(document: gql(UserGQL().getUser) ),)
+                                                          
+                                                  //         ));
                                              }
                                           ),
                                         ListTile(
@@ -217,8 +229,7 @@ class CustomDrawer extends StatelessWidget {
                                                   Navigator.pop(context);
                                                   Navigator.of(context).push(MaterialPageRoute(
                                                       builder: (BuildContext context) =>
-                                                          const 
-                                                          
+                                                          const
                                                           StudyResourcesScreen()
                                                           
                                                           ));

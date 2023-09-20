@@ -9,6 +9,7 @@ class TagGQL {
     }
   """;
 
+
   static const get = """
     query GetTag(\$tag: String!) {
       getTag(Tag: \$tag) {
@@ -83,3 +84,4 @@ class TagGQL {
     }
   """;
 }
+
