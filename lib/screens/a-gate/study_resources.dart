@@ -4,7 +4,6 @@ import '../../models/category.dart';
 import '../../utils/custom_icons.dart';
 import '../home/post/main.dart';
 
-
 class StudyResourcesScreen extends StatefulWidget {
   const StudyResourcesScreen({super.key});
   @override
@@ -17,16 +16,19 @@ class _StudyResourcesScreenState extends State<StudyResourcesScreen> {
     return Scaffold(
       // key: _scaffoldKey,
       body: PostPage(
-              appBar: SliverAppBar() ,
-              // appBar: HomeAppBar(
-              //   title: "Forum",
-              //   // scaffoldKey: _scaffoldKey,
-              //   user: widget.user,
-              // ),
-              categories: [PostCategoryModel(name: "Study Resources", icon: CustomIcons.opportunities)],
-              createPost: true,
-            
-            ),
-    );;
+        appBar: SliverAppBar(),
+        // appBar: HomeAppBar(
+        //   title: "Forum",
+        //   // scaffoldKey: _scaffoldKey,
+        //   user: widget.user,
+        // ),
+        categories: [
+          PostCategoryModel(
+              name: "Study Resources", icon: CustomIcons.opportunities)
+        ],
+        createPost: true,
+      ),
+    );
+    ;
   }
 }

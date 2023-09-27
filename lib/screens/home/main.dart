@@ -226,7 +226,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
         drawer: CustomDrawer(
           auth: widget.auth,
           user: widget.user,
-          fcmToken: fcmToken!,
+          // fcmToken: fcmToken!,
         ),
         body: IndexedStack(
           index: _selectedIndex,
