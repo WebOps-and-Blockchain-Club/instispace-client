@@ -3,6 +3,7 @@ import 'package:client/models/category.dart';
 import 'package:client/models/post/create_post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/a-gate/study_resources.dart';
+import 'package:client/screens/a-gate/ticket_creating_page.dart';
 import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
 import 'package:client/screens/badges/create_club.dart';
@@ -240,15 +241,38 @@ class CustomDrawer extends StatelessWidget {
                                             tileColor: Colors.transparent,
                                             horizontalTitleGap: 0,
                                             title:
+<<<<<<< HEAD
                                                 const Text("Course Feedback "),
+=======
+                                                const Text("Course Feedback"),
+>>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                             onTap: () {
                                               Navigator.pop(context);
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
+<<<<<<< HEAD
                                                           const CourseFeedbackScreen()));
                                             })
+=======
+                                                          const EateriesMenuScreen()));
+                                            }),
+                                        ListTile(
+                                            visualDensity: const VisualDensity(
+                                                vertical: -4),
+                                            tileColor: Colors.transparent,
+                                            horizontalTitleGap: 0,
+                                            title: const Text("Raise Ticket"),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          TicketForm()));
+                                            }),
+>>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                       ],
                                     ),
                                   ),

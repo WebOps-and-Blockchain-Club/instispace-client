@@ -8,13 +8,13 @@ import '../../models/post/query_variable.dart';
 import '../../models/tag.dart';
 import '../super_user/approve_post.dart';
 
-class  AcadConnectScreen extends StatelessWidget {
+class AcadConnectScreen extends StatelessWidget {
   const AcadConnectScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: PostListByTag("E-Cell"),
+        body: PostListByTag("Acad Connet"),
       ),
     );
   }
@@ -27,40 +27,35 @@ class PostListByTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(
-        options: QueryOptions(
-          document: gql(
-            """
+      options: QueryOptions(
+        document: gql("""
 query GetTagByName {
-  getTagByName(name:"E-Cell") {
+  getTagByName(name:"Acad Connect") {
     id
   }
 }
     """),
-        ),
-        builder: (QueryResult result, {fetchMore, refetch}) {
-          if (result.hasException) {
-            return Text('Error: ${result.exception.toString()}');
-          }
+      ),
+      builder: (QueryResult result, {fetchMore, refetch}) {
+        if (result.hasException) {
+          return Text('Error: ${result.exception.toString()}');
+        }
 
-          if (result.isLoading) {
-            return CircularProgressIndicator();
-          }
+        if (result.isLoading) {
+          return CircularProgressIndicator();
+        }
 
-          final responseData = result.data;
+        final responseData = result.data;
 
-          String id = responseData?['getTagByName']['id'];
+        String id = responseData?['getTagByName']['id'];
 
-          return 
-          SuperUserPostPage(
-            title: 'A Gate',
-            filterVariables: PostQueryVariableModel(
-              tags: [
-                TagModel(id: id, title: name , category: 'Query')
-              ],
-            ),
-          )
-          ;
-        },
-      );
+        return SuperUserPostPage(
+          title: 'A Gate',
+          filterVariables: PostQueryVariableModel(
+            tags: [TagModel(id: id, title: name, category: 'Query')],
+          ),
+        );
+      },
+    );
   }
 }
