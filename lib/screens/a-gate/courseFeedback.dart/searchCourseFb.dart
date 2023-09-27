@@ -41,7 +41,7 @@ class _SearchCourseState extends State<SearchCourseFb> {
         floatHeaderSlivers: true,
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
-            secondaryAppBar(title: 'SEARCH COURSE'),
+            secondaryAppBar(title: 'SEARCH COURSE '),
             SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 15),

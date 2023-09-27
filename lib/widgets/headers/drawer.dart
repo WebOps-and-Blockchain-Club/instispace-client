@@ -240,7 +240,7 @@ class CustomDrawer extends StatelessWidget {
                                             tileColor: Colors.transparent,
                                             horizontalTitleGap: 0,
                                             title:
-                                                const Text("Course Feedback"),
+                                                const Text("Course Feedback "),
                                             onTap: () {
                                               Navigator.pop(context);
                                               Navigator.of(context).push(

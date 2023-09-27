@@ -32,7 +32,7 @@ class CourseFeedbackModel {
     return CourseFeedbackModel(
       courseCode: data['courseCode'],
       courseName: data['courseName'],
-      professorName: data['professorName'],
+      professorName: data[' professorName'],
       courseRating: data['courseRating'],
       courseReview: data['courseReview'],
     );

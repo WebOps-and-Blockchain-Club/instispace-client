@@ -229,7 +229,6 @@ class _AddCourseFeedbackState extends State<AddCourseFeedback> {
                   ],
                 ),
               ),
-              const SizedBox(height: 10)
             ],
           ),
         ),

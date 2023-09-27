@@ -1,7 +1,6 @@
 import 'package:client/screens/a-gate/courseFeedback.dart/searchCourseFb.dart';
 import 'package:flutter/material.dart';
 import '../../../models/courseFb.dart';
-import 'add_courseFeedback.dart';
 
 class CourseFeedbackScreen extends StatefulWidget {
   // final Widget appBar;
@@ -9,6 +8,7 @@ class CourseFeedbackScreen extends StatefulWidget {
   const CourseFeedbackScreen({
     Key? key,
     // required this.appBar,
+
     this.createPost = false,
   }) : super(key: key);
 
@@ -43,7 +43,7 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => SearchCourseFb(),
+              builder: (context) => const SearchCourseFb(),
             ),
           );
         },
