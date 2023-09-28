@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../screens/a-gate/acad_connect.dart';
+import '../../screens/a-gate/courseFeedback.dart/main.dart';
 import '../../screens/badges/scanner.dart';
 import '../../models/post/query_variable.dart';
 import '../../models/user.dart';
@@ -241,13 +242,21 @@ class CustomDrawer extends StatelessWidget {
                                             tileColor: Colors.transparent,
                                             horizontalTitleGap: 0,
                                             title:
+<<<<<<< HEAD
+                                                const Text("Course Feedback "),
+=======
                                                 const Text("Course Feedback"),
+>>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                             onTap: () {
                                               Navigator.pop(context);
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
+<<<<<<< HEAD
+                                                          const CourseFeedbackScreen()));
+                                            })
+=======
                                                           const EateriesMenuScreen()));
                                             }),
                                         ListTile(
@@ -264,6 +273,7 @@ class CustomDrawer extends StatelessWidget {
                                                               context) =>
                                                           Ticket()));
                                             }),
+>>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                       ],
                                     ),
                                   ),
