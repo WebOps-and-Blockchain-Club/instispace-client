@@ -3,7 +3,8 @@ import 'package:client/models/category.dart';
 import 'package:client/models/post/create_post.dart';
 import 'package:client/models/tag.dart';
 import 'package:client/screens/a-gate/study_resources.dart';
-import 'package:client/screens/a-gate/ticket_creating_page.dart';
+import 'package:client/screens/a-gate/ticket/main.dart';
+import 'package:client/screens/a-gate/ticket/ticket_creating_page.dart';
 import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
 import 'package:client/screens/badges/create_club.dart';
@@ -261,7 +262,7 @@ class CustomDrawer extends StatelessWidget {
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
-                                                          TicketForm()));
+                                                          Ticket()));
                                             }),
                                       ],
                                     ),

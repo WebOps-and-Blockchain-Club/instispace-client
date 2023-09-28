@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../services/image_picker.dart';
-import '../../widgets/button/elevated_button.dart';
+import '../../../services/image_picker.dart';
+import '../../../widgets/button/elevated_button.dart';
 
 final formKey = GlobalKey<FormState>();
 
