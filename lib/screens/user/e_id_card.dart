@@ -32,7 +32,7 @@ class _EIDCardState extends State<EIDCard> {
           headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
             return <Widget>[
               // AppBar
-              secondaryAppBar(title: 'E-ID Card'),
+              secondaryAppBar(title: 'E-ID Card',context: context),
             ];
           },
           body: Column(

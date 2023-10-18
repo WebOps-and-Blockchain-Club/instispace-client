@@ -3,6 +3,150 @@ import 'package:flutter/material.dart';
 import '../../models/color_palette.dart';
 
 class Themes {
+  static final ThemeData darkTheme = ThemeData(
+    fontFamily: 'Proxima Nova',
+    primaryColor: ColorPalette._primary,
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: ColorPalette._primary,
+      brightness: Brightness.dark,
+    ),
+    scaffoldBackgroundColor: Color.fromARGB(255,32,33,36),
+    brightness: Brightness.dark,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+
+    // Text Theme
+    textTheme: TextTheme(
+        headlineSmall: TextStyle(
+          color: Colors.white,   //ColorPalette._text,
+          fontWeight: FontWeight.w600,
+        ),
+        titleLarge: TextStyle(color: const Color.fromRGBO(221, 255, 255, 1),// ColorPalette._text,
+         fontSize: 24),
+        titleMedium: TextStyle(color: Colors.white //ColorPalette._text[400]
+        ),
+        titleSmall:
+            TextStyle(color: Colors.white, //ColorPalette._text,
+             fontWeight: FontWeight.w500),
+        bodyLarge: const TextStyle(fontWeight: FontWeight.normal),
+        // Default Style for body medium
+        labelLarge: TextStyle(
+            color:Colors.white, //ColorPalette._text,
+            letterSpacing: 0,
+            fontWeight: FontWeight.normal),
+        labelSmall: const TextStyle(
+            color: Colors.white, letterSpacing: 0, fontSize: 12)),
+    appBarTheme: AppBarTheme(
+        backgroundColor: Color.fromARGB(255,32,33,36),
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+            color: Color.fromARGB(221, 255, 255, 255),
+            fontSize: 24,
+            fontWeight: FontWeight.w700),
+        iconTheme: IconThemeData(color: Colors.white)),
+
+    // Bottom Navigation Bar Theme
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        unselectedItemColor: Colors.white,
+        selectedItemColor: ColorPalette._secondary[400],
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: ColorPalette._primary[500],
+        showUnselectedLabels: true),
+    // Elevated Button Theme
+    elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+            elevation: 5,
+            backgroundColor: ColorPalette._success,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: const BorderSide(color: ColorPalette._success)),
+            textStyle: const TextStyle(
+                fontFamily: "Proxima Nova",
+                color: Color.fromRGBO(221, 255, 255, 1),
+                fontWeight: FontWeight.bold))),
+
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all(ColorPalette._primary.shade50),
+      )
+    ),
+    // Floating Action Button Theme
+    floatingActionButtonTheme:
+        const FloatingActionButtonThemeData(elevation: 5),
+
+    // TextFormField
+    inputDecorationTheme: InputDecorationTheme(
+      // filled: true,
+
+      border: const UnderlineInputBorder(
+          borderSide: BorderSide(width: 1, color: Colors.white)),
+      // fillColor: Colors.white,
+      // constraints: const BoxConstraints(minHeight: 50),
+      // prefixIconColor: ColorPalette._secondary,
+      // contentPadding: EdgeInsets.zero,
+      alignLabelWithHint: true,
+      labelStyle: TextStyle(
+          color: ColorPalette._text[50], fontWeight: FontWeight.normal),
+      hintStyle: const TextStyle(fontWeight: FontWeight.normal),
+
+      // enabledBorder: border,
+      // focusedBorder: border,
+      // errorBorder: errorBorder,
+      // focusedErrorBorder: errorBorder,
+      // errorStyle: const TextStyle(color: ColorPalette._error)
+    ),
+
+    // Card Theme
+    cardTheme: CardTheme(
+        color: Color.fromARGB(255,48,49,52),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        clipBehavior: Clip.antiAlias),
+
+    // ListTile Theme
+    listTileTheme: ListTileThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        textColor: Colors.white,
+        tileColor: Color.fromARGB(197, 35, 39, 41)),
+    //ExpansionTile Theme
+    dividerColor: Colors.transparent,
+    expansionTileTheme: ExpansionTileThemeData(
+      textColor: Colors.white ,
+      iconColor: Colors.black,
+      collapsedIconColor: Colors.black,
+    ),
+
+    // Icon Theme
+    iconTheme: const IconThemeData(color: ColorPalette._secondary),
+
+    // Divider Theme
+    dividerTheme: DividerThemeData(color: ColorPalette._primary, thickness: 2),
+
+    // Bottom Sheet Theme
+    bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)))),
+    // Chip Theme
+    chipTheme: ChipThemeData(
+        backgroundColor: Color.fromARGB(255, 69, 69, 70),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(17),
+        )),
+
+    // Dialog Theme
+    dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+        alignment: Alignment.center,
+        titleTextStyle: TextStyle(
+            color: ColorPalette._primary.shade50,
+            fontSize: 22,
+            fontWeight: FontWeight.bold)),
+    
+  );
+
+
+
+
   static final ThemeData theme = ThemeData(
     fontFamily: 'Proxima Nova',
     primaryColor: ColorPalette._primary,
@@ -135,6 +279,7 @@ class Themes {
             fontSize: 22,
             fontWeight: FontWeight.bold)),
   );
+
 
   static InputBorder border = const OutlineInputBorder(
       borderSide: BorderSide(color: Color.fromARGB(116, 52, 47, 129)),

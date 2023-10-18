@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       widget.user.name?.toUpperCase() ?? "",
-                      style: const TextStyle(
-                        color: Color(0xFF3C3C3C),
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1,
@@ -86,8 +86,8 @@ class _HomePageState extends State<HomePage> {
                       widget.user.role == 'USER'
                           ? widget.user.roll?.toUpperCase() ?? ""
                           : widget.user.role ?? "",
-                      style: const TextStyle(
-                        color: Color(0xFF3C3C3C),
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
                         letterSpacing: 1,
@@ -142,12 +142,12 @@ class _HomePageState extends State<HomePage> {
               SliverList(
                 delegate: SliverChildListDelegate([
                   const SizedBox(height: 30),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                   Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       'Insti Posts',
                       style: TextStyle(
-                        color: Color(0xFF3C3C3C),
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
                         letterSpacing: 1,

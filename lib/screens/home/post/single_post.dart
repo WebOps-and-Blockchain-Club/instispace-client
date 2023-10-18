@@ -32,7 +32,7 @@ class _SinglePostScreenState extends State<SinglePostScreen> {
       headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
         return <Widget>[
           // AppBar
-          secondaryAppBar(title: 'Post'),
+          secondaryAppBar(title: 'Post',context: context),
         ];
       },
       body: Query(

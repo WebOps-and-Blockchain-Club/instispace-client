@@ -103,7 +103,7 @@ class _EditProfileUserState extends State<EditProfileUser> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [secondaryAppBar(title: 'EDIT PROFILE')];
+                  return [secondaryAppBar(title: 'EDIT PROFILE',context: context)];
                 },
                 body: Mutation(
                     options: MutationOptions(
