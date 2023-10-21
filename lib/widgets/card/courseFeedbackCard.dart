@@ -45,7 +45,7 @@ class CourseFeedbackCard extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'This course is fantastic and highly recommended for anyone interested in the topic.',
+                  '......................................................................................',
                   style: TextStyle(fontSize: 16.0),
                 ),
               ),
@@ -58,7 +58,7 @@ class CourseFeedbackCard extends StatelessWidget {
                       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 8.0),
-                    Text('John Doe', style: TextStyle(fontSize: 16.0)),
+                    Text('Rohan', style: TextStyle(fontSize: 16.0)),
                   ],
                 ),
               ),
