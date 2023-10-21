@@ -81,24 +81,32 @@ class _SearchCourseState extends State<SearchCourseFb> {
                     onTap: widget.onItemClick != null
                         ? () => widget.onItemClick!(course)
                         : null,
-                    child: CustomCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            course.courseCode,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddCourseFeedback(
+                                initalCourseId: course.courseCode,
+                                initialCourseName: course.courseName,
+                              ))),
+                      child: CustomCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              course.courseCode,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(course.courseName),
-                          const SizedBox(height: 5),
-                          Text(
-                              course.slots?.map((e) => e.slotName).join(', ') ??
-                                  ''),
-                        ],
+                            const SizedBox(height: 5),
+                            Text(course.courseName),
+                            const SizedBox(height: 5),
+                            Text(course.slots
+                                    ?.map((e) => e.slotName)
+                                    .join(', ') ??
+                                ''),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -242,22 +242,14 @@ class CustomDrawer extends StatelessWidget {
                                             tileColor: Colors.transparent,
                                             horizontalTitleGap: 0,
                                             title:
-<<<<<<< HEAD
-                                                const Text("Course Feedback "),
-=======
                                                 const Text("Course Feedback"),
->>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                             onTap: () {
                                               Navigator.pop(context);
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
-<<<<<<< HEAD
                                                           const CourseFeedbackScreen()));
-                                            })
-=======
-                                                          const EateriesMenuScreen()));
                                             }),
                                         ListTile(
                                             visualDensity: const VisualDensity(
@@ -273,7 +265,6 @@ class CustomDrawer extends StatelessWidget {
                                                               context) =>
                                                           Ticket()));
                                             }),
->>>>>>> 015d87c74ea043a5b5b4b018aa37954bf3d32cdf
                                       ],
                                     ),
                                   ),
@@ -626,13 +617,10 @@ class CustomDrawer extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ListTile(
-                                title: Row(
+                                title: const Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Text("SOS Manual"),
-                                    Text("🔴")
-                                  ],
+                                  children: [Text("SOS Manual"), Text("🔴")],
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
