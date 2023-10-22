@@ -17,16 +17,14 @@ class FeedbackGQL {
   """;
 
   static const findAllFeedback = """
-  query FindAllFeedback {
-  findAllFeedback {
+  query FindAllFeedback(\$search: String!) {
+  findAllFeedback(search: \$search) {
     courseCode
     createdAt
     courseName
     createdBy {
-      id
       name
-      roll
-      role
+      id
     }
     id
     profName
