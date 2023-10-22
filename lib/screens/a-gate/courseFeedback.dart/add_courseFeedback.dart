@@ -1,4 +1,5 @@
 import 'package:client/graphQL/a-gate/courseFeedback.dart';
+import 'package:client/screens/a-gate/courseFeedback.dart/main.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -121,9 +122,10 @@ class _AddCourseFeedbackState extends State<AddCourseFeedback> {
             onCompleted: (r) => {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("feedback submitted"))),
-                  Navigator.pop(context),
-                  Navigator.pop(context),
-                  Navigator.pop(context)
+                  Navigator.of(context).pop(),
+                  Navigator.of(context).pop(),
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CourseFeedbackScreen()))
                 }),
         builder: (
           RunMutation runMutation,

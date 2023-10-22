@@ -44,3 +44,13 @@ class CourseFeedbackModel {
         createdBy = CreatedByModel.fromJson(data['createdBy']),
         professorName = data['profName'];
 }
+
+class FeedbackQueryVariableModel {
+  final String search;
+
+  FeedbackQueryVariableModel(this.search);
+
+  Map<String, dynamic> toJson() {
+    return {"search": search};
+  }
+}
