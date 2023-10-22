@@ -1,5 +1,6 @@
 import 'package:client/graphQL/a-gate/ticket.dart';
 import 'package:client/graphQL/user.dart';
+import 'package:client/screens/a-gate/ticket/main.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -44,7 +45,9 @@ class _TicketFormState extends State<TicketForm> {
           update: (cache, result) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text("Ticket Raised")));
-            Navigator.pop(context);
+            Navigator.of(context).pop();
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => Ticket()));
           },
         ),
         builder: (

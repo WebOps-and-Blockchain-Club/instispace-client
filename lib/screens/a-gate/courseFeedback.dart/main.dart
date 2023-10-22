@@ -42,92 +42,88 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
           },
         ),
       ),
-      body: Row(
-        children: [
-          Query(
-              options: QueryOptions(
-                  document: gql(FeedbackGQL.findAllFeedback),
-                  parserFn: ((data) =>
-                      CoursesFeedbackModel.fromJson(data["findAllFeedback"]))),
-              builder: (result, {fetchMore, refetch}) {
-                if (result.hasException && result.data == null) {
-                  return Center(
-                      child: ErrorWidget(result.exception.toString()));
-                }
-                if (result.hasException && result.data != null) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    // Use Future.delayed to delay the execution of showDialog
-                    Future.delayed(Duration.zero, () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Center(child: Text("Error")),
-                            content: Text(formatErrorMessage(
-                                result.exception.toString(), context)),
-                            actions: [
-                              TextButton(
-                                child: const Text("Ok"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: const Text("Retry"),
-                                onPressed: () {
-                                  refetch!();
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
+      body: Query(
+          options: QueryOptions(
+              document: gql(FeedbackGQL.findAllFeedback),
+              variables: {"search": ""},
+              parserFn: ((data) =>
+                  CoursesFeedbackModel.fromJson(data["findAllFeedback"]))),
+          builder: (result, {fetchMore, refetch}) {
+            if (result.hasException && result.data == null) {
+              return Center(child: ErrorWidget(result.exception.toString()));
+            }
+            if (result.hasException && result.data != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Use Future.delayed to delay the execution of showDialog
+                Future.delayed(Duration.zero, () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Center(child: Text("Error")),
+                        content: Text(formatErrorMessage(
+                            result.exception.toString(), context)),
+                        actions: [
+                          TextButton(
+                            child: const Text("Ok"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text("Retry"),
+                            onPressed: () {
+                              refetch!();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
                       );
-                    });
-                  });
-                }
-                if (result.isLoading && result.data == null) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                    },
                   );
-                }
+                });
+              });
+            }
+            if (result.isLoading && result.data == null) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-                final CoursesFeedbackModel resultParsedData =
-                    result.parsedData as CoursesFeedbackModel;
-                final List<CourseFeedbackModel> courseFb =
-                    resultParsedData.list as List<CourseFeedbackModel>;
-                if (courseFb.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Error(
-                          error: '',
-                          message: 'Your feed is empty',
-                          onRefresh: refetch,
-                        ),
-                      ],
+            final CoursesFeedbackModel resultParsedData =
+                result.parsedData as CoursesFeedbackModel;
+            final List<CourseFeedbackModel> courseFb =
+                resultParsedData.list as List<CourseFeedbackModel>;
+            if (courseFb.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Error(
+                      error: '',
+                      message: 'Your feed is empty',
+                      onRefresh: refetch,
                     ),
-                  );
-                }
-                return ListView.builder(
-                  itemCount: courseFb.length,
-                  itemBuilder: (context, index) {
-                    final courseFeedback = courseFb[index];
-                    return CourseFeedbackCard(
-                      courseCode: courseFeedback.courseCode,
-                      coursRating: courseFeedback.courseRating,
-                      courseName: courseFeedback.courseName,
-                      createdBy: courseFeedback.createdBy.name,
-                      description: courseFeedback.courseReview,
-                      createdAt: courseFeedback.createdAt,
-                      profName: courseFeedback.professorName,
-                    );
-                  },
+                  ],
+                ),
+              );
+            }
+            return ListView.builder(
+              itemCount: courseFb.length,
+              itemBuilder: (context, index) {
+                final courseFeedback = courseFb[index];
+                return CourseFeedbackCard(
+                  courseCode: courseFeedback.courseCode,
+                  coursRating: courseFeedback.courseRating,
+                  courseName: courseFeedback.courseName,
+                  createdBy: courseFeedback.createdBy.name,
+                  description: courseFeedback.courseReview,
+                  createdAt: courseFeedback.createdAt,
+                  profName: courseFeedback.professorName,
                 );
-              }),
-        ],
-      ),
+              },
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
