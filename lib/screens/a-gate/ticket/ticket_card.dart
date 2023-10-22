@@ -33,12 +33,16 @@ class _TicketCardState extends State<TicketCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    ticket.title,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
+                  Container(
+                    width: 250,
+                    child: Text(
+                      ticket.title,
+                      overflow: TextOverflow.clip,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                   Container(
                       // color: const Color.fromARGB(255, 228, 47, 47),
