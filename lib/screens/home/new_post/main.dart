@@ -100,9 +100,7 @@ Map<String, CreatePostModel> getCreatePostFields = {
   ),
   "Study Resources": CreatePostModel(
     title: FieldModel(),
-    description: FieldModel(label: 'Description'),
     link: FieldModel(required: true),
-    imageSecondary: FieldModel(required: false),
     tag: FieldModel(),
     // endTime: FieldModel(time: const Duration(days: 5)),
   ),

@@ -50,7 +50,7 @@ query GetTagByName {
         String id = responseData?['getTagByName']['id'];
 
         return SuperUserPostPage(
-          title: 'A Gate',
+          title: 'A GATE',
           filterVariables: PostQueryVariableModel(
             tags: [TagModel(id: id, title: name, category: 'Query')],
           ),

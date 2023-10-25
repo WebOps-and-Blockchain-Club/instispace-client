@@ -45,7 +45,7 @@ class NewPostScreen extends StatefulWidget {
       {Key? key,
       this.images,
       this.post,
-      this.isAgate=false,
+      this.isAgate = false,
       required this.category,
       required this.fieldConfiguration,
       required this.options})
@@ -232,6 +232,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
             }
           }),
           onError: (dynamic error) {
+            print(error);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   content: Text(formatErrorMessage(error.toString(), context))),
@@ -320,20 +321,22 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                   ),
 
                                 //description
-                                TextFormField(
-                                  controller: desc,
-                                  maxLength: 3000,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                      label: Text(widget.fieldConfiguration
-                                          .description!.label!)),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Enter the description of the post";
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                if (widget.fieldConfiguration.description !=
+                                    null)
+                                  TextFormField(
+                                    controller: desc,
+                                    maxLength: 3000,
+                                    maxLines: null,
+                                    decoration: InputDecoration(
+                                        label: Text(widget.fieldConfiguration
+                                            .description!.label!)),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Enter the description of the post";
+                                      }
+                                      return null;
+                                    },
+                                  ),
 
                                 //date and time
                                 if (widget.fieldConfiguration.postTime != null)
@@ -383,8 +386,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                     padding: const EdgeInsets.only(top: 16),
                                     child: TextFormField(
                                       controller: link,
-                                      decoration: const InputDecoration(
-                                          label: Text("link (optional)")),
+                                      decoration: InputDecoration(
+                                          label: Text(
+                                              'link ${!widget.fieldConfiguration.link!.required ? "optional" : ""}  ')),
                                     ),
                                   ),
 
