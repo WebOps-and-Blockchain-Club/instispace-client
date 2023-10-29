@@ -35,21 +35,23 @@ import '../../../models/tag.dart';
 import '../../../../widgets/helpers/error.dart';
 
 class NewPostScreen extends StatefulWidget {
+  final String? prefilledTag;
   final List<io.File>? images;
   final QueryOptions options;
   final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
   final bool isAgate;
-  const NewPostScreen(
-      {Key? key,
-      this.images,
-      this.post,
-      this.isAgate = false,
-      required this.category,
-      required this.fieldConfiguration,
-      required this.options})
-      : super(key: key);
+  const NewPostScreen({
+    Key? key,
+    this.images,
+    this.post,
+    this.isAgate = false,
+    required this.category,
+    required this.fieldConfiguration,
+    required this.options,
+    this.prefilledTag,
+  }) : super(key: key);
 
   @override
   State<NewPostScreen> createState() => _NewPostScreenState();
@@ -463,140 +465,192 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                           padding: const [25, 15],
                                           textColor: Colors.black,
                                           color: Colors.white),
-                                      CustomElevatedButton(
-                                        padding: const [25, 15],
-                                        textSize: 18,
-                                        onPressed: () async {
-                                          if ((widget.fieldConfiguration.tag !=
-                                                      null &&
-                                                  widget.fieldConfiguration.tag!
-                                                      .required) &&
-                                              selectedTags.tags.isEmpty) {
-                                            setState(() {
-                                              tagError = "Tags not selected";
-                                            });
-                                          } else if (selectedTags.tags.length >
-                                              7) {
-                                            setState(() {
-                                              tagError =
-                                                  "Not allowed to select more than 7 tags";
-                                            });
-                                          } else if (tagError.isNotEmpty &&
-                                              selectedTags.tags.isNotEmpty) {
-                                            setState(() {
-                                              tagError = "";
-                                            });
-                                          }
-                                          final isValid = formKey
-                                                  .currentState!
-                                                  .validate() &&
-                                              (widget.fieldConfiguration.tag !=
-                                                          null &&
-                                                      ((widget.fieldConfiguration
-                                                                  .tag!.required &&
-                                                              selectedTags.tags
-                                                                  .isNotEmpty &&
-                                                              selectedTags.tags
-                                                                      .length <=
-                                                                  7) ||
-                                                          !widget
-                                                              .fieldConfiguration
-                                                              .tag!
-                                                              .required) ||
-                                                  widget.fieldConfiguration
-                                                          .tag ==
-                                                      null);
-
-                                          FocusScope.of(context).unfocus();
-
-                                          if (isValid) {
-                                            List<String>? uploadResult;
-
-                                            if (img_map.isNotEmpty) {
-                                              uploadResult =
-                                                  await imageMapUpload(img_map,
-                                                      imagePickerService);
-                                            } else if ((imagePickerService
-                                                            .imageFileList !=
-                                                        null &&
-                                                    imagePickerService
-                                                        .imageFileList!
-                                                        .isNotEmpty) ||
-                                                imgs.isNotEmpty) {
-                                              try {
-                                                setState(() {
-                                                  isLoading = true;
-                                                });
-                                                if (imagePickerService
-                                                        .imageFileList !=
-                                                    null) {
-                                                  uploadResult =
-                                                      await imagePickerService
-                                                          .uploadImage();
-                                                } else {
-                                                  uploadResult =
-                                                      await imagePickerService
-                                                          .uploadImage(
-                                                              imgs: imgs);
-                                                }
-                                              } catch (e) {
-                                                print(e);
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: const Text(
-                                                        'Image Upload Failed'),
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .errorColor,
-                                                  ),
-                                                );
-                                                setState(() {
-                                                  isLoading = false;
-                                                });
-                                              }
+                                      Query(
+                                          options: QueryOptions(
+                                            document: gql(r"""
+                                          query GetTagByName {
+                                            getTagByName(name:"Acad Connect") {
+                                              id
                                             }
-                                            final List<String> tags =
-                                                selectedTags
-                                                    .getTagIds()
-                                                    .cast<String>();
-
-                                            runMutation({
-                                              "updatePostId":
-                                                  widget.post?.id.toString(),
-                                              "postInput": {
-                                                "category":
-                                                    widget.category.name,
-                                                "title": title.text,
-                                                "content": desc.text,
-                                                "location": location.text,
-                                                "link": link.text,
-                                                "tagIds": tags.isNotEmpty
-                                                    ? tags
-                                                    : null,
-                                                "postTime": widget
-                                                            .fieldConfiguration
-                                                            .postTime !=
-                                                        null
-                                                    ? '${dateTime.toString()} +05:30'
-                                                    : null,
-                                                "endTime": endTime != null
-                                                    ? '${endTime!.toIso8601String()}+05:30'
-                                                    : null,
-                                                "photoList":
-                                                    uploadResult?.join(" AND ")
-                                              },
-                                            });
                                           }
-                                        },
-                                        text: 'Post',
-                                        isLoading: isLoading ||
-                                            (result != null
-                                                ? result.isLoading
-                                                : false),
-                                        color: ColorPalette.palette(context)
-                                            .primary,
-                                      ),
+                                              """),
+                                            // variables: {
+                                            //   'name': widget.prefilledTag
+                                            // }
+                                          ),
+                                          builder: (QueryResult result,
+                                              {fetchMore, refetch}) {
+                                            if (result.hasException) {
+                                              return Text(
+                                                  'Error: ${result.exception.toString()}');
+                                            }
+
+                                            if (result.isLoading) {
+                                              return CircularProgressIndicator();
+                                            }
+
+                                            final responseData = result.data;
+
+                                            String id =
+                                                responseData?['getTagByName']
+                                                    ['id'];
+
+                                            return CustomElevatedButton(
+                                              padding: const [25, 15],
+                                              textSize: 18,
+                                              onPressed: () async {
+                                                if ((widget.fieldConfiguration
+                                                                .tag !=
+                                                            null &&
+                                                        widget
+                                                            .fieldConfiguration
+                                                            .tag!
+                                                            .required) &&
+                                                    selectedTags.tags.isEmpty) {
+                                                  setState(() {
+                                                    tagError =
+                                                        "Tags not selected";
+                                                  });
+                                                } else if (selectedTags
+                                                        .tags.length >
+                                                    7) {
+                                                  setState(() {
+                                                    tagError =
+                                                        "Not allowed to select more than 7 tags";
+                                                  });
+                                                } else if (tagError
+                                                        .isNotEmpty &&
+                                                    selectedTags
+                                                        .tags.isNotEmpty) {
+                                                  setState(() {
+                                                    tagError = "";
+                                                  });
+                                                }
+                                                final isValid = formKey
+                                                        .currentState!
+                                                        .validate() &&
+                                                    (widget.fieldConfiguration
+                                                                    .tag !=
+                                                                null &&
+                                                            ((widget
+                                                                        .fieldConfiguration
+                                                                        .tag!
+                                                                        .required &&
+                                                                    selectedTags
+                                                                        .tags
+                                                                        .isNotEmpty &&
+                                                                    selectedTags
+                                                                            .tags
+                                                                            .length <=
+                                                                        7) ||
+                                                                !widget
+                                                                    .fieldConfiguration
+                                                                    .tag!
+                                                                    .required) ||
+                                                        widget.fieldConfiguration
+                                                                .tag ==
+                                                            null);
+
+                                                FocusScope.of(context)
+                                                    .unfocus();
+
+                                                if (isValid) {
+                                                  List<String>? uploadResult;
+
+                                                  if (img_map.isNotEmpty) {
+                                                    uploadResult =
+                                                        await imageMapUpload(
+                                                            img_map,
+                                                            imagePickerService);
+                                                  } else if ((imagePickerService
+                                                                  .imageFileList !=
+                                                              null &&
+                                                          imagePickerService
+                                                              .imageFileList!
+                                                              .isNotEmpty) ||
+                                                      imgs.isNotEmpty) {
+                                                    try {
+                                                      setState(() {
+                                                        isLoading = true;
+                                                      });
+                                                      if (imagePickerService
+                                                              .imageFileList !=
+                                                          null) {
+                                                        uploadResult =
+                                                            await imagePickerService
+                                                                .uploadImage();
+                                                      } else {
+                                                        uploadResult =
+                                                            await imagePickerService
+                                                                .uploadImage(
+                                                                    imgs: imgs);
+                                                      }
+                                                    } catch (e) {
+                                                      print(e);
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: const Text(
+                                                              'Image Upload Failed'),
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .errorColor,
+                                                        ),
+                                                      );
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                    }
+                                                  }
+                                                  final List<String> tags =
+                                                      selectedTags
+                                                          .getTagIds()
+                                                          .cast<String>();
+                                                  if (widget.prefilledTag !=
+                                                          null &&
+                                                      !tags.contains(id)) {
+                                                    tags.add(id);
+                                                  }
+                                                  runMutation({
+                                                    "updatePostId": widget
+                                                        .post?.id
+                                                        .toString(),
+                                                    "postInput": {
+                                                      "category":
+                                                          widget.category.name,
+                                                      "title": title.text,
+                                                      "content": desc.text,
+                                                      "location": location.text,
+                                                      "link": link.text,
+                                                      "tagIds": tags.isNotEmpty
+                                                          ? tags
+                                                          : null,
+                                                      "postTime": widget
+                                                                  .fieldConfiguration
+                                                                  .postTime !=
+                                                              null
+                                                          ? '${dateTime.toString()} +05:30'
+                                                          : null,
+                                                      "endTime": endTime != null
+                                                          ? '${endTime!.toIso8601String()}+05:30'
+                                                          : null,
+                                                      "photoList": uploadResult
+                                                          ?.join(" AND ")
+                                                    },
+                                                  });
+                                                }
+                                              },
+                                              text: 'Post',
+                                              isLoading: isLoading ||
+                                                  (result != null
+                                                      ? result.isLoading
+                                                      : false),
+                                              color:
+                                                  ColorPalette.palette(context)
+                                                      .primary,
+                                            );
+                                          })
                                     ],
                                   ),
                                 ),

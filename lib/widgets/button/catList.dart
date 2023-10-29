@@ -10,8 +10,11 @@ import '../../screens/home/new_post/main.dart';
 class CategoryList extends StatefulWidget {
   final options;
   final List<PostCategoryModel> categories;
-  const CategoryList({Key? key, required this.categories, this.options})
-      : super(key: key);
+  const CategoryList({
+    Key? key,
+    required this.categories,
+    this.options,
+  }) : super(key: key);
 
   @override
   State<CategoryList> createState() => _CategoryListState();
