@@ -50,7 +50,7 @@ class _EndTimeState extends State<EndTime> {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
-                .copyWith(color: ColorPalette.palette(context).primary),
+                .copyWith(color: ColorPalette.palette(context).primary.shade50),
           )
         ]),
         if (widget.edit)

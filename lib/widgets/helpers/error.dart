@@ -19,14 +19,17 @@ class Error extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SvgPicture.asset(getAsset(error, message),
-              height: 250, semanticsLabel: 'A red up arrow'),
+        const Image(
+          image: AssetImage('assets/illustrations/deer.png'),
+          height: 250,
+          width: 250,
         ),
         ErrorText(error: error, message: message),
         TextButton(
-          child: const Text('Refresh'),
+          child: const Text(
+            'Refresh',
+            style: TextStyle(fontSize: 18),
+          ),
           onPressed: onRefresh,
         )
       ],
@@ -42,14 +45,14 @@ class ErrorText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableText(
-      message ?? formatErrorMessage(error, context),
-      style: Theme.of(context)
-          .textTheme
-          .bodyMedium
-          ?.copyWith(color: ColorPalette.palette(context).error, fontSize: 18),
-      textAlign: TextAlign.center,
-    );
+    return message == "Your feed is empty"
+        ? Container()
+        : SelectableText(
+            message ?? formatErrorMessage(error, context),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: ColorPalette.palette(context).error, fontSize: 18),
+            textAlign: TextAlign.center,
+          );
   }
 }
 

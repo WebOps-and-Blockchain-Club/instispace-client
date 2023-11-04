@@ -72,7 +72,7 @@ class _EditPasswordState extends State<EditPassword> {
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               secondaryAppBar(
-                  title: widget.password ? 'CHANGE PASSWORD' : 'EDIT PROFILE')
+                  title: widget.password ? 'CHANGE PASSWORD' : 'EDIT PROFILE', context: context)
             ];
           },
           body: Mutation(

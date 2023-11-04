@@ -38,7 +38,7 @@ class YourDostScreen extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'Your Dost'),
+            secondaryAppBar(title: 'Your Dost',context: context),
           ];
         },
         body: ListView(

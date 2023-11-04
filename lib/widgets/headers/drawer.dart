@@ -42,6 +42,7 @@ import '../../screens/info/about_us.dart';
 import '../../screens/super_user/super_user_list.dart';
 import '../../screens/badges/update_club.dart';
 import '../../screens/badges/create_badges.dart';
+import '../../screens/complain/complainFiling.dart';
 import '../../graphQL/auth.dart';
 import '../../services/auth.dart';
 import '../../themes.dart';
@@ -103,7 +104,7 @@ class CustomDrawer extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                            color: ColorPalette.palette(context)
+                                            color: Theme.of(context).brightness == Brightness.dark ? ColorPalette.palette(context).primary.shade200 : ColorPalette.palette(context)
                                                 .primary,
                                             fontWeight: FontWeight.w500),
                                   ),
@@ -610,6 +611,20 @@ class CustomDrawer extends StatelessWidget {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           const ScannerScreen()));
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Complaints to SECC"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ComplaintPortal(
+                                            user: user,
+                                          )));
                                 },
                               ),
                             ),

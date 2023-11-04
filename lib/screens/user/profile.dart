@@ -98,7 +98,7 @@ class _ProfileState extends State<Profile> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [secondaryAppBar(title: 'PROFILE')];
+                  return [secondaryAppBar(title: 'PROFILE',context: context)];
                 },
                 body: RefreshIndicator(
                   onRefresh: () => widget.refetch != null
@@ -210,7 +210,7 @@ class _ProfileState extends State<Profile> {
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
-                                    color: const Color(0xFFE1E0EC),
+                                    color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(255, 52, 51, 68) :const Color(0xFFE1E0EC),
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Column(
                                   crossAxisAlignment:

@@ -26,6 +26,8 @@ import '../../../../widgets/card/action_buttons.dart';
 import '../../../../widgets/card/description.dart';
 import '../../../../widgets/card/image.dart';
 
+final GlobalKey<State> _dialogKey = GlobalKey<State>();
+
 class PostCard extends StatefulWidget {
   final PostModel post;
   final QueryOptions<Object?> options;
@@ -38,7 +40,6 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard>
     with SingleTickerProviderStateMixin {
-  GlobalKey key = GlobalKey();
   bool _showContent = false;
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,7 @@ class _PostCardState extends State<PostCard>
                 margin: const EdgeInsets.only(left: 5),
                 child: CircleAvatar(
                   radius: 15,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).cardTheme.color,
                   child: Icon(
                     post.category.icon,
                     color: Colors.lightBlue,
@@ -205,7 +206,7 @@ class _PostCardState extends State<PostCard>
                         CustomIcons.delete,
                         size: 20,
                       ),
-                      onTap: () => delete()),
+                      onTap: () => delete(context)),
                 ),
               if (post.permissions.contains('ShowQR'))
                 Padding(
@@ -254,66 +255,77 @@ class _PostCardState extends State<PostCard>
     ));
   }
 
-  delete() {
+  delete(BuildContext context) {
     showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(builder: (context, _) {
-            return AlertDialog(
-              titlePadding: const EdgeInsets.only(top: 30),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              actionsPadding: const EdgeInsets.all(10),
-              title: const Text('Delete', textAlign: TextAlign.center),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text("Are you sure you want to delete this post?",
-                      textAlign: TextAlign.center),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Cancel'),
-                  ),
-                  Mutation(
-                      options: MutationOptions(
-                        document: gql(PostGQl().deletePost),
-                        update: (cache, result) {
-                          if (result != null && (!result.hasException)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Post Deleted')),
-                            );
-                          }
-                        },
-                        onError: (dynamic error) {
-                          Navigator.pop(context);
+        builder: (BuildContext dialogContex) {
+          return AlertDialog(
+            titlePadding: const EdgeInsets.only(top: 30),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            actionsPadding: const EdgeInsets.all(10),
+            title: const Text('Delete', textAlign: TextAlign.center),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text("Are you sure you want to delete this post?",
+                    textAlign: TextAlign.center),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Cancel'),
+                ),
+                Mutation(
+                    options: MutationOptions(
+                      document: gql(PostGQl().deletePost),
+                      update: (cache, result) {
+                        if (result != null && (!result.hasException)) {
+                          Navigator.pop(dialogContex);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Couldn't delete the post"),
-                              backgroundColor: Theme.of(context).errorColor,
-                            ),
+                            const SnackBar(content: Text('Post Deleted')),
                           );
-                        },
-                      ),
-                      builder: (
-                        RunMutation runMutation,
-                        QueryResult? result,
-                      ) {
-                        return CustomElevatedButton(
-                          onPressed: () {
-                            runMutation({"postId": widget.post.id});
-                          },
-                          text: "Delete",
-                          isLoading: result!.isLoading,
-                          color: ColorPalette.palette(context).warning,
+                          dynamic data =
+                              cache.readQuery(widget.options.asRequest);
+
+                          (data["findPosts"]["list"] as List).removeWhere(
+                              (post) =>
+                                  post["id"] ==
+                                  result.data!["removePost"]["id"]);
+                          data["findPosts"]["total"] =
+                              data["findPosts"]["total"] - 1;
+                          cache.writeQuery(widget.options.asRequest,
+                              data: data);
+                        }
+                      },
+                      onError: (dynamic error) {
+                        print(error.toString());
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Couldn't delete the post"),
+                            backgroundColor: Theme.of(context).errorColor,
+                          ),
                         );
-                      }),
-                ],
-              ),
-            );
-          });
+                        Navigator.pop(dialogContex);
+                      },
+                    ),
+                    builder: (
+                      RunMutation runMutation,
+                      QueryResult? result,
+                    ) {
+                      return CustomElevatedButton(
+                        onPressed: () {
+                          runMutation({"postId": widget.post.id});
+                        },
+                        text: "Delete",
+                        isLoading: result!.isLoading,
+                        color: ColorPalette.palette(context).warning,
+                      );
+                    }),
+              ],
+            ),
+          );
         });
   }
 }
@@ -405,7 +417,7 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
             "${post.createdBy.name}, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-            style: const TextStyle(color: Colors.black45),
+            style: TextStyle(color: Theme.of (context).brightness == Brightness.dark  ? Colors.white : Colors.black45),
             textAlign: TextAlign.left,
           ),
         ),

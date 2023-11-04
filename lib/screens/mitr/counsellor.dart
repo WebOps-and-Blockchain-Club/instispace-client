@@ -23,7 +23,7 @@ class CounsellorScreen extends StatelessWidget {
           headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
             return <Widget>[
               // AppBar
-              secondaryAppBar(title: 'Wellness Centre of IITM'),
+              secondaryAppBar(title: 'Wellness Centre of IITM',context: context),
             ];
           },
           body: ListView.builder(
