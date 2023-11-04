@@ -46,6 +46,9 @@ List<PostCategoryModel> forumCategories = [
   // PostCategoryModel(name: "Academics", icon: CustomIcons.opportunities),
   // PostCategoryModel(name: "Study Resources", icon: CustomIcons.opportunities),
 ];
+List<PostCategoryModel> mentalHealthCategories = [
+  PostCategoryModel(name: "Help", icon: CustomIcons.thoughts),
+];
 List<PostCategoryModel> lnfCategories = [
   PostCategoryModel(name: "Lost", icon: CustomIcons.lost),
   PostCategoryModel(name: "Found", icon: CustomIcons.found),
