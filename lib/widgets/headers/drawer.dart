@@ -52,13 +52,11 @@ class CustomDrawer extends StatefulWidget {
       required this.user,
       required this.fcmToken})
       : super(key: key);
-
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -262,12 +260,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       navigate(
                                           context,
                                           mentalHealth(
-                                            appBar: HomeAppBar(
-                                              title: "Mental Health",
-                                              scaffoldKey: _scaffoldKey,
-                                              user: widget.user,
-                                            ),
                                             categories: forumCategories,
+                                            user: widget.user,
                                             createPost: true,
                                           ));
                                     },

@@ -2,8 +2,11 @@ import 'package:client/widgets/search_bar.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+import '../../models/user.dart';
+import '../../services/auth.dart';
 import '../../themes.dart';
 import '../../widgets/helpers/navigate.dart';
+import '../../widgets/home_app_bar.dart';
 import '../home/new_post/main.dart';
 import 'mentalHealth_Utils/query.dart';
 import '../home/new_post/newPostButton.dart';
@@ -15,13 +18,16 @@ import '../../../widgets/primary_filter.dart';
 import '../../../widgets/search_bar.dart' as search;
 
 class mentalHealth extends StatefulWidget {
+  // final AuthService auth;
+  final UserModel user;
+  // final String fcmToken;
   const mentalHealth(
       {Key? key,
-      required this.appBar,
       required this.categories,
+      required this.user,
       this.createPost = false})
       : super(key: key);
-  final Widget appBar;
+  // final Widget appBar;
   final List<PostCategoryModel> categories;
   final bool createPost;
 
@@ -30,6 +36,7 @@ class mentalHealth extends StatefulWidget {
 }
 
 class _mentalHealthState extends State<mentalHealth> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late List<PostCategoryModel> selectedCategories = [];
   String search = "";
 
@@ -56,7 +63,11 @@ class _mentalHealthState extends State<mentalHealth> {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            widget.appBar,
+            HomeAppBar(
+              title: "Mental Health",
+              scaffoldKey: _scaffoldKey,
+              user: widget.user,
+            ),
 
             // SearchBar & Categories Filter
             SliverList(
