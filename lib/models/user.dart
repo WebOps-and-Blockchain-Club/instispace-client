@@ -69,6 +69,7 @@ class UserModel {
   HostelModel? hostel;
   List<String?> permissions;
   PermissionModel? permission;
+  List<String>? fcmTokens;
 
   UserModel({
     this.id,
@@ -85,6 +86,7 @@ class UserModel {
     this.hostel,
     required this.permissions,
     this.permission,
+    this.fcmTokens,
   });
 
   UserModel.fromJson(Map<String, dynamic> data)
@@ -108,7 +110,11 @@ class UserModel {
                 : [],
         permission = data["permission"] != null
             ? PermissionModel.fromJson(data["permission"])
-            : null;
+            : null,
+        fcmTokens = data['notifConfig']
+            ?.map((config) => config['fcmToken'] as String?)
+            .whereType<String>()
+            .toList();
 }
 
 class PermissionModel {

@@ -117,10 +117,10 @@ class LocalNotificationService {
       return;
     }
     showNotification(
-        id: message.data["id"] ?? Random().nextInt(1000),
+        id: Random().nextInt(1000),
         title: message.data["title"],
         description: message.data["body"],
-        payload: message.data["route"],
+        payload: message.data["route"] ?? "",
         image: message.data["image"]);
   }
 
