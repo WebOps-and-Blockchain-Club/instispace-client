@@ -19,8 +19,10 @@ class Error extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Image(
-          image: AssetImage('assets/illustrations/deer.png'),
+        Image(
+          image: Theme.of(context).brightness == Brightness.dark
+              ? AssetImage('assets/illustrations/Dark_deer.png')
+              : AssetImage('assets/illustrations/deer.png'),
           height: 250,
           width: 250,
         ),
