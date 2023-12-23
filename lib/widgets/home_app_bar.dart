@@ -25,18 +25,18 @@ class HomeAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(left: 20),
           alignment: Alignment.centerLeft,
           onPressed: () => scaffoldKey.currentState!.openDrawer(),
-          icon: const Icon(
+          icon: Icon(
             CustomIcons.hamburger,
             size: 20,
-            color: Color(0xFF3C3C3C),
+            color: Theme.of(context).textTheme.bodyLarge!.color,
           ),
         ),
         centerTitle: true,
         title: Text(
           title.toUpperCase(),
-          style: const TextStyle(
+          style: TextStyle(
               letterSpacing: 1,
-              color: Color(0xFF3C3C3C),
+              color: Theme.of(context).textTheme.bodyLarge!.color,
               fontSize: 20,
               fontWeight: FontWeight.w700),
         ),

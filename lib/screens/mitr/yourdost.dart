@@ -38,7 +38,7 @@ class YourDostScreen extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'Your Dost'),
+            secondaryAppBar(title: 'Your Dost',context: context),
           ];
         },
         body: ListView(
@@ -81,8 +81,8 @@ class YourDostScreen extends StatelessWidget {
                     InkWell(
                       onTap: () => launchUrlString("https://yourdost.com",
                           mode: LaunchMode.externalApplication),
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Icon(Icons.language_sharp, size: 30),
                           SizedBox(height: 10),
                           Text("https://yourdost.com"),
@@ -95,8 +95,8 @@ class YourDostScreen extends StatelessWidget {
                     InkWell(
                       onTap: () => launchUrlString("http://bit.ly/IITMadrasF2F",
                           mode: LaunchMode.externalApplication),
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Icon(Icons.language_sharp, size: 30),
                           SizedBox(height: 10),
                           Text("http://bit.ly/IITMadrasF2F"),

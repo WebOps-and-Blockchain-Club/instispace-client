@@ -65,7 +65,7 @@ class AboutUsPage extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'About Us'),
+            secondaryAppBar(title: 'About Us',context: context),
           ];
         },
         body: ListView(

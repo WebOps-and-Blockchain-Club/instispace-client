@@ -3,6 +3,7 @@ import 'package:client/screens/mess/dayMenu.dart';
 import 'package:client/screens/mess/menuCard.dart';
 import 'package:client/services/local_storage.dart';
 import 'package:client/themes.dart';
+import 'package:client/widgets/app_bar.dart';
 import 'package:client/widgets/button/elevated_button.dart';
 import 'package:client/widgets/button/icon_button.dart';
 import 'package:client/widgets/form/dropdown_button.dart';
@@ -74,7 +75,6 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
 
   @override
   void initState() {
-    print(DateTime.now().hour);
     setIndexMap();
 
     if (day > 4) {
@@ -86,15 +86,15 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
               ));
     }
 
-    //   getData().then((data) => {
-    //         if (data != null)
-    //           {
-    //             setState(() {
-    //               if (data['menu'] != null) mess = data['menu'];
-    //               if (data['week'] != null) week = data['week'];
-    //             })
-    //           }
-    //       });
+      getData().then((data) => {
+            if (data != null)
+              {
+                setState(() {
+                  if (data['menu'] != null) mess = data['menu'];
+                  if (data['week'] != null) week = data['week'];
+                })
+              }
+          });
 
     super.initState();
   }
@@ -102,18 +102,28 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            "MESS MENU",
-            style: TextStyle(
-                letterSpacing: 1,
-                color: Color(0xFF3C3C3C),
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
-          ),
-        ),
-        body: Column(
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: const Text(
+        //     "MESS MENU",
+        //     style: TextStyle(
+        //         letterSpacing: 1,
+        //         color: Color(0xFF3C3C3C),
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.w700),
+        //   ),
+        // ),
+        
+        body: SafeArea(child: NestedScrollView(
+          controller: ScrollController(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder:  (BuildContext context, bool innerBoxScrolled) {
+            return <Widget>[
+              // AppBar
+              secondaryAppBar(title: 'E-ID Card',context: context),
+            ];
+          },
+          body: Column(
           children: [
             // Padding(
             //   padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
@@ -248,7 +258,8 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
                   })),
             ),
           ],
-        ));
+        )
+          )));
   }
 
   @override

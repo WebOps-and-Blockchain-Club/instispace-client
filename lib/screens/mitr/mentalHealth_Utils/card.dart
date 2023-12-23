@@ -16,8 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import '/utils/string_extension.dart';
-import '../../new_post/main.dart';
-import '../../new_post/newPost.dart';
+import 'new_post/main.dart';
+import 'new_post/newPost.dart';
 import '../../../../models/date_time_format.dart';
 import '../../../../models/post/main.dart';
 import '../../../../utils/custom_icons.dart';
@@ -87,7 +87,7 @@ class _PostCardState extends State<PostCard>
                 margin: const EdgeInsets.only(left: 5),
                 child: CircleAvatar(
                   radius: 15,
-                  backgroundColor: Theme.of(context).cardTheme.color,
+                  backgroundColor: Colors.white,
                   child: Icon(
                     post.category.icon,
                     color: Colors.lightBlue,
@@ -416,8 +416,8 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
-            "${post.createdBy.name}, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-            style: TextStyle(color: Theme.of (context).brightness == Brightness.dark  ? Colors.white : Colors.black45),
+            "Anounymous, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
+            style: const TextStyle(color: Colors.black45),
             textAlign: TextAlign.left,
           ),
         ),

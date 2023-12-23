@@ -3,7 +3,7 @@ import 'package:client/screens/home/new_post/dateTimePicker.dart';
 import 'package:client/themes.dart';
 import 'package:flutter/material.dart';
 
-import '../../../utils/custom_icons.dart';
+import '/utils/custom_icons.dart';
 
 class EndTime extends StatefulWidget {
   final DateTime endTime;
@@ -50,7 +50,7 @@ class _EndTimeState extends State<EndTime> {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
-                .copyWith(color: ColorPalette.palette(context).primary.shade50),
+                .copyWith(color: ColorPalette.palette(context).primary),
           )
         ]),
         if (widget.edit)

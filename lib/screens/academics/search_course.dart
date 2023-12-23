@@ -40,7 +40,7 @@ class _SearchCourseState extends State<SearchCourse> {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'SEARCH COURSE'),
+            secondaryAppBar(title: 'SEARCH COURSE',context: context),
 
             // SearchBar & Filter
             SliverList(

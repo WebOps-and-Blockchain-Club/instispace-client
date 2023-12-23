@@ -46,9 +46,14 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: 'InstiSpace',
               theme: Themes.theme,
+              darkTheme: Themes.darkTheme,
+              themeMode: ThemeMode.system,
               home: Wrapper(auth: auth),
             ),
           );
         }));
   }
 }
+
+//user name: me21b072- Harsh rollno
+// 123456
