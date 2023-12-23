@@ -1,10 +1,13 @@
 import 'package:client/graphQL/a-gate/courseFeedback.dart';
 import 'package:client/screens/a-gate/courseFeedback.dart/searchCourseFb.dart';
 import 'package:client/widgets/card/courseFeedbackCard.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '../../../models/courseFb.dart';
 import '../../../widgets/helpers/error.dart';
+import 'package:flutter/material.dart' hide SearchBar;
+import '../../../widgets/search_bar.dart' as search;
+import '../../../widgets/search_bar.dart';
 
 class CourseFeedbackScreen extends StatefulWidget {
   // final Widget appBar;
@@ -22,6 +25,7 @@ class CourseFeedbackScreen extends StatefulWidget {
 
 class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
   List<CourseFeedbackModel> courseFeedbackList = [];
+  String search = "";
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +46,38 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
           },
         ),
       ),
-      body: Query(
+      body: NestedScrollView(
+        // physics: const AlwaysScrollableScrollPhysics(),
+        controller: ScrollController(),
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+          return <Widget>[
+            // AppBar
+            // widget.appBar,
+
+            // SearchBar 
+            SliverList(
+              delegate: SliverChildListDelegate([
+                const SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: SearchBar(
+                    onSubmitted: (value) {
+                      setState(() {
+                        search = value;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ]),
+            ),
+          ];
+        },
+        body: Query(
           options: QueryOptions(
               document: gql(FeedbackGQL.findAllFeedback),
-              variables: {"search": ""},
+              variables: {"search": search},
               parserFn: ((data) =>
                   CoursesFeedbackModel.fromJson(data["findAllFeedback"]))),
           builder: (result, {fetchMore, refetch}) {
@@ -108,22 +140,24 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
                 ),
               );
             }
-            return ListView.builder(
-              itemCount: courseFb.length,
-              itemBuilder: (context, index) {
-                final courseFeedback = courseFb[index];
-                return CourseFeedbackCard(
-                  courseCode: courseFeedback.courseCode,
-                  coursRating: courseFeedback.courseRating,
-                  courseName: courseFeedback.courseName,
-                  createdBy: courseFeedback.createdBy.name,
-                  description: courseFeedback.courseReview,
-                  createdAt: courseFeedback.createdAt,
-                  profName: courseFeedback.professorName,
-                );
-              },
-            );
-          }),
+           return ListView.builder(
+                itemCount: courseFb.length,
+                itemBuilder: (context, index) {
+                  final courseFeedback = courseFb[index];
+                  return CourseFeedbackCard(
+                    courseCode: courseFeedback.courseCode,
+                    coursRating: courseFeedback.courseRating,
+                    courseName: courseFeedback.courseName,
+                    createdBy: courseFeedback.createdBy.name,
+                    description: courseFeedback.courseReview,
+                    createdAt: courseFeedback.createdAt,
+                    profName: courseFeedback.professorName,
+                  );
+                }
+           );
+          }
+              ),
+        ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(

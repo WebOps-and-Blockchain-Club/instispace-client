@@ -22,16 +22,16 @@ class _TicketCardState extends State<TicketCard> {
   Widget build(BuildContext context) {
     final ticket = widget.ticket;
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.all(8),
       child: CustomCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             //title and status
             Padding(
-              padding: const EdgeInsets.only(top: 10.0),
+              padding: const EdgeInsets.only(top: 8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     width: 250,
@@ -45,8 +45,9 @@ class _TicketCardState extends State<TicketCard> {
                     ),
                   ),
                   Container(
+                      width: 70,
                       // color: const Color.fromARGB(255, 228, 47, 47),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(8),
                       decoration: ticket.resolvedBy == null
                           ? BoxDecoration(
                               borderRadius: BorderRadius.circular(10),

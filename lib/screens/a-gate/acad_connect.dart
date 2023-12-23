@@ -12,10 +12,8 @@ class AcadConnectScreen extends StatelessWidget {
   const AcadConnectScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: PostListByTag("Acad Connet"),
-      ),
+    return Scaffold(
+      body: PostListByTag("Acad Connet"),
     );
   }
 }
@@ -29,11 +27,11 @@ class PostListByTag extends StatelessWidget {
     return Query(
       options: QueryOptions(
         document: gql("""
-query GetTagByName {
-  getTagByName(name:"Acad Connect") {
-    id
-  }
-}
+        query GetTagByName {
+          getTagByName(name:"Acad Connect") {
+            id
+          }
+        }
     """),
       ),
       builder: (QueryResult result, {fetchMore, refetch}) {
@@ -50,7 +48,7 @@ query GetTagByName {
         String id = responseData?['getTagByName']['id'];
 
         return SuperUserPostPage(
-          title: 'A GATE',
+          title: 'Acad Connect',
           filterVariables: PostQueryVariableModel(
             tags: [TagModel(id: id, title: name, category: 'Query')],
           ),
