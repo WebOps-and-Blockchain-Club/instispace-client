@@ -1,6 +1,7 @@
 import 'package:client/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../widgets/app_bar.dart';
 import 'submitComplain.dart';
 
 class ComplaintPortal extends StatefulWidget {
@@ -18,19 +19,30 @@ class _ComplaintPortalState extends State<ComplaintPortal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            "Complaint",
-            style: TextStyle(
-                letterSpacing: 1,
-                color: Color(0xFF262626),
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
-          ),
-          backgroundColor: Colors.white,
-        ),
-        body: Padding(
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: const Text(
+        //     "Complaint",
+        //     style: TextStyle(
+        //         letterSpacing: 1,
+        //         color: Color(0xFF262626),
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.w700),
+        //   ),
+        //   backgroundColor: Colors.white,
+        // ),
+
+        body: SafeArea(
+          child: NestedScrollView(
+            controller: ScrollController(),
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+            return <Widget>[
+              // AppBar
+              secondaryAppBar(title: 'Compliant',context: context),
+            ];
+          },
+            body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
@@ -135,6 +147,7 @@ class _ComplaintPortalState extends State<ComplaintPortal> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(
+                    // tileColor: ,
                     title: const Text("Proceed"),
                     onTap: () {
                       if (checked) {
@@ -159,7 +172,8 @@ class _ComplaintPortalState extends State<ComplaintPortal> {
               ],
             ),
           ),
-        ));
+        )
+            )),);
   }
 }
 

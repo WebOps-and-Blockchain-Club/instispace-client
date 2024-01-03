@@ -46,7 +46,6 @@ class _LogInState extends State<LogIn> {
         options: MutationOptions(
           document: gql(AuthGQL().login),
           onCompleted: (dynamic resultData) {
-            print(resultData);
             if (resultData["login"] != null) {
               widget.auth.login(
                 resultData["login"]["token"],

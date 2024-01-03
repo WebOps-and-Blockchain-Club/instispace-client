@@ -224,7 +224,7 @@ class _UpvotePostButtonState extends State<UpvotePostButton>
                 decoration: BoxDecoration(
                     color: widget.like.isLikedByUser
                         ? Colors.lightBlue
-                        : Colors.white,
+                        : Theme.of(context).cardTheme.color,
                     border: Border.all(
                       color: Colors.lightBlue,
                     ),
@@ -317,7 +317,7 @@ class _DownvotePostButtonState extends State<DownvotePostButton> {
                 decoration: BoxDecoration(
                     color: widget.dislike.isDislikedByUser
                         ? Colors.lightBlue
-                        : Colors.white,
+                        : Theme.of(context).cardTheme.color,
                     border: Border.all(
                       color: Colors.lightBlue,
                     ),

@@ -89,9 +89,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   void initState() {
-    print(widget.permissions.createTag);
-    print(widget.permissions.approvePost);
-    print(widget.permissions.createPost?.allowedCategory);
     setState(() {
       roles = widget.permissions.createAccount.allowedRoles == null
           ? []
@@ -125,8 +122,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     options: MutationOptions(
                       document: gql(SuperUserGQL().createAccount),
                       onCompleted: (dynamic resultData) {
-                        print('result');
-                        print(resultData);
                         if (resultData["createUser"] != null) {
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -451,23 +446,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                             feedCategories.map((e) => e.name));
                                       });
                                     }
-                                    print(hostels?.getId(selectedHostel));
-                                    print({
-                                      "user": {
-                                        "roll": name.text.trim(),
-                                        "role": selectedRole,
-                                      },
-                                      "permission": {
-                                        "account": accounts,
-                                        "livePosts": posts,
-                                        "createNotification": false,
-                                        "createTag": createTag,
-                                        "approvePosts": createPost,
-                                        "handleReports": reports,
-                                        "hostel": getHostel(selectedRole),
-                                      },
-                                      "hostelId": hostels?.getId(selectedHostel)
-                                    });
+
                                     runMutation({
                                       "user": {
                                         "roll": name.text.trim(),

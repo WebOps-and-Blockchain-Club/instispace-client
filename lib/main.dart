@@ -1,3 +1,4 @@
+import 'package:client/services/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -37,19 +38,32 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => AuthService(),
-        child: Consumer<AuthService>(builder: (context, auth, child) {
-          return GraphQLProvider(
-            client: client(auth.token),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'InstiSpace',
-              theme: Themes.theme,
-              home: Wrapper(auth: auth),
-            ),
-          );
-        }));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AuthService(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ThemeProvider(),
+          )
+        ],
+        child: Consumer<AuthService>(
+          builder: (context, auth, child) {
+            return Consumer<ThemeProvider>(builder: (context, mode, child) {
+              return GraphQLProvider(
+                client: client(auth.token),
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'InstiSpace',
+                  theme: Themes.theme,
+                  darkTheme: Themes.darkTheme,
+                  themeMode: mode.theme,
+                  home: Wrapper(auth: auth),
+                ),
+              );
+            });
+          },
+        ));
   }
 }
 

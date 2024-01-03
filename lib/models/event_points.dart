@@ -26,7 +26,6 @@ void showDialogForQR(
                 update ? BadgeGQL().updatePoints : BadgeGQL().toggleIsQRActive),
             onCompleted: (data) {
               if (isFirst) {
-                print('......');
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ShowQRPage(postId: postId)));

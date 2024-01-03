@@ -48,8 +48,8 @@ class _PrimaryFilterState<T> extends State<PrimaryFilter<T>> {
                     duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
                         color: selectedOptions.contains(options[index])
-                            ? Colors.black
-                            : const Color(0xFFEEEEEE),
+                            ? Theme.of (context).brightness == Brightness.dark  ? Colors.white : Colors.black
+                            : Theme.of (context).brightness == Brightness.dark ? const Color.fromARGB(255, 52, 52, 52) :const Color(0xFFEEEEEE),
                         borderRadius: BorderRadiusDirectional.circular(15)),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -63,8 +63,8 @@ class _PrimaryFilterState<T> extends State<PrimaryFilter<T>> {
                                 widget.optionIconBuilder!(options[index]),
                                 size: 15,
                                 color: selectedOptions.contains(options[index])
-                                    ? Colors.white
-                                    : const Color(0xFF505050),
+                                    ? Theme.of (context).brightness == Brightness.dark  ? Colors.black :  Colors.white
+                                    : Theme.of (context).brightness == Brightness.dark  ? Colors.white : const Color(0xFF505050),
                               ),
                             ),
                           Text(
@@ -72,8 +72,8 @@ class _PrimaryFilterState<T> extends State<PrimaryFilter<T>> {
                             style: TextStyle(
                                 fontSize: 15,
                                 color: selectedOptions.contains(options[index])
-                                    ? Colors.white
-                                    : const Color(0xFF505050)),
+                                    ? Theme.of (context).brightness == Brightness.dark  ? Colors.black :  Colors.white
+                                    : Theme.of (context).brightness == Brightness.dark  ? Colors.white : const Color(0xFF505050)),
                           ),
                         ],
                       ),

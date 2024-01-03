@@ -68,7 +68,7 @@ class _SearchUserState extends State<SearchUser> {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'Find People'),
+            secondaryAppBar(title: 'Find People',context: context),
 
             // SearchBar & Filter
             SliverList(

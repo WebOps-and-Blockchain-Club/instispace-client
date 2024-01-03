@@ -38,7 +38,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         options: MutationOptions(
           document: gql(AuthGQL().forgotPassword),
           onCompleted: (dynamic resultData) {
-            print(resultData);
             if (resultData == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Invalid password')));

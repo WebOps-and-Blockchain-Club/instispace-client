@@ -87,7 +87,7 @@ class _PostCardState extends State<PostCard>
                 margin: const EdgeInsets.only(left: 5),
                 child: CircleAvatar(
                   radius: 15,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).cardTheme.color,
                   child: Icon(
                     post.category.icon,
                     color: Colors.lightBlue,
@@ -417,7 +417,7 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
             "${post.createdBy.name}, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-            style: const TextStyle(color: Colors.black45),
+            style: TextStyle(color: Theme.of (context).brightness == Brightness.dark  ? Colors.white : Colors.black45),
             textAlign: TextAlign.left,
           ),
         ),

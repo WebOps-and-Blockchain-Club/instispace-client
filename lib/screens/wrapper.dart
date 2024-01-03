@@ -65,8 +65,6 @@ class _WrapperState extends State<Wrapper> {
                   ));
                 }
 
-                print(result);
-
                 if (result.isLoading && result.data == null) {
                   return const Center(
                     child: CircularProgressIndicator(),

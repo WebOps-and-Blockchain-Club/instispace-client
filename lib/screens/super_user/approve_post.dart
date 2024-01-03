@@ -43,7 +43,7 @@ class _SuperUserPostPageState extends State<SuperUserPostPage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: widget.title),
+            secondaryAppBar(title: widget.title,context: context),
           ];
         },
         body: PostQuery(

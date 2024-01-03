@@ -72,14 +72,14 @@ class _EditPasswordState extends State<EditPassword> {
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               secondaryAppBar(
-                  title: widget.password ? 'CHANGE PASSWORD' : 'EDIT PROFILE')
+                  title: widget.password ? 'CHANGE PASSWORD' : 'EDIT PROFILE',
+                  context: context)
             ];
           },
           body: Mutation(
               options: MutationOptions(
                 document: gql(AuthGQL().updateUser),
                 onCompleted: (dynamic resultData) {
-                  print(resultData);
                   if (resultData["updateUser"] == true) {
                     if (widget.refetch != null) widget.refetch!();
                     if (widget.user.isNewUser == false) Navigator.pop(context);

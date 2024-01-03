@@ -101,7 +101,7 @@ class AcademicDatabaseService {
 
       // Insert the updated slots associated with the course
       final batch = txn.batch();
-      print(updatedCourse.slots);
+
       for (final slot in updatedCourse.slots!) {
         var slotMap = slot.toJson();
         slotMap.remove('course');
@@ -124,8 +124,6 @@ class AcademicDatabaseService {
     );
     // db.rawQuery('delete from slots');
     // db.rawQuery('delete from courses');
-    print("=======================inside fetchCoursesWithSlots function");
-    print(courseRows);
 
     final courses = <CourseModel>[];
     CourseModel? currentCourse;
@@ -162,8 +160,6 @@ class AcademicDatabaseService {
           DateTime.now().toIso8601String()
         ]);
 
-    print("=======================inside fetchSlotsByDay function");
-    print(res);
     fetchNextClass();
     return res.isNotEmpty
         ? res.map((slot) => SlotModel.fromJson(slot)).toList()
@@ -191,9 +187,6 @@ class AcademicDatabaseService {
             DateTime.now().toIso8601String()
           ]);
 
-      print(
-          "=======================inside fetchNextClass function testing testing");
-      print(res);
       itr = itr + 1;
       currTime = currTime.add(const Duration(hours: 24));
       result = res.isNotEmpty

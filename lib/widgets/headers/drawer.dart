@@ -95,7 +95,7 @@ class CustomDrawer extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                            color: ColorPalette.palette(context)
+                                            color: Theme.of(context).brightness == Brightness.dark ? ColorPalette.palette(context).primary.shade200 : ColorPalette.palette(context)
                                                 .primary,
                                             fontWeight: FontWeight.w500),
                                   ),

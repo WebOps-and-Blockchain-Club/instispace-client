@@ -167,20 +167,17 @@ class LocalNotificationService {
     required String description,
     required int courseId,
   }) async {
-    print('schedule notification called=========================');
     tz.initializeTimeZones();
     AcademicDatabaseService acadDb = AcademicDatabaseService.instance;
     DateTime? nextNotificationTime = await acadDb.getNextClassTime(courseId);
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    print("=========================================nextNotificationTime");
-    print(nextNotificationTime);
+
     if (nextNotificationTime == null) {
       return;
     }
     final nextNotificationTimeTZ =
         tz.TZDateTime.from(nextNotificationTime, now.location);
-    print("=========================================nextNotificationTimeTZ");
-    print(nextNotificationTimeTZ);
+
     await _localNotificationService.zonedSchedule(
         courseId,
         title,
@@ -213,7 +210,6 @@ class LocalNotificationService {
             UILocalNotificationDateInterpretation.absoluteTime);
 
     var a = await _localNotificationService.pendingNotificationRequests();
-    print(a);
   }
 
   Future<List<PendingNotificationRequest>> getScheduledNotification() async {
@@ -243,7 +239,7 @@ class LocalNotificationService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     scheduledDate = scheduledDate.subtract(const Duration(minutes: 330));
-    print(scheduledDate);
+
     return scheduledDate;
   }
 

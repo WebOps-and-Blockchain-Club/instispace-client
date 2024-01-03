@@ -218,11 +218,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
     ];
     return WillPopScope(
       onWillPop: () async {
-        print('==================Popupscope called');
-        print(tappedIndex);
         if (tappedIndex.length == 1) {
           // if (!await Navigator.of(context).maybePop()) return true;
-          print(true);
+
           return true;
         } else {
           setState(() {

@@ -45,7 +45,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius:BorderRadius.circular(35) ),
       padding: widget.padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
