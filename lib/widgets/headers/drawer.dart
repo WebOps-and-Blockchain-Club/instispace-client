@@ -211,37 +211,39 @@ class CustomDrawer extends StatelessWidget {
                             // ),
 
                             // Mitr
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: ExpansionTile(
+                            //     title: const Text("Wellness Community Centre"),
+                            //     children: [
+                            //       const SizedBox(
+                            //         height: 10,
+                            //       ),
+                            //       // ListTile(
+                            //       //   tileColor: Colors.transparent,
+                            //       //   visualDensity:
+                            //       //       const VisualDensity(vertical: -4),
+                            //       //   title:
+                            //       //       const Text("Wellness Centre of IITM"),
+                            //       //   onTap: () {
+                            //       //     Navigator.pop(context);
+                            //       //     navigate(
+                            //       //         context, const CounsellorScreen());
+                            //       //   },
+                            //       // ),
+                            //     ],
+                            //   ),
+                            // ),
+
+                            // your dost
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: ExpansionTile(
-                                title: const Text("Wellness Community Centre"),
-                                children: [
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  ListTile(
-                                    tileColor: Colors.transparent,
-                                    visualDensity:
-                                        const VisualDensity(vertical: -4),
-                                    title:
-                                        const Text("Wellness Centre of IITM"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      navigate(
-                                          context, const CounsellorScreen());
-                                    },
-                                  ),
-                                  ListTile(
-                                    tileColor: Colors.transparent,
-                                    visualDensity:
-                                        const VisualDensity(vertical: -4),
-                                    title: const Text("Your Dost"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      navigate(context, const YourDostScreen());
-                                    },
-                                  ),
-                                ],
+                              child: ListTile(
+                                title: const Text("Your Dost"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  navigate(context, const YourDostScreen());
+                                },
                               ),
                             ),
 
