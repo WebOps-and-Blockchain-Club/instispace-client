@@ -85,7 +85,6 @@ class _CreateBadgesPageState extends State<CreateBadgesPage> {
         document: gql(BadgeGQL().getMyClub),
       ),
       builder: (result, {fetchMore, refetch}) {
-        print(result);
         return Scaffold(
           floatingActionButton: SizedBox(
               height: 50,
@@ -122,7 +121,6 @@ class _CreateBadgesPageState extends State<CreateBadgesPage> {
                           document: gql(BadgeGQL().createBadges)),
                       builder: (RunMutation runMutation,
                           QueryResult? mutationResult) {
-                        print(mutationResult);
                         return ListView(children: []);
                       }))),
         );
