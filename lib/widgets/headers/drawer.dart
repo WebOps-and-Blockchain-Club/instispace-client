@@ -95,8 +95,14 @@ class CustomDrawer extends StatelessWidget {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                            color: Theme.of(context).brightness == Brightness.dark ? ColorPalette.palette(context).primary.shade200 : ColorPalette.palette(context)
-                                                .primary,
+                                            color: Theme.of(context)
+                                                        .brightness ==
+                                                    Brightness.dark
+                                                ? ColorPalette.palette(context)
+                                                    .primary
+                                                    .shade200
+                                                : ColorPalette.palette(context)
+                                                    .primary,
                                             fontWeight: FontWeight.w500),
                                   ),
                                 ),
@@ -236,16 +242,16 @@ class CustomDrawer extends StatelessWidget {
                             // ),
 
                             // your dost
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: ListTile(
-                                title: const Text("Your Dost"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  navigate(context, const YourDostScreen());
-                                },
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: ListTile(
+                            //     title: const Text("Your Dost"),
+                            //     onTap: () {
+                            //       Navigator.pop(context);
+                            //       navigate(context, const YourDostScreen());
+                            //     },
+                            //   ),
+                            // ),
 
                             //Super User Actions
                             if (user != null &&
