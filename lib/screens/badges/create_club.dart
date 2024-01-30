@@ -15,8 +15,9 @@ import '../../graphQL/badge.dart';
 import 'dart:io';
 
 class CreateClubPage extends StatefulWidget {
-  
-  const CreateClubPage({Key? key,}) : super(key: key);
+  const CreateClubPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<CreateClubPage> createState() => _CreateClubPageState();
@@ -59,9 +60,10 @@ class _CreateClubPageState extends State<CreateClubPage> {
                       const SnackBar(content: Text('New Club Created')),
                     );
                     setState(() {
-                      dummy=0;
+                      dummy = 0;
                     });
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: ((context) => const ViewClubPage())));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: ((context) => const ViewClubPage())));
                   }),
               builder: (
                 RunMutation runMutation,
@@ -200,9 +202,9 @@ class _CreateClubPageState extends State<CreateClubPage> {
                                   });
                                   uploadResult =
                                       await imageService.upload([image]);
-                                    setState(() {
-                                      isImageLoading = false;
-                                    });
+                                  setState(() {
+                                    isImageLoading = false;
+                                  });
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -217,7 +219,7 @@ class _CreateClubPageState extends State<CreateClubPage> {
 
                                 final isValid =
                                     formKey.currentState!.validate();
-                                
+
                                 FocusScope.of(context).unfocus();
                                 if (isValid && uploadResult.isNotEmpty) {
                                   runMutation({

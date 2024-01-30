@@ -1,3 +1,4 @@
+import 'package:client/models/user.dart';
 import 'package:client/widgets/search_bar.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,10 +16,12 @@ class PostPage extends StatefulWidget {
   final Widget appBar;
   final List<PostCategoryModel> categories;
   final bool createPost;
+  final UserModel user;
   const PostPage(
       {Key? key,
       required this.appBar,
       required this.categories,
+      required this.user,
       this.createPost = false})
       : super(key: key);
 
@@ -98,7 +101,7 @@ class _PostPageState extends State<PostPage> {
           ? NewPostButton(
               options: options,
               categories: widget.categories,
-            )
+              user: widget.user)
           : null,
     );
   }

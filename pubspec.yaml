@@ -70,16 +70,20 @@ dependencies:
   webview_flutter: ^3.0.4
   sqflite: ^2.0.3+1
   table_calendar: ^3.0.8
-  photo_manager: ^2.5.2
+  # photo_manager: ^2.5.2
   flutter_secure_storage: ^8.0.0
   google_sign_in: ^6.0.1
   scrollable_positioned_list: ^0.3.5
   qr_code_scanner: ^1.0.1
 
+
+dependency_overrides:
+  photo_manager: ^3.0.0-dev.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
   change_app_package_name: ^1.0.0
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

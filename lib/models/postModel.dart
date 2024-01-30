@@ -59,7 +59,11 @@ class PostModel {
         location = data['location'],
         like = LikePostModel(
             count: data['likeCount'], isLikedByUser: data['isLiked']),
-        eventPoints = (data['isQRActive']!=null)? EventPointsModel(isQRActive: data['isQRActive'], pointsValue: data['pointsValue']): null,
+        eventPoints = (data['isQRActive'] != null)
+            ? EventPointsModel(
+                isQRActive: data['isQRActive'],
+                pointsValue: data['pointsValue'])
+            : null,
         isDisliked = data['isDisliked'],
         isHidden = data['isHidden'],
         isSaved = data['isSaved'],

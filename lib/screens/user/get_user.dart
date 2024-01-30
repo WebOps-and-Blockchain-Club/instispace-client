@@ -17,15 +17,16 @@ class _GetUserState extends State<GetUser> {
   @override
   Widget build(BuildContext context) {
     return Query(
-        options: QueryOptions(
-            document: gql(UserGQL().getUser),
-            variables: {"roll": widget.userDetails["roll"]?.toLowerCase()}),
-        builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
-          return  Profile(
-                result: result,
-                userDetails: widget.userDetails,
-                refetch: refetch,
-                isMyProfile: false);
-            },);
+      options: QueryOptions(
+          document: gql(UserGQL().getUser),
+          variables: {"roll": widget.userDetails["roll"]?.toLowerCase()}),
+      builder: (QueryResult result, {FetchMore? fetchMore, refetch}) {
+        return Profile(
+            result: result,
+            userDetails: widget.userDetails,
+            refetch: refetch,
+            isMyProfile: false);
+      },
+    );
   }
 }

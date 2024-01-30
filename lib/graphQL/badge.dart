@@ -13,7 +13,7 @@ class BadgeGQL {
   }
 }
 """;
-String getUserBadges = """query GetMyBadges(\$userId: String!) {
+  String getUserBadges = """query GetMyBadges(\$userId: String!) {
   getMyBadges(userId: \$userId) {
     list {
       id
@@ -38,14 +38,15 @@ String getUserBadges = """query GetMyBadges(\$userId: String!) {
     id
   }
 }""";
-String updateBadge = """
+  String updateBadge = """
 mutation UpdateBadge(\$badgeId: String!, \$updateBadgeInput: UpdateBadgeInput!) {
   updateBadge(badgeId: \$badgeId, updateBadgeInput: \$updateBadgeInput) {
     id
     threshold
   }
 }""";
-String updatePoints = """mutation UpdatePoints(\$postId: String!, \$points: Float!) {
+  String updatePoints =
+      """mutation UpdatePoints(\$postId: String!, \$points: Float!) {
   updatePoints(postId: \$postId, points: \$points) {
     id
   }

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({Key? key}) : super(key: key);
 
@@ -43,78 +44,92 @@ class _ScannerScreenState extends State<ScannerScreen> {
       controller!.resumeCamera();
     }
   }
-  void showDialogForRedeemingPoints(String scannedCode){
-    showDialog(context: context, builder: (context){
-      return AlertDialog(
-        title: const Text('Redeem points'),
 
-        content: Query(
-          options: QueryOptions(document: gql(FeedGQL().findOnePost), variables: {'Postid' : scannedCode}),
-          builder:(result, {fetchMore, refetch}) {
-            if(result.data == null || result.data!['findOnePost'] == null){
-              return const Text('Invalid QR code');
-            }
-            else if(result.isLoading){
-              return const Loading();
-            }
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('This event is worth ${result.data!['findOnePost']['pointsValue']} points'),
-              const SizedBox(height: 15,),
-              Mutation(options: MutationOptions(document: gql(BadgeGQL().markAttendance), onCompleted: (dynamic resultData){
-                 ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Points Redeemed')),
-                    );
-                  Navigator.of(context).pop();
-              }),
-              builder:(runMutation, result) {
-                return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    child: CustomElevatedButton(
-                      onPressed: () {
-                        runMutation({'postId': scanResult!.code});
-                      },
-                      textSize: 18,
-                      padding: const [25, 15],
-                      text: "Redeem",
-                      isLoading: result!.isLoading,
+  void showDialogForRedeemingPoints(String scannedCode) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Redeem points'),
+            content: Query(
+              options: QueryOptions(
+                  document: gql(FeedGQL().findOnePost),
+                  variables: {'Postid': scannedCode}),
+              builder: (result, {fetchMore, refetch}) {
+                if (result.data == null ||
+                    result.data!['findOnePost'] == null) {
+                  return const Text('Invalid QR code');
+                } else if (result.isLoading) {
+                  return const Loading();
+                }
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        'This event is worth ${result.data!['findOnePost']['pointsValue']} points'),
+                    const SizedBox(
+                      height: 15,
                     ),
-                  );
-              },)
-            ],
+                    Mutation(
+                      options: MutationOptions(
+                          document: gql(BadgeGQL().markAttendance),
+                          onCompleted: (dynamic resultData) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Points Redeemed')),
+                            );
+                            Navigator.of(context).pop();
+                          }),
+                      builder: (runMutation, result) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 8),
+                          child: CustomElevatedButton(
+                            onPressed: () {
+                              runMutation({'postId': scanResult!.code});
+                            },
+                            textSize: 18,
+                            padding: const [25, 15],
+                            text: "Redeem",
+                            isLoading: result!.isLoading,
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                );
+              },
+            ),
           );
-          },
-        ),
-      );
-    });
+        });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            appBar: AppBar(
-              title: const CustomAppBar(title: 'Scan QR'),
-              leading: CustomIconButton(icon: Icons.arrow_back, onPressed: ()=> Navigator.of(context).pop(),),
-            ),
-              body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                  Expanded(
-                    flex: 5,
-                    child: QRView(
-                      key: qrKey,
-                      onQRViewCreated: _onQRViewCreated,
-                    ),
+        appBar: AppBar(
+          title: const CustomAppBar(title: 'Scan QR'),
+          leading: CustomIconButton(
+            icon: Icons.arrow_back,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewCreated,
                   ),
-                  
-                            ],
-                          ),
                 ),
-              ));
+              ],
+            ),
+          ),
+        ));
   }
 
   void _onQRViewCreated(QRViewController controller) {
@@ -124,7 +139,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
         scanResult = scanData;
       });
       print(scanResult!.code);
-      if(scanResult!.code!=null || scanResult!.code!.isNotEmpty){
+      if (scanResult!.code != null || scanResult!.code!.isNotEmpty) {
         controller.pauseCamera();
         showDialogForRedeemingPoints(scanResult!.code!);
       }

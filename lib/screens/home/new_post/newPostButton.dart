@@ -1,12 +1,15 @@
 import 'package:client/models/category.dart';
+import 'package:client/models/user.dart';
 import 'package:client/themes.dart';
 import 'package:client/widgets/button/catList.dart';
 import 'package:flutter/material.dart';
 
 class NewPostButton extends StatelessWidget {
   final options;
+  final UserModel user;
   final List<PostCategoryModel> categories;
-  const NewPostButton({Key? key, this.options, required this.categories})
+  const NewPostButton(
+      {Key? key, this.options, required this.categories, required this.user})
       : super(key: key);
 
   @override
@@ -27,6 +30,7 @@ class NewPostButton extends StatelessWidget {
               builder: (context) {
                 return CategoryList(
                     options: options,
+                    user: user,
                     categories: List.generate(
                         categories.length,
                         (index) => PostCategoryModel.fromJson(

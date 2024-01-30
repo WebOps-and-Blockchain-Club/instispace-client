@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io' as io;
 import 'package:client/graphQL/feed.dart';
+import 'package:client/graphQL/user.dart';
 import 'package:client/models/category.dart';
+import 'package:client/models/user.dart';
 import 'package:client/screens/home/new_post/dateTimePicker.dart';
 import 'package:client/screens/home/new_post/endTime.dart';
 import 'package:client/screens/home/new_post/imageService.dart';
@@ -40,10 +42,12 @@ class NewPostScreen extends StatefulWidget {
   final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
+  final UserModel? user;
   const NewPostScreen(
       {Key? key,
       this.images,
       this.post,
+      this.user,
       required this.category,
       required this.fieldConfiguration,
       required this.options})
@@ -164,6 +168,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     super.initState();
   }
+
+  String selectedValue = "";
+  String? leadId;
 
   @override
   Widget build(BuildContext context) {
@@ -298,6 +305,46 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 42),
                             child: Column(
                               children: [
+                                if (widget.user!.role == "ADMIN")
+                                  Query(
+                                      options: QueryOptions(
+                                          document:
+                                              gql(UserGQL().getSuperUser)),
+                                      builder: (result, {fetchMore, refetch}) {
+                                        if (result.hasException) {
+                                          return Text(
+                                              result.exception.toString());
+                                        }
+
+                                        if (result.isLoading) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        List leadslist =
+                                            result.data!['getSuperUser'];
+                                        return DropdownButton(
+                                          items: leadslist
+                                              .map<DropdownMenuItem<String>>(
+                                                  (e) {
+                                            return DropdownMenuItem(
+                                                value: e["name"],
+                                                child: Text(e["name"]!));
+                                          }).toList(),
+                                          value: leadslist[0]["name"],
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              selectedValue =
+                                                  (newValue is String)
+                                                      ? newValue
+                                                      : newValue.toString();
+                                              leadId = leadslist
+                                                  .where((element) =>
+                                                      element["name"] ==
+                                                      selectedValue)
+                                                  .toList()[0]["id"];
+                                            });
+                                          },
+                                        );
+                                      }),
                                 //title
                                 if (widget.fieldConfiguration.title != null)
                                   TextFormField(
@@ -568,6 +615,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                 "tagIds": tags.isNotEmpty
                                                     ? tags
                                                     : null,
+                                                "leadId": leadId,
                                                 "postTime": widget
                                                             .fieldConfiguration
                                                             .postTime !=

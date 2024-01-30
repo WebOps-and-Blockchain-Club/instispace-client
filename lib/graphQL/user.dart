@@ -73,6 +73,14 @@ query GetLdapStudents(
 }
 
 """;
+  String getSuperUser = """
+query GetSuperUser {
+  getSuperUser {
+    name
+    id
+  }
+}
+""";
   String getUser = """
     query(\$userId: String, \$roll: String) {
       getUser(userId: \$userId, roll: \$roll) {

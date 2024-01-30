@@ -22,9 +22,7 @@ class _ClubWrapperPageState extends State<ClubWrapperPage> {
       builder: (QueryResult? result, {fetchMore, refetch}) {
         if (result!.isLoading) {
           return Scaffold(body: const Loading());
-        }
-
-        else if (result.data == null || result.data!['getMyClub'] == null) {
+        } else if (result.data == null || result.data!['getMyClub'] == null) {
           return const CreateClubPage();
         } else {
           return const ViewClubPage();

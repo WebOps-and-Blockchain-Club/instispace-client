@@ -1,4 +1,5 @@
 import 'package:client/models/category.dart';
+import 'package:client/models/user.dart';
 import 'package:client/screens/home/new_post/chooseImages.dart';
 import 'package:client/screens/home/new_post/newPost.dart';
 import 'package:client/themes.dart';
@@ -9,8 +10,10 @@ import '../../screens/home/new_post/main.dart';
 
 class CategoryList extends StatefulWidget {
   final options;
+  final UserModel user;
   final List<PostCategoryModel> categories;
-  const CategoryList({Key? key, required this.categories, this.options})
+  const CategoryList(
+      {Key? key, required this.categories, required this.user, this.options})
       : super(key: key);
 
   @override
@@ -58,6 +61,7 @@ class _CategoryListState extends State<CategoryList>
                     navigate(
                         context,
                         NewPostWrapper(
+                            user: widget.user,
                             options: widget.options,
                             category: widget.categories[index]));
                   },

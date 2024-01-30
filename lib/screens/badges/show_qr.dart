@@ -54,17 +54,25 @@ class _ShowQRPageState extends State<ShowQRPage> {
               return SafeArea(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment:CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       //Text(result!.data!['isQRActive'] ? 'true' : 'false'),
                       SizedBox(
                         width: 300,
                         child: Row(
                           children: [
-                            if(result.data!['findOnePost']['pointsValue'] != null) Text('${result.data!['findOnePost']['pointsValue']} Points', style: TextStyle(fontSize: 24),),
-                            IconButton(onPressed: (){
-                              showDialogForQR(context, widget.postId, false, true);
-                            }, icon: Icon(CustomIcons.edit))
+                            if (result.data!['findOnePost']['pointsValue'] !=
+                                null)
+                              Text(
+                                '${result.data!['findOnePost']['pointsValue']} Points',
+                                style: TextStyle(fontSize: 24),
+                              ),
+                            IconButton(
+                                onPressed: () {
+                                  showDialogForQR(
+                                      context, widget.postId, false, true);
+                                },
+                                icon: Icon(CustomIcons.edit))
                           ],
                         ),
                       ),
@@ -72,39 +80,53 @@ class _ShowQRPageState extends State<ShowQRPage> {
                           result.data!['findOnePost']['isQRActive'] == false)
                         Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: Container(height: 300, width: 300, child: Icon(Icons.image, size: 100,),),
+                          child: Container(
+                            height: 300,
+                            width: 300,
+                            child: Icon(
+                              Icons.image,
+                              size: 100,
+                            ),
+                          ),
                         )
-                        
                       else
                         Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: CachedNetworkImage(
-                            imageUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${widget.postId}',
-                            placeholder: (context, url)=> const Loading(),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                          )
-                        ),
+                            padding: const EdgeInsets.all(15),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${widget.postId}',
+                              placeholder: (context, url) => const Loading(),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            )),
                       Mutation(
-                        options: MutationOptions(document: gql(BadgeGQL().toggleIsQRActive), onCompleted: (data) {
-                          refetch!();
-                        },),
-                        builder: (runMutation, mutationResult) {
-                          print(mutationResult);
-                          return Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: CustomElevatedButton(
-                           isLoading: mutationResult!.isLoading,
-                            text: result.data!['findOnePost']['isQRActive'] == true ? 'Stop' : 'Start',
-                            onPressed: (){
-                              
-                                runMutation({
-                                  'postId': widget.postId,
-                                  'points': result.data!['findOnePost']['pointsValue']
-                                });
-                              
-                          },),
-                        );
-                        }),
+                          options: MutationOptions(
+                            document: gql(BadgeGQL().toggleIsQRActive),
+                            onCompleted: (data) {
+                              refetch!();
+                            },
+                          ),
+                          builder: (runMutation, mutationResult) {
+                            print(mutationResult);
+                            return Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: CustomElevatedButton(
+                                isLoading: mutationResult!.isLoading,
+                                text: result.data!['findOnePost']
+                                            ['isQRActive'] ==
+                                        true
+                                    ? 'Stop'
+                                    : 'Start',
+                                onPressed: () {
+                                  runMutation({
+                                    'postId': widget.postId,
+                                    'points': result.data!['findOnePost']
+                                        ['pointsValue']
+                                  });
+                                },
+                              ),
+                            );
+                          }),
                     ]),
               );
             }));

@@ -46,6 +46,7 @@ class PostGQl {
         photo
       }
       createdAt
+      leadId
       content
       category
       Link

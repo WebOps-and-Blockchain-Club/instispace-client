@@ -169,6 +169,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
               ),
+              user: widget.user,
               categories: feedCategories,
               createPost:
                   widget.user.role != 'USER' && widget.user.role != 'MODERATOR',
@@ -181,6 +182,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
               ),
+              user: widget.user,
               categories: forumCategories,
               createPost: true,
             )
@@ -200,6 +202,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
               ),
+              user: widget.user,
               categories: lnfCategories,
               createPost: true,
             )

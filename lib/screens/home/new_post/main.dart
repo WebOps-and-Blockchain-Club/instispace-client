@@ -1,5 +1,6 @@
 import 'package:client/models/category.dart';
 import 'package:client/models/post/create_post.dart';
+import 'package:client/models/user.dart';
 import 'package:client/screens/home/new_post/chooseImages.dart';
 import 'package:client/widgets/section/main.dart';
 import 'package:flutter/material.dart';
@@ -116,8 +117,13 @@ class NewPostWrapper extends StatefulWidget {
   final PostCategoryModel category;
   final QueryOptions options;
   final PostModel? post;
+  final UserModel? user;
   const NewPostWrapper(
-      {Key? key, required this.category, required this.options, this.post})
+      {Key? key,
+      required this.category,
+      this.user,
+      required this.options,
+      this.post})
       : super(key: key);
 
   @override
@@ -144,6 +150,7 @@ class _NewPostWrapperState extends State<NewPostWrapper> {
     }
     return NewPostScreen(
         category: widget.category,
+        user: widget.user,
         fieldConfiguration: fieldConfiguration,
         options: widget.options,
         post: widget.post);
