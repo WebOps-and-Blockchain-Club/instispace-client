@@ -22,101 +22,140 @@ class _TicketCardState extends State<TicketCard> {
   Widget build(BuildContext context) {
     final ticket = widget.ticket;
     return Container(
-      margin: EdgeInsets.all(8),
-      child: CustomCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            //title and status
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+      margin: EdgeInsets.all(10),
+      child: Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(23),
+        ),
+        // color: Color.fromARGB(255, 234, 238, 241),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Title and Status
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 250,
+                  Expanded(
                     child: Text(
                       ticket.title,
-                      overflow: TextOverflow.clip,
                       style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
+                        color: Color.fromARGB(255, 4, 27, 67),
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Container(
-                      width: 70,
-                      // color: const Color.fromARGB(255, 228, 47, 47),
-                      padding: EdgeInsets.all(8),
-                      decoration: ticket.resolvedBy == null
-                          ? BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.redAccent)
-                          : BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.greenAccent),
-                      child: ticket.resolvedBy == null
-                          ? Text(
-                              "Pending",
-                            )
-                          : Text("Resolved"))
+                    margin: EdgeInsets.only(left: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: ticket.resolvedBy == null
+                                ? Colors.orangeAccent
+                                : Colors.greenAccent,
+                            border: Border.all(
+                              color: ticket.resolvedBy == null
+                                  ? Colors.orangeAccent
+                                  : Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Container(
+                              width: 10,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ticket.resolvedBy == null
+                                    ? Colors.orangeAccent
+                                    : Colors.greenAccent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          ticket.resolvedBy == null ? "Pending" : "Resolved",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-
-            //createdBy and createdAt
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(
-                "Created by ${ticket.createdBy.name}, ${DateTimeFormatModel.fromString(ticket.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-                style: const TextStyle(color: Colors.black45),
+              // CreatedBy and CreatedAt
+              Text(
+                "Created by ${ticket.createdBy.name}, ${DateTimeFormatModel.fromString(ticket.createdAt).toDiffString()} ago",
+                style: const TextStyle(color: Colors.black54),
                 textAlign: TextAlign.left,
               ),
-            ),
 
-            //images
-            if (ticket.photo != null && ticket.photo!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: ImageCard(
+              SizedBox(height: 20),
+
+              // Images
+              if (ticket.photo != null && ticket.photo!.isNotEmpty)
+                ImageCard(
                   imageUrls: ticket.photo!,
                 ),
-              ),
 
-            //description
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Description(content: ticket.description),
-            ),
-            // resolve button
-            ticket.canResolve == true && ticket.resolvedBy == null
-                ? CustomElevatedButton(
-                    onPressed: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  ResolveTicket(ticket: ticket)))
-                        },
-                    text: "Resolve")
-                : Container(),
+              // Description
+              Description(content: ticket.description),
 
-            //resolvedBy and ResolvedAt
-            if (ticket.resolveDescription != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  "Resolved by ${ticket.resolvedBy?.name}, ${DateTimeFormatModel.fromString(ticket.updatedAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-                  style: const TextStyle(color: Colors.black45),
-                  textAlign: TextAlign.left,
+              // Resolve Button
+              if (ticket.canResolve == true && ticket.resolvedBy == null)
+                CustomElevatedButton(
+                  onPressed: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ResolveTicket(ticket: ticket),
+                      ),
+                    )
+                  },
+                  text: "Resolve",
                 ),
-              ),
 
-            //resolve description
-            if (ticket.resolveDescription != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Description(content: ticket.resolveDescription!),
-              ),
-          ],
+              // ResolvedBy and ResolvedAt
+              if (ticket.resolveDescription != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      "Resolved by ${ticket.resolvedBy?.name}, ${DateTimeFormatModel.fromString(ticket.updatedAt).toDiffString()} ago",
+                      style: const TextStyle(color: Colors.black54),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+
+              // Resolve Description
+              if (ticket.resolveDescription != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Description(content: ticket.resolveDescription!),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );
