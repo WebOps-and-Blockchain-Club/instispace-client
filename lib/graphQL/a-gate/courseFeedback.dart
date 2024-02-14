@@ -17,19 +17,21 @@ class FeedbackGQL {
   """;
 
   static const findAllFeedback = """
-  query FindAllFeedback(\$search: String!) {
-  findAllFeedback(search: \$search) {
-    courseCode
-    createdAt
-    courseName
-    createdBy {
-      name
+  query FindAllFeedback(\$search: String!, \$lastpostId: String!, \$take: Float!) {
+  findAllFeedback(search: \$search, lastpostId: \$lastpostId, take: \$take) {
+    list {
       id
+      courseCode
+      createdAt
+      courseName
+      createdBy {
+        name
+        id
+      }
+      rating
+      review
+      profName
     }
-    id
-    profName
-    rating
-    review
   }
 }
 """;

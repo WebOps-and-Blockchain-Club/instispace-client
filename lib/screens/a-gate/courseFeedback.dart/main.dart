@@ -26,6 +26,8 @@ class CourseFeedbackScreen extends StatefulWidget {
 class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
   List<CourseFeedbackModel> courseFeedbackList = [];
   String search = "";
+  String lastpostId = "";
+  final int take = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +79,14 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
         body: Query(
           options: QueryOptions(
               document: gql(FeedbackGQL.findAllFeedback),
-              variables: {"search": search},
-              parserFn: ((data) =>
-                  CoursesFeedbackModel.fromJson(data["findAllFeedback"]))),
+              variables: {
+                "search": search,
+                "lastpostId": lastpostId,
+                "take": take.toDouble(),
+                },
+              parserFn: ((data)=> CoursesFeedbackModel.fromJson(data))),
           builder: (result, {fetchMore, refetch}) {
+            print(result);
             if (result.hasException && result.data == null) {
               return Center(child: ErrorWidget(result.exception.toString()));
             }
@@ -139,6 +145,9 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
                   ],
                 ),
               );
+            }
+            if (courseFb.isNotEmpty) {
+              lastpostId = courseFb.last.id;
             }
            return ListView.builder(
                 itemCount: courseFb.length,

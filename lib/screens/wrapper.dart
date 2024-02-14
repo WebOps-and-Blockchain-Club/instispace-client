@@ -2,7 +2,7 @@ import 'package:client/models/course.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:uni_links/uni_links.dart';
-
+import 'package:upgrader/upgrader.dart';
 import '../config.dart';
 import '../models/user.dart';
 import '../services/auth.dart';
@@ -83,14 +83,21 @@ class _WrapperState extends State<Wrapper> {
                       refetch: refetch,
                     );
                   } else if (user.isNewUser == false) {
-                    return HomeWrapper(
-                      auth: auth,
-                      user: user,
-                      // refetch: () async {
-                      //   navigatePath = null;
-                      //   refetch!();
-                      // },
-                      navigatePath: navigatePath,
+                    return UpgradeAlert(
+                      upgrader: Upgrader(
+                          debugLogging: true,
+                          debugDisplayOnce: true,
+                          countryCode: 'IN',
+                          languageCode: 'en'),
+                      child: HomeWrapper(
+                        auth: auth,
+                        user: user,
+                        // refetch: () async {
+                        //   navigatePath = null;
+                        //   refetch!();
+                        // },
+                        navigatePath: navigatePath,
+                      ),
                     );
                   }
                 }

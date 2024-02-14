@@ -154,12 +154,10 @@ class AcademicDatabaseService {
          FROM slots 
          INNER JOIN courses 
          ON slots.courseId = courses.courseId 
-         WHERE slots.day = ? AND courses.fromDate <= ? AND courses.toDate >= ?
+         WHERE slots.day = ?
          ORDER BY slots.fromTime''',
         [
           day,
-          DateTime.now().toIso8601String(),
-          DateTime.now().toIso8601String()
         ]);
 
     print("=======================inside fetchSlotsByDay function");

@@ -86,15 +86,15 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
               ));
     }
 
-      getData().then((data) => {
-            if (data != null)
-              {
-                setState(() {
-                  if (data['menu'] != null) mess = data['menu'];
-                  if (data['week'] != null) week = data['week'];
-                })
-              }
-          });
+    getData().then((data) => {
+          if (data != null)
+            {
+              setState(() {
+                if (data['menu'] != null) mess = data['menu'];
+                if (data['week'] != null) week = data['week'];
+              })
+            }
+        });
 
     super.initState();
   }
@@ -113,153 +113,158 @@ class _MessMenuScreenState extends State<MessMenuScreen> {
         //         fontWeight: FontWeight.w700),
         //   ),
         // ),
-        
-        body: SafeArea(child: NestedScrollView(
-          controller: ScrollController(),
-          floatHeaderSlivers: true,
-          headerSliverBuilder:  (BuildContext context, bool innerBoxScrolled) {
-            return <Widget>[
-              // AppBar
-              secondaryAppBar(title: 'E-ID Card',context: context),
-            ];
-          },
-          body: Column(
-          children: [
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
-            //   child: CustomAppBar(
-            //       title: "MESS MENU",
-            //       leading: CustomIconButton(
-            //         icon: Icons.arrow_back,
-            //         onPressed: () => Navigator.of(context).pop(),
-            //       )),
-            // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        week = 'odd';
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 7),
-                      backgroundColor: week == 'odd'
-                          ? const Color(0xFFD4D2ED)
-                          : const Color(0xFFE6E6E6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      "ODD WEEK",
-                      style: TextStyle(
-                          color: Color(0xFF262626),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal),
-                    )),
-                const SizedBox(width: 10),
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        week = 'even';
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 7),
-                      backgroundColor: week == 'even'
-                          ? const Color(0xFFD4D2ED)
-                          : const Color(0xFFE6E6E6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      "EVEN WEEK",
-                      style: TextStyle(
-                          color: Color(0xFF262626),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal),
-                    ))
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CustomDropdownButton(
-                padding: const EdgeInsets.all(0),
-                value: mess,
-                items: const [
-                  'South Veg',
-                  'South Non-Veg',
-                  'North Veg',
-                  'North Non-Veg',
-                ],
-                onChanged: (p0) {
-                  if (p0 != null) {
-                    setState(() {
-                      mess = p0;
-                    });
-                  }
+
+        body: SafeArea(
+            child: NestedScrollView(
+                controller: ScrollController(),
+                floatHeaderSlivers: true,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxScrolled) {
+                  return <Widget>[
+                    // AppBar
+                    secondaryAppBar(title: 'Mess Menu', context: context),
+                  ];
                 },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                    children: List.generate(7, (index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 2, vertical: 15),
-                    child: CustomElevatedButton(
-                        elevation: 2,
-                        textSize: 14,
-                        onPressed: () {
-                          itemScrollController.scrollTo(
-                              index: indexMap[index]!,
-                              duration: const Duration(milliseconds: 700),
-                              curve: Curves.easeInOutCubic);
-                          setState(() {
-                            day = index + 1;
-                          });
+                body: Column(
+                  children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+                    //   child: CustomAppBar(
+                    //       title: "MESS MENU",
+                    //       leading: CustomIconButton(
+                    //         icon: Icons.arrow_back,
+                    //         onPressed: () => Navigator.of(context).pop(),
+                    //       )),
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                week = 'odd';
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 7),
+                              backgroundColor: week == 'odd'
+                                  ? const Color(0xFFD4D2ED)
+                                  : const Color(0xFFE6E6E6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              "ODD WEEK",
+                              style: TextStyle(
+                                  color: Color(0xFF262626),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal),
+                            )),
+                        const SizedBox(width: 10),
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                week = 'even';
+                              });
+                            },
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 7),
+                              backgroundColor: week == 'even'
+                                  ? const Color(0xFFD4D2ED)
+                                  : const Color(0xFFE6E6E6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text(
+                              "EVEN WEEK",
+                              style: TextStyle(
+                                  color: Color(0xFF262626),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal),
+                            ))
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomDropdownButton(
+                        padding: const EdgeInsets.all(0),
+                        value: mess,
+                        items: const [
+                          'South Veg',
+                          'South Non-Veg',
+                          'North Veg',
+                          'North Non-Veg',
+                        ],
+                        onChanged: (p0) {
+                          if (p0 != null) {
+                            setState(() {
+                              mess = p0;
+                            });
+                          }
                         },
-                        color: (index + 1 == day)
-                            ? ColorPalette.palette(context).secondary
-                            : Colors.white,
-                        textColor:
-                            (index + 1 == day) ? Colors.white : Colors.black,
-                        text: weekDays[index].substring(0, 3).toUpperCase()),
-                  );
-                })),
-              ),
-            ),
-            Expanded(
-              child: ScrollablePositionedList.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: 7,
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  initialAlignment:
-                      (DateTime.now().hour > 10 && DateTime.now().hour < 24)
-                          ? -0.5
-                          : 0,
-                  itemBuilder: ((context, index) {
-                    return DayMenu(
-                      mess: mess,
-                      week: week,
-                      date: DateTime.now().add(Duration(days: index)),
-                    );
-                  })),
-            ),
-          ],
-        )
-          )));
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                            children: List.generate(7, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 2, vertical: 15),
+                            child: CustomElevatedButton(
+                                elevation: 2,
+                                textSize: 14,
+                                onPressed: () {
+                                  itemScrollController.scrollTo(
+                                      index: indexMap[index]!,
+                                      duration:
+                                          const Duration(milliseconds: 700),
+                                      curve: Curves.easeInOutCubic);
+                                  setState(() {
+                                    day = index + 1;
+                                  });
+                                },
+                                color: (index + 1 == day)
+                                    ? ColorPalette.palette(context).secondary
+                                    : Colors.white,
+                                textColor: (index + 1 == day)
+                                    ? Colors.white
+                                    : Colors.black,
+                                text: weekDays[index]
+                                    .substring(0, 3)
+                                    .toUpperCase()),
+                          );
+                        })),
+                      ),
+                    ),
+                    Expanded(
+                      child: ScrollablePositionedList.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: 7,
+                          itemScrollController: itemScrollController,
+                          itemPositionsListener: itemPositionsListener,
+                          initialAlignment: (DateTime.now().hour > 10 &&
+                                  DateTime.now().hour < 24)
+                              ? -0.5
+                              : 0,
+                          itemBuilder: ((context, index) {
+                            return DayMenu(
+                              mess: mess,
+                              week: week,
+                              date: DateTime.now().add(Duration(days: index)),
+                            );
+                          })),
+                    ),
+                  ],
+                ))));
   }
 
   @override

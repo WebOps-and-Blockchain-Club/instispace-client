@@ -8,7 +8,7 @@ class CoursesFeedbackModel {
   CoursesFeedbackModel({required this.list});
 
   CoursesFeedbackModel.fromJson(dynamic data)
-      : list = (data as List<dynamic>)
+      : list = (data["findAllFeedback"]["list"] as List<dynamic>)
             .map((e) => CourseFeedbackModel.fromJson(e))
             .toList();
 }
