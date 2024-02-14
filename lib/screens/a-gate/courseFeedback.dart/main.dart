@@ -27,7 +27,8 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
   List<CourseFeedbackModel> courseFeedbackList = [];
   String search = "";
   String lastpostId = "";
-  final int take = 3;
+  final int take = 5;
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,6 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
                 },
               parserFn: ((data)=> CoursesFeedbackModel.fromJson(data))),
           builder: (result, {fetchMore, refetch}) {
-            print(result);
             if (result.hasException && result.data == null) {
               return Center(child: ErrorWidget(result.exception.toString()));
             }
@@ -149,20 +149,63 @@ class _CourseFeedbackScreenState extends State<CourseFeedbackScreen> {
             if (courseFb.isNotEmpty) {
               lastpostId = courseFb.last.id;
             }
-           return ListView.builder(
-                itemCount: courseFb.length,
-                itemBuilder: (context, index) {
-                  final courseFeedback = courseFb[index];
-                  return CourseFeedbackCard(
-                    courseCode: courseFeedback.courseCode,
-                    coursRating: courseFeedback.courseRating,
-                    courseName: courseFeedback.courseName,
-                    createdBy: courseFeedback.createdBy.name,
-                    description: courseFeedback.courseReview,
-                    createdAt: courseFeedback.createdAt,
-                    profName: courseFeedback.professorName,
-                  );
-                }
+            FetchMoreOptions opts = FetchMoreOptions(
+                  variables: {"search": search, "lastUserId": courseFb.last.id,"take": take.toDouble()},
+                  updateQuery: (previousResultData, fetchMoreResultData) {
+                    final List<dynamic> repos = [
+                      ...previousResultData!["findAllFeedback"]['list']
+                          as List<dynamic>,
+                      ...fetchMoreResultData!["findAllFeedback"]["list"]
+                          as List<dynamic>
+                    ];
+                    fetchMoreResultData["findAllFeedback"]["list"] = repos;
+                    return fetchMoreResultData;
+                  },
+                );
+           
+           return NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+              if (notification.metrics.pixels >
+                      0.8 * notification.metrics.maxScrollExtent &&
+                  resultParsedData.total > courseFb.length) {
+                fetchMore!(opts);
+              }
+              return true;
+            },
+             child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: courseFb.length,
+                  itemBuilder: (context, index) {
+                    final courseFeedback = courseFb[index];
+                    if (index == courseFb.length) {
+                    return Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: resultParsedData.total ==
+                          courseFb.length
+                      ? null
+                      : result.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : TextButton(
+                              onPressed: () => fetchMore!(opts),
+                              child: const Text("Load More")),
+                );
+                    } else {
+                      return CourseFeedbackCard(
+                      courseCode: courseFeedback.courseCode,
+                      coursRating: courseFeedback.courseRating,
+                      courseName: courseFeedback.courseName,
+                      createdBy: courseFeedback.createdBy.name,
+                      description: courseFeedback.courseReview,
+                      createdAt: courseFeedback.createdAt,
+                      profName: courseFeedback.professorName,
+                    );
+                    }
+                    
+                    
+                  }
+             ),
            );
           }
               ),

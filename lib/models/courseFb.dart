@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 
 class CoursesFeedbackModel {
   final List<dynamic> list;
-  // final int total;
+  final int total;
 
-  CoursesFeedbackModel({required this.list});
+  CoursesFeedbackModel({required this.list, required this.total});
 
   CoursesFeedbackModel.fromJson(dynamic data)
       : list = (data["findAllFeedback"]["list"] as List<dynamic>)
             .map((e) => CourseFeedbackModel.fromJson(e))
-            .toList();
+            .toList(),
+        total = data["findAllFeedback"]["list"].length;
 }
 
 class CourseFeedbackModel {
