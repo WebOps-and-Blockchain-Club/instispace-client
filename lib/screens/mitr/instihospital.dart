@@ -14,7 +14,7 @@ class CounsellorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = mitrMembers;
+    final data = counselors;
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
@@ -24,7 +24,7 @@ class CounsellorScreen extends StatelessWidget {
             return <Widget>[
               // AppBar
               secondaryAppBar(
-                  title: 'Wellness Centre of IITM', context: context),
+                  title: 'Councellors at Institute Hospital', context: context),
             ];
           },
           body: ListView.builder(
