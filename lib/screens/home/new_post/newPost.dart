@@ -35,6 +35,7 @@ import '../../../models/post/create_post.dart';
 import '../../../models/tag.dart';
 
 import '../../../../widgets/helpers/error.dart';
+import '../../../services/user.dart';
 
 class NewPostScreen extends StatefulWidget {
   final List<io.File>? images;
@@ -42,12 +43,10 @@ class NewPostScreen extends StatefulWidget {
   final PostModel? post;
   final PostCategoryModel category;
   final CreatePostModel fieldConfiguration;
-  final UserModel? user;
   const NewPostScreen(
       {Key? key,
       this.images,
       this.post,
-      this.user,
       required this.category,
       required this.fieldConfiguration,
       required this.options})
@@ -169,11 +168,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
     super.initState();
   }
 
-  String selectedValue = "";
+  String? selectedValue = "harsh" ;
   String? leadId;
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final UserModel? user = userProvider.user;
     final mutation =
         widget.post == null ? PostGQl().createPost : PostGQl().editPost;
     return Mutation(
@@ -305,7 +306,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 42),
                             child: Column(
                               children: [
-                                if (widget.user!.role == "ADMIN")
+                                // if (user!.role == "ADMIN")
                                   Query(
                                       options: QueryOptions(
                                           document:
@@ -321,15 +322,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         }
                                         List leadslist =
                                             result.data!['getSuperUser'];
+                                        // selectedValue = leadslist[0]["name"];
+                                        print(selectedValue);
                                         return DropdownButton(
                                           items: leadslist
                                               .map<DropdownMenuItem<String>>(
                                                   (e) {
                                             return DropdownMenuItem(
-                                                value: e["name"],
+                                                value: e["name"] ,
                                                 child: Text(e["name"]!));
                                           }).toList(),
-                                          value: leadslist[0]["name"],
+                                          value: selectedValue,
                                           onChanged: (newValue) {
                                             setState(() {
                                               selectedValue =
@@ -342,6 +345,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                       selectedValue)
                                                   .toList()[0]["id"];
                                             });
+                                            print(selectedValue);
                                           },
                                         );
                                       }),

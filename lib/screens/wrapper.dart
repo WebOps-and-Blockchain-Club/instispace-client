@@ -1,6 +1,7 @@
 import 'package:client/models/course.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../config.dart';
@@ -10,6 +11,7 @@ import '../../widgets/helpers/error.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../graphQL/user.dart';
 import '../services/notification.dart';
+import '../services/user.dart';
 import 'splash/main.dart';
 import 'auth/login.dart';
 import 'home/main.dart';
@@ -38,6 +40,8 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     final AuthService auth = widget.auth;
+    final userProvider = Provider.of<UserProvider>(context);
+
     if (auth.token == null || auth.newUserOnApp == null) {
       return const Scaffold(
           body: Loading(
@@ -75,6 +79,7 @@ class _WrapperState extends State<Wrapper> {
 
                 if (result.parsedData != null) {
                   final UserModel user = result.parsedData as UserModel;
+                  userProvider.setUser(user);
                   if (user.isNewUser == true) {
                     return EditProfile(
                       auth: auth,

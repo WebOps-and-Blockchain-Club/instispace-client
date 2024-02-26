@@ -150,7 +150,7 @@ class _NewPostWrapperState extends State<NewPostWrapper> {
     }
     return NewPostScreen(
         category: widget.category,
-        user: widget.user,
+        // user: widget.user,
         fieldConfiguration: fieldConfiguration,
         options: widget.options,
         post: widget.post);

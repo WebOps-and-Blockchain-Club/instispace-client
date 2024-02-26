@@ -8,6 +8,7 @@ import 'screens/wrapper.dart';
 import 'services/auth.dart';
 import 'services/client.dart';
 import 'services/notification.dart';
+import 'services/user.dart';
 import 'themes.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -37,8 +38,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => AuthService(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthService()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+        ],
         child: Consumer<AuthService>(builder: (context, auth, child) {
           return GraphQLProvider(
             client: client(auth.token),
