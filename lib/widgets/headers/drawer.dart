@@ -2,6 +2,7 @@ import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
 import 'package:client/screens/badges/create_club.dart';
 import 'package:client/screens/badges/view_club.dart';
+import 'package:client/screens/mitr/instihospital.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:flutter/material.dart';
@@ -235,6 +236,20 @@ class CustomDrawer extends StatelessWidget {
                                       Navigator.pop(context);
                                       navigate(
                                           context, const CounsellorScreen());
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListTile(
+                                    tileColor: Colors.transparent,
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title: const Text("Insti Hospital"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      navigate(
+                                          context, const InstiHospitalScreen());
                                     },
                                   ),
                                   const SizedBox(

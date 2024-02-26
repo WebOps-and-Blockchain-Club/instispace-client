@@ -1,3 +1,5 @@
+import 'package:client/screens/complain/submitComplain.dart';
+import 'package:client/screens/mitr/yourDostCounsellor.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -54,12 +56,35 @@ class YourDostScreen extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  child: RichText(
-                    text: TextSpan(
-                        children: contentArr
-                            .map((_data) => TextSpan(
-                                text: _data["content"], style: _data["style"]))
-                            .toList()),
+                  child: Column(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                            children: contentArr
+                                .map((_data) => TextSpan(
+                                    text: _data["content"],
+                                    style: _data["style"]))
+                                .toList()),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Card(
+                        shadowColor: Theme.of(context).shadowColor,
+                        child: ListTile(
+                          tileColor: Theme.of(context).cardColor,
+                          title: const Text(
+                            "Counsillor List",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const DostList()));
+                          },
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -86,8 +111,8 @@ class YourDostScreen extends StatelessWidget {
                     InkWell(
                       onTap: () => launchUrlString("https://yourdost.com",
                           mode: LaunchMode.externalApplication),
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Icon(Icons.language_sharp, size: 30),
                           SizedBox(height: 10),
                           Text("https://yourdost.com"),
