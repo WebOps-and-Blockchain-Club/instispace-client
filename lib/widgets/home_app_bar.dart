@@ -15,12 +15,14 @@ class HomeAppBar extends StatelessWidget {
   final String title;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final UserModel user;
+  final bool isHome;
 
   const HomeAppBar(
       {Key? key,
       required this.title,
       required this.scaffoldKey,
-      required this.user})
+      required this.user,
+      required this.isHome})
       : super(key: key);
 
   @override
@@ -50,6 +52,7 @@ class HomeAppBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 20),
               child: ThemeSwitch(
+                  isHome: isHome,
                   isDark:
                       context.read<ThemeProvider>().theme == ThemeMode.dark),
             ),

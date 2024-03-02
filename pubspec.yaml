@@ -70,7 +70,7 @@ dependencies:
   webview_flutter: ^3.0.4
   sqflite: ^2.0.3+1
   table_calendar: ^3.0.8
-  # photo_manager: ^2.8.1
+  photo_manager: ^2.8.1
   flutter_secure_storage: ^8.0.0
   google_sign_in: ^6.0.1
   scrollable_positioned_list: ^0.3.5
@@ -79,8 +79,8 @@ dependencies:
   shimmer: ^2.0.0
   upgrader: ^6.5.0
 
-dependency_overrides:
-  photo_manager: ^3.0.0-dev.2
+# dependency_overrides:
+#   photo_manager: ^3.0.0-dev.2
 
 dev_dependencies:
   flutter_test:

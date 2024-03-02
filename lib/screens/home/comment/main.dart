@@ -43,7 +43,9 @@ class _CommentsPageState extends State<CommentsPage> {
           "COMMENTS",
           style: TextStyle(
               letterSpacing: 1,
-              color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Color.fromARGB(209, 255, 255, 255)
+                  : Color(0xFF3C3C3C),
               fontSize: 20,
               fontWeight: FontWeight.w700),
         ),
@@ -283,14 +285,19 @@ class _CreateCommentState extends State<CreateComment> {
                   padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
                   margin: const EdgeInsets.only(bottom: 30),
                   decoration: BoxDecoration(
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                            color: Color.fromARGB(255, 192, 192, 192),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Color.fromARGB(133, 148, 147, 147)
+                                    : Color.fromARGB(255, 192, 192, 192),
                             offset: Offset(1, 1),
                             blurRadius: 10,
                             spreadRadius: 0.0)
                       ],
-                      color: Colors.white,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Color.fromARGB(255, 48, 49, 52)
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(30)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +363,12 @@ class _CreateCommentState extends State<CreateComment> {
                                               ? const CircularProgressIndicator(
                                                   strokeWidth: 2,
                                                 )
-                                              : Icon(Icons.send,color: Colors.black),
+                                              : Icon(Icons.send,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.black),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(

@@ -167,6 +167,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
               auth: widget.auth,
               user: widget.user,
               appBar: HomeAppBar(
+                isHome: true,
                 title: "",
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
@@ -176,6 +177,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       _selectedIndex == 1
           ? PostPage(
               appBar: HomeAppBar(
+                isHome: false,
                 title: "Feed",
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
@@ -188,6 +190,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       _selectedIndex == 2
           ? PostPage(
               appBar: HomeAppBar(
+                isHome: false,
                 title: "Forum",
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,
@@ -197,18 +200,19 @@ class _HomeWrapperState extends State<HomeWrapper> {
             )
           : Container(),
       _selectedIndex == 3
-          ? 
-      //     AcademicWrapper(
-      //         appBar: HomeAppBar(
-      //             title: "Academics",
-      //             scaffoldKey: _scaffoldKey,
-      //             user: widget.user),
-      //       )
-      //     : Container(),
-      // _selectedIndex == 4
-      //     ? 
+          ?
+          //     AcademicWrapper(
+          //         appBar: HomeAppBar(
+          //             title: "Academics",
+          //             scaffoldKey: _scaffoldKey,
+          //             user: widget.user),
+          //       )
+          //     : Container(),
+          // _selectedIndex == 4
+          //     ?
           PostPage(
               appBar: HomeAppBar(
+                isHome: false,
                 title: "Lost & Found",
                 scaffoldKey: _scaffoldKey,
                 user: widget.user,

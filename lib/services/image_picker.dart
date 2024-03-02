@@ -314,7 +314,9 @@ class ImagePickerService extends ChangeNotifier {
               preSelectedNoOfImages: preSelectedNoOfImages, context: context);
         }
       },
-      color: ColorPalette.palette(context).primary,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : ColorPalette.palette(context).primary,
       icon: const Icon(Icons.camera_alt_rounded),
     );
   }

@@ -62,7 +62,9 @@ class _PostCardState extends State<PostCard>
                 margin: const EdgeInsets.only(right: 12),
                 decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Color.fromARGB(255, 58, 57, 57)
+                        : Colors.grey.withOpacity(0.5),
                     blurRadius: 5,
                     spreadRadius: 1,
                   )
@@ -417,7 +419,10 @@ class _PostBodyWidgetState extends State<PostBodyWidget> {
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
             "${post.createdBy.name}, ${DateTimeFormatModel.fromString(post.createdAt).toDiffString()} ago", // should change it such that when clicked it opens profile page.
-            style: TextStyle(color: Theme.of (context).brightness == Brightness.dark  ? Colors.white : Colors.black45),
+            style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black45),
             textAlign: TextAlign.left,
           ),
         ),

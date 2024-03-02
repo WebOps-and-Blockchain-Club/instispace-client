@@ -143,6 +143,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ExpansionTile(
+                                collapsedIconColor:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                iconColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                                 title: const Text('Profile'),
                                 children: [
                                   const SizedBox(height: 10),
@@ -218,6 +227,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: ExpansionTile(
+                                      collapsedIconColor:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.black,
+                                      iconColor: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
                                       title: Text('A-Gate'),
                                       children: [
                                         ListTile(
@@ -291,51 +309,38 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ),
                             // Mess Menu
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: ExpansionTile(
-                                        title: const Text("Mess and Eateries"),
-                                        children: [
-                                          const SizedBox(height: 10),
-                                          ListTile(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4),
-                                            title: const Text("Mess"),
-                                            tileColor: Colors.transparent,
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          const MessMenuScreen()));
-                                            },
-                                          ),
-                                          ListTile(
-                                              visualDensity:
-                                                  const VisualDensity(
-                                                      vertical: -4),
-                                              tileColor: Colors.transparent,
-                                              horizontalTitleGap: 0,
-                                              title: const Text("Eateries"),
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            const EateriesMenuScreen()));
-                                              }),
-                                        ]),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: Column(
+                            //     children: [
+                            //       Padding(
+                            //         padding:
+                            //             const EdgeInsets.symmetric(vertical: 5),
+                            //         child: ExpansionTile(
+                            //             title: const Text("Mess and Eateries"),
+                            //             children: [
+                            //               const SizedBox(height: 10),
+
+                            //               // ListTile(
+                            //               //     visualDensity:
+                            //               //         const VisualDensity(
+                            //               //             vertical: -4),
+                            //               //     tileColor: Colors.transparent,
+                            //               //     horizontalTitleGap: 0,
+                            //               //     title: const Text("Eateries"),
+                            //               //     onTap: () {
+                            //               //       Navigator.pop(context);
+                            //               //       Navigator.of(context).push(
+                            //               //           MaterialPageRoute(
+                            //               //               builder: (BuildContext
+                            //               //                       context) =>
+                            //               //                   const EateriesMenuScreen()));
+                            //               //     }),
+                            //             ]),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                             // Notifications
                             // Padding(
                             //   padding: const EdgeInsets.symmetric(vertical: 5),
@@ -350,10 +355,32 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             //   ),
                             // ),
 
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: ListTile(
+                                title: const Text("Mess"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const MessMenuScreen()));
+                                },
+                              ),
+                            ),
+
                             // Mitr
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ExpansionTile(
+                                collapsedIconColor:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                iconColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                                 title: const Text("Wellness Community Centre"),
                                 children: [
                                   const SizedBox(
@@ -398,26 +425,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       navigate(context, const YourDostScreen());
                                     },
                                   ),
-                                  ListTile(
-                                    tileColor: Colors.transparent,
-                                    visualDensity:
-                                        const VisualDensity(vertical: -4),
-                                    title: const Text("Mental Health"),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      navigate(
-                                          context,
-                                          mentalHealth(
-                                            appBar: HomeAppBar(
-                                              title: "Mental Health",
-                                              scaffoldKey: _scaffoldKey,
-                                              user: widget.user,
-                                            ),
-                                            categories: forumCategories,
-                                            createPost: true,
-                                          ));
-                                    },
-                                  ),
+                                  // ListTile(
+                                  //   tileColor: Colors.transparent,
+                                  //   visualDensity:
+                                  //       const VisualDensity(vertical: -4),
+                                  //   title: const Text("Mental Health"),
+                                  //   onTap: () {
+                                  //     Navigator.pop(context);
+                                  //     navigate(
+                                  //         context,
+                                  //         mentalHealth(
+                                  //           appBar: HomeAppBar(
+                                  //             title: "Mental Health",
+                                  //             scaffoldKey: _scaffoldKey,
+                                  //             user: widget.user,
+                                  //           ),
+                                  //           categories: forumCategories,
+                                  //           createPost: true,
+                                  //         ));
+                                  //   },
+                                  // ),
                                 ],
                               ),
                             ),
@@ -723,6 +750,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: ExpansionTile(
+                                collapsedIconColor:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                iconColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                                 title: const Text('About Us'),
                                 children: [
                                   const SizedBox(height: 10),
