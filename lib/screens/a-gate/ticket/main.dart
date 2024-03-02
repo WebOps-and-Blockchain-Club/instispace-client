@@ -20,11 +20,13 @@ class _TicketState extends State<Ticket> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "RAISE TICKET",
           style: TextStyle(
               letterSpacing: 1,
-              color: Color(0xFF3C3C3C),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Color(0xFF3C3C3C),
               fontSize: 20,
               fontWeight: FontWeight.w700),
         ),

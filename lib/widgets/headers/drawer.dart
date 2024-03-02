@@ -219,95 +219,95 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ),
 
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: ExpansionTile(
-                                      collapsedIconColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.black,
-                                      iconColor: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      title: Text('A-Gate'),
-                                      children: [
-                                        ListTile(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4),
-                                            tileColor: Colors.transparent,
-                                            horizontalTitleGap: 0,
-                                            title: const Text("Acad Connect"),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              navigate(
-                                                  context, AcadConnectScreen());
-                                              // SuperUserPostPage(
-                                              //     title: 'A Gate',
-                                              //     filterVariables: PostQueryVariableModel(tags: [TagModel(id:, title:'Agate', category: 'Query')])));
-                                              // Navigator.of(context).push(MaterialPageRoute(
-                                              //     builder: (BuildContext context) =>
-                                              //       // AcadConnectScreen()
-                                              //         // NewPostScreen(isAgate: true ,category: PostCategoryModel(name: "Query", icon: CustomIcons.queries),fieldConfiguration: CreatePostModel(imagePrimary: FieldModel(required: false),title: FieldModel(),description: FieldModel(label: 'add description here'),link: FieldModel(),imageSecondary: FieldModel()),options: QueryOptions(document: gql(UserGQL().getUser) ),)
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: Column(
+                            //     children: [
+                            //       Padding(
+                            //         padding:
+                            //             const EdgeInsets.symmetric(vertical: 5),
+                            //         child: ExpansionTile(
+                            //           collapsedIconColor:
+                            //               Theme.of(context).brightness ==
+                            //                       Brightness.dark
+                            //                   ? Colors.white
+                            //                   : Colors.black,
+                            //           iconColor: Theme.of(context).brightness ==
+                            //                   Brightness.dark
+                            //               ? Colors.white
+                            //               : Colors.black,
+                            //           title: Text('A-Gate'),
+                            //           children: [
+                            //             ListTile(
+                            //                 visualDensity: const VisualDensity(
+                            //                     vertical: -4),
+                            //                 tileColor: Colors.transparent,
+                            //                 horizontalTitleGap: 0,
+                            //                 title: const Text("Acad Connect"),
+                            //                 onTap: () {
+                            //                   Navigator.pop(context);
+                            //                   navigate(
+                            //                       context, AcadConnectScreen());
+                            //                   // SuperUserPostPage(
+                            //                   //     title: 'A Gate',
+                            //                   //     filterVariables: PostQueryVariableModel(tags: [TagModel(id:, title:'Agate', category: 'Query')])));
+                            //                   // Navigator.of(context).push(MaterialPageRoute(
+                            //                   //     builder: (BuildContext context) =>
+                            //                   //       // AcadConnectScreen()
+                            //                   //         // NewPostScreen(isAgate: true ,category: PostCategoryModel(name: "Query", icon: CustomIcons.queries),fieldConfiguration: CreatePostModel(imagePrimary: FieldModel(required: false),title: FieldModel(),description: FieldModel(label: 'add description here'),link: FieldModel(),imageSecondary: FieldModel()),options: QueryOptions(document: gql(UserGQL().getUser) ),)
 
-                                              //         ));
-                                            }),
-                                        ListTile(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4),
-                                            tileColor: Colors.transparent,
-                                            horizontalTitleGap: 0,
-                                            title:
-                                                const Text("Study Resources"),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          const StudyResourcesScreen()));
-                                            }),
-                                        ListTile(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4),
-                                            tileColor: Colors.transparent,
-                                            horizontalTitleGap: 0,
-                                            title:
-                                                const Text("Course Feedback"),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          const CourseFeedbackScreen()));
-                                            }),
-                                        ListTile(
-                                            visualDensity: const VisualDensity(
-                                                vertical: -4),
-                                            tileColor: Colors.transparent,
-                                            horizontalTitleGap: 0,
-                                            title: const Text("Raise Ticket"),
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          Ticket()));
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            //                   //         ));
+                            //                 }),
+                            //             ListTile(
+                            //                 visualDensity: const VisualDensity(
+                            //                     vertical: -4),
+                            //                 tileColor: Colors.transparent,
+                            //                 horizontalTitleGap: 0,
+                            //                 title:
+                            //                     const Text("Study Resources"),
+                            //                 onTap: () {
+                            //                   Navigator.pop(context);
+                            //                   Navigator.of(context).push(
+                            //                       MaterialPageRoute(
+                            //                           builder: (BuildContext
+                            //                                   context) =>
+                            //                               const StudyResourcesScreen()));
+                            //                 }),
+                            //             ListTile(
+                            //                 visualDensity: const VisualDensity(
+                            //                     vertical: -4),
+                            //                 tileColor: Colors.transparent,
+                            //                 horizontalTitleGap: 0,
+                            //                 title:
+                            //                     const Text("Course Feedback"),
+                            //                 onTap: () {
+                            //                   Navigator.pop(context);
+                            //                   Navigator.of(context).push(
+                            //                       MaterialPageRoute(
+                            //                           builder: (BuildContext
+                            //                                   context) =>
+                            //                               const CourseFeedbackScreen()));
+                            //                 }),
+                            //             ListTile(
+                            //                 visualDensity: const VisualDensity(
+                            //                     vertical: -4),
+                            //                 tileColor: Colors.transparent,
+                            //                 horizontalTitleGap: 0,
+                            //                 title: const Text("Raise Ticket"),
+                            //                 onTap: () {
+                            //                   Navigator.pop(context);
+                            //                   Navigator.of(context).push(
+                            //                       MaterialPageRoute(
+                            //                           builder: (BuildContext
+                            //                                   context) =>
+                            //                               Ticket()));
+                            //                 }),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                             // Mess Menu
                             // Padding(
                             //   padding: const EdgeInsets.symmetric(vertical: 5),

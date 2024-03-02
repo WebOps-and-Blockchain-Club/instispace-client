@@ -41,8 +41,10 @@ class _TicketCardState extends State<TicketCard> {
                   Expanded(
                     child: Text(
                       ticket.title,
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 4, 27, 67),
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Color(0xFF3C3C3C),
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,7 +92,10 @@ class _TicketCardState extends State<TicketCard> {
                         Text(
                           ticket.resolvedBy == null ? "Pending" : "Resolved",
                           style: TextStyle(
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Color(0xFF3C3C3C),
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -103,7 +108,10 @@ class _TicketCardState extends State<TicketCard> {
               // CreatedBy and CreatedAt
               Text(
                 "Created by ${ticket.createdBy.name}, ${DateTimeFormatModel.fromString(ticket.createdAt).toDiffString()} ago",
-                style: const TextStyle(color: Colors.black54),
+                style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Color(0xFF3C3C3C)),
                 textAlign: TextAlign.left,
               ),
 
