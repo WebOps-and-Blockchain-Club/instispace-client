@@ -1097,7 +1097,7 @@ packages:
     source: hosted
     version: "5.4.0"
   photo_manager:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       name: photo_manager
       sha256: df594f989f0c31cdb3ed48f3d49cb9ffadf11cc3700d2c3460b1912c93432621
@@ -1289,7 +1289,7 @@ packages:
     source: hosted
     version: "1.0.4"
   shimmer:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shimmer
       sha256: "1f1009b5845a1f88f1c5630212279540486f97409e9fc3f63883e71070d107bf"

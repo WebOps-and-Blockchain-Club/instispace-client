@@ -53,7 +53,7 @@ class _PrimaryFilterState<T> extends State<PrimaryFilter<T>> {
                         borderRadius: BorderRadiusDirectional.circular(15)),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 13),
+                           horizontal: 13),
                       child: Row(
                         children: [
                           if (widget.optionIconBuilder != null)

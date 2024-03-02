@@ -2,6 +2,7 @@ import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../widgets/search_bar.dart';
@@ -264,9 +265,26 @@ class _QueryListState<T> extends State<QueryList<T>> {
         }
 
         if (result.isLoading && result.data == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: true,
+          child: ListView.builder(
+              itemCount: 5 ,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                  Padding(
+                  padding: const EdgeInsets.only(right: 20.0, left: 20),
+                  child: Container(
+                    height: 30,
+                    width: 200,
+                  ),
+                );
+              },
+            ),
+    );
         }
 
         final dynamic resultParsedData = result.parsedData;

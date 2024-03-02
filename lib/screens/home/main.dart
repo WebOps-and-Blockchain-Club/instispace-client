@@ -197,15 +197,17 @@ class _HomeWrapperState extends State<HomeWrapper> {
             )
           : Container(),
       _selectedIndex == 3
-          ? AcademicWrapper(
-              appBar: HomeAppBar(
-                  title: "Academics",
-                  scaffoldKey: _scaffoldKey,
-                  user: widget.user),
-            )
-          : Container(),
-      _selectedIndex == 4
-          ? PostPage(
+          ? 
+      //     AcademicWrapper(
+      //         appBar: HomeAppBar(
+      //             title: "Academics",
+      //             scaffoldKey: _scaffoldKey,
+      //             user: widget.user),
+      //       )
+      //     : Container(),
+      // _selectedIndex == 4
+      //     ? 
+          PostPage(
               appBar: HomeAppBar(
                 title: "Lost & Found",
                 scaffoldKey: _scaffoldKey,
@@ -263,10 +265,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
                     icon: Icon(CustomIcons.forums, size: 21),
                     label: 'Forums',
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(CustomIcons.academics, size: 21),
-                    label: 'Academics',
-                  ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(CustomIcons.academics, size: 21),
+                  //   label: 'Academics',
+                  // ),
                   BottomNavigationBarItem(
                     icon: Icon(CustomIcons.lostandfound_1, size: 21),
                     label: 'L&F',
