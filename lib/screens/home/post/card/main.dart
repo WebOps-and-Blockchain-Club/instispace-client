@@ -97,7 +97,8 @@ class _PostCardState extends State<PostCard>
             ),
           ],
         ),
-
+        if(post.onBehalf != null)
+              Text('             on behalf of ${post.onBehalf}',style: TextStyle(color:ColorPalette.palette(context).text[300] ),),
         // Post Body
         Column(
           children: [

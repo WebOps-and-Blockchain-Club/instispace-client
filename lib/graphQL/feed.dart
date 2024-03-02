@@ -49,6 +49,7 @@ class FeedGQL {
       category
       Link
       status
+      onBehalf
       tags {
         id
         title

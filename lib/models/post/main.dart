@@ -42,6 +42,7 @@ class PostModel {
   final String createdAt;
   final CreatedByModel createdBy;
   final List<String> permissions;
+  final String? onBehalf;
 
   PostModel({
     this.title,
@@ -67,6 +68,7 @@ class PostModel {
     required this.createdAt,
     required this.createdBy,
     required this.permissions,
+    this.onBehalf
   });
 
   PostModel.fromJson(Map<String, dynamic> data)
@@ -111,7 +113,9 @@ class PostModel {
           data['createdBy'],
         ),
         permissions =
-            data['permissions'].cast<String>() + data['actions'].cast<String>();
+            data['permissions'].cast<String>() + data['actions'].cast<String>(),
+        onBehalf = data["onBehalf"]
+        ;
 }
 
 class ReportModel {

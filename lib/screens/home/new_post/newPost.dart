@@ -168,8 +168,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     super.initState();
   }
 
-  String? selectedValue = "harsh" ;
-  String? leadId;
+  String? selectedValue = "CDC" ;
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +305,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 42),
                             child: Column(
                               children: [
-                                // if (user!.role == "ADMIN")
+                                if (user!.role == "ADMIN")
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text("On behalf of                                                  ",textAlign: TextAlign.start,),
+                                  ),
                                   Query(
                                       options: QueryOptions(
                                           document:
@@ -322,15 +325,16 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                         }
                                         List leadslist =
                                             result.data!['getSuperUser'];
+                                        List filteredLeadslist = leadslist.where((element) => element["name"] != null).toList();
                                         // selectedValue = leadslist[0]["name"];
                                         print(selectedValue);
                                         return DropdownButton(
-                                          items: leadslist
+                                          items: filteredLeadslist
                                               .map<DropdownMenuItem<String>>(
                                                   (e) {
                                             return DropdownMenuItem(
                                                 value: e["name"] ,
-                                                child: Text(e["name"]!));
+                                                child: SizedBox(width:252, child: Text(e["name"]!, overflow: TextOverflow.ellipsis)));
                                           }).toList(),
                                           value: selectedValue,
                                           onChanged: (newValue) {
@@ -339,13 +343,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                   (newValue is String)
                                                       ? newValue
                                                       : newValue.toString();
-                                              leadId = leadslist
-                                                  .where((element) =>
-                                                      element["name"] ==
-                                                      selectedValue)
-                                                  .toList()[0]["id"];
+                                              // leadId = filteredLeadslist
+                                              //     .where((element) =>
+                                              //         element["name"] ==
+                                              //         selectedValue)
+                                              //     .toList()[0]["id"];
                                             });
-                                            print(selectedValue);
                                           },
                                         );
                                       }),
@@ -619,7 +622,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                 "tagIds": tags.isNotEmpty
                                                     ? tags
                                                     : null,
-                                                "leadId": leadId,
                                                 "postTime": widget
                                                             .fieldConfiguration
                                                             .postTime !=
@@ -630,7 +632,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                                                     ? '${endTime!.toIso8601String()}+05:30'
                                                     : null,
                                                 "photoList":
-                                                    uploadResult?.join(" AND ")
+                                                    uploadResult?.join(" AND "),
+                                                "onBehalfName": selectedValue
                                               },
                                             });
                                           }

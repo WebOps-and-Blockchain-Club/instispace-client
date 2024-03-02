@@ -205,6 +205,7 @@ class ColorPalette {
   static ColorPaletteModel palette(BuildContext context) {
     return ColorPaletteModel(
       primary: _primary,
+      text:_text,
       secondary: _secondary,
       success: _success,
       warning: _warning,
