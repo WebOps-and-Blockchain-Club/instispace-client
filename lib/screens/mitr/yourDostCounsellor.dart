@@ -9,12 +9,12 @@ import '../../widgets/app_bar.dart';
 import '../../widgets/profile_icon.dart';
 import 'data.dart';
 
-class CounsellorScreen extends StatelessWidget {
-  const CounsellorScreen({Key? key}) : super(key: key);
+class DostList extends StatelessWidget {
+  const DostList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final data = mitrMembers;
+    final data = dostCouncilors;
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
@@ -23,8 +23,7 @@ class CounsellorScreen extends StatelessWidget {
           headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
             return <Widget>[
               // AppBar
-              secondaryAppBar(
-                  title: 'Wellness Centre of IITM', context: context),
+              secondaryAppBar(title: 'Your Dost IITM', context: context),
             ];
           },
           body: ListView.builder(
@@ -58,26 +57,7 @@ class CounsellorScreen extends StatelessWidget {
                               'Gender: ${i.gender}',
                             ),
                             const SizedBox(height: 8),
-                            Text('Landline: ${i.landline}'),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () =>
-                                      launchUrlString('mailto:${i.email}'),
-                                  child: const Icon(Icons.forward_to_inbox),
-                                ),
-                                const SizedBox(width: 20),
-                                InkWell(
-                                  onTap: () => launchUrlString((Platform.isIOS
-                                          ? "https://wa.me/"
-                                          : "whatsapp://send?phone=") +
-                                      i.whatsapp),
-                                  child: const Icon(CustomIcons.whatsapp),
-                                )
-                              ],
-                            )
+                            Text(i.dutyTiming)
                           ],
                         ),
                       ),

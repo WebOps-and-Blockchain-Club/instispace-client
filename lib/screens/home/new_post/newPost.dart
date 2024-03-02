@@ -203,7 +203,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 dynamic data = cache.readQuery(widget.options.asRequest);
                 bool approve =
                     result.data!["createPost"]["status"] == "TO_BE_APPROVED";
-                print(result.data!["createPost"]);
+
                 if (approve == false) {
                   data["findPosts"]["list"] =
                       [result.data!["createPost"]] + data["findPosts"]["list"];
@@ -222,10 +222,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
                 clearForm();
                 if (widget.fieldConfiguration.imageSecondary != null) {
-                  print('object');
                   Navigator.pop(context);
                 } else {
-                  print('object1');
                   Navigator.of(context)
                     ..pop()
                     ..pop();

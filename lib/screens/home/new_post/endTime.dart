@@ -34,8 +34,7 @@ class _EndTimeState extends State<EndTime> {
     // print('object12');
     // print('for lost');
     // print(endTime);
-    print('widget');
-    print(widget.endTime);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

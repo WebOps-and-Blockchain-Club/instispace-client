@@ -120,6 +120,7 @@ class _PostQueryState extends State<PostQuery> {
               ...previousResultData!['findPosts']['list'] as List<dynamic>,
               ...fetchMoreResultData!["findPosts"]["list"] as List<dynamic>
             ];
+
             fetchMoreResultData["findPosts"]["list"] = repos;
             return fetchMoreResultData;
           },

@@ -130,7 +130,6 @@ class _LikeCommentButtonState extends State<LikeCommentButton> {
         options: MutationOptions(
             document: gql(FeedGQL().toggleLikeComment),
             update: (cache, result) {
-              print(result?.exception);
               if (result != null && (!result.hasException)) {
                 final Map<String, dynamic> updated = {
                   "__typename": "Comments",

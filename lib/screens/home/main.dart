@@ -70,6 +70,17 @@ class _HomeWrapperState extends State<HomeWrapper> {
     setState(() {
       fcmToken = _fcmToken;
     });
+    if (widget.user.fcmTokens == null ||
+        widget.user.fcmTokens!.isEmpty ||
+        !(widget.user.fcmTokens!.contains(_fcmToken))) {
+      final options = MutationOptions(
+        document: gql(AuthGQL.updateFCMToken),
+        variables: <String, dynamic>{
+          'fcmToken': _fcmToken,
+        },
+      );
+      graphQLClient(widget.auth.token).mutate(options);
+    }
   }
 
   // final _bucket = PageStorageBucket();
@@ -207,11 +218,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
     ];
     return WillPopScope(
       onWillPop: () async {
-        print('==================Popupscope called');
-        print(tappedIndex);
         if (tappedIndex.length == 1) {
           // if (!await Navigator.of(context).maybePop()) return true;
-          print(true);
+
           return true;
         } else {
           setState(() {

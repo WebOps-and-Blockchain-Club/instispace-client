@@ -3,14 +3,17 @@ import 'package:client/graphQL/badge.dart';
 import 'package:client/models/badge.dart';
 import 'package:client/screens/badges/myBadges.dart';
 import 'package:client/screens/super_user/approve_post.dart';
+import 'package:client/services/theme_provider.dart';
 import 'package:client/widgets/app_bar.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import 'package:client/widgets/profile_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../models/post/query_variable.dart';
+import '../../services/local_storage.dart';
 import '../../widgets/card/image_view.dart';
 import '../../widgets/helpers/loading.dart';
 import '../../../widgets/button/elevated_button.dart';
@@ -23,6 +26,9 @@ import '../../widgets/badge/main.dart';
 import '../../widgets/utils/image_cache_path.dart';
 import './edit_profile.dart';
 import '../../services/auth.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+
+final localStorage = LocalStorageService();
 
 class Profile extends StatefulWidget {
   final UserModel? user;
@@ -78,7 +84,8 @@ class _ProfileState extends State<Profile> {
       _user = widget.user;
     } else if (widget.result != null && widget.result!.data != null) {
       _user = (widget.user == null && widget.result != null)
-          ? ((widget.result!.data!["getUser"] == null && widget.userDetails != null)
+          ? ((widget.result!.data!["getUser"] == null &&
+                  widget.userDetails != null)
               ? UserModel(
                   role: "USER",
                   roll: widget.userDetails!["roll"],
@@ -89,7 +96,7 @@ class _ProfileState extends State<Profile> {
               : UserModel.fromJson(widget.result!.data!["getUser"]))
           : widget.user!;
     }
-    
+
     return Stack(
       children: [
         Scaffold(
@@ -98,7 +105,7 @@ class _ProfileState extends State<Profile> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [secondaryAppBar(title: 'PROFILE',context: context)];
+                  return [secondaryAppBar(title: 'PROFILE', context: context)];
                 },
                 body: RefreshIndicator(
                   onRefresh: () => widget.refetch != null
@@ -111,7 +118,8 @@ class _ProfileState extends State<Profile> {
                         return const Loading();
                       }
 
-                      if ((widget.result != null && widget.result!.hasException) ||
+                      if ((widget.result != null &&
+                              widget.result!.hasException) ||
                           _user == null) {
                         return Error(
                           error: widget.result!.exception.toString(),
@@ -210,7 +218,10 @@ class _ProfileState extends State<Profile> {
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
-                                    color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(255, 52, 51, 68) :const Color(0xFFE1E0EC),
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Color.fromARGB(255, 52, 51, 68)
+                                        : const Color(0xFFE1E0EC),
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Column(
                                   crossAxisAlignment:
@@ -251,75 +262,89 @@ class _ProfileState extends State<Profile> {
                                         style: TextStyle(fontSize: 17),
                                       ),
                                     ),
-                                    
-                                    
                                   ],
                                 ),
                               ),
                             ),
                           const SizedBox(height: 20),
-                          if( _user.id!=null && _user.id!.isNotEmpty && _user.role == 'USER')
+                          if (_user.id != null &&
+                              _user.id!.isNotEmpty &&
+                              _user.role == 'USER')
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         top: 15.0, bottom: 20),
                                     child: Query(
-                                          options:QueryOptions(
-                                            document: gql(BadgeGQL().getUserBadges),
-                                            variables: {"userId":(widget.user!=null)? widget.user!.id : _user.id}),
-                                          builder: (badgeResult, {fetchMore, refetch}) {
-                                            List<BadgeModel> badges = [];
-                                            if(badgeResult.isLoading) {
-                                              return const Loading();
-                                            }
-                                            print('....');
-                                            print(badgeResult);
-                                            for(var data in badgeResult.data!['getMyBadges']['list']){
-                                              badges.add(BadgeModel.fromJson(data));
-                                            }
-                                            if(badges.isEmpty) {
-                                              return Container();
-                                            } else {
-                                              return Column(
-                                                children: [
-                                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Text(
-                                      "Badges",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                                  GridView(
-                                                  shrinkWrap: true,
-                                                  
-                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-                                                  childAspectRatio: 1.5, crossAxisSpacing: 4, mainAxisSpacing: 4),
-                                            children: [
-                                                  for(var badge in badges)
-                                             CustomUserBadge(badgeModel: badge),
-                                            ],),
-                                            const SizedBox(height: 20,),
-                                                ],
-                                              );
-                                            
-                                            }
+                                        options: QueryOptions(
+                                            document:
+                                                gql(BadgeGQL().getUserBadges),
+                                            variables: {
+                                              "userId": (widget.user != null)
+                                                  ? widget.user!.id
+                                                  : _user.id
+                                            }),
+                                        builder: (badgeResult,
+                                            {fetchMore, refetch}) {
+                                          List<BadgeModel> badges = [];
+                                          if (badgeResult.isLoading) {
+                                            return const Loading();
                                           }
-                                    ),
+
+                                          var list =
+                                              badgeResult.data?['getMyBadges']
+                                                      ['list'] ??
+                                                  [];
+                                          for (var data in list) {
+                                            badges
+                                                .add(BadgeModel.fromJson(data));
+                                          }
+                                          if (badges.isEmpty) {
+                                            return Container();
+                                          } else {
+                                            return Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 15.0),
+                                                  child: Text(
+                                                    "Badges",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                                GridView(
+                                                  shrinkWrap: true,
+                                                  gridDelegate:
+                                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 2,
+                                                          childAspectRatio: 1.5,
+                                                          crossAxisSpacing: 4,
+                                                          mainAxisSpacing: 4),
+                                                  children: [
+                                                    for (var badge in badges)
+                                                      CustomUserBadge(
+                                                          badgeModel: badge),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        }),
                                   ),
                                 ],
                               ),
                             ),
-                            
-                            
                           if (_user.interets != null &&
                               _user.interets!.isNotEmpty)
                             Padding(
@@ -359,8 +384,6 @@ class _ProfileState extends State<Profile> {
                                 ],
                               ),
                             ),
-                            
-
                           if ((_user.id == null || _user.id!.isEmpty) &&
                               _user.ldapName != null &&
                               _user.ldapName!.isNotEmpty)

@@ -1,6 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:client/services/local_storage.dart';
+import 'package:client/widgets/theme_switch.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
+import '../services/theme_provider.dart';
 import '/models/user.dart';
 import '/screens/user/profile.dart';
 import 'helpers/navigate.dart';
@@ -41,32 +46,40 @@ class HomeAppBar extends StatelessWidget {
               fontWeight: FontWeight.w700),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: GestureDetector(
-              onTap: () {
-                navigate(context, Profile(user: user));
-              },
-              child: CachedNetworkImage(
-                imageUrl: user.photo,
-                placeholder: (_, __) =>
-                    const Icon(Icons.account_circle_rounded, size: 43),
-                errorWidget: (_, __, ___) =>
-                    const Icon(Icons.account_circle_rounded, size: 43),
-                imageBuilder: (context, imageProvider) => Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.contain,
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: ThemeSwitch(
+                  isDark:
+                      context.read<ThemeProvider>().theme == ThemeMode.dark),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: GestureDetector(
+                onTap: () {
+                  navigate(context, Profile(user: user));
+                },
+                child: CachedNetworkImage(
+                  imageUrl: user.photo,
+                  placeholder: (_, __) =>
+                      const Icon(Icons.account_circle_rounded, size: 43),
+                  errorWidget: (_, __, ___) =>
+                      const Icon(Icons.account_circle_rounded, size: 43),
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ])
         ]);
   }
 }

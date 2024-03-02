@@ -1,3 +1,5 @@
+import 'package:client/screens/complain/submitComplain.dart';
+import 'package:client/screens/mitr/yourDostCounsellor.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -20,9 +22,14 @@ class YourDostScreen extends StatelessWidget {
             "Your Dost is an external counseling agency, which provides online as well as offline services.\n\n",
         "style": styleNormal
       },
-      {"content": "On-line Counseling: ", "style": styleBold},
+      {"content": "On-line Counseling: \n", "style": styleBold},
+      {"content": "\t Helpline:", "style": styleNormal},
+      {"content": " 04448136222\n", "style": styleNormal},
+      {"content": "\t Book on appointment:", "style": styleNormal},
+      {"content": " bit.ly/IITMF2FNew\n", "style": styleNormal},
+      {"content": "\t Timings:", "style": styleNormal},
       {
-        "content": "Messaging, Voice call, Video call\n\n",
+        "content": " (YourDost 24/7) for online counselling\n",
         "style": styleNormal
       },
       {"content": "Off-line Counseling: ", "style": styleBold},
@@ -38,7 +45,7 @@ class YourDostScreen extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return <Widget>[
             // AppBar
-            secondaryAppBar(title: 'Your Dost',context: context),
+            secondaryAppBar(title: 'Your Dost', context: context),
           ];
         },
         body: ListView(
@@ -49,12 +56,35 @@ class YourDostScreen extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  child: RichText(
-                    text: TextSpan(
-                        children: contentArr
-                            .map((_data) => TextSpan(
-                                text: _data["content"], style: _data["style"]))
-                            .toList()),
+                  child: Column(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                            children: contentArr
+                                .map((_data) => TextSpan(
+                                    text: _data["content"],
+                                    style: _data["style"]))
+                                .toList()),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Card(
+                        shadowColor: Theme.of(context).shadowColor,
+                        child: ListTile(
+                          tileColor: Theme.of(context).cardColor,
+                          title: const Text(
+                            "Counsillor List",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const DostList()));
+                          },
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),

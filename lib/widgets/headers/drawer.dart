@@ -9,6 +9,7 @@ import 'package:client/screens/academics/calendar.dart';
 import 'package:client/screens/badges/club_wrapper.dart';
 import 'package:client/screens/badges/create_club.dart';
 import 'package:client/screens/badges/view_club.dart';
+import 'package:client/screens/mitr/instihospital.dart';
 import 'package:client/utils/custom_icons.dart';
 import 'package:client/widgets/helpers/navigate.dart';
 import '../../models/category.dart';
@@ -113,8 +114,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         .textTheme
                                         .headlineSmall
                                         ?.copyWith(
-                                            color: Theme.of(context).brightness == Brightness.dark ? ColorPalette.palette(context).primary.shade200 : ColorPalette.palette(context)
-                                                .primary,
+                                            color: Theme.of(context)
+                                                        .brightness ==
+                                                    Brightness.dark
+                                                ? ColorPalette.palette(context)
+                                                    .primary
+                                                    .shade200
+                                                : ColorPalette.palette(context)
+                                                    .primary,
                                             fontWeight: FontWeight.w500),
                                   ),
                                 ),
@@ -364,6 +371,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           context, const CounsellorScreen());
                                     },
                                   ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListTile(
+                                    tileColor: Colors.transparent,
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title: const Text("Insti Hospital"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      navigate(
+                                          context, const InstiHospitalScreen());
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
                                   ListTile(
                                     tileColor: Colors.transparent,
                                     visualDensity:
@@ -397,6 +421,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ],
                               ),
                             ),
+
+                            // your dost
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: ListTile(
+                            //     title: const Text("Your Dost"),
+                            //     onTap: () {
+                            //       Navigator.pop(context);
+                            //       navigate(context, const YourDostScreen());
+                            //     },
+                            //   ),
+                            // ),
 
                             //Super User Actions
                             if (widget.user != null &&
