@@ -73,7 +73,9 @@ class AboutUsPage extends StatelessWidget {
             const SizedBox(
               height: 150,
               child:
-                  Image(image: AssetImage('assets/logo/primary_with_text.png')),
+                  Image(
+                    color: Color.fromARGB(255, 100, 90, 247),
+                    image: AssetImage('assets/logo/primary_with_text.png')),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -199,7 +199,7 @@ class Themes {
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
             elevation: 5,
-            primary: ColorPalette._success,
+            backgroundColor: ColorPalette._success,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
                 side: const BorderSide(color: ColorPalette._success)),

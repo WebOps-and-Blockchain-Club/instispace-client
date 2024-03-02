@@ -17,21 +17,17 @@ class Error extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.read<ThemeProvider>().theme == ThemeMode.dark;
+    debugPrint(isDark.toString());
+    print(context.read<ThemeProvider>().theme.toString());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (!isDark)
           const Image(
-            image: AssetImage('assets/illustrations/deer.png'),
-            height: 250,
-            width: 250,
-          ),
-        if (isDark)
-          const Image(
-            image: AssetImage('assets/illustrations/darkDeer.png'),
-            height: 250,
-            width: 250,
+            image: AssetImage('assets/illustrations/darkDeer-removebg-preview.png'),
+            height: 275,
+            width: 275,
+            fit: BoxFit.cover,
           ),
         ErrorText(error: error, message: message),
         TextButton(

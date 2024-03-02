@@ -80,6 +80,8 @@ class _LogInState extends State<LogIn> {
                               height: 240,
                               width: 170,
                               child: Image(
+                                color: Color.fromARGB(255, 100, 90, 247),
+                                  opacity: AlwaysStoppedAnimation(10),
                                   image: AssetImage(
                                       'assets/logo/primary_with_text.png')),
                             ),
@@ -114,7 +116,7 @@ class _LogInState extends State<LogIn> {
                                         ],
                                       ),
                                       Text(
-                                        'Use you LDAP credentials',
+                                        'Use your LDAP credentials',
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall,
@@ -220,11 +222,13 @@ class _LogInState extends State<LogIn> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
-                                            'Sign in',
+                                           Text(
+                                            '           Sign in',
                                             style: TextStyle(
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.normal),
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.normal,
+                                                color:  Colors.white
+                                                ),
                                           ),
                                           (result != null && result.isLoading)
                                               ? const CircularProgressIndicator(

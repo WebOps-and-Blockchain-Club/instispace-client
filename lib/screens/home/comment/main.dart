@@ -356,7 +356,7 @@ class _CreateCommentState extends State<CreateComment> {
                                               ? const CircularProgressIndicator(
                                                   strokeWidth: 2,
                                                 )
-                                              : const Icon(Icons.send),
+                                              : Icon(Icons.send,color: Colors.black),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
