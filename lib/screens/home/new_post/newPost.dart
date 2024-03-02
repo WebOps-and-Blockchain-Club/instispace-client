@@ -247,9 +247,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   centerTitle: true,
                   title: Text(
                     "${widget.post == null ? '' : 'EDIT'} ${widget.category.name.toUpperCase()}",
-                    style: const TextStyle(
+                    style: TextStyle(
                         letterSpacing: 1,
-                        color: Color(0xFF3C3C3C),
+                        color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C),
                         fontSize: 20,
                         fontWeight: FontWeight.w700),
                   ),
@@ -649,14 +649,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
       context: context,
       builder: (BuildContext context) => buildSheet(
           context,
-          (controller) => SelectTags(
-              selectedTags: selectedTags,
-              controller: controller,
-              callback: (val) {
-                setState(() {
-                  selectedTags = val;
-                });
-              })),
+          (controller) => Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark ? const Color.fromARGB(255, 81, 80, 80) : Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10))
+            ),
+            child: SelectTags(
+                selectedTags: selectedTags,
+                controller: controller,
+                callback: (val) {
+                  setState(() {
+                    selectedTags = val;
+                  });
+                }),
+          )),
       isScrollControlled: true,
     );
   }

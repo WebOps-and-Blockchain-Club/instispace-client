@@ -141,7 +141,8 @@ class _SelectTagsState extends State<SelectTags> {
                                             vertical: 10),
                                         child: Text(
                                           category.category,
-                                          style: const TextStyle(
+                                          style: TextStyle(
+                                              color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C),
                                               fontSize: 22,
                                               fontWeight: FontWeight.w500),
                                         ),
@@ -188,8 +189,8 @@ class _SelectTagsState extends State<SelectTags> {
                                                 vertical: 6, horizontal: 11),
                                             child: Text(
                                                 category.tags[index1].title,
-                                                style: const TextStyle(
-                                                    color: Color(0xFF3C3C3C))),
+                                                style: TextStyle(
+                                                    color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C))),
                                           ),
                                         );
                                       })),

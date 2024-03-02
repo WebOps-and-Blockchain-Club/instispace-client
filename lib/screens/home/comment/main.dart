@@ -39,11 +39,11 @@ class _CommentsPageState extends State<CommentsPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "COMMENTS",
           style: TextStyle(
               letterSpacing: 1,
-              color: Color(0xFF3C3C3C),
+              color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C),
               fontSize: 20,
               fontWeight: FontWeight.w700),
         ),

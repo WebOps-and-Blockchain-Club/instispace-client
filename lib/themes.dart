@@ -27,7 +27,8 @@ class Themes {
         titleSmall:
             TextStyle(color: Colors.white, //ColorPalette._text,
              fontWeight: FontWeight.w500),
-        bodyLarge: const TextStyle(fontWeight: FontWeight.normal),
+        bodyLarge: TextStyle(color: Colors.white,
+          fontWeight: FontWeight.normal),
         // Default Style for body medium
         labelLarge: TextStyle(
             color:Colors.white, //ColorPalette._text,
@@ -106,7 +107,7 @@ class Themes {
     listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         textColor: Colors.white,
-        tileColor: Color.fromARGB(197, 35, 39, 41)),
+        tileColor: Color.fromARGB(197, 75, 76, 76)),
     //ExpansionTile Theme
     dividerColor: Colors.transparent,
     expansionTileTheme: ExpansionTileThemeData(

@@ -43,7 +43,7 @@ class _CategoryListState extends State<CategoryList>
       insetPadding:
           const EdgeInsets.only(bottom: 0, left: 180, top: 330, right: 15),
       contentPadding: const EdgeInsets.all(10),
-      backgroundColor: const Color(0xFFE1E0EC),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(255, 125, 123, 130) :const Color(0xFFE1E0EC),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       content: SizedBox(
         width: 50,
@@ -63,10 +63,10 @@ class _CategoryListState extends State<CategoryList>
                   },
                   child: Text(
                     widget.categories[index].name,
-                    style: const TextStyle(color: Colors.black),
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(209, 255, 255, 255) : Color(0xFF3C3C3C)),
                   ),
                   style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Color.fromARGB(255, 63, 63, 63) : Color(0xFFE1E0EC),
                       fixedSize: const Size(120, 40),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12))));
