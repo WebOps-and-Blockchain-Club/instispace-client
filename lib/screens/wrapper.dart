@@ -84,7 +84,7 @@ class _WrapperState extends State<Wrapper> {
                     return UpgradeAlert(
                       upgrader: Upgrader(
                           debugLogging: true,
-                          debugDisplayOnce: true,
+                          // debugDisplayOnce: true,
                           countryCode: 'IN',
                           languageCode: 'en'),
                       child: HomeWrapper(
